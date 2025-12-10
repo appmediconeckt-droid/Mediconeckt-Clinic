@@ -1,0 +1,54 @@
+.qrapl {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  gap: 20px;
+  margin-top: 10px;
+}
+
+.qrcode{
+  width: 260px;
+  background: #f7c6c6; 
+  border: 2px solid #d39ca4;
+  padding: 15px;
+  border-radius: 6px;
+  position: relative;
+  text-align: center;
+}
+
+/* QR Box on Top */
+.qr-box {
+  display: flex;
+  justify-content: center;
+  margin-bottom: 15px;
+}
+
+.qr-box img {
+  width: 80px;
+  height: 80px;
+  border: 2px solid #999;
+  padding: 5px;
+  border-radius: 4px;
+  background: #fff;
+}
+
+.card-header {
+  background: #d5e6ff;
+  padding: 10px;
+  border-radius: 4px;
+  margin-bottom: 20px;
+  font-weight: bold;
+}
+
+.card-footer {
+  background: transparent;
+  border-top: 1px solid #cc9999;
+  padding: 6px;
+  font-size: 14px;
+}
+
+.connector {
+  width: 60px;
+  height: 2px;
+  background: #999;
+}

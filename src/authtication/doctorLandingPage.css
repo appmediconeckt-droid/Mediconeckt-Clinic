@@ -1,0 +1,249 @@
+/* File: doctorLandingPage.css */
+
+/* Hero Section */
+.hero {
+  min-height: 100vh;
+  background: linear-gradient(rgba(13, 110, 253, 0.85), rgba(13, 110, 253, 0.9)), 
+              url('https://images.unsplash.com/photo-1516549655669-df565bc5d4b5?ixlib=rb-4.0.3&auto=format&fit=crop&w=1950&q=80');
+  background-size: cover;
+  background-position: center;
+  background-attachment: fixed;
+  padding-top: 80px;
+}
+
+/* Speciality Cards */
+.speciality-card {
+  transition: all 0.3s ease;
+  border-radius: 15px;
+  cursor: pointer;
+  border: 1px solid #e9ecef;
+}
+
+.speciality-card:hover {
+  transform: translateY(-10px);
+  box-shadow: 0 10px 20px rgba(0, 0, 0, 0.1) !important;
+  border-color: #0d6efd;
+}
+
+/* Doctor Cards */
+.doctor-card {
+  transition: all 0.3s ease;
+  border-radius: 15px;
+  overflow: hidden;
+}
+
+.doctor-card:hover {
+  transform: translateY(-5px);
+  box-shadow: 0 15px 30px rgba(0, 0, 0, 0.15) !important;
+}
+
+.doctor-card img {
+  object-fit: cover;
+  border: 3px solid #0d6efd;
+}
+
+/* Service Cards */
+.service-card {
+  transition: all 0.3s ease;
+  border-radius: 15px;
+}
+
+.service-card:hover {
+  transform: translateY(-5px);
+  box-shadow: 0 10px 25px rgba(13, 110, 253, 0.1) !important;
+}
+
+/* Stats in Hero */
+.stats-row .col-md-3 {
+  background: rgba(255, 255, 255, 0.1);
+  padding: 20px;
+  border-radius: 10px;
+  /* backdrop-filter: blur(10px); */
+}
+
+.stats-row h3 {
+  font-size: 2.5rem;
+  margin-bottom: 0.5rem;
+}
+
+/* Hover Dropdown */
+.hover-dropdown:hover .dropdown-menu {
+  display: block;
+  margin-top: 0;
+}
+
+.hover-dropdown .dropdown-menu {
+  margin-top: 0;
+  border: none;
+  box-shadow: 0 5px 15px rgba(0, 0, 0, 0.1);
+  border-radius: 10px;
+}
+
+/* Social Icons */
+.social-icons a {
+  font-size: 1.2rem;
+  transition: color 0.3s ease;
+}
+
+.social-icons a:hover {
+  color: #0d6efd !important;
+}
+
+/* Footer Links */
+footer a:hover {
+  color: #0d6efd !important;
+}
+
+/* Responsive Adjustments */
+@media (max-width: 768px) {
+  .hero {
+    min-height: 90vh;
+    padding: 100px 20px 50px;
+  }
+  
+  .hero h1 {
+    font-size: 2.5rem;
+  }
+  
+  .stats-row .col-md-3 {
+    margin-bottom: 15px;
+  }
+}
+
+/* Modal Customization */
+.modal-content {
+  border-radius: 15px;
+  border: none;
+}
+
+.modal-header {
+  border-bottom: 1px solid #dee2e6;
+  background: #f8f9fa;
+  border-radius: 15px 15px 0 0;
+}
+
+/* Navbar active link */
+.nav-link.active {
+  color: #0d6efd !important;
+  font-weight: 600;
+}
+
+/* Smooth scrolling */
+html {
+  scroll-behavior: smooth;
+}
+
+/* Button hover effects */
+.btn-primary {
+  transition: all 0.3s ease;
+}
+
+.btn-primary:hover {
+  transform: translateY(-2px);
+  box-shadow: 0 5px 15px rgba(13, 110, 253, 0.3);
+}
+
+.btn-outline-primary:hover {
+  transform: translateY(-2px);
+  box-shadow: 0 5px 15px rgba(13, 110, 253, 0.1);
+}
+/* File: doctorLandingPage.css */
+
+/* Hero Section */
+.hero {
+  background: linear-gradient(rgba(0, 123, 255, 0.9), rgba(0, 86, 179, 0.9)),
+    url("https://images.unsplash.com/photo-1582750433449-648ed127bb54?ixlib=rb-4.0.3&auto=format&fit=crop&w=1920&q=80");
+  background-size: cover;
+  background-position: center;
+  min-height: 90vh;
+  padding-top: 80px;
+}
+
+/* Stats Row */
+.stats-row h3 {
+  font-size: 2.5rem;
+  margin-bottom: 0.5rem;
+}
+
+.stats-row p {
+  font-size: 1rem;
+  opacity: 0.9;
+}
+
+/* Cards */
+.speciality-card,
+.doctor-card,
+.service-card {
+  transition: transform 0.3s ease, box-shadow 0.3s ease;
+  cursor: pointer;
+  border-radius: 15px !important;
+}
+
+.speciality-card:hover,
+.doctor-card:hover,
+.service-card:hover {
+  transform: translateY(-5px);
+  box-shadow: 0 10px 20px rgba(0, 0, 0, 0.1) !important;
+}
+
+/* Doctor Card Image */
+.doctor-card img {
+  border: 4px solid #007bff;
+  object-fit: cover;
+}
+
+/* Service Card */
+.service-card {
+  border-left: 4px solid #007bff !important;
+}
+
+/* Navbar Dropdown on Hover */
+.hover-dropdown:hover .dropdown-menu {
+  display: block;
+  margin-top: 0;
+}
+
+/* Responsive Adjustments */
+@media (max-width: 768px) {
+  .hero h1 {
+    font-size: 2.5rem;
+  }
+  
+  .hero .btn {
+    width: 100%;
+    margin-bottom: 10px;
+  }
+  
+  .stats-row {
+    margin-top: 2rem !important;
+  }
+  
+  .stats-row h3 {
+    font-size: 2rem;
+  }
+}
+
+/* Smooth Scrolling */
+html {
+  scroll-behavior: smooth;
+}
+
+/* Footer Social Icons */
+.social-icons i {
+  font-size: 1.5rem;
+  transition: color 0.3s ease;
+}
+
+.social-icons a:hover i {
+  color: #007bff !important;
+}
+
+/* Navbar Fix for Fixed Top */
+body {
+  padding-top: 0px;
+}
+
+/* Why Choose Us Icons */
+.bg-white span {
+  color: #007bff;
+}

@@ -1,0 +1,19 @@
+.setting-wrapper {
+  display: flex;
+}
+
+.setting-content {
+  margin-left: 80px;
+  padding: 30px;
+  width: 100%;
+  transition: margin-left 0.3s;
+}
+
+.sidebar-container.expanded + .setting-content {
+  margin-left: 230px;
+}
+
+.title {
+  font-size: 28px;
+  font-weight: bold;
+}
