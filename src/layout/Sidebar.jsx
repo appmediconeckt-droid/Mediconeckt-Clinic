@@ -18,9 +18,12 @@ const Sidebar = ({ menuItemClick }) => {
     >
       <div className="sidebar">
         <ul className="menu">
-
           {/* Dashboard */}
-          <li className={`menu-item ${isActive("/doctordashboard") ? "active" : ""}`}>
+          <li
+            className={`menu-item ${
+              isActive("/doctordashboard") ? "active" : ""
+            }`}
+          >
             <div
               className="menu-link menu-i"
               onClick={() => {
@@ -34,7 +37,11 @@ const Sidebar = ({ menuItemClick }) => {
           </li>
 
           {/* Calendar */}
-          <li className={`menu-item ${isActive("/doctorcalendar") ? "active" : ""}`}>
+          <li
+            className={`menu-item ${
+              isActive("/doctorcalendar") ? "active" : ""
+            }`}
+          >
             <div
               className="menu-link menu-i"
               onClick={() => {
@@ -48,7 +55,11 @@ const Sidebar = ({ menuItemClick }) => {
           </li>
 
           {/* Activate Profile */}
-          <li className={`menu-item ${isActive("/doctorprofileflow") ? "active" : ""}`}>
+          <li
+            className={`menu-item ${
+              isActive("/doctorprofileflow") ? "active" : ""
+            }`}
+          >
             <div
               className="menu-link menu-i"
               onClick={() => {
@@ -57,12 +68,12 @@ const Sidebar = ({ menuItemClick }) => {
               }}
             >
               <i className="fa-solid fa-user-check"></i>
-              <span className="menu-text">Activate Profile</span>
+              <span className="menu-text">Activate_Profile</span>
             </div>
           </li>
 
           {/* Profile */}
-          <li className={`menu-item ${isActive("/doctorprofile") ? "active" : ""}`}>
+          {/* <li className={`menu-item ${isActive("/doctorprofile") ? "active" : ""}`}>
             <div
               className="menu-link menu-i"
               onClick={() => {
@@ -73,7 +84,7 @@ const Sidebar = ({ menuItemClick }) => {
               <i className="fa-solid fa-user-doctor"></i>
               <span className="menu-text">Profile</span>
             </div>
-          </li>
+          </li> */}
 
           {/* QR Code */}
           <li className={`menu-item ${isActive("/qrcode") ? "active" : ""}`}>
@@ -85,12 +96,16 @@ const Sidebar = ({ menuItemClick }) => {
               }}
             >
               <i className="fa-solid fa-qrcode"></i>
-              <span className="menu-text">QR Code</span>
+              <span className="menu-text">QR_Code</span>
             </div>
           </li>
 
           {/* Appointment List */}
-          <li className={`menu-item ${isActive("/appointmentlist") ? "active" : ""}`}>
+          <li
+            className={`menu-item ${
+              isActive("/appointmentlist") ? "active" : ""
+            }`}
+          >
             <div
               className="menu-link menu-i"
               onClick={() => {
@@ -99,25 +114,28 @@ const Sidebar = ({ menuItemClick }) => {
               }}
             >
               <i className="fa-solid fa-list-check"></i>
-              <span className="menu-text">Appointment List</span>
+              <span className="menu-text">Appointment_List</span>
             </div>
           </li>
-          <li className={`menu-item ${isActive("/login") ? "active" : ""}`}>
+           <li
+            className={`menu-item ${
+              isActive("/notifications") ? "active" : ""
+            }`}
+          >
             <div
               className="menu-link menu-i"
               onClick={() => {
-                navigate("/login");
+                navigate("/notifications");
                 menuItemClick();
               }}
             >
-              <i className="fa-solid fa-right-from-bracket"></i>
-              <span className="menu-text">Logout</span>
+              <i className="fa-solid fa-bell"></i>
+              <span className="menu-text">Notification</span>
             </div>
           </li>
-          
 
           {/* Setting */}
-          {/* <li className={`menu-item ${isActive("/setting") ? "active" : ""}`}>
+          <li className={`menu-item ${isActive("/setting") ? "active" : ""}`}>
             <div
               className="menu-link menu-i"
               onClick={() => {
@@ -128,8 +146,7 @@ const Sidebar = ({ menuItemClick }) => {
               <i className="fa-solid fa-gear"></i>
               <span className="menu-text">Setting</span>
             </div>
-          </li> */}
-
+          </li>
         </ul>
       </div>
     </div>

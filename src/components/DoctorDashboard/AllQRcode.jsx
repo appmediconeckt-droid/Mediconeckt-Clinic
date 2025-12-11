@@ -45,7 +45,7 @@ export default function QRcode() {
           <img src="https://api.qrserver.com/v1/create-qr-code/?size=80x80&data=Card3" alt="QR" />
         </div>
 
-        <div className="card-header">Clinic Location And Profile QR Code</div>
+        <div className="card-header">Clinic Location And Photos</div>
         <div className="card-footer">Clinic Profile</div>
         <div className="card-footer">Download</div>
       </div>

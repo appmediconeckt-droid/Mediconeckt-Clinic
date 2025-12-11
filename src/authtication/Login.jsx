@@ -96,8 +96,8 @@ export default function Login() {
         </Link>
 
         <div className="text-center mb-4">
-          <Link className="text-decoration-none" to="/signup">
-            New Patient? Create Account
+          <Link className="text-decoration-none" to="/">
+            New Patient & Doctor? Create Account
           </Link>
         </div>
 
@@ -105,7 +105,7 @@ export default function Login() {
         <div className="text-center mb-4">
           <Link
             className="text-decoration-none text-muted"
-            to="/forgot-password"
+            to="/forgotpassword"
           >
             Forgot Password?
           </Link>

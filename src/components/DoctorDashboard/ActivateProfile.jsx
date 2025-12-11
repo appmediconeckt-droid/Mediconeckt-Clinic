@@ -76,7 +76,7 @@ export default function DoctorProfileFlow() {
 
   return (
     <div className="p-4">
-      <h2 className="mb-4">Doctor Profile</h2>
+      <h2 className="">Doctor Profile</h2>
 
       {/* PERSONAL DETAILS */}
       <div className="card p-3 mb-4">

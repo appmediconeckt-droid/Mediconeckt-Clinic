@@ -117,7 +117,7 @@ export default function AppointmentList() {
 
   return (
     <div className="p-4">
-      <h2 className="mb-4 text-center fw-bold" style={{ color: "#444" }}>
+      <h2 className="">
         Appointment List
       </h2>
 

@@ -4,10 +4,12 @@ import { Link } from "react-router-dom";
 const Navbar = ({ toggleSidebar }) => {
   return (
     <>
-      <nav className="navbar navbar-light" style={{ position: "fixed", width:"100%", zIndex:999 }}>
+      <nav
+        className="navbar navbar-light"
+        style={{ position: "fixed", width: "100%", zIndex: 999 }}
+      >
         <div className="container-fluid nav-conte">
           <div className="nav-content">
-
             {/* BRAND */}
             <div className="nav-bran d-flex align-items-center">
               <a
@@ -21,7 +23,6 @@ const Navbar = ({ toggleSidebar }) => {
 
             {/* RIGHT SIDE ICONS */}
             <div className="nav-main-icon d-flex align-items-center">
-
               {/* Emergency Icon */}
               <a className="emergency-icon " href="#">
                 <i
@@ -31,9 +32,10 @@ const Navbar = ({ toggleSidebar }) => {
               </a>
 
               {/* Notification Icon */}
-              <a className="bell-icon " href="#">
-                <i className="fa-regular fa-bell" style={{ fontSize: "20px" }}></i>
-              </a>
+
+              <Link to="/notifications">
+                <i className="fa-solid fa-bell"></i>
+              </Link>
 
               {/* Profile Dropdown */}
               <div className="dropdown profile-element">
@@ -63,7 +65,9 @@ const Navbar = ({ toggleSidebar }) => {
                       Change Password
                     </Link>
                   </li>
-                  <li><hr className="dropdown-divider" /></li>
+                  <li>
+                    <hr className="dropdown-divider" />
+                  </li>
                   <li>
                     <Link className="dropdown-item" to="/logout">
                       Logout
@@ -71,7 +75,6 @@ const Navbar = ({ toggleSidebar }) => {
                   </li>
                 </ul>
               </div>
-
             </div>
           </div>
         </div>

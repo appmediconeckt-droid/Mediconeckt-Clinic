@@ -975,3 +975,6 @@ select.form-input {
   justify-content: space-between;
 }
 
+h2{
+  font-weight: 700 !important;
+}

@@ -1,5 +1,4 @@
 import React, { useEffect, useRef, useState } from "react";
-import "bootstrap/dist/css/bootstrap.min.css";
 import {
   Badge,
   Button,
@@ -339,6 +338,7 @@ const DoctorDashboard = () => {
 
                   <InputGroup size="sm" className="custom-break-input">
                     <FormControl
+                    style={{marginTop:"0px"}}
                       placeholder="Custom"
                       value={customBreakMin}
                       onChange={(e) =>
@@ -420,7 +420,7 @@ const DoctorDashboard = () => {
       <div className="card shadow-sm mb-4 table-card">
         <div className="card-body">
           <h5 className="table-heading">Today's Appointments</h5>
-          <div className="table-responsive mt-3">
+          <div className="table-responsive mt-3 p-4">
             <table className="table custom-table align-middle">
               <thead>
                 <tr>
@@ -494,7 +494,7 @@ const DoctorDashboard = () => {
       <div className="card shadow-sm mb-5 table-card">
         <div className="card-body">
           <h5 className="table-heading">Completed Appointments</h5>
-          <div className="table-responsive mt-3">
+          <div className="table-responsive mt-3 p-4">
             <table className="table custom-table">
               <thead>
                 <tr>

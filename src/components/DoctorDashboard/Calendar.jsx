@@ -804,9 +804,10 @@ const DoctorCalendar = () => {
 
   return (
     <div className="p-4 doctor-calendar-root">
+     
       <div className="header d-flex flex-column flex-md-row justify-content-between align-items-start align-items-md-center mb-3 gap-3">
         <div>
-          <h3 className="m-0">Doctor Calendar</h3>
+           <h2 >Doctor Calendar</h2>
           <small className="text-muted">
             Recurring & date-specific availability — Modern Blue Theme
           </small>
@@ -1367,7 +1368,7 @@ const DoctorCalendar = () => {
                       }
                     />
                   </div>
-                  <div className="col-md-1">
+                  <div className="">
                     <button
                       className="btn btn-primary"
                       onClick={saveRange}

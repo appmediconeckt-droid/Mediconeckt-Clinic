@@ -14,7 +14,9 @@ import DoctorProfileFlow from "./components/DoctorDashboard/ActivateProfile";
 import DoctorProfile from "./components/DoctorDashboard/DoctorProfile";
 import QRcode from "./components/DoctorDashboard/AllQRcode";
 import AppointmentList from "./components/DoctorDashboard/Appointment List";
-// import Setting from "./components/DoctorDashboard/Setting";
+import SettingsPage from "./components/DoctorDashboard/Setting";
+import NotificationPage from "./components/DoctorDashboard/NotificationPage";
+import ForgotPassword from "./authtication/ForgotPassword";
 // import PatientDashboard from "./components/PatientDashboard/PatientDashboard";
 
 function App() {
@@ -34,7 +36,8 @@ function App() {
     location.pathname === "/login" ||
     location.pathname === "/" ||
     location.pathname === "/doctor" ||
-    location.pathname === "/signup";
+    location.pathname === "/signup" ||
+    location.pathname === "/forgotpassword";
 
   return (
     <>
@@ -48,6 +51,7 @@ function App() {
           <Route path="/" element={<LandingPage />} />
           <Route path="/doctor" element={<DoctorLandingPage />} />
           <Route path="/signup" element={<Signup />} />
+          <Route path="/forgotpassword" element={<ForgotPassword />} />
         </Routes>
       ) : (
         // Main Layout
@@ -70,7 +74,8 @@ function App() {
               <Route path="/doctorprofile" element={<DoctorProfile />} />
               <Route path="/qrcode" element={<QRcode />} />
               <Route path="/appointmentlist" element={<AppointmentList />} />
-              {/* <Route path="/setting" element={<Setting />} /> */}
+              <Route path="/setting" element={<SettingsPage />} />
+              <Route path="/notifications" element={<NotificationPage />} />
             </Routes>
           </div>
         </div>

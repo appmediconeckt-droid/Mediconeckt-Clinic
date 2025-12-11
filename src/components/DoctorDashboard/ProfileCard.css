@@ -1,0 +1,113 @@
+/* ATM card main container */
+.atm-card {
+  width: 650px;
+  height: 280px;
+  background: linear-gradient(135deg, #4c52ee, #8a3fe3);
+  border-radius: 22px;
+  padding: 25px;
+  color: white;
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  box-shadow: 0 12px 40px rgba(0, 0, 0, 0.25);
+  position: relative;
+  overflow: hidden;
+  animation: fadeIn 0.8s ease;
+}
+
+/* Decorative waves */
+.atm-card::before {
+  content: "";
+  position: absolute;
+  width: 200%;
+  height: 200%;
+  top: -50%;
+  left: -50%;
+  background: url("https://www.transparenttextures.com/patterns/asfalt-light.png");
+  opacity: 0.1;
+}
+
+/* Left section */
+.atm-left {
+  flex: 2;
+}
+
+/* ATM Chip */
+.chip {
+  width: 60px;
+  height: 40px;
+  background: gold;
+  border-radius: 8px;
+  margin-bottom: 20px;
+  box-shadow: 0 0 8px rgba(255, 215, 0, 0.6);
+}
+
+/* Doctor Name */
+.atm-name {
+  font-size: 26px;
+  font-weight: 700;
+  
+  margin: 0;
+}
+
+/* Role */
+.atm-role {
+  font-size: 16px;
+  opacity: 0.9;
+  margin-bottom: 15px;
+}
+
+/* Info text */
+.atm-info p {
+  margin: 6px 0;
+  font-size: 14px;
+  opacity: 0.95;
+}
+
+/* Right Section */
+.atm-right {
+  flex: 1;
+  text-align: center;
+}
+
+.atm-qr {
+  width: 120px;
+  height: 120px;
+  background: white;
+  padding: 8px;
+  border-radius: 12px;
+}
+
+.atm-scan {
+  margin-top: 10px;
+  font-size: 14px;
+  font-weight: 600;
+  opacity: 0.9;
+}
+
+/* Animation */
+@keyframes fadeIn {
+  from {
+    opacity: 0;
+    transform: translateY(20px);
+  }
+  to {
+    opacity: 1;
+    transform: translateY(0);
+  }
+}
+
+/* Responsive */
+@media (max-width: 600px) {
+  .atm-card {
+    flex-direction: column;
+    height: auto;
+    width: 95%;
+    padding: 20px;
+    text-align: center;
+  }
+
+  .atm-right {
+    margin-top: 20px;
+  }
+}
