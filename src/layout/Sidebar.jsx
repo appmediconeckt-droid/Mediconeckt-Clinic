@@ -20,9 +20,8 @@ const Sidebar = ({ menuItemClick }) => {
         <ul className="menu">
           {/* Dashboard */}
           <li
-            className={`menu-item ${
-              isActive("/doctordashboard") ? "active" : ""
-            }`}
+            className={`menu-item ${isActive("/doctordashboard") ? "active" : ""
+              }`}
           >
             <div
               className="menu-link menu-i"
@@ -38,9 +37,8 @@ const Sidebar = ({ menuItemClick }) => {
 
           {/* Calendar */}
           <li
-            className={`menu-item ${
-              isActive("/doctorcalendar") ? "active" : ""
-            }`}
+            className={`menu-item ${isActive("/doctorcalendar") ? "active" : ""
+              }`}
           >
             <div
               className="menu-link menu-i"
@@ -56,9 +54,8 @@ const Sidebar = ({ menuItemClick }) => {
 
           {/* Activate Profile */}
           <li
-            className={`menu-item ${
-              isActive("/doctorprofileflow") ? "active" : ""
-            }`}
+            className={`menu-item ${isActive("/doctorprofileflow") ? "active" : ""
+              }`}
           >
             <div
               className="menu-link menu-i"
@@ -102,9 +99,8 @@ const Sidebar = ({ menuItemClick }) => {
 
           {/* Appointment List */}
           <li
-            className={`menu-item ${
-              isActive("/appointmentlist") ? "active" : ""
-            }`}
+            className={`menu-item ${isActive("/appointmentlist") ? "active" : ""
+              }`}
           >
             <div
               className="menu-link menu-i"
@@ -117,10 +113,22 @@ const Sidebar = ({ menuItemClick }) => {
               <span className="menu-text">Appointment_List</span>
             </div>
           </li>
-           <li
-            className={`menu-item ${
-              isActive("/notifications") ? "active" : ""
-            }`}
+          <li className={`menu-item ${isActive("/clinicpage") ? "active" : ""}`}>
+            <div
+              className="menu-link menu-i"
+              onClick={() => {
+                navigate("/clinicpage");
+                menuItemClickIndian();
+              }}
+            >
+              <i className="fa-solid fa-hospital"></i>
+              <span className="menu-text">Clinic_Page</span>
+            </div>
+          </li>
+
+          <li
+            className={`menu-item ${isActive("/notifications") ? "active" : ""
+              }`}
           >
             <div
               className="menu-link menu-i"
@@ -147,6 +155,7 @@ const Sidebar = ({ menuItemClick }) => {
               <span className="menu-text">Setting</span>
             </div>
           </li>
+
         </ul>
       </div>
     </div>

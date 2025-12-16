@@ -1,3 +1,4 @@
+// DoctorDashboard.jsx
 import React, { useEffect, useRef, useState } from "react";
 import {
   Badge,
@@ -8,7 +9,8 @@ import {
   ProgressBar,
   Spinner,
 } from "react-bootstrap";
-import "./DoctorDashboard.css"; // <-- external CSS
+import { CompleteModal } from "./AppointmentModal";
+import "./DoctorDashboard.css";
 
 const DEFAULT_BREAK_MIN = 30;
 const BREAK_OPTIONS_MIN = [5, 10, 15, 30, 45, 60];
@@ -69,6 +71,14 @@ const DoctorDashboard = () => {
   const [selectedBreakMin, setSelectedBreakMin] = useState(DEFAULT_BREAK_MIN);
   const [customBreakMin, setCustomBreakMin] = useState("");
 
+  // Only Complete Modal now
+  const [showCompleteModal, setShowCompleteModal] = useState(false);
+  const [completeForm, setCompleteForm] = useState({
+    diagnosis: "",
+    medicine: "",
+    advice: "",
+  });
+
   // Timer tick
   useEffect(() => {
     tickRef.current = setInterval(() => {
@@ -78,8 +88,10 @@ const DoctorDashboard = () => {
     return () => clearInterval(tickRef.current);
   }, []);
 
+  // Start appointment directly (NO MODAL)
   const handleStart = (appt) => {
     const startTime = Date.now();
+
     const session = {
       appt,
       startTime,
@@ -90,6 +102,7 @@ const DoctorDashboard = () => {
       breakDurationMs: null,
       status: "started",
     };
+
     setActiveSession(session);
 
     setAppointments((prev) =>
@@ -99,6 +112,7 @@ const DoctorDashboard = () => {
     );
   };
 
+  // Pause / Resume
   const handlePause = () => {
     if (!activeSession) return;
     if (activeSession.status === "paused") {
@@ -109,7 +123,7 @@ const DoctorDashboard = () => {
         pauseStartMs: null,
         status: "started",
       }));
-    } else if (activeSession.status === "started") {
+    } else {
       setActiveSession((s) => ({
         ...s,
         pauseStartMs: Date.now(),
@@ -118,8 +132,10 @@ const DoctorDashboard = () => {
     }
   };
 
+  // Break start
   const handleBreak = () => {
     if (!activeSession) return;
+
     const minutes =
       Number(customBreakMin) > 0
         ? Number(customBreakMin)
@@ -142,11 +158,11 @@ const DoctorDashboard = () => {
     }));
   };
 
+  // Auto resume break
   useEffect(() => {
     if (!activeSession) return;
     if (activeSession.status === "break" && activeSession.breakEndMs) {
-      const remaining = activeSession.breakEndMs - Date.now();
-      if (remaining <= 0) {
+      if (activeSession.breakEndMs - Date.now() <= 0) {
         setActiveSession((s) => ({
           ...s,
           accumulatedPauseMs: s.accumulatedPauseMs + (s.breakDurationMs || 0),
@@ -162,6 +178,7 @@ const DoctorDashboard = () => {
   const handleEndBreakAndResume = () => {
     if (!activeSession || activeSession.status !== "break") return;
     const used = Date.now() - activeSession.breakStartMs;
+
     setActiveSession((s) => ({
       ...s,
       accumulatedPauseMs: s.accumulatedPauseMs + Math.max(0, used),
@@ -172,7 +189,18 @@ const DoctorDashboard = () => {
     }));
   };
 
+  // Open complete modal
   const handleComplete = () => {
+    setCompleteForm({
+      diagnosis: "",
+      medicine: "",
+      advice: "",
+    });
+    setShowCompleteModal(true);
+  };
+
+  // Save completed appointment
+  const saveCompleteModal = () => {
     if (!activeSession) return;
     const endTime = Date.now();
 
@@ -188,39 +216,43 @@ const DoctorDashboard = () => {
     );
 
     const completedRecord = {
-      id: activeSession.appt.id,
-      name: activeSession.appt.name,
-      gender: activeSession.appt.gender,
-      issue: activeSession.appt.issue,
-      phone: activeSession.appt.phone,
+      ...activeSession.appt,
       startTime: activeSession.startTime,
       endTime,
       durationMs: totalTreatmentMs,
+
+      diagnosis: completeForm.diagnosis,
+      medicine: completeForm.medicine,
+      advice: completeForm.advice,
     };
 
     setCompleted((prev) => [completedRecord, ...prev]);
-
     setAppointments((prev) =>
       prev.filter((a) => a.id !== activeSession.appt.id)
     );
 
     setActiveSession(null);
+    setShowCompleteModal(false);
   };
 
   const computeElapsedMs = () => {
-    if (!activeSession) return 0;
+    if (!activeSession || !activeSession.startTime) return 0;
+
     let elapsed =
       Date.now() - activeSession.startTime - activeSession.accumulatedPauseMs;
+
     if (activeSession.pauseStartMs)
       elapsed =
         activeSession.pauseStartMs -
         activeSession.startTime -
         activeSession.accumulatedPauseMs;
+
     if (activeSession.breakStartMs)
       elapsed =
         activeSession.breakStartMs -
         activeSession.startTime -
         activeSession.accumulatedPauseMs;
+
     return Math.max(0, elapsed);
   };
 
@@ -235,17 +267,15 @@ const DoctorDashboard = () => {
 
   const StatusBadge = ({ status }) => {
     if (status === "pending") return <Badge bg="danger">Pending</Badge>;
-    if (status === "in-progress")
-      return <Badge bg="primary">In Progress</Badge>;
+    if (status === "in-progress") return <Badge bg="primary">In Progress</Badge>;
     if (status === "completed") return <Badge bg="success">Completed</Badge>;
     return <Badge bg="secondary">{status}</Badge>;
   };
 
   return (
     <div className="p-4">
-
       {/* HEADER */}
-      <div className="d-flex justify-content-between align-items-center mb-3">
+      <div className="header d-flex flex-column flex-md-row justify-content-between align-items-start align-items-md-center mb-3 gap-3">
         <h2>Doctor Dashboard</h2>
         <div className="text-end">
           <div className="current-time-label">Current time</div>
@@ -264,7 +294,7 @@ const DoctorDashboard = () => {
         <div className="card-body d-flex flex-column flex-md-row justify-content-between align-items-center">
           {activeSession ? (
             <>
-              {/* LEFT */}
+              {/* LEFT DETAILS */}
               <div className="d-flex gap-3 align-items-start">
                 <div className="avatar-box">
                   <div className="initials">
@@ -304,8 +334,7 @@ const DoctorDashboard = () => {
                       <div>
                         {activeSession.status === "started" && (
                           <Badge bg="success">
-                            In Progress{" "}
-                            <Spinner animation="border" size="sm" />
+                            In Progress <Spinner animation="border" size="sm" />
                           </Badge>
                         )}
                         {activeSession.status === "paused" && (
@@ -320,7 +349,7 @@ const DoctorDashboard = () => {
                 </div>
               </div>
 
-              {/* RIGHT CONTROL */}
+              {/* RIGHT CONTROLS */}
               <div className="ms-md-auto mt-3 mt-md-0 text-end control-block">
                 <div className="mb-2 d-flex gap-2 justify-content-end align-items-center">
                   <Form.Select
@@ -338,7 +367,7 @@ const DoctorDashboard = () => {
 
                   <InputGroup size="sm" className="custom-break-input">
                     <FormControl
-                    style={{marginTop:"0px"}}
+                     style={{marginTop:"0px"}}
                       placeholder="Custom"
                       value={customBreakMin}
                       onChange={(e) =>
@@ -383,18 +412,17 @@ const DoctorDashboard = () => {
                       <div className="bold-text break-remaining-time">
                         {formatDuration(breakRemainingMs)}
                       </div>
-                      <div className="break-progress">
-                        <ProgressBar
-                          now={
-                            ((activeSession.breakDurationMs -
-                              breakRemainingMs) /
-                              (activeSession.breakDurationMs || 1)) *
-                            100
-                          }
-                          animated
-                        />
-                      </div>
+                      <ProgressBar
+                        animated
+                        now={
+                          ((activeSession.breakDurationMs - breakRemainingMs) /
+                            (activeSession.breakDurationMs || 1)) *
+                          100
+                        }
+                        style={{ width: 150 }}
+                      />
                     </div>
+
                     <Button
                       variant="outline-secondary"
                       size="sm"
@@ -416,7 +444,7 @@ const DoctorDashboard = () => {
         </div>
       </div>
 
-      {/* APPOINTMENTS TODAY */}
+      {/* APPOINTMENTS TABLE */}
       <div className="card shadow-sm mb-4 table-card">
         <div className="card-body">
           <h5 className="table-heading">Today's Appointments</h5>
@@ -424,7 +452,8 @@ const DoctorDashboard = () => {
             <table className="table custom-table align-middle">
               <thead>
                 <tr>
-                  <th>#</th>
+                  <th></th>
+                  <th>S No.</th>
                   <th>Patient</th>
                   <th>Gender</th>
                   <th>Issue</th>
@@ -437,19 +466,10 @@ const DoctorDashboard = () => {
 
               <tbody>
                 {appointments.map((a, idx) => (
-                  <tr key={a.id} className="appt-row">
+                  <tr key={a.id}>
                     <td>{idx + 1}</td>
                     <td>
-                      <div className="d-flex gap-2 align-items-center">
-                        <div className="row-avatar">
-                          {a.name
-                            .split(" ")
-                            .map((n) => n[0])
-                            .slice(0, 2)
-                            .join("")}
-                        </div>
-                        <div>{a.name}</div>
-                      </div>
+                      {a.name}
                     </td>
                     <td>{a.gender}</td>
                     <td>{a.issue}</td>
@@ -479,7 +499,7 @@ const DoctorDashboard = () => {
 
                 {appointments.length === 0 && (
                   <tr>
-                    <td colSpan="7" className="text-center text-muted py-3">
+                    <td colSpan="8" className="text-center text-muted py-3">
                       All appointments completed ✔
                     </td>
                   </tr>
@@ -490,7 +510,7 @@ const DoctorDashboard = () => {
         </div>
       </div>
 
-      {/* COMPLETED APPOINTMENTS */}
+      {/* Completed Records */}
       <div className="card shadow-sm mb-5 table-card">
         <div className="card-body">
           <h5 className="table-heading">Completed Appointments</h5>
@@ -498,14 +518,15 @@ const DoctorDashboard = () => {
             <table className="table custom-table">
               <thead>
                 <tr>
-                  <th>#</th>
+                  <th></th>
+                  <th>S No.</th>
                   <th>Patient</th>
                   <th>Gender</th>
                   <th>Issue</th>
                   <th>Phone</th>
                   <th>Start</th>
                   <th>End</th>
-                  <th>Total Treatment Time</th>
+                  <th>Total Time</th>
                 </tr>
               </thead>
 
@@ -525,7 +546,7 @@ const DoctorDashboard = () => {
 
                 {completed.length === 0 && (
                   <tr>
-                    <td colSpan="7" className="text-center text-muted py-3">
+                    <td colSpan="8" className="text-center text-muted py-3">
                       No completed appointments yet
                     </td>
                   </tr>
@@ -535,6 +556,16 @@ const DoctorDashboard = () => {
           </div>
         </div>
       </div>
+
+      {/* Complete Modal */}
+      <CompleteModal
+        show={showCompleteModal}
+        onHide={() => setShowCompleteModal(false)}
+        form={completeForm}
+        setForm={setCompleteForm}
+        onSave={saveCompleteModal}
+        patientName={activeAppt?.name}
+      />
     </div>
   );
 };

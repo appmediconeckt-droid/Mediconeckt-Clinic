@@ -17,6 +17,8 @@ import AppointmentList from "./components/DoctorDashboard/Appointment List";
 import SettingsPage from "./components/DoctorDashboard/Setting";
 import NotificationPage from "./components/DoctorDashboard/NotificationPage";
 import ForgotPassword from "./authtication/ForgotPassword";
+import PatientSignup from "./authtication/PatientSignup";
+import ClinicPage from "./components/DoctorDashboard/ClinicPage";
 // import PatientDashboard from "./components/PatientDashboard/PatientDashboard";
 
 function App() {
@@ -37,7 +39,8 @@ function App() {
     location.pathname === "/" ||
     location.pathname === "/doctor" ||
     location.pathname === "/signup" ||
-    location.pathname === "/forgotpassword";
+    location.pathname === "/forgotpassword" ||
+    location.pathname === "/patientsignup";
 
   return (
     <>
@@ -51,7 +54,9 @@ function App() {
           <Route path="/" element={<LandingPage />} />
           <Route path="/doctor" element={<DoctorLandingPage />} />
           <Route path="/signup" element={<Signup />} />
+          <Route path="/patientsignup" element={<PatientSignup />} />
           <Route path="/forgotpassword" element={<ForgotPassword />} />
+
         </Routes>
       ) : (
         // Main Layout
@@ -76,6 +81,7 @@ function App() {
               <Route path="/appointmentlist" element={<AppointmentList />} />
               <Route path="/setting" element={<SettingsPage />} />
               <Route path="/notifications" element={<NotificationPage />} />
+              <Route path="/clinicpage" element={<ClinicPage />} />
             </Routes>
           </div>
         </div>

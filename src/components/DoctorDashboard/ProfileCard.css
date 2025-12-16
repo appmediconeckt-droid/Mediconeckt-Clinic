@@ -1,7 +1,7 @@
 /* ATM card main container */
 .atm-card {
-  width: 650px;
-  height: 280px;
+  width: 500px;
+  height: 250px;
   background: linear-gradient(135deg, #4c52ee, #8a3fe3);
   border-radius: 22px;
   padding: 25px;

@@ -36,10 +36,12 @@ export default function SettingsPage() {
         {/* Sidebar */}
         <aside className="set-side">
           <div className="set-side-box">
-            <h2 className="set-side-title">Settings</h2>
+            <div className="header d-flex flex-column flex-md-row justify-content-between align-items-start align-items-md-center mb-3 gap-3">
+              <h2 className="mb-3">Settings</h2>
+            </div>
 
             <MenuItem id="profile" icon="👤" label="Profile" />
-            <MenuItem id="account" icon="🔒" label="Account" />
+            {/* <MenuItem id="account" icon="🔒" label="Account" /> */}
             <MenuItem id="clinic" icon="🏥" label="Clinic" />
             <MenuItem
               id="payment"

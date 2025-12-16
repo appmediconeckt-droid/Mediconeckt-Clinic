@@ -55,7 +55,10 @@ export default function NotificationPage() {
 
   return (
     <div className="notification p-4">
-      <h2 className="">Notifications</h2>
+      <div className="header d-flex flex-column flex-md-row justify-content-between align-items-start align-items-md-center mb-3 gap-3">
+        <h2 className="">Notifications</h2>
+      </div>
+      
 
       {notifications.map((item) => (
         <NotificationCard

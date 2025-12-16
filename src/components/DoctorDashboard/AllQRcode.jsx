@@ -14,7 +14,7 @@ export default function QRcode() {
         </div>
 
         <div className="card-header">Appointment QR Code</div>
-        <div className="card-footer">Appointment Book</div>
+        <div className="card-footer">Walk-in</div>
         <div className="card-footer">Download</div>
       </div>
 

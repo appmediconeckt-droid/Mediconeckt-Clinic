@@ -1,6 +1,5 @@
 import React from "react";
-import "bootstrap/dist/css/bootstrap.min.css";
-
+import "./Appointment List.css";
 export default function AppointmentList() {
   const appointments = [
     {
@@ -117,9 +116,12 @@ export default function AppointmentList() {
 
   return (
     <div className="p-4">
-      <h2 className="">
+      <div className="header d-flex flex-column flex-md-row justify-content-between align-items-start align-items-md-center mb-3 gap-3">
+        <h2 className="mb-3">
         Appointment List
       </h2>
+      </div>
+      
 
       <table className="table table-hover shadow-sm" style={{ background: "#ffe6e6", borderRadius: "10px" }}>
         <thead className="text-white" style={{ background: "#ff7b7b" }}>

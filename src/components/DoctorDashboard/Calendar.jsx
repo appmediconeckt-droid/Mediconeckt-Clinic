@@ -806,8 +806,8 @@ const DoctorCalendar = () => {
     <div className="p-4 doctor-calendar-root">
      
       <div className="header d-flex flex-column flex-md-row justify-content-between align-items-start align-items-md-center mb-3 gap-3">
-        <div>
-           <h2 >Doctor Calendar</h2>
+        <div style={{display:"grid"}}>
+           <h2 className="mb-3" >Doctor Calendar</h2>
           <small className="text-muted">
             Recurring & date-specific availability — Modern Blue Theme
           </small>
@@ -854,11 +854,12 @@ const DoctorCalendar = () => {
         className="nav-controls btn-group mt-4"
         role="group"
         aria-label="Month navigation"
-        style={{width:"450px", justifyContent:"center" , alignItems:"center"}}
+        style={{width:"500px", justifyContent:"center" , alignItems:"center"}}
       >
         <button
           className="btn btn-outline-primary"
           onClick={() => changeMonth(-1)}
+          style={{boxShadow:"none"}}
           aria-label="Previous month"
           
         >
@@ -882,6 +883,7 @@ const DoctorCalendar = () => {
         <button
           className="btn btn-outline-primary"
           onClick={() => changeMonth(1)}
+          style={{boxShadow:"none"}}
           aria-label="Next month"
         >
           <span className="me-2 d-none d-sm-inline">Next</span>
