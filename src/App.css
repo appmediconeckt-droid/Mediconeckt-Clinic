@@ -366,10 +366,10 @@ select.form-input {
 /* navbar start */
 .navbar {
   height: 60px;
+  background-color: #41a0f8;
   border-bottom: 1px solid #cbd5e0;
   position: fixed;
   z-index: 1000;
-  background: linear-gradient(135deg, #ffffff 0%, #f7fafc 100%);
   width: 100%;
   color: #2d3748;
   flex-wrap: nowrap;
@@ -383,7 +383,7 @@ select.form-input {
 }
 
 .nav-brand {
-  background: linear-gradient(135deg, #4a766e 0%, #578e7e 100%);
+  background: black;
   -webkit-background-clip: text;
   -webkit-text-fill-color: transparent;
   line-height: 35.46px;
@@ -1541,7 +1541,7 @@ h2 {
   font-weight: 700 !important;
   background: linear-gradient(135deg, #4a766e 0%, #578e7e 100%);
   -webkit-background-clip: text;
-  -webkit-text-fill-color: transparent;
+  /* -webkit-text-fill-color: transparent; */
   margin: 0 !important;
 }
 

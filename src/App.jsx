@@ -19,6 +19,9 @@ import NotificationPage from "./components/DoctorDashboard/NotificationPage";
 import ForgotPassword from "./authtication/ForgotPassword";
 import PatientSignup from "./authtication/PatientSignup";
 import ClinicPage from "./components/DoctorDashboard/ClinicPage";
+import WalkInAppointment from "./components/DoctorDashboard/WalkInAppointment";
+import PatientLandingPage from "./authtication/patientLandingPage";
+import PatientDashboard from "./components/PatientDashboard/PatientDashboard";
 // import PatientDashboard from "./components/PatientDashboard/PatientDashboard";
 
 function App() {
@@ -40,7 +43,8 @@ function App() {
     location.pathname === "/doctor" ||
     location.pathname === "/signup" ||
     location.pathname === "/forgotpassword" ||
-    location.pathname === "/patientsignup";
+    location.pathname === "/patientsignup"||
+    location.pathname === "/patient"
 
   return (
     <>
@@ -56,6 +60,7 @@ function App() {
           <Route path="/signup" element={<Signup />} />
           <Route path="/patientsignup" element={<PatientSignup />} />
           <Route path="/forgotpassword" element={<ForgotPassword />} />
+          <Route path="/patient" element={<PatientLandingPage />} />
 
         </Routes>
       ) : (
@@ -75,13 +80,19 @@ function App() {
               {/* Doctor Dashboard */}
               <Route path="/doctordashboard" element={<DoctorDashboard />} />
               <Route path="/doctorcalendar" element={<DoctorCalendar />} />
-              <Route path="/doctorprofileflow" element={<DoctorProfileFlow />} />
+              <Route path="/doctorprofile" element={<DoctorProfileFlow />} />
               <Route path="/doctorprofile" element={<DoctorProfile />} />
               <Route path="/qrcode" element={<QRcode />} />
               <Route path="/appointmentlist" element={<AppointmentList />} />
               <Route path="/setting" element={<SettingsPage />} />
               <Route path="/notifications" element={<NotificationPage />} />
               <Route path="/clinicpage" element={<ClinicPage />} />
+              <Route path="/walkinappointment" element={<WalkInAppointment />} />
+
+            </Routes>
+            <Routes>
+              {/* Patient Dashboard */}
+              <Route path="/patientdashboard" element={<PatientDashboard />} />
             </Routes>
           </div>
         </div>

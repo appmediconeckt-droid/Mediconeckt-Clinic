@@ -1,15 +1,65 @@
+/* Base styles for sidebar container */
 .sidebar-container {
   width: 220px;
-  background-color: #41a0f8;
   height: 100vh;
   overflow-y: auto;
-  transition: width 0.3s ease;
+  transition: width 0.3s ease, background-color 0.3s ease;
   padding-top: 60px;
   position: fixed;
   z-index: 9;
 }
 
-/* ========== COLLAPSED ON HOVER REMOVE ========== */
+/* ========== DOCTOR THEME (Blue) ========== */
+.sidebar-container.doctor-theme {
+  background-color: #41a0f8;
+}
+
+.sidebar-container.doctor-theme .menu-link {
+  color: #000000;
+}
+
+.sidebar-container.doctor-theme .menu-link:hover {
+  background-color: #e9f9f4;
+  border-radius: 12px;
+}
+
+.sidebar-container.doctor-theme .menu-item.active .menu-link {
+  background-color: #2a2b2d;
+  color: white;
+  border-radius: 12px;
+}
+
+.sidebar-container.doctor-theme .sidebar-footer {
+  color: #000000;
+  border-top: 1px solid rgba(255, 255, 255, 0.3);
+}
+
+/* ========== PATIENT THEME (Red) ========== */
+.sidebar-container.patient-theme {
+  background-color: #ff6b6b;
+}
+
+.sidebar-container.patient-theme .menu-link {
+  color: #000000;
+}
+
+.sidebar-container.patient-theme .menu-link:hover {
+  background-color: #ffeaea;
+  border-radius: 12px;
+}
+
+.sidebar-container.patient-theme .menu-item.active .menu-link {
+  background-color: #cc0000;
+  color: white;
+  border-radius: 12px;
+}
+
+.sidebar-container.patient-theme .sidebar-footer {
+  color: #000000;
+  border-top: 1px solid rgba(255, 255, 255, 0.3);
+}
+
+/* ========== COLLAPSED STATE ========== */
 .sidebar-container.collapsed {
   width: 62px;
 }
@@ -24,14 +74,19 @@
   display: none;
 }
 
+/* ========== COMMON STYLES ========== */
 .sidebar {
   padding: 10px;
+  display: flex;
+  flex-direction: column;
+  height: 100%;
 }
 
 .menu {
   list-style: none;
   padding: 0;
   margin: 0;
+  flex: 1;
 }
 
 .menu-item {
@@ -46,17 +101,13 @@
   align-items: center;
   padding: 10px;
   cursor: pointer;
-  color: black;
-  transition: background 0.3s ease;
-}
-
-.menu-link:hover {
-  background-color: #e9f9f4;
-  border-radius: 12px;
+  transition: background 0.3s ease, color 0.3s ease;
 }
 
 .menu-text {
   margin-left: 12px;
+  white-space: nowrap;
+  transition: opacity 0.3s ease, visibility 0.3s ease;
 }
 
 .submenu {
@@ -72,30 +123,51 @@
 
 .submenu.expanded {
   max-height: 500px;
-  background: #fff9f1;
-  border-radius: 10px;
   padding: 8px;
+}
+
+/* Doctor theme specific submenu */
+.sidebar-container.doctor-theme .submenu.expanded {
+  background: #e3f2fd;
+}
+
+/* Patient theme specific submenu */
+.sidebar-container.patient-theme .submenu.expanded {
+  background: #ffebee;
 }
 
 .submenu-item {
   padding: 10px;
-  color: #578E7E;
   cursor: pointer;
   border-radius: 10px;
+  transition: background 0.3s ease;
 }
 
-.submenu-item:hover {
-  background: #e9f9f4;
+/* Doctor theme submenu items */
+.sidebar-container.doctor-theme .submenu-item {
+  color: #1976d2;
 }
 
-.menu-item.active .menu-link {
-  background-color: #2a2b2d;
+.sidebar-container.doctor-theme .submenu-item:hover {
+  background: #bbdefb;
+}
+
+.sidebar-container.doctor-theme .submenu-item.active {
+  background-color: #1976d2;
   color: white;
-  border-radius: 12px;
 }
 
-.submenu-item.active {
-  background-color: #044759;
+/* Patient theme submenu items */
+.sidebar-container.patient-theme .submenu-item {
+  color: #d32f2f;
+}
+
+.sidebar-container.patient-theme .submenu-item:hover {
+  background: #ffcdd2;
+}
+
+.sidebar-container.patient-theme .submenu-item.active {
+  background-color: #d32f2f;
   color: white;
 }
 
@@ -106,4 +178,47 @@
 
 .submenu-arrow.rotated {
   transform: rotate(180deg);
+}
+
+.logout-item {
+  margin-top: auto;
+}
+
+.sidebar-footer {
+  padding: 15px 10px;
+  margin-top: auto;
+}
+
+.user-info {
+  display: flex;
+  flex-direction: column;
+  gap: 5px;
+}
+
+.user-role {
+  font-weight: bold;
+  text-transform: capitalize;
+}
+
+.user-email {
+  font-size: 12px;
+  opacity: 0.8;
+}
+
+/* Ensure icons have proper color */
+.sidebar-container.doctor-theme .fa-solid {
+  color: inherit;
+}
+
+.sidebar-container.patient-theme .fa-solid {
+  color: inherit;
+}
+
+/* Active state icons color */
+.sidebar-container.doctor-theme .menu-item.active .fa-solid {
+  color: white;
+}
+
+.sidebar-container.patient-theme .menu-item.active .fa-solid {
+  color: white;
 }

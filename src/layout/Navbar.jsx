@@ -1,16 +1,22 @@
 import React, { useState, useEffect, useRef } from "react";
 import { Link } from "react-router-dom";
-import ProfileAvatarModal from "./ProfileAvatarModal";
 
 const Navbar = ({ toggleSidebar }) => {
   const [showAvatarModal, setShowAvatarModal] = useState(false);
   const [isEmergencyActive, setIsEmergencyActive] = useState(false);
   const [alarmVolume, setAlarmVolume] = useState(0.7); // Default volume 70%
   const [showVolumeControl, setShowVolumeControl] = useState(false);
+  const [userRole, setUserRole] = useState(null);
   const alarmSoundRef = useRef(null);
   const [profileImage, setProfileImage] = useState(
     "https://encrypted-tbn0.gstatic.com/images?q=tbn:ANd9GcT2cd3WPk9UN_F0b0ieXUS5ufEV0fgYfuDO1Q&s"
   );
+
+  // Get user role from localStorage
+  useEffect(() => {
+    const role = localStorage.getItem("userRole");
+    setUserRole(role);
+  }, []);
 
   // Initialize alarm sound
   useEffect(() => {
@@ -193,16 +199,55 @@ const Navbar = ({ toggleSidebar }) => {
     };
   }, [showVolumeControl]);
 
+  // Get theme colors based on user role
+  const getThemeColors = () => {
+    if (userRole === "doctor") {
+      return {
+        navbarBg: "#41a0f8",
+        emergencyIconColor: "#1e40af",
+        emergencyActiveColor: "#dc2626",
+        notificationColor: "#1e40af",
+        brandColor: "#1e3a8a"
+      };
+    } else {
+      return {
+        navbarBg: "#ff6b6b",
+        emergencyIconColor: "#b91c1c",
+        emergencyActiveColor: "#dc2626",
+        notificationColor: "#b91c1c",
+        brandColor: "#991b1b"
+      };
+    }
+  };
+
+  const themeColors = getThemeColors();
+
   return (
     <>
       <nav
-        className="navbar navbar-light"
-        style={{ position: "fixed", width: "100%", zIndex: 999 }}
+        className="navbar"
+        style={{ 
+          position: "fixed", 
+          width: "100%", 
+          zIndex: 999,
+          backgroundColor: themeColors.navbarBg,
+          transition: "background-color 0.3s ease"
+        }}
       >
-        <div className="container-fluid nav-conte">
+        <div className="nav-conte">
           <div className="nav-content">
             <div className="nav-bran d-flex align-items-center">
-              <a className="nav-brand" href="#" style={{ textDecoration: "none" }}>
+              <a 
+                className="nav-brand" 
+                href="#" 
+                style={{ 
+                  textDecoration: "none", 
+                  marginBottom: "20px",
+                  color: themeColors.brandColor,
+                  fontWeight: "bold",
+                  fontSize: "24px"
+                }}
+              >
                 Mediconeckt
               </a>
             </div>
@@ -221,7 +266,8 @@ const Navbar = ({ toggleSidebar }) => {
                     className="fa-solid fa-triangle-exclamation"
                     style={{ 
                       fontSize: "20px", 
-                      color: isEmergencyActive ? "#ff0000" : "red",
+                      marginBottom: "25px",
+                      color: isEmergencyActive ? themeColors.emergencyActiveColor : themeColors.emergencyIconColor,
                       animation: isEmergencyActive ? "pulse 0.5s infinite" : "none"
                     }}
                   ></i>
@@ -231,23 +277,22 @@ const Navbar = ({ toggleSidebar }) => {
                 </a>
                 
                 {/* Volume Control Icon */}
-                <button
-                  className="btn btn-sm btn-outline-secondary volume-btn"
+                {/* <a 
+                  className="volume-icon" 
+                  href="#" 
                   onClick={handleVolumeIconClick}
-                  style={{
-                    position: "absolute",
-                    top: "-10px",
-                    right: "-10px",
-                    width: "24px",
-                    height: "24px",
-                    padding: "2px",
-                    borderRadius: "50%",
-                    fontSize: "10px"
-                  }}
                   title="Adjust Alarm Volume"
+                  style={{ marginRight: "10px" }}
                 >
-                  <i className={`fa-solid fa-volume-${alarmVolume > 0.5 ? 'high' : alarmVolume > 0 ? 'low' : 'off'}`}></i>
-                </button>
+                  <i
+                    className="fa-solid fa-volume-high"
+                    style={{ 
+                      fontSize: "18px", 
+                      marginBottom: "25px",
+                      color: themeColors.emergencyIconColor
+                    }}
+                  ></i>
+                </a> */}
                 
                 {/* Volume Slider */}
                 {showVolumeControl && (
@@ -262,12 +307,16 @@ const Navbar = ({ toggleSidebar }) => {
                       borderRadius: "8px",
                       boxShadow: "0 2px 10px rgba(0,0,0,0.2)",
                       zIndex: 1000,
-                      minWidth: "150px"
+                      minWidth: "150px",
+                      border: `2px solid ${themeColors.emergencyIconColor}`
                     }}
                     onClick={(e) => e.stopPropagation()}
                   >
                     <div className="d-flex align-items-center mb-2">
-                      <i className="fa-solid fa-volume-low me-2"></i>
+                      <i 
+                        className="fa-solid fa-volume-low me-2"
+                        style={{ color: themeColors.emergencyIconColor }}
+                      ></i>
                       <input
                         type="range"
                         min="0"
@@ -278,7 +327,10 @@ const Navbar = ({ toggleSidebar }) => {
                         className="form-range"
                         style={{ width: "100px" }}
                       />
-                      <i className="fa-solid fa-volume-high ms-2"></i>
+                      <i 
+                        className="fa-solid fa-volume-high ms-2"
+                        style={{ color: themeColors.emergencyIconColor }}
+                      ></i>
                     </div>
                     <div className="text-center small">
                       Volume: {Math.round(alarmVolume * 100)}%
@@ -287,7 +339,14 @@ const Navbar = ({ toggleSidebar }) => {
                 )}
               </div>
 
-              <Link to="/notifications" className="me-3">
+              <Link 
+                to="/notifications" 
+                className="me-3" 
+                style={{
+                  color: themeColors.notificationColor, 
+                  marginBottom: "20px"
+                }}
+              >
                 <i className="fa-solid fa-bell"></i>
               </Link>
 
@@ -296,14 +355,27 @@ const Navbar = ({ toggleSidebar }) => {
                 <div
                   className="fw-bold p-1 rounded-4 profile d-flex align-items-center"
                   style={{ cursor: "pointer" }}
-                  onClick={() => setShowAvatarModal(true)}
                 >
                   <img
                     src={profileImage}
                     alt="profile"
                     className="rounded-circle"
-                    style={{ width: "40px", height: "40px" }}
+                    style={{ 
+                      width: "40px", 
+                      height: "40px",
+                      marginTop: "-20px",
+                      border: `2px solid ${themeColors.emergencyIconColor}`
+                    }}
                   />
+                  {/* <span 
+                    className="ms-2"
+                    style={{
+                      color: userRole === "doctor" ? "#1e3a8a" : "#991b1b",
+                      fontWeight: "bold"
+                    }}
+                  >
+                    {userRole ? userRole.charAt(0).toUpperCase() + userRole.slice(1) : "User"}
+                  </span> */}
                 </div>
               </div>
             </div>
@@ -311,27 +383,34 @@ const Navbar = ({ toggleSidebar }) => {
         </div>
       </nav>
 
-      {/* MODAL */}
-      <ProfileAvatarModal
-        show={showAvatarModal}
-        onHide={() => setShowAvatarModal(false)}
-        onSave={(img) => setProfileImage(img)}
-      />
-
       {/* Emergency Overlay */}
       {isEmergencyActive && (
         <div className="emergency-overlay">
-          <div className="emergency-alert">
+          <div 
+            className="emergency-alert"
+            style={{
+              backgroundColor: userRole === "doctor" ? "#dbeafe" : "#fee2e2",
+              border: `3px solid ${themeColors.emergencyActiveColor}`
+            }}
+          >
             <div className="emergency-header">
-              <i className="fa-solid fa-circle-exclamation fa-3x mb-3" style={{ color: "#ff0000" }}></i>
-              <h2>🚨 EMERGENCY ALERT 🚨</h2>
+              <i 
+                className="fa-solid fa-circle-exclamation fa-3x mb-3" 
+                style={{ color: themeColors.emergencyActiveColor }}
+              ></i>
+              <h2 style={{ color: themeColors.emergencyActiveColor }}>🚨 EMERGENCY ALERT 🚨</h2>
             </div>
             <div className="emergency-body">
               <p className="alert-message">Emergency alarm is active! Please take necessary action.</p>
               <div className="volume-control-inline mb-3">
-                <label className="form-label">Alarm Volume:</label>
+                <label className="form-label" style={{ color: themeColors.emergencyActiveColor }}>
+                  Alarm Volume:
+                </label>
                 <div className="d-flex align-items-center">
-                  <i className="fa-solid fa-volume-off me-2"></i>
+                  <i 
+                    className="fa-solid fa-volume-off me-2"
+                    style={{ color: themeColors.emergencyActiveColor }}
+                  ></i>
                   <input
                     type="range"
                     min="0"
@@ -340,15 +419,33 @@ const Navbar = ({ toggleSidebar }) => {
                     value={alarmVolume}
                     onChange={handleVolumeChange}
                     className="form-range"
+                    style={{ 
+                      accentColor: themeColors.emergencyActiveColor 
+                    }}
                   />
-                  <i className="fa-solid fa-volume-high ms-2"></i>
-                  <span className="ms-2">{Math.round(alarmVolume * 100)}%</span>
+                  <i 
+                    className="fa-solid fa-volume-high ms-2"
+                    style={{ color: themeColors.emergencyActiveColor }}
+                  ></i>
+                  <span 
+                    className="ms-2"
+                    style={{ 
+                      color: themeColors.emergencyActiveColor,
+                      fontWeight: "bold"
+                    }}
+                  >
+                    {Math.round(alarmVolume * 100)}%
+                  </span>
                 </div>
               </div>
               <div className="emergency-buttons">
                 <button 
                   className="btn btn-danger btn-lg"
                   onClick={stopEmergencyAlarm}
+                  style={{ 
+                    backgroundColor: themeColors.emergencyActiveColor,
+                    borderColor: themeColors.emergencyActiveColor
+                  }}
                 >
                   <i className="fa-solid fa-stop me-2"></i>
                   STOP ALARM
@@ -358,6 +455,10 @@ const Navbar = ({ toggleSidebar }) => {
                   onClick={() => {
                     const newVolume = alarmVolume > 0.5 ? 1 : Math.min(1, alarmVolume + 0.3);
                     setAlarmVolume(newVolume);
+                  }}
+                  style={{ 
+                    backgroundColor: userRole === "doctor" ? "#3b82f6" : "#ef4444",
+                    borderColor: userRole === "doctor" ? "#1d4ed8" : "#dc2626"
                   }}
                 >
                   <i className="fa-solid fa-volume-high me-2"></i>
@@ -371,6 +472,61 @@ const Navbar = ({ toggleSidebar }) => {
           </div>
         </div>
       )}
+
+      {/* Add CSS animation for pulse effect */}
+      <style jsx>{`
+        @keyframes pulse {
+          0% { transform: scale(1); opacity: 1; }
+          50% { transform: scale(1.2); opacity: 0.7; }
+          100% { transform: scale(1); opacity: 1; }
+        }
+        
+        .emergency-badge {
+          position: absolute;
+          top: -5px;
+          right: -5px;
+          background-color: ${themeColors.emergencyActiveColor};
+          color: white;
+          border-radius: 50%;
+          width: 20px;
+          height: 20px;
+          display: flex;
+          align-items: center;
+          justify-content: center;
+          font-size: 12px;
+          font-weight: bold;
+          animation: pulse 1s infinite;
+        }
+        
+        .emergency-overlay {
+          position: fixed;
+          top: 0;
+          left: 0;
+          width: 100%;
+          height: 100%;
+          background-color: rgba(0, 0, 0, 0.8);
+          display: flex;
+          align-items: center;
+          justify-content: center;
+          z-index: 9999;
+          animation: fadeIn 0.3s ease-in;
+        }
+        
+        .emergency-alert {
+          background: white;
+          padding: 30px;
+          border-radius: 20px;
+          max-width: 500px;
+          width: 90%;
+          text-align: center;
+          animation: pulse 2s infinite;
+        }
+        
+        @keyframes fadeIn {
+          from { opacity: 0; }
+          to { opacity: 1; }
+        }
+      `}</style>
     </>
   );
 };

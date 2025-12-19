@@ -1,10 +1,19 @@
-import React, { useState } from "react";
+import React, { useState, useEffect } from "react";
 import { motion } from "framer-motion";
 import "bootstrap/dist/css/bootstrap.min.css";
 import "bootstrap/dist/js/bootstrap.bundle.min.js";
 
 export default function LandingPage() {
   const [activeDropdown, setActiveDropdown] = useState(null);
+  const [userRole, setUserRole] = useState(null);
+
+  // Load role from localStorage on component mount
+  useEffect(() => {
+    const savedRole = localStorage.getItem("userRole");
+    if (savedRole) {
+      setUserRole(savedRole);
+    }
+  }, []);
 
   const fadeInUp = {
     hidden: { opacity: 0, y: 60 },
@@ -42,19 +51,40 @@ export default function LandingPage() {
     setActiveDropdown(null);
   };
 
+  const handleRoleSelect = (role) => {
+    // Save role to localStorage
+    localStorage.setItem("userRole", role);
+    setUserRole(role);
+    
+    // Show success message
+    // alert(`Successfully selected as ${role}. Role saved to localStorage!`);
+    
+    // Redirect based on role
+    if (role === "doctor") {
+      window.location.href = "/doctor";
+    } else if (role === "patient") {
+      window.location.href = "/patient";
+    }
+    
+    // Close dropdown
+    setActiveDropdown(null);
+  };
+
+  const clearRole = () => {
+    localStorage.removeItem("userRole");
+    setUserRole(null);
+   
+  };
+
   const dropdowns = {
     services: [
       { name: "Appointments", href: "#" },
       { name: "Doctors", href: "#" },
       { name: "Labs", href: "#" },
     ],
-    // login: [
-    //   { name: "Doctor Login", href: "#" },
-    //   { name: "Patient Login", href: "#" },
-    // ],
     signup: [
-      { name: "Doctor ", href: "/doctor" },
-      { name: "Patient ", href: "#" },
+      { name: "Doctor", href: "#", role: "doctor" },
+      { name: "Patient", href: "#", role: "patient" },
     ],
   };
 
@@ -71,6 +101,27 @@ export default function LandingPage() {
           >
             <i className="fas fa-hospital me-2"></i>Hospital Portal
           </motion.h1>
+
+          {/* Role Indicator */}
+          {userRole && (
+            <motion.div
+              initial={{ opacity: 0, scale: 0.8 }}
+              animate={{ opacity: 1, scale: 1 }}
+              className="mx-3"
+            >
+              <span className="badge bg-success fs-6">
+                <i className="fas fa-user-circle me-1"></i>
+                {userRole.toUpperCase()}
+                <button
+                  onClick={clearRole}
+                  className="btn btn-sm btn-link text-light p-0 ms-2"
+                  title="Clear role"
+                >
+                  <i className="fas fa-times"></i>
+                </button>
+              </span>
+            </motion.div>
+          )}
 
           <button
             className="navbar-toggler"
@@ -129,49 +180,6 @@ export default function LandingPage() {
                 )}
               </li>
 
-              {/* Login Dropdown - Hover Version */}
-              {/* <li
-                className="nav-item mx-2 position-relative"
-                onMouseEnter={() => handleMouseEnter("login")}
-                onMouseLeave={handleMouseLeave}
-              >
-                <a
-                  className="nav-link fs-5 fw-medium dropdown-toggle-hover"
-                  href="#"
-                  role="button"
-                  aria-expanded={activeDropdown === "login"}
-                >
-                  Login
-                </a>
-                {activeDropdown === "login" && (
-                  <motion.div
-                    initial={{ opacity: 0, y: 10 }}
-                    animate={{ opacity: 1, y: 0 }}
-                    exit={{ opacity: 0, y: 10 }}
-                    className="dropdown-menu show position-absolute mt-0 shadow-lg border-0 rounded-3"
-                    style={{ minWidth: "200px", zIndex: 1000 }}
-                  >
-                    {dropdowns.login.map((item, index) => (
-                      <motion.a
-                        key={index}
-                        initial={{ opacity: 0, x: -10 }}
-                        animate={{ opacity: 1, x: 0 }}
-                        transition={{ delay: index * 0.1 }}
-                        className="dropdown-item py-3 px-4 fs-6"
-                        href={item.href}
-                        whileHover={{
-                          backgroundColor: "#f8f9fa",
-                          paddingLeft: "25px",
-                        }}
-                      >
-                        <i className="fas fa-sign-in-alt me-2 text-primary"></i>
-                        {item.name}
-                      </motion.a>
-                    ))}
-                  </motion.div>
-                )}
-              </li> */}
-
               {/* Signup Dropdown - Hover Version */}
               <li
                 className="nav-item mx-2 position-relative"
@@ -195,13 +203,13 @@ export default function LandingPage() {
                     style={{ minWidth: "200px", zIndex: 1000 }}
                   >
                     {dropdowns.signup.map((item, index) => (
-                      <motion.a
+                      <motion.button
                         key={index}
                         initial={{ opacity: 0, x: -10 }}
                         animate={{ opacity: 1, x: 0 }}
                         transition={{ delay: index * 0.1 }}
-                        className="dropdown-item py-3 px-4 fs-6"
-                        href={item.href}
+                        className="dropdown-item py-3 px-4 fs-6 text-start w-100 border-0 bg-transparent"
+                        onClick={() => handleRoleSelect(item.role)}
                         whileHover={{
                           backgroundColor: "#f8f9fa",
                           paddingLeft: "25px",
@@ -209,7 +217,10 @@ export default function LandingPage() {
                       >
                         <i className="fas fa-user-plus me-2 text-primary"></i>
                         {item.name}
-                      </motion.a>
+                        {userRole === item.role && (
+                          <i className="fas fa-check text-success ms-2"></i>
+                        )}
+                      </motion.button>
                     ))}
                   </motion.div>
                 )}
@@ -224,7 +235,6 @@ export default function LandingPage() {
         className="hero-section min-vh-100 d-flex align-items-center"
         style={{
           background: "linear-gradient(135deg, #667eea 0%, #764ba2 100%)",
-          
         }}
       >
         <div className="container">
@@ -234,21 +244,63 @@ export default function LandingPage() {
             variants={staggerContainer}
             className="text-center text-white"
           >
-            <motion.h1 variants={fadeInUp} className="display-3 fw-bold mb-4">
-              Your Health, Our Priority
-            </motion.h1>
-            <motion.p variants={fadeInUp} className="lead fs-4 mb-5 opacity-90">
-              Book appointments, view reports, connect with doctors, and manage
-              your health efficiently.
-            </motion.p>
-            <motion.button
-              whileHover={{ scale: 1.05 }}
-              whileTap={{ scale: 0.95 }}
-              variants={scaleIn}
-              className="btn btn-light btn-lg px-5 py-3 rounded-pill fw-semibold text-primary shadow-lg"
-            >
-              Get Started <i className="fas fa-arrow-right ms-2"></i>
-            </motion.button>
+            {/* Role Selection Prompt */}
+            {!userRole ? (
+              <>
+                <motion.h1 variants={fadeInUp} className="display-3 fw-bold mb-4">
+                  Welcome to Hospital Portal
+                </motion.h1>
+                <motion.p variants={fadeInUp} className="lead fs-4 mb-5 opacity-90">
+                  Please select your role to continue:
+                </motion.p>
+                <motion.div variants={fadeInUp} className="d-flex justify-content-center gap-4">
+                  <motion.button
+                    whileHover={{ scale: 1.05 }}
+                    whileTap={{ scale: 0.95 }}
+                    className="btn btn-light btn-lg px-5 py-3 rounded-pill fw-semibold text-primary shadow-lg"
+                    onClick={() => handleRoleSelect("doctor")}
+                  >
+                    <i className="fas fa-user-md me-2"></i>
+                    Continue as Doctor
+                  </motion.button>
+                  <motion.button
+                    whileHover={{ scale: 1.05 }}
+                    whileTap={{ scale: 0.95 }}
+                    className="btn btn-outline-light btn-lg px-5 py-3 rounded-pill fw-semibold shadow-lg"
+                    onClick={() => handleRoleSelect("patient")}
+                  >
+                    <i className="fas fa-user me-2"></i>
+                    Continue as Patient
+                  </motion.button>
+                </motion.div>
+              </>
+            ) : (
+              <>
+                <motion.h1 variants={fadeInUp} className="display-3 fw-bold mb-4">
+                  Welcome, {userRole.charAt(0).toUpperCase() + userRole.slice(1)}!
+                </motion.h1>
+                <motion.p variants={fadeInUp} className="lead fs-4 mb-5 opacity-90">
+                  {userRole === "doctor"
+                    ? "Manage your appointments and patient records efficiently."
+                    : "Book appointments, view reports, and manage your health."}
+                </motion.p>
+                <motion.button
+                  whileHover={{ scale: 1.05 }}
+                  whileTap={{ scale: 0.95 }}
+                  variants={scaleIn}
+                  className="btn btn-light btn-lg px-5 py-3 rounded-pill fw-semibold text-primary shadow-lg"
+                  onClick={() => {
+                    if (userRole === "doctor") {
+                      window.location.href = "/doctor";
+                    } else {
+                      window.location.href = "/patient";
+                    }
+                  }}
+                >
+                  Go to Dashboard <i className="fas fa-arrow-right ms-2"></i>
+                </motion.button>
+              </>
+            )}
           </motion.div>
         </div>
       </section>
@@ -577,6 +629,29 @@ export default function LandingPage() {
           </motion.div>
         </div>
       </footer>
+
+      {/* Demo Info Alert */}
+      {userRole && (
+        <motion.div
+          initial={{ opacity: 0, y: 20 }}
+          animate={{ opacity: 1, y: 0 }}
+          className="position-fixed bottom-0 end-0 m-3 p-3 bg-success text-white rounded-3 shadow-lg"
+          style={{ zIndex: 1050, maxWidth: "300px" }}
+        >
+          <div className="d-flex align-items-center">
+            <i className="fas fa-info-circle me-2"></i>
+            <span>
+               <strong>{userRole.toUpperCase()}</strong>
+            </span>
+            <button
+              onClick={clearRole}
+              className="btn btn-sm btn-light ms-3"
+            >
+              Change
+            </button>
+          </div>
+        </motion.div>
+      )}
 
       <style jsx>{`
         .hero-section {

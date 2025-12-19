@@ -29,6 +29,7 @@
 .doctor-card {
   transition: all 0.3s ease;
   border-radius: 15px;
+  text-align: center;
   overflow: hidden;
 }
 
@@ -246,4 +247,562 @@ body {
 /* Why Choose Us Icons */
 .bg-white span {
   color: #007bff;
+}
+/* patientLandingPage.css */
+
+/* ========== GLOBAL STYLES ========== */
+:root {
+  --primary-color: #2d6cdf;
+  --secondary-color: #6c757d;
+  --success-color: #28a745;
+  --light-color: #f8f9fa;
+  --dark-color: #343a40;
+  --shadow: 0 5px 15px rgba(0,0,0,0.1);
+  --transition: all 0.3s ease;
+}
+
+body {
+  font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+ 
+  scroll-behavior: smooth;
+}
+
+/* ========== NAVBAR ========== */
+.navbar {
+  padding: 1rem 0;
+
+  background-color: rgba(255, 255, 255, 0.95) ;
+}
+
+.navbar-brand {
+  font-size: 1.8rem;
+  font-weight: 700;
+}
+
+.brand-icon {
+  margin-right: 8px;
+}
+
+.nav-link {
+  font-weight: 500;
+  margin: 0 10px;
+  transition: var(--transition);
+}
+
+.nav-link:hover,
+.nav-link.active {
+  color: var(--primary-color) !important;
+}
+
+/* ========== HERO SECTION ========== */
+.hero-section {
+  background: linear-gradient(135deg, #f5f7fa 0%, #c3cfe2 100%);
+  min-height: 100vh;
+  display: flex;
+  align-items: center;
+  padding-top: 2rem;
+}
+
+.hero-title {
+  font-size: 3.5rem;
+  font-weight: 800;
+  line-height: 1.2;
+  margin-bottom: 1.5rem;
+  color: var(--dark-color);
+}
+
+.hero-subtitle {
+  font-size: 1.2rem;
+  color: var(--secondary-color);
+  margin-bottom: 2rem;
+  line-height: 1.6;
+}
+
+.hero-search .form-control {
+  border-radius: 50px 0 0 50px;
+  border: 2px solid #dee2e6;
+  border-right: none;
+  padding: 1rem 1.5rem;
+  font-size: 1rem;
+}
+
+.hero-search .btn {
+  border-radius: 0 50px 50px 0;
+  padding: 1rem 2rem;
+  font-weight: 600;
+}
+
+.hero-image-container {
+  position: relative;
+  animation: float 3s ease-in-out infinite;
+}
+
+@keyframes float {
+  0%, 100% { transform: translateY(0); }
+  50% { transform: translateY(-20px); }
+}
+
+/* ========== STATS ========== */
+.stats-container {
+  margin-top: 3rem;
+}
+
+.stats-number {
+  font-size: 2.5rem;
+  font-weight: 700;
+  color: var(--primary-color);
+  margin-bottom: 0.5rem;
+}
+
+.stats-label {
+  color: var(--secondary-color);
+  font-weight: 500;
+}
+
+/* ========== HOW IT WORKS ========== */
+.how-it-works {
+  background-color: var(--light-color);
+}
+
+.step-card {
+  background: white;
+  border-radius: 15px;
+  transition: var(--transition);
+  position: relative;
+}
+
+.step-card:hover {
+  transform: translateY(-10px);
+  box-shadow: var(--shadow);
+}
+
+.step-number {
+  position: absolute;
+  top: -15px;
+  left: -15px;
+  background: var(--primary-color);
+  color: white;
+  width: 40px;
+  height: 40px;
+  border-radius: 50%;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  font-weight: bold;
+  font-size: 1.2rem;
+}
+
+.step-icon {
+  font-size: 3rem;
+  color: var(--primary-color);
+  margin-bottom: 1rem;
+}
+
+/* ========== SPECIALITIES ========== */
+.specialities-section {
+  background-color: white;
+}
+
+.speciality-card {
+  background: white;
+  border-radius: 12px;
+  border: 1px solid #e9ecef;
+  transition: var(--transition);
+  cursor: pointer;
+}
+
+.speciality-card:hover {
+  transform: translateY(-5px);
+  box-shadow: var(--shadow);
+  border-color: var(--primary-color);
+}
+
+.speciality-icon {
+  transition: var(--transition);
+}
+
+.speciality-card:hover .speciality-icon {
+  transform: scale(1.1);
+}
+
+/* ========== SERVICES ========== */
+.services-section {
+  background-color: var(--light-color);
+}
+
+.service-card {
+  background: white;
+  border-radius: 12px;
+  border: 1px solid transparent;
+  transition: var(--transition);
+  position: relative;
+  overflow: hidden;
+}
+
+.service-card:hover {
+  transform: translateY(-5px);
+  box-shadow: var(--shadow);
+  border-color: var(--primary-color);
+}
+
+.service-icon {
+  transition: var(--transition);
+}
+
+.service-card:hover .service-icon {
+  transform: scale(1.1);
+}
+
+.service-title {
+  color: var(--dark-color);
+  font-weight: 600;
+}
+
+.service-desc {
+  color: var(--secondary-color);
+  font-size: 0.95rem;
+}
+
+.service-link {
+  position: absolute;
+  bottom: 20px;
+  right: 20px;
+  opacity: 0;
+  transition: var(--transition);
+}
+
+.service-card:hover .service-link {
+  opacity: 1;
+  color: var(--primary-color);
+}
+
+/* ========== DOCTORS ========== */
+.doctors-section {
+  background-color: white;
+}
+
+.doctor-card {
+  background: white;
+  border-radius: 12px;
+  overflow: hidden;
+  transition: var(--transition);
+}
+
+.doctor-card:hover {
+  transform: translateY(-5px);
+  box-shadow: var(--shadow);
+}
+
+.doctor-image {
+  height: 200px;
+  overflow: hidden;
+}
+ 
+.doctor-image img {
+  width: 40%;
+  height: 60%;
+  margin-top: 30px;
+  border-radius: 100%;
+  justify-content: center;
+  align-items: center;
+  object-fit: cover;
+  transition: var(--transition);
+} 
+
+.doctor-card:hover .doctor-image img {
+  transform: scale(1.05);
+}
+
+.doctor-info {
+  padding: 1.5rem;
+}
+
+.doctor-name {
+  font-weight: 600;
+  margin-bottom: 0.5rem;
+}
+
+.doctor-speciality {
+  color: var(--primary-color);
+  font-weight: 500;
+  margin-bottom: 0.5rem;
+}
+
+.doctor-rating {
+  color: #ffc107;
+}
+
+.doctor-exp {
+  color: var(--secondary-color);
+  font-size: 0.9rem;
+}
+
+/* ========== TESTIMONIALS ========== */
+.testimonials-section {
+  background-color: var(--light-color);
+}
+
+.testimonial-card {
+  background: white;
+  border-radius: 12px;
+  transition: var(--transition);
+}
+
+.testimonial-card:hover {
+  transform: translateY(-5px);
+  box-shadow: var(--shadow);
+}
+
+.testimonial-text {
+  font-style: italic;
+  color: var(--dark-color);
+  line-height: 1.6;
+}
+
+.rating {
+  color: #ffc107;
+  font-size: 1.2rem;
+}
+
+.author-avatar img {
+  border-radius: 50%;
+}
+
+/* ========== APP SECTION ========== */
+.app-section {
+  background: linear-gradient(135deg, var(--primary-color) 0%, #1a4caf 100%);
+  color: white;
+}
+
+.app-section h2 {
+  color: white;
+}
+
+.app-section p {
+  color: rgba(255, 255, 255, 0.9);
+}
+
+.app-section .btn {
+  background: rgba(255, 255, 255, 0.1);
+  border: 2px solid rgba(255, 255, 255, 0.3);
+  color: white;
+  transition: var(--transition);
+}
+
+.app-section .btn:hover {
+  background: white;
+  color: var(--primary-color);
+}
+
+/* ========== FOOTER ========== */
+.footer-section {
+  background: var(--dark-color);
+  color: white;
+}
+
+.footer-brand {
+  font-size: 1.8rem;
+  font-weight: 700;
+}
+
+.footer-about {
+  color: rgba(255, 255, 255, 0.7);
+  line-height: 1.6;
+}
+
+.footer-heading {
+  font-size: 1.2rem;
+  font-weight: 600;
+  margin-bottom: 1.5rem;
+  color: white;
+}
+
+.footer-links {
+  list-style: none;
+  padding: 0;
+}
+
+.footer-links li {
+  margin-bottom: 0.8rem;
+}
+
+.footer-links a {
+  color: rgba(255, 255, 255, 0.7);
+  text-decoration: none;
+  transition: var(--transition);
+}
+
+.footer-links a:hover {
+  color: white;
+  padding-left: 5px;
+}
+
+.footer-contact {
+  list-style: none;
+  padding: 0;
+}
+
+.footer-contact li {
+  margin-bottom: 1rem;
+  color: rgba(255, 255, 255, 0.7);
+  display: flex;
+  align-items: center;
+}
+
+.footer-contact i {
+  margin-right: 10px;
+  color: var(--primary-color);
+}
+
+.social-icons {
+  display: flex;
+  gap: 1rem;
+}
+
+.social-icon {
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  width: 40px;
+  height: 40px;
+  background: rgba(255, 255, 255, 0.1);
+  border-radius: 50%;
+  color: white;
+  text-decoration: none;
+  transition: var(--transition);
+}
+
+.social-icon:hover {
+  background: var(--primary-color);
+  transform: translateY(-3px);
+}
+
+.footer-bottom {
+  color: rgba(255, 255, 255, 0.5);
+}
+
+.footer-bottom-link {
+  color: rgba(255, 255, 255, 0.7);
+  text-decoration: none;
+  margin: 0 10px;
+  transition: var(--transition);
+}
+
+.footer-bottom-link:hover {
+  color: white;
+}
+
+/* ========== SECTION TITLES ========== */
+.section-title {
+  font-size: 2.5rem;
+  font-weight: 700;
+  margin-bottom: 1rem;
+  color: var(--dark-color);
+}
+
+.section-subtitle {
+  color: var(--secondary-color);
+  font-size: 1.1rem;
+  margin-bottom: 3rem;
+}
+
+/* ========== BUTTONS ========== */
+.btn {
+  border-radius: 8px;
+  font-weight: 600;
+  transition: var(--transition);
+}
+
+.btn-primary {
+  background-color: var(--primary-color);
+  border-color: var(--primary-color);
+}
+
+.btn-primary:hover {
+  background-color: #1a4caf;
+  border-color: #1a4caf;
+  transform: translateY(-2px);
+}
+
+.btn-outline-primary:hover {
+  transform: translateY(-2px);
+}
+
+.btn-lg {
+  padding: 0.8rem 2rem;
+  font-size: 1.1rem;
+}
+
+/* ========== RESPONSIVE DESIGN ========== */
+@media (max-width: 768px) {
+  body {
+    padding-top: 70px;
+  }
+  
+  .hero-title {
+    font-size: 2.5rem;
+  }
+  
+  .hero-subtitle {
+    font-size: 1.1rem;
+  }
+  
+  .section-title {
+    font-size: 2rem;
+  }
+  
+  .stats-number {
+    font-size: 2rem;
+  }
+  
+  .hero-search .form-control,
+  .hero-search .btn {
+    padding: 0.8rem 1.2rem;
+  }
+  
+  .d-flex.gap-3 {
+    flex-direction: column;
+    align-items: center;
+  }
+  
+  .d-flex.gap-3 button {
+    width: 100%;
+    max-width: 300px;
+  }
+}
+
+@media (max-width: 576px) {
+  .hero-title {
+    font-size: 2rem;
+  }
+  
+  .stats-container {
+    text-align: center;
+  }
+  
+  .footer-section .row {
+    text-align: center;
+  }
+  
+  .social-icons {
+    justify-content: center;
+  }
+}
+
+/* ========== ANIMATIONS ========== */
+@keyframes fadeInUp {
+  from {
+    opacity: 0;
+    transform: translateY(20px);
+  }
+  to {
+    opacity: 1;
+    transform: translateY(0);
+  }
+}
+
+.hero-section > .container,
+.specialities-section > .container,
+.services-section > .container {
+  animation: fadeInUp 0.8s ease-out;
 }
