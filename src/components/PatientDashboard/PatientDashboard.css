@@ -1,12 +1,41 @@
 /* PatientDashboard.css */
 .patient-dashboard {
   font-family: "Segoe UI", Tahoma, Geneva, Verdana, sans-serif;
-
   color: #333;
   padding: 20px;
-
   margin: 0 auto;
   border-radius: 12px;
+  transition: all 0.3s ease;
+}
+
+/* Patient Status Colors - Red Theme */
+.patient-dashboard.patient-status-stable {
+  background: linear-gradient(135deg, #fff5f5 0%, #ffeaea 100%);
+  border: 2px solid #4caf50;
+}
+
+.patient-dashboard.patient-status-warning {
+  background: linear-gradient(135deg, #fff3e0 0%, #ffe0b2 100%);
+  border: 2px solid #ff9800;
+  animation: pulseWarning 2s infinite;
+}
+
+.patient-dashboard.patient-status-critical {
+  background: linear-gradient(135deg, #ffebee 0%, #ffcdd2 100%);
+  border: 2px solid #f44336;
+  animation: pulseCritical 1.5s infinite;
+}
+
+@keyframes pulseWarning {
+  0% { box-shadow: 0 0 0 0 rgba(255, 152, 0, 0.4); }
+  70% { box-shadow: 0 0 0 10px rgba(255, 152, 0, 0); }
+  100% { box-shadow: 0 0 0 0 rgba(255, 152, 0, 0); }
+}
+
+@keyframes pulseCritical {
+  0% { box-shadow: 0 0 0 0 rgba(244, 67, 54, 0.4); }
+  70% { box-shadow: 0 0 0 10px rgba(244, 67, 54, 0); }
+  100% { box-shadow: 0 0 0 0 rgba(244, 67, 54, 0); }
 }
 
 .dashboard-header {
@@ -15,22 +44,67 @@
   align-items: center;
   margin-bottom: 30px;
   padding-bottom: 15px;
-  border-bottom: 1px solid #e0e7ff;
+  border-bottom: 2px solid #ffcdd2;
 }
 
 .dashboard-header h1 {
-  color: #2c3e50;
+  color: #d32f2f;
   margin: 0;
   font-weight: 600;
 }
 
+.patient-status-indicator {
+  display: flex;
+  align-items: center;
+  gap: 10px;
+  padding: 8px 15px;
+  border-radius: 20px;
+  background-color: white;
+  box-shadow: 0 2px 8px rgba(211, 47, 47, 0.15);
+  border: 1px solid #ffcdd2;
+}
+
+.status-dot {
+  width: 12px;
+  height: 12px;
+  border-radius: 50%;
+}
+
+.status-dot.stable {
+  background-color: #4caf50;
+  box-shadow: 0 0 8px #4caf50;
+}
+
+.status-dot.warning {
+  background-color: #ff9800;
+  box-shadow: 0 0 8px #ff9800;
+}
+
+.status-dot.critical {
+  background-color: #f44336;
+  box-shadow: 0 0 8px #f44336;
+  animation: blink 1s infinite;
+}
+
+@keyframes blink {
+  0%, 100% { opacity: 1; }
+  50% { opacity: 0.5; }
+}
+
+.status-text {
+  font-weight: 600;
+  font-size: 0.9rem;
+  color: #d32f2f;
+}
+
 .patient-id {
-  background-color: #4a6fa5;
+  background: linear-gradient(135deg, #ff6b6b 0%, #d32f2f 100%);
   color: white;
   padding: 8px 15px;
   border-radius: 20px;
-  font-weight: 500;
+  font-weight: 600;
   font-size: 0.9rem;
+  box-shadow: 0 2px 8px rgba(211, 47, 47, 0.3);
 }
 
 .patient-info-section {
@@ -38,31 +112,67 @@
   border-radius: 10px;
   padding: 25px;
   margin-bottom: 25px;
-  box-shadow: 0 2px 10px rgba(0, 0, 0, 0.05);
+  box-shadow: 0 4px 15px rgba(211, 47, 47, 0.08);
+  border: 1px solid #ffebee;
 }
 
-.full-name-card {
-  background: linear-gradient(135deg, #4a6fa5 0%, #2c3e50 100%);
+/* Patient Status Based Header Cards - Red Theme */
+.full-name-card.patient-stable {
+  background: #d32f2f;
   color: white;
-  padding: 20px;
+  padding: 25px;
   border-radius: 10px;
   margin-bottom: 25px;
+  box-shadow: 0 4px 15px rgba(76, 175, 80, 0.2);
+}
+
+.full-name-card.patient-warning {
+  background: linear-gradient(135deg, #ff9800 0%, #f57c00 100%);
+  color: white;
+  padding: 25px;
+  border-radius: 10px;
+  margin-bottom: 25px;
+  box-shadow: 0 4px 15px rgba(255, 152, 0, 0.2);
+}
+
+.full-name-card.patient-critical {
+  background: linear-gradient(135deg, #ff6b6b 0%, #d32f2f 100%);
+  color: white;
+  padding: 25px;
+  border-radius: 10px;
+  margin-bottom: 25px;
+  box-shadow: 0 4px 15px rgba(211, 47, 47, 0.3);
 }
 
 .full-name-card h2 {
   margin: 0 0 10px 0;
-  font-size: 2rem;
-  font-weight: 600;
+  font-size: 2.2rem;
+  font-weight: 700;
+}
+
+.patient-header {
+  display: flex;
+  flex-direction: column;
+}
+
+.patient-age-gender {
+  display: flex;
+  gap: 15px;
+  font-size: 1.2rem;
+  opacity: 0.95;
 }
 
 .patient-age {
-  font-size: 1.1rem;
-  opacity: 0.9;
+  font-weight: 600;
+}
+
+.patient-gender {
+  font-weight: 600;
 }
 
 .info-grid {
   display: grid;
-  grid-template-columns: repeat(auto-fit, minmax(300px, 1fr));
+  grid-template-columns: repeat(auto-fit, minmax(320px, 1fr));
   gap: 30px;
   margin-bottom: 30px;
 }
@@ -77,19 +187,46 @@
 }
 
 .info-item h3 {
-  color: #4a6fa5;
+  color: #d32f2f;
   margin-bottom: 8px;
   font-size: 1.1rem;
   font-weight: 600;
+  display: flex;
+  align-items: center;
+  gap: 8px;
+}
+
+.info-item h3 i {
+  font-size: 1.2rem;
+  color: #ff6b6b;
 }
 
 .info-value {
   font-size: 1.3rem;
   margin: 0;
-  padding: 10px 15px;
-  background-color: #f8fafc;
+  padding: 12px 15px;
+  background-color: #fff5f5;
   border-radius: 8px;
-  border-left: 4px solid #4a6fa5;
+  border-left: 4px solid #ff6b6b;
+  transition: all 0.3s ease;
+  color: #333;
+}
+
+.info-value:hover {
+  transform: translateX(5px);
+  box-shadow: 0 3px 10px rgba(255, 107, 107, 0.2);
+  background-color: #ffebee;
+}
+
+/* Special info value colors - Red Theme */
+.info-value.phone {
+  border-left-color: #ff6b6b;
+  background-color: #ffebee;
+}
+
+.info-value.email {
+  border-left-color: #ff6b6b;
+  background-color: #ffebee;
 }
 
 .address-text {
@@ -109,52 +246,119 @@
   justify-content: space-between;
   align-items: center;
   padding: 12px 15px;
-  background-color: #f8fafc;
+  background-color: #fff5f5;
   border-radius: 8px;
-  border-left: 4px solid #e0e7ff;
+  border-left: 4px solid #ffcdd2;
+  transition: all 0.3s ease;
+}
+
+.info-subitem:hover {
+  transform: translateY(-2px);
+  box-shadow: 0 3px 10px rgba(255, 107, 107, 0.15);
+  background-color: #ffebee;
 }
 
 .sub-label {
   color: #666;
   font-weight: 500;
+  display: flex;
+  align-items: center;
+  gap: 8px;
+}
+
+.sub-label i {
+  color: #ff6b6b;
 }
 
 .sub-value {
   font-weight: 600;
   font-size: 1.1rem;
-  padding: 4px 12px;
-  border-radius: 4px;
-  color: black;
-  font-weight: 700;
+  padding: 6px 14px;
+  border-radius: 6px;
+  background-color: white;
+  border: 1px solid #ffcdd2;
+  color: #333;
 }
 
+/* Value status colors */
+.normal-value {
+  color: #4caf50;
+  border-color: #4caf50;
+  background-color: #e8f5e9 !important;
+}
+
+.warning-value {
+  color: #ff9800;
+  border-color: #ff9800;
+  background-color: #fff3e0 !important;
+}
+
+.critical-value {
+  color: #d32f2f;
+  border-color: #d32f2f;
+  background-color: #ffebee !important;
+}
+
+.gender-value {
+  color: #d32f2f;
+  border-color: #d32f2f;
+  background-color: #ffebee !important;
+}
+
+/* Blood Group Colors - Red Theme */
 .blood-group {
-  padding: 4px 12px;
-  border-radius: 4px;
-  color: black;
+  padding: 6px 14px;
+  border-radius: 6px;
+  color: white !important;
   font-weight: 700;
+  border: none !important;
+  background: linear-gradient(135deg, #ff6b6b 0%, #d32f2f 100%);
 }
 
-.blood-group.abpos,
-.blood-group.abneg,
-.blood-group.apos,
-.blood-group.aneg,
-.blood-group.bpos,
-.blood-group.bneg,
-.blood-group.opos,
+.blood-group.opos {
+  background: linear-gradient(135deg, #ff6b6b 0%, #d32f2f 100%);
+}
+
 .blood-group.oneg {
-  background-color: #d32f2f;
+  background: linear-gradient(135deg, #ff6b6b 0%, #d32f2f 100%);
+}
+
+.blood-group.apos {
+  background: linear-gradient(135deg, #ff8a65 0%, #ff5722 100%);
+}
+
+.blood-group.aneg {
+  background: linear-gradient(135deg, #ff8a65 0%, #ff5722 100%);
+}
+
+.blood-group.bpos {
+  background: linear-gradient(135deg, #ff9800 0%, #f57c00 100%);
+}
+
+.blood-group.bneg {
+  background: linear-gradient(135deg, #ff9800 0%, #f57c00 100%);
+}
+
+.blood-group.abpos {
+  background: linear-gradient(135deg, #d32f2f 0%, #b71c1c 100%);
+}
+
+.blood-group.abneg {
+  background: linear-gradient(135deg, #d32f2f 0%, #b71c1c 100%);
 }
 
 .active-conditions-section {
   padding-top: 20px;
-  border-top: 1px solid #e0e7ff;
+  border-top: 2px solid #ffcdd2;
 }
 
 .active-conditions-section h3 {
-  color: #4a6fa5;
+  color: #d32f2f;
   margin-bottom: 15px;
   font-size: 1.2rem;
+  display: flex;
+  align-items: center;
+  gap: 8px;
 }
 
 .conditions-container {
@@ -164,66 +368,184 @@
 }
 
 .condition-tag {
-  background-color: #fff3e0;
-  color: #e65100;
-  padding: 8px 15px;
+  background: linear-gradient(135deg, #ff6b6b 0%, #d32f2f 100%);
+  color: white;
+  padding: 8px 18px;
   border-radius: 20px;
   font-weight: 500;
-  border: 1px solid #ffcc80;
+  border: none;
+  transition: all 0.3s ease;
+  box-shadow: 0 2px 5px rgba(211, 47, 47, 0.2);
+}
+
+.condition-tag:hover {
+  transform: translateY(-2px);
+  box-shadow: 0 4px 8px rgba(211, 47, 47, 0.3);
 }
 
 .vital-signs-summary {
   background-color: white;
   border-radius: 10px;
   padding: 25px;
-  box-shadow: 0 2px 10px rgba(0, 0, 0, 0.05);
+  box-shadow: 0 4px 15px rgba(211, 47, 47, 0.08);
+  border: 1px solid #ffebee;
 }
 
 .vital-signs-summary h3 {
-  color: #4a6fa5;
+  color: #d32f2f;
   margin-bottom: 20px;
   font-size: 1.2rem;
+  display: flex;
+  align-items: center;
+  gap: 8px;
 }
 
 .vitals-grid {
   display: grid;
-  grid-template-columns: repeat(auto-fit, minmax(200px, 1fr));
+  grid-template-columns: repeat(auto-fit, minmax(220px, 1fr));
   gap: 20px;
 }
 
 .vital-item {
   display: flex;
   flex-direction: column;
-  padding: 15px;
-  border-radius: 8px;
-  background-color: #f8fafc;
-  transition: transform 0.2s ease;
+  padding: 20px;
+  border-radius: 10px;
+  background-color: #fff5f5;
+  transition: all 0.3s ease;
+  position: relative;
+  border: 1px solid #ffebee;
 }
 
 .vital-item:hover {
-  transform: translateY(-3px);
+  transform: translateY(-5px);
+  box-shadow: 0 5px 15px rgba(255, 107, 107, 0.15);
+  background-color: #ffebee;
 }
 
 .vital-item.normal {
-  border-left: 4px solid #4caf50;
+  border-left: 5px solid #4caf50;
+  background: linear-gradient(to right, #fff5f5, #e8f5e9);
 }
 
 .vital-item.warning {
-  border-left: 4px solid #ff9800;
+  border-left: 5px solid #ff9800;
+  background: linear-gradient(to right, #fff5f5, #fff3e0);
+}
+
+.vital-item.critical {
+  border-left: 5px solid #d32f2f;
+  background: linear-gradient(to right, #fff5f5, #ffebee);
 }
 
 .vital-label {
   color: #666;
   font-size: 0.9rem;
   margin-bottom: 8px;
+  font-weight: 500;
 }
 
 .vital-value {
   font-weight: 700;
-  font-size: 1.4rem;
+  font-size: 1.5rem;
+  margin-bottom: 5px;
+  color: #333;
+}
+
+.vital-status {
+  font-size: 0.8rem;
+  font-weight: 600;
+  padding: 3px 10px;
+  border-radius: 10px;
+  align-self: flex-start;
+  margin-top: 5px;
+}
+
+.vital-item.normal .vital-status {
+  background-color: #e8f5e9;
+  color: #2e7d32;
+}
+
+.vital-item.warning .vital-status {
+  background-color: #fff3e0;
+  color: #ef6c00;
+}
+
+.vital-item.critical .vital-status {
+  background-color: #ffebee;
+  color: #d32f2f;
+}
+
+/* Icons - Red Theme */
+.icon-phone:before { content: "📱"; color: #ff6b6b; }
+.icon-email:before { content: "📧"; color: #ff6b6b; }
+.icon-address:before { content: "🏠"; color: #ff6b6b; }
+.icon-blood:before { content: "🩸"; color: #d32f2f; }
+.icon-bp:before { content: "❤️"; color: #d32f2f; }
+.icon-bmi:before { content: "⚖️"; color: #ff6b6b; }
+.icon-gender:before { content: "⚤"; color: #ff6b6b; }
+.icon-sugar:before { content: "🍬"; color: #d32f2f; }
+.icon-spo2:before { content: "🫁"; color: #ff6b6b; }
+.icon-temp:before { content: "🌡️"; color: #d32f2f; }
+.icon-weight:before { content: "🏋️"; color: #ff6b6b; }
+.icon-conditions:before { content: "🏥"; color: #d32f2f; }
+.icon-vitals:before { content: "📊"; color: #d32f2f; }
+
+.pheader {
+  background: linear-gradient(135deg, #d32f2f 0%, #ff6b6b 100%);
+  color: transparent;
+  -webkit-background-clip: text;
+  background-clip: text;
+  font-family: inherit;
+  font-size: 2.5rem;
+  margin-bottom: 0.5rem;
+  position: relative;
+  display: inline-block;
+  font-weight: 700;
+}
+
+.pheader::after {
+  content: '';
+  position: absolute;
+  bottom: -5px;
+  left: 0;
+  width: 100%;
+  height: 3px;
+  background: linear-gradient(135deg, #d32f2f 0%, #ff6b6b 100%);
+  border-radius: 2px;
+}
+
+/* Patient-specific accent colors */
+.patient-accent {
+  color: #d32f2f;
+}
+
+.patient-accent-bg {
+  background-color: #ffebee;
+}
+
+.patient-border {
+  border-color: #ffcdd2;
+}
+
+/* Alert Badges */
+.alert-badge {
+  background: linear-gradient(135deg, #ff6b6b 0%, #d32f2f 100%);
+  color: white;
+  padding: 4px 12px;
+  border-radius: 20px;
+  font-size: 0.8rem;
+  font-weight: 600;
+  margin-left: 10px;
 }
 
 /* Responsive adjustments */
+@media (max-width: 1024px) {
+  .info-grid {
+    grid-template-columns: repeat(auto-fit, minmax(280px, 1fr));
+  }
+}
+
 @media (max-width: 768px) {
   .info-grid {
     grid-template-columns: 1fr;
@@ -235,29 +557,93 @@
   }
 
   .full-name-card h2 {
-    font-size: 1.7rem;
+    font-size: 1.8rem;
+  }
+
+  .dashboard-header {
+    flex-direction: column;
+    align-items: flex-start;
+    gap: 15px;
+  }
+
+  .patient-status-indicator {
+    order: 2;
+  }
+
+  .patient-id {
+    order: 3;
+  }
+
+  .pheader {
+    font-size: 2rem;
   }
 }
 
 @media (max-width: 480px) {
   .dashboard-header {
-    flex-direction: column;
-    align-items: flex-start;
-    gap: 10px;
+    align-items: stretch;
   }
 
   .vitals-grid {
     grid-template-columns: 1fr;
   }
-}
-.pheader {
-  color: #c94113 !important ;
-  -webkit-background-clip: text;
-  background-clip: text;
-  font-family: inherit;
 
-  font-size: 3.5rem;
-  margin-bottom: 0.5rem;
-  position: relative;
-  display: inline-block;
+  .pheader {
+    font-size: 1.8rem;
+  }
+
+  .full-name-card h2 {
+    font-size: 1.6rem;
+  }
+
+  .info-value {
+    font-size: 1.1rem;
+    padding: 10px;
+  }
+
+  .sub-value {
+    font-size: 1rem;
+    padding: 4px 10px;
+  }
+}
+
+/* Dark mode support for patient theme */
+@media (prefers-color-scheme: dark) {
+  .patient-dashboard {
+    color: #e0e0e0;
+  }
+
+  .patient-info-section,
+  .vital-signs-summary {
+    background-color: #2d1a1a;
+    border-color: #5d1f1f;
+  }
+
+  .info-value,
+  .info-subitem {
+    background-color: #3a2525;
+    color: #e0e0e0;
+    border-color: #5d1f1f;
+  }
+
+  .info-item h3 {
+    color: #ff6b6b;
+  }
+
+  .sub-label {
+    color: #b0b0b0;
+  }
+
+  .vital-item {
+    background-color: #3a2525;
+    border-color: #5d1f1f;
+  }
+
+  .dashboard-header {
+    border-bottom-color: #5d1f1f;
+  }
+
+  .active-conditions-section {
+    border-top-color: #5d1f1f;
+  }
 }

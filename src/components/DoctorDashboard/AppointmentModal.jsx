@@ -3,7 +3,7 @@ import React from "react";
 import { Modal, Button, Form } from "react-bootstrap";
 
 const modalBodyStyle = {
-  maxHeight: "75vh",
+  maxHeight: "65vh",
   overflowY: "auto",
 };
 

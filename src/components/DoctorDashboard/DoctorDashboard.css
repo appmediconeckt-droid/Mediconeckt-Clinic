@@ -858,7 +858,7 @@
   align-items: center;
   justify-content: center;
   box-shadow: 0 4px 15px rgba(77, 124, 254, 0.3);
-  animation: float 6s ease-in-out infinite;
+  /* animation: float 6s ease-in-out infinite; */
 }
 
 @keyframes float {

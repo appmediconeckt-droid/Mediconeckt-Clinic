@@ -158,7 +158,7 @@ export default function PatientLandingPage() {
                             </div>
 
                             <div className="d-flex gap-3 mt-4">
-                                <Link to="/appointment">
+                                <Link to="/login">
                                     <button className="btn btn-primary btn-lg px-4 py-3">
                                         <i className="bi bi-calendar-check me-2"></i>
                                         Book Appointment
@@ -195,10 +195,10 @@ export default function PatientLandingPage() {
                         <div className="col-lg-6">
                             <div className="hero-image-container">
                                 <img
-                                    src="https://images.unsplash.com/photo-1551601651-2a8555f1a136?ixlib=rb-1.2.1&auto=format&fit=crop&w=500&h=500&q=80"
+                                    src="https://images.unsplash.com/photo-1629909613654-28e377c37b09?w=600&auto=format&fit=crop&q=60&ixlib=rb-4.1.0&ixid=M3wxMjA3fDB8MHxzZWFyY2h8M3x8Y2xpbmljfGVufDB8fDB8fHww"
                                     alt="Doctor Consultation"
                                     className="img-fluid rounded shadow"
-                                    style={{ width: '700px', height: '500px', objectFit: 'cover', borderRadius: '20px' }}
+                                    style={{ width: '700px', height: '500px', objectFit: 'cover',  }}
                                 />
                             </div>
                         </div>
@@ -425,7 +425,7 @@ export default function PatientLandingPage() {
             <footer className="footer-section">
                 <div className="container pt-5 pb-4">
                     <div className="row">
-                        <div className="col-lg-4 mb-4">
+                        <div className="col-lg-3 mb-4">
                             <h4 className="footer-brand mb-3">
                                 <span className="brand-icon">🩺</span> PatientCare
                             </h4>
@@ -440,18 +440,17 @@ export default function PatientLandingPage() {
                             </div>
                         </div>
 
-                        <div className="col-lg-2 col-md-4 mb-4">
+                        <div className="col-lg-2 col-md-4 mb-4 d">
                             <h5 className="footer-heading">Quick Links</h5>
                             <ul className="footer-links">
                                 <li><a href="#home">Home</a></li>
                                 <li><a href="#specialities">Specialities</a></li>
                                 <li><a href="#services">Services</a></li>
-                                <li><a href="#doctors">Doctors</a></li>
-                                <li><a href="#testimonials">Reviews</a></li>
+                               
                             </ul>
                         </div>
 
-                        <div className="col-lg-3 col-md-4 mb-4">
+                        <div className="col-lg-4 col-md-4 mb-4">
                             <h5 className="footer-heading">Services</h5>
                             <ul className="footer-links">
                                 <li><a href="#">Book Appointment</a></li>

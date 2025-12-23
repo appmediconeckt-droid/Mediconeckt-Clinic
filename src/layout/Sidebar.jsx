@@ -28,22 +28,22 @@ const Sidebar = ({ menuItemClick }) => {
     { path: "/doctordashboard", icon: "fa-gauge-high", text: "Dashboard" },
     { path: "/doctorcalendar", icon: "fa-calendar-days", text: "Calendar" },
     { path: "/doctorprofile", icon: "fa-user-check", text: "Profile" },
-    { path: "/qrcode", icon: "fa-qrcode", text: "QR_Code" },
-    { path: "/appointmentlist", icon: "fa-list-check", text: "Appointment_List" },
-    { path: "/walkinappointment", icon: "fa-list-check", text: "Walk_in" },
-    { path: "/clinicpage", icon: "fa-hospital", text: "Clinic_Page" },
-    { path: "/notifications", icon: "fa-bell", text: "Notification" },
+    { path: "/qrcode", icon: "fa-qrcode", text: "QR Code" },
+    { path: "/appointmentlist", icon: "fa-list-check", text: "Appointment List" },
+    { path: "/walkinappointment", icon: "fa-list-check", text: "Walk in" },
+    { path: "/clinicpage", icon: "fa-hospital", text: "Clinic Page" },
+    { path: "/doctor-notifications", icon: "fa-bell", text: "Notification" },
     { path: "/setting", icon: "fa-gear", text: "Setting" },
   ];
 
   const patientMenuItems = [
     { path: "/patientdashboard", icon: "fa-gauge-high", text: "Dashboard" },
-    { path: "/patientappointments", icon: "fa-calendar-days", text: "My Appointments" },
-    { path: "/patientprofile", icon: "fa-user-check", text: "Profile" },
-    { path: "/patientrecords", icon: "fa-file-medical", text: "Medical Records" },
-    { path: "/patientdoctors", icon: "fa-user-md", text: "Find Doctors" },
-    { path: "/patientnotifications", icon: "fa-bell", text: "Notifications" },
-    { path: "/patientsettings", icon: "fa-gear", text: "Settings" },
+    { path: "/patientappointment", icon: "fa-calendar-days", text: "My Appointments" },
+    // { path: "/patientprofile", icon: "fa-user-check", text: "Profile" },
+    // { path: "/patientrecords", icon: "fa-file-medical", text: "Medical Records" },
+    // { path: "/patientdoctors", icon: "fa-user-md", text: "Find Doctors" },
+    { path: "/patient-notifications", icon: "fa-bell", text: "Notifications" },
+    { path: "/patient-settings", icon: "fa-gear", text: "Settings" },
   ];
 
   const renderMenuItems = (items) => {

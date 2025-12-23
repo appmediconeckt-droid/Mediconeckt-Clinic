@@ -226,7 +226,7 @@ export default function DoctorLandingPage() {
             Find trusted doctors & book appointments instantly. 5000+ happy
             patients monthly.
           </p>
-          <div className="d-flex justify-content-center gap-3">
+          {/* <div className="d-flex justify-content-center gap-3">
             <Link to="/appointment">
               <button className="btn btn-light btn-lg px-4">
                 Book Appointment
@@ -235,7 +235,7 @@ export default function DoctorLandingPage() {
             <button className="btn btn-outline-light btn-lg px-4">
               Consult Online
             </button>
-          </div>
+          </div> */}
           <div className="row mt-5 stats-row">
             <div className="col-md-3" style={{borderRadius:"100%"}}>
               <h3 className="fw-bold">500+</h3>

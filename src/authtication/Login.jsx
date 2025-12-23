@@ -6,7 +6,7 @@ export default function Login() {
   // Role to route mapping
   const rolePaths = {
     doctor: "/doctordashboard",
-    patient: "/patientdashboard",
+    patient: "/appointmentbooking",
     // admin: "/admindashboard",
     // superadmin: "/superadmin",
     // staff: "/staffdashboard",
