@@ -1,21 +1,19 @@
 import { useState, useEffect } from "react";
 import { useNavigate, Link } from "react-router-dom";
-import { FaEye, FaEyeSlash } from "react-icons/fa";
+import { FaEye, FaEyeSlash, FaCheckCircle, FaExclamationCircle, FaInfoCircle, FaHeartbeat, FaUser, FaKey } from "react-icons/fa";
+import "./Login.css";
 
 export default function Login() {
-  // Role to route mapping
   const rolePaths = {
     doctor: "/doctordashboard",
     patient: "/appointmentbooking",
-    // admin: "/admindashboard",
-    // superadmin: "/superadmin",
-    // staff: "/staffdashboard",
   };
 
   const [form, setForm] = useState({ identifier: "", password: "" });
   const [showPassword, setShowPassword] = useState(false);
-  const [error, setError] = useState("");
+  const [notification, setNotification] = useState({ show: false, type: "", message: "" });
   const [userRole, setUserRole] = useState(null);
+  const [rememberMe, setRememberMe] = useState(false);
   const navigate = useNavigate();
 
   // Load role from localStorage on component mount
@@ -26,12 +24,38 @@ export default function Login() {
     }
   }, []);
 
+  // Auto-hide notification after 5 seconds
+  useEffect(() => {
+    if (notification.show) {
+      const timer = setTimeout(() => {
+        handleCloseNotification();
+      }, 5000);
+      return () => clearTimeout(timer);
+    }
+  }, [notification.show]);
+
+  const showNotification = (type, message) => {
+    setNotification({ show: true, type, message });
+  };
+
+  const handleCloseNotification = () => {
+    const notificationElement = document.querySelector('.medi-notification-popup');
+    if (notificationElement) {
+      notificationElement.classList.add('medi-notification-closing');
+      setTimeout(() => {
+        setNotification({ show: false, type: "", message: "" });
+      }, 300);
+    } else {
+      setNotification({ show: false, type: "", message: "" });
+    }
+  };
+
   const handleLogin = (e) => {
     e.preventDefault();
     
     // Basic validation
     if (!form.identifier.trim() || !form.password.trim()) {
-      setError("Please enter both email/phone and password");
+      showNotification("error", "Please enter both email/phone and password");
       return;
     }
 
@@ -39,28 +63,33 @@ export default function Login() {
     const role = localStorage.getItem("userRole");
     
     if (!role) {
-      setError("Please select a role first from the landing page");
+      showNotification("error", "Please select a role first from the landing page");
       return;
     }
 
     // Check if role exists in rolePaths
     if (rolePaths[role]) {
-      // Simulate login success
-      // Here you would typically make an API call
+      // Store login info
+      if (rememberMe) {
+        localStorage.setItem("rememberedUser", form.identifier);
+      }
       
-      // Store login info (optional)
       localStorage.setItem("isLoggedIn", "true");
       localStorage.setItem("userEmail", form.identifier);
       
-      // Navigate to appropriate dashboard
-      navigate(rolePaths[role]);
+      // Show success notification
+      showNotification("success", `Login successful!`);
+      
+      // Navigate to appropriate dashboard after 1.5 seconds
+      setTimeout(() => {
+        navigate(rolePaths[role]);
+      }, 1500);
     } else {
-      setError(`Invalid role: ${role}. Please select a valid role.`);
+      showNotification("error", `Invalid role: ${role}. Please select a valid role.`);
     }
   };
 
   const handleQuickLogin = (role, identifier, password) => {
-    // For demo purposes - quick login with predefined credentials
     localStorage.setItem("userRole", role);
     setUserRole(role);
     
@@ -69,167 +98,244 @@ export default function Login() {
       password: password
     });
     
-    // Auto login after 500ms
+    showNotification("success", `Logging in as ${role}...`);
+    
     setTimeout(() => {
       navigate(rolePaths[role]);
-    }, 500);
+    }, 1500);
+  };
+
+  // Get notification icon based on type
+  const getNotificationIcon = () => {
+    switch(notification.type) {
+      case "success":
+        return <FaCheckCircle className="medi-notification-icon" />;
+      case "error":
+        return <FaExclamationCircle className="medi-notification-icon" />;
+      case "info":
+        return <FaInfoCircle className="medi-notification-icon" />;
+      default:
+        return <FaInfoCircle className="medi-notification-icon" />;
+    }
+  };
+
+  // Get notification title based on type
+  const getNotificationTitle = () => {
+    switch(notification.type) {
+      case "success":
+        return "Success!";
+      case "error":
+        return "Error!";
+      case "info":
+        return "Info";
+      default:
+        return "Notification";
+    }
   };
 
   return (
-    <div className="container d-flex justify-content-center align-items-center vh-100">
-      <div
-        className="bg-white p-4 shadow rounded-4"
-        style={{ width: "100%", maxWidth: "420px" }}
-      >
-        {/* Logo */}
-        <div className="text-center mb-3">
-          <img src="/logo192.png" alt="logo" width="80" />
-        </div>
+    <div className="medi-login-container">
+      {/* Left Side - Login Form */}
+    
 
-        <h2 className="text-center fw-bold text-primary">Mediconneckt</h2>
-        <p className="text-center text-muted">
-          Inspire. Engage. Connect Online.
-        </p>
-
-        {/* Current Role Indicator */}
-        {/* {userRole && (
-          <div className="alert alert-info py-2 mb-3">
-            <div className="d-flex align-items-center justify-content-between">
-              <span>
-                <strong>Current Role:</strong> {userRole.toUpperCase()}
-              </span>
-              <button 
-                className="btn btn-sm btn-outline-secondary"
-                onClick={() => {
-                  localStorage.removeItem("userRole");
-                  setUserRole(null);
-                }}
-              >
-                Change
-              </button>
+      {/* Right Side - Logo Only */}
+      <div className="medi-login-right-side">
+        <div className="medi-right-logo-container">
+          <div className="medi-right-logo-wrapper">
+            <FaHeartbeat className="medi-right-logo-icon" />
+          </div>
+          <h1 className="medi-right-logo-text">MediConnect+</h1>
+          <p className="medi-right-tagline">Secure Healthcare Access</p>
+          
+          {/* Security Features */}
+          <div className="medi-security-features">
+            <div className="medi-security-item">
+              <div className="medi-security-icon">🔒</div>
+              <div className="medi-security-text">
+                <strong>Bank-Level Security</strong>
+                <small>256-bit encryption</small>
+              </div>
+            </div>
+            <div className="medi-security-item">
+              <div className="medi-security-icon">⚡</div>
+              <div className="medi-security-text">
+                <strong>Instant Access</strong>
+                <small>Real-time dashboard</small>
+              </div>
+            </div>
+            <div className="medi-security-item">
+              <div className="medi-security-icon">🛡️</div>
+              <div className="medi-security-text">
+                <strong>HIPAA Compliant</strong>
+                <small>Patient data protected</small>
+              </div>
             </div>
           </div>
-        )} */}
+        </div>
+      </div>
+  <div className="medi-login-left-side">
+        <div className="medi-login-form-wrapper">
+          {/* Back Button */}
+         
 
-        {/* Error Message */}
-        {error && (
-          <div
-            className="alert alert-danger alert-dismissible fade show"
-            role="alert"
-          >
-            {error}
-            <button
-              type="button"
-              className="btn-close"
-              onClick={() => setError("")}
-            ></button>
-          </div>
-        )}
-
-        <form onSubmit={handleLogin}>
-          {/* Email/Phone */}
-          <div className="mb-3">
-            <label className="form-label">Email or Phone Number</label>
-            <input
-              type="text"
-              placeholder="Enter email or phone"
-              className="form-control"
-              value={form.identifier}
-              onChange={(e) => setForm({ ...form, identifier: e.target.value })}
-              required
-            />
+          {/* Form Header */}
+          <div className="medi-login-header">
+            <h2>Welcome Back</h2>
+            <p className="medi-login-subtitle">Sign in to continue to your account</p>
           </div>
 
-          {/* Password */}
-          <div className="mb-4">
-            <label className="form-label">Password</label>
-            <div className="position-relative">
+          {/* Login Form */}
+          <form onSubmit={handleLogin} className="medi-login-form">
+            {/* Email/Phone Input */}
+            <div className="medi-input-group">
+              <label className="medi-input-label">
+                <FaUser className="medi-input-icon" />
+                Email or Phone Number
+              </label>
               <input
-                type={showPassword ? "text" : "password"}
-                placeholder="Enter password"
-                className="form-control"
-                value={form.password}
-                onChange={(e) => setForm({ ...form, password: e.target.value })}
+                type="text"
+                className="medi-input-field"
+                placeholder="Enter your email or phone number"
+                value={form.identifier}
+                onChange={(e) => setForm({ ...form, identifier: e.target.value })}
                 required
               />
-              <span
-                className="position-absolute"
-                style={{
-                  right: "12px",
-                  top: "5px",
-                  cursor: "pointer",
-                  color: "#555",
-                  fontSize: "18px",
-                }}
-                onClick={() => setShowPassword(!showPassword)}
-              >
-                {showPassword ? <FaEyeSlash /> : <FaEye />}
-              </span>
+              <div className="medi-input-underline"></div>
             </div>
-          </div>
 
-          {/* Login Button */}
-          <button 
-            type="submit" 
-            className="btn btn-primary w-100 fw-bold mb-3 py-2"
-          >
-            LOGIN TO {userRole ? userRole.toUpperCase() : "User"}
-          </button>
-        </form>
+            {/* Password Input */}
+            <div className="medi-input-group">
+              <label className="medi-input-label">
+                <FaKey className="medi-input-icon" />
+                Password
+              </label>
+              <div className="medi-password-wrapper">
+                <input
+                  type={showPassword ? "text" : "password"}
+                  className="medi-input-field"
+                  placeholder="Enter your password"
+                  value={form.password}
+                  onChange={(e) => setForm({ ...form, password: e.target.value })}
+                  required
+                />
+                <span
+                  className="medi-password-toggle"
+                  onClick={() => setShowPassword(!showPassword)}
+                >
+                  {showPassword ? <FaEyeSlash /> : <FaEye />}
+                </span>
+                <div className="medi-input-underline"></div>
+              </div>
+            </div>
 
-        <div className="text-center mb-4">
-          <Link className="text-decoration-none" to="/">
-            New Patient & Doctor? Create Account
-          </Link>
+            {/* Remember Me & Forgot Password */}
+            <div className="medi-login-options">
+              <label className="medi-remember-label">
+                <input 
+                  type="checkbox" 
+                  checked={rememberMe}
+                  onChange={(e) => setRememberMe(e.target.checked)}
+                />
+                <span>Remember me</span>
+              </label>
+              <Link to="/forgotpassword" className="medi-forgot-link">
+                Forgot Password?
+              </Link>
+            </div>
+
+            {/* Role Display */}
+            {/* {userRole && (
+              <div className="medi-role-display">
+                <span className="medi-role-text">
+                  Logging in as: <strong>{userRole.toUpperCase()}</strong>
+                </span>
+                <button 
+                  type="button"
+                  className="medi-change-role"
+                  onClick={() => {
+                    localStorage.removeItem("userRole");
+                    setUserRole(null);
+                    showNotification("info", "Role cleared. Please select a new role from home page.");
+                  }}
+                >
+                  Change
+                </button>
+              </div>
+            )} */}
+
+            {/* Login Button */}
+            <button type="submit" className="medi-login-btn">
+              SIGN IN {userRole && <span className="medi-role-highlight">AS {userRole.toUpperCase()}</span>}
+            </button>
+
+            {/* Signup Link */}
+            <div className="medi-signup-prompt">
+              <p>
+                Don't have an account?{' '}
+                <Link to="/signup" className="medi-signup-link">
+                  Sign up now
+                </Link>
+              </p>
+            </div>
+
+            {/* Demo Login Buttons (Optional) */}
+            {/* <div className="medi-demo-login">
+              <p className="medi-demo-title">Quick Demo Login:</p>
+              <div className="medi-demo-buttons">
+                <button
+                  type="button"
+                  className="medi-demo-btn medi-demo-doctor"
+                  onClick={() => handleQuickLogin("doctor", "doctor@example.com", "doctor123")}
+                >
+                  Login as Doctor
+                </button>
+                <button
+                  type="button"
+                  className="medi-demo-btn medi-demo-patient"
+                  onClick={() => handleQuickLogin("patient", "patient@example.com", "patient123")}
+                >
+                  Login as Patient
+                </button>
+              </div>
+            </div> */}
+          </form>
         </div>
-
-        {/* Forgot Password */}
-        <div className="text-center mb-4">
-          <Link
-            className="text-decoration-none text-muted"
-            to="/forgotpassword"
-          >
-            Forgot Password?
-          </Link>
-        </div>
-
-        {/* Quick Demo Login Buttons */}
-        {/* <div className="border-top pt-3">
-          <p className="text-center text-muted mb-3">Quick Demo Login</p>
-          <div className="row g-2">
-            <div className="col-6">
-              <button
-                className="btn btn-outline-primary w-100"
-                onClick={() => handleQuickLogin("doctor", "doctor@example.com", "doctor123")}
-              >
-                <small>Login as Doctor</small>
-              </button>
-            </div>
-            <div className="col-6">
-              <button
-                className="btn btn-outline-success w-100"
-                onClick={() => handleQuickLogin("patient", "patient@example.com", "patient123")}
-              >
-                <small>Login as Patient</small>
-              </button>
-            </div>
-          </div>
-        </div> */}
-
-        {/* No Role Selected Message */}
-        {/* {!userRole && (
-          <div className="alert alert-warning mt-3">
-            <small>
-              <i className="fas fa-exclamation-triangle me-2"></i>
-              No role selected. Please go back to{" "}
-              <Link to="/" className="text-decoration-none">
-                landing page
-              </Link>{" "}
-              to select your role first.
-            </small>
-          </div>
-        )} */}
       </div>
+      {/* Notification Popup */}
+      {notification.show && (
+        <div 
+          className="medi-notification-popup"
+          style={{
+            background: notification.type === "success" 
+              ? "linear-gradient(135deg, #28a745 0%, #20c997 100%)" 
+              : notification.type === "error"
+              ? "linear-gradient(135deg, #dc3545 0%, #c82333 100%)"
+              : "linear-gradient(135deg, #17a2b8 0%, #138496 100%)"
+          }}
+        >
+          <div className="medi-notification-content">
+            <div className="medi-notification-header">
+              <div className="medi-notification-icon-wrapper">
+                {getNotificationIcon()}
+              </div>
+              <div className="medi-notification-title-section">
+                <h5>{getNotificationTitle()}</h5>
+                <small>{new Date().toLocaleTimeString([], { hour: '2-digit', minute: '2-digit' })}</small>
+              </div>
+            </div>
+            
+            <div className="medi-notification-body">
+              <p>{notification.message}</p>
+            </div>
+            
+            {notification.type === "success" && (
+              <div className="medi-notification-progress">
+                <div className="medi-progress-bar"></div>
+              </div>
+            )}
+          </div>
+        </div>
+      )}
     </div>
   );
 }

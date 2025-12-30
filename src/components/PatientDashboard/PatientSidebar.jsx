@@ -12,7 +12,7 @@ export default function Sidebar({
     <aside className="patient-set-side">
       <div className="patient-set-side-box">
         <div className="patient-header">
-          <h2 className="patient-title">Patient Settings</h2>
+          <h2 className="patient-title">Settings</h2>
         </div>
 
         <MenuItem id="profile" icon="👤" label="Profile" active={active} setActive={setActive} />

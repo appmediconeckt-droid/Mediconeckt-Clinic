@@ -1,10 +1,10 @@
-/* PatientSettingsPage.css */
+/* PatientSettingsPage.css - Updated with Patient Green Theme */
 /* All class names prefixed with 'patient-' to avoid conflicts */
 
-/* ========== PATIENT THEME (Red Colors) ========== */
+/* ========== PATIENT THEME (Green Colors) ========== */
 .patient-settings-page {
   min-height: 100vh;
-  background: linear-gradient(135deg, #fff5f5 0%, #ffebee 100%);
+  /* background: linear-gradient(135deg, #f9fdfa 0%, #e8f8ed 100%); */
 }
 
 .patient-settings-wrapper {
@@ -25,8 +25,8 @@
   background: white;
   border-radius: 16px;
   padding: 24px;
-  box-shadow: 0 4px 20px rgba(255, 107, 107, 0.15);
-  border: 2px solid #ff6b6b;
+  box-shadow: 0 4px 20px rgba(107, 196, 138, 0.15);
+  border: 2px solid #6bc48a;
   margin-bottom: 20px;
 }
 
@@ -35,13 +35,13 @@
 }
 
 .patient-title {
-  color: #d32f2f;
+  color: #2d7a4d;
   font-size: 28px;
   font-weight: 700;
   margin: 0;
   text-align: center;
   padding-bottom: 15px;
-  border-bottom: 3px solid #ff6b6b;
+  border-bottom: 3px solid #6bc48a;
 }
 
 /* Menu Items */
@@ -63,24 +63,24 @@
 }
 
 .patient-settingitem:hover {
-  background: #ffeaea;
+  background: #e8f8ed;
   transform: translateX(5px);
 }
 
 .patient-settingitem.patient-active {
-  background: linear-gradient(90deg, #ff6b6b 0%, #d32f2f 100%);
+  background: linear-gradient(90deg, #8af5aa 0%, #6bc48a 100%);
   color: white;
-  box-shadow: 0 4px 15px rgba(211, 47, 47, 0.3);
+  box-shadow: 0 4px 15px rgba(107, 196, 138, 0.3);
 }
 
 .patient-settingitem.patient-logout {
-  color: #d32f2f;
+  color: #2d7a4d;
   margin-top: 10px;
 }
 
 .patient-settingitem.patient-logout:hover {
-  background: #ffebee;
-  color: #b71c1c;
+  background: #e8f8ed;
+  color: #1b5e20;
 }
 
 .patient-settingicon {
@@ -97,19 +97,19 @@
 .patient-separator {
   border: none;
   height: 2px;
-  background: linear-gradient(90deg, transparent 0%, #ff6b6b 50%, transparent 100%);
+  background: linear-gradient(90deg, transparent 0%, #6bc48a 50%, transparent 100%);
   margin: 20px 0;
 }
 
 .patient-set-side-sub {
   font-size: 14px;
-  color: #d32f2f;
+  color: #2d7a4d;
   font-weight: 600;
   text-transform: uppercase;
   letter-spacing: 1px;
   margin-bottom: 15px;
   padding-bottom: 8px;
-  border-bottom: 2px solid #ffcdd2;
+  border-bottom: 2px solid #c8e6d4;
 }
 
 .patient-more-item {
@@ -127,8 +127,8 @@
 }
 
 .patient-more-item:hover {
-  color: #d32f2f;
-  background: #ffeaea;
+  color: #2d7a4d;
+  background: #e8f8ed;
 }
 
 /* Content Area */
@@ -141,8 +141,8 @@
   background: white;
   border-radius: 16px;
   padding: 30px;
-  box-shadow: 0 6px 25px rgba(255, 107, 107, 0.15);
-  border: 2px solid #ff6b6b;
+  box-shadow: 0 6px 25px rgba(107, 196, 138, 0.15);
+  border: 2px solid #6bc48a;
   min-height: 600px;
 }
 
@@ -162,21 +162,21 @@
   gap: 25px;
   padding-bottom: 25px;
   margin-bottom: 25px;
-  border-bottom: 3px solid #ffebee;
+  border-bottom: 3px solid #e8f8ed;
 }
 
 .patient-profile-avatar {
   width: 100px;
   height: 100px;
   border-radius: 50%;
-  border: 4px solid #ff6b6b;
+  border: 4px solid #6bc48a;
   padding: 3px;
   background: white;
   object-fit: cover;
 }
 
 .patient-profile-info h3 {
-  color: #d32f2f;
+  color: #2d7a4d;
   font-size: 28px;
   margin: 0 0 8px 0;
   font-weight: 700;
@@ -192,13 +192,13 @@
 .patient-profile-section {
   margin-bottom: 30px;
   padding: 24px;
-  background: #fff9f9;
+  background: #f9fdfa;
   border-radius: 15px;
-  border-left: 5px solid #ff6b6b;
+  border-left: 5px solid #6bc48a;
 }
 
 .patient-section-title {
-  color: #d32f2f;
+  color: #2d7a4d;
   font-size: 20px;
   margin: 0 0 20px 0;
   display: flex;
@@ -217,14 +217,14 @@
   padding: 18px;
   background: white;
   border-radius: 12px;
-  border: 1px solid #ffcdd2;
+  border: 1px solid #c8e6d4;
   transition: all 0.3s ease;
 }
 
 .patient-info-item:hover {
   transform: translateY(-3px);
-  box-shadow: 0 5px 15px rgba(255, 107, 107, 0.1);
-  border-color: #ff6b6b;
+  box-shadow: 0 5px 15px rgba(107, 196, 138, 0.1);
+  border-color: #6bc48a;
 }
 
 .patient-info-label {
@@ -255,14 +255,14 @@
   background: white;
   border-radius: 15px;
   padding: 20px;
-  border: 2px solid #ffebee;
+  border: 2px solid #e8f8ed;
   transition: all 0.3s ease;
 }
 
 .patient-appointment-card:hover {
-  border-color: #ff6b6b;
+  border-color: #6bc48a;
   transform: translateY(-3px);
-  box-shadow: 0 8px 20px rgba(255, 107, 107, 0.15);
+  box-shadow: 0 8px 20px rgba(107, 196, 138, 0.15);
 }
 
 .patient-appointment-header {
@@ -271,12 +271,12 @@
   align-items: center;
   margin-bottom: 16px;
   padding-bottom: 16px;
-  border-bottom: 2px solid #ffebee;
+  border-bottom: 2px solid #e8f8ed;
 }
 
 .patient-appointment-date {
-  background: #ffeaea;
-  color: #d32f2f;
+  background: #e8f8ed;
+  color: #2d7a4d;
   padding: 8px 16px;
   border-radius: 20px;
   font-size: 14px;
@@ -293,13 +293,18 @@
 }
 
 .patient-status-confirmed {
-  background: #c8e6c9;
-  color: #2e7d32;
+  background: #d4ffdf;
+  color: #1b5e20;
 }
 
 .patient-status-pending {
-  background: #fff3cd;
-  color: #856404;
+  background: #fff3e0;
+  color: #ffa500;
+}
+
+.patient-status-cancelled {
+  background: #ffe6e6;
+  color: #ff4444;
 }
 
 .patient-appointment-details h4 {
@@ -320,7 +325,7 @@
 
 /* Buttons */
 .patient-btn-primary {
-  background: linear-gradient(90deg, #ff6b6b 0%, #d32f2f 100%);
+  background: linear-gradient(90deg, #8af5aa 0%, #6bc48a 100%);
   color: white;
   border: none;
   padding: 12px 24px;
@@ -332,14 +337,15 @@
 }
 
 .patient-btn-primary:hover {
+  background: linear-gradient(90deg, #6bc48a 0%, #2d7a4d 100%);
   transform: translateY(-3px);
-  box-shadow: 0 8px 20px rgba(211, 47, 47, 0.4);
+  box-shadow: 0 8px 20px rgba(107, 196, 138, 0.4);
 }
 
 .patient-btn-light {
-  background: #ffeaea;
-  color: #d32f2f;
-  border: 2px solid #ffcdd2;
+  background: #e8f8ed;
+  color: #2d7a4d;
+  border: 2px solid #c8e6d4;
   padding: 10px 20px;
   border-radius: 10px;
   font-weight: 600;
@@ -349,8 +355,9 @@
 }
 
 .patient-btn-light:hover {
-  background: #ffcdd2;
-  border-color: #ff6b6b;
+  background: #c8e6d4;
+  border-color: #6bc48a;
+  color: #2d7a4d;
 }
 
 .patient-btn-danger {
@@ -368,6 +375,24 @@
 .patient-btn-danger:hover {
   transform: translateY(-3px);
   box-shadow: 0 8px 20px rgba(204, 0, 0, 0.4);
+}
+
+.patient-btn-warning {
+  background: linear-gradient(90deg, #ffa500 0%, #cc8400 100%);
+  color: white;
+  border: none;
+  padding: 10px 20px;
+  border-radius: 10px;
+  font-weight: 600;
+  cursor: pointer;
+  transition: all 0.3s ease;
+  font-size: 15px;
+}
+
+.patient-btn-warning:hover {
+  background: linear-gradient(90deg, #cc8400 0%, #996300 100%);
+  transform: translateY(-3px);
+  box-shadow: 0 8px 20px rgba(204, 132, 0, 0.4);
 }
 
 .patient-appointment-actions {
@@ -389,17 +414,17 @@
   background: white;
   border-radius: 15px;
   padding: 25px;
-  border: 2px solid #ffebee;
+  border: 2px solid #e8f8ed;
   transition: all 0.3s ease;
 }
 
 .patient-help-card:hover {
-  border-color: #ff6b6b;
+  border-color: #6bc48a;
   transform: translateY(-5px);
 }
 
 .patient-help-card h4 {
-  color: #d32f2f;
+  color: #2d7a4d;
   margin: 0 0 15px 0;
   font-size: 18px;
   font-weight: 600;
@@ -411,12 +436,16 @@
   margin-bottom: 15px;
 }
 
+.patient-help-card button {
+  width: 100%;
+}
+
 /* Privacy Section */
 .patient-privacy-section {
   background: white;
   border-radius: 15px;
   padding: 25px;
-  border: 2px solid #ffebee;
+  border: 2px solid #e8f8ed;
 }
 
 .patient-privacy-item {
@@ -424,7 +453,7 @@
   justify-content: space-between;
   align-items: center;
   padding: 16px 0;
-  border-bottom: 1px solid #ffebee;
+  border-bottom: 1px solid #e8f8ed;
 }
 
 .patient-privacy-item:last-child {
@@ -477,7 +506,7 @@
 }
 
 input:checked + .patient-slider {
-  background: linear-gradient(90deg, #ff6b6b 0%, #d32f2f 100%);
+  background: linear-gradient(90deg, #8af5aa 0%, #6bc48a 100%);
 }
 
 input:checked + .patient-slider:before {
@@ -505,12 +534,12 @@ input:checked + .patient-slider:before {
   padding: 30px;
   width: 90%;
   max-width: 500px;
-  border: 3px solid #ff6b6b;
-  box-shadow: 0 20px 40px rgba(255, 107, 107, 0.3);
+  border: 3px solid #6bc48a;
+  box-shadow: 0 20px 40px rgba(107, 196, 138, 0.3);
 }
 
 .patient-modal-title {
-  color: #d32f2f;
+  color: #2d7a4d;
   font-size: 24px;
   font-weight: 700;
   margin-bottom: 20px;
@@ -528,7 +557,7 @@ input:checked + .patient-slider:before {
   width: 100%;
   padding: 14px 16px;
   margin-bottom: 16px;
-  border: 2px solid #ffcdd2;
+  border: 2px solid #c8e6d4;
   border-radius: 10px;
   font-size: 16px;
   transition: all 0.3s ease;
@@ -536,8 +565,8 @@ input:checked + .patient-slider:before {
 
 .patient-modal-box input:focus {
   outline: none;
-  border-color: #ff6b6b;
-  box-shadow: 0 0 0 3px rgba(255, 107, 107, 0.1);
+  border-color: #6bc48a;
+  box-shadow: 0 0 0 3px rgba(107, 196, 138, 0.1);
 }
 
 .patient-show {
@@ -548,7 +577,133 @@ input:checked + .patient-slider:before {
 }
 
 .patient-text-success {
-  color: #2e7d32 !important;
+  color: #2d7a4d !important;
+}
+
+.patient-text-danger {
+  color: #ff4444 !important;
+}
+
+.patient-text-warning {
+  color: #ffa500 !important;
+}
+
+/* Form Elements */
+.patient-form-group {
+  margin-bottom: 20px;
+}
+
+.patient-form-label {
+  display: block;
+  margin-bottom: 8px;
+  color: #2d7a4d;
+  font-weight: 600;
+  font-size: 15px;
+}
+
+.patient-form-control {
+  width: 100%;
+  padding: 12px 16px;
+  border: 2px solid #c8e6d4;
+  border-radius: 10px;
+  font-size: 16px;
+  transition: all 0.3s ease;
+  background-color: white;
+}
+
+.patient-form-control:focus {
+  outline: none;
+  border-color: #6bc48a;
+  box-shadow: 0 0 0 3px rgba(107, 196, 138, 0.1);
+}
+
+.patient-form-control[disabled] {
+  background-color: #f9fdfa;
+  cursor: not-allowed;
+  opacity: 0.7;
+}
+
+/* Settings Cards */
+.patient-setting-card {
+  background: white;
+  border-radius: 15px;
+  padding: 25px;
+  border: 2px solid #e8f8ed;
+  margin-bottom: 20px;
+  transition: all 0.3s ease;
+}
+
+.patient-setting-card:hover {
+  border-color: #6bc48a;
+  box-shadow: 0 8px 20px rgba(107, 196, 138, 0.1);
+}
+
+.patient-setting-card-header {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  margin-bottom: 20px;
+  padding-bottom: 15px;
+  border-bottom: 2px solid #e8f8ed;
+}
+
+.patient-setting-card-title {
+  color: #2d7a4d;
+  font-size: 20px;
+  font-weight: 600;
+  margin: 0;
+}
+
+/* Notification Settings */
+.patient-notification-setting {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  padding: 15px 0;
+  border-bottom: 1px solid #f0f0f0;
+}
+
+.patient-notification-setting:last-child {
+  border-bottom: none;
+}
+
+.patient-notification-info h5 {
+  color: #333;
+  font-size: 16px;
+  font-weight: 600;
+  margin: 0 0 5px 0;
+}
+
+.patient-notification-info p {
+  color: #666;
+  font-size: 14px;
+  margin: 0;
+}
+
+/* Security Section */
+.patient-security-badge {
+  display: inline-flex;
+  align-items: center;
+  gap: 8px;
+  padding: 8px 16px;
+  border-radius: 20px;
+  font-size: 14px;
+  font-weight: 600;
+}
+
+.patient-security-strong {
+  background: #e8f8ed;
+  color: #2d7a4d;
+}
+
+.patient-security-medium {
+  background: #fff3e0;
+  color: #ffa500;
+}
+
+.patient-security-weak {
+  background: #ffe6e6;
+  color: #ff4444;
 }
 
 /* Utility Classes */
@@ -560,9 +715,62 @@ input:checked + .patient-slider:before {
   margin-top: 1rem;
 }
 
+.patient-mt-4 {
+  margin-top: 1.5rem;
+}
+
+.patient-mb-2 {
+  margin-bottom: 0.5rem;
+}
+
+.patient-mb-3 {
+  margin-bottom: 1rem;
+}
+
+.patient-mb-4 {
+  margin-bottom: 1.5rem;
+}
+
 .patient-m-lg-2 {
   margin-left: 0.5rem;
   margin-right: 0.5rem;
+}
+
+.patient-text-center {
+  text-align: center;
+}
+
+.patient-text-muted {
+  color: #666;
+}
+
+.patient-d-flex {
+  display: flex;
+}
+
+.patient-align-items-center {
+  align-items: center;
+}
+
+.patient-justify-content-between {
+  justify-content: space-between;
+}
+
+/* Icons */
+.patient-icon-primary {
+  color: #6bc48a;
+}
+
+.patient-icon-success {
+  color: #2d7a4d;
+}
+
+.patient-icon-warning {
+  color: #ffa500;
+}
+
+.patient-icon-danger {
+  color: #ff4444;
 }
 
 /* Responsive Design */
@@ -625,6 +833,24 @@ input:checked + .patient-slider:before {
     width: 100%;
     text-align: center;
   }
+  
+  .patient-privacy-item {
+    flex-direction: column;
+    align-items: flex-start;
+    gap: 10px;
+  }
+  
+  .patient-notification-setting {
+    flex-direction: column;
+    align-items: flex-start;
+    gap: 10px;
+  }
+  
+  .patient-setting-card-header {
+    flex-direction: column;
+    align-items: flex-start;
+    gap: 10px;
+  }
 }
 
 /* Patient-themed scrollbar */
@@ -633,15 +859,130 @@ input:checked + .patient-slider:before {
 }
 
 .patient-set-side::-webkit-scrollbar-track {
-  background: #ffebee;
+  background: #e8f8ed;
   border-radius: 10px;
 }
 
 .patient-set-side::-webkit-scrollbar-thumb {
-  background: #ff6b6b;
+  background: #6bc48a;
   border-radius: 10px;
 }
 
 .patient-set-side::-webkit-scrollbar-thumb:hover {
-  background: #d32f2f;
+  background: #2d7a4d;
 }
+
+.patient-form-box::-webkit-scrollbar {
+  width: 6px;
+}
+
+.patient-form-box::-webkit-scrollbar-track {
+  background: #f9fdfa;
+  border-radius: 10px;
+}
+
+.patient-form-box::-webkit-scrollbar-thumb {
+  background: #8af5aa;
+  border-radius: 10px;
+}
+
+.patient-form-box::-webkit-scrollbar-thumb:hover {
+  background: #6bc48a;
+}
+
+/* Dark Mode Support */
+@media (prefers-color-scheme: dark) {
+  .patient-settings-page {
+    background: linear-gradient(135deg, #1a2a22 0%, #24352d 100%);
+  }
+  
+  .patient-set-side-box,
+  .patient-form-box,
+  .patient-setting-card,
+  .patient-info-item,
+  .patient-appointment-card,
+  .patient-help-card,
+  .patient-privacy-section,
+  .patient-modal-box {
+    background-color: #24352d;
+    border-color: #3a5c4d;
+  }
+  
+  .patient-settingitem {
+    color: #e0e0e0;
+  }
+  
+  .patient-settingitem:hover {
+    background-color: #2d4036;
+  }
+  
+  .patient-title,
+  .patient-section-title,
+  .patient-profile-info h3,
+  .patient-help-card h4,
+  .patient-modal-title,
+  .patient-setting-card-title {
+    color: #8af5aa;
+  }
+  
+  .patient-info-value,
+  .patient-appointment-details h4,
+  .patient-notification-info h5,
+  .patient-privacy-item span {
+    color: #e0e0e0;
+  }
+  
+  .patient-profile-info p,
+  .patient-appointment-details p,
+  .patient-help-card p,
+  .patient-modal-box p,
+  .patient-notification-info p,
+  .patient-text-muted {
+    color: #b0b0b0;
+  }
+  
+  .patient-form-control {
+    background-color: #2d4036;
+    border-color: #3a5c4d;
+    color: #e0e0e0;
+  }
+  
+  .patient-appointment-date {
+    background-color: #3a5c4d;
+    color: #8af5aa;
+  }
+  
+  .patient-btn-light {
+    background-color: #2d4036;
+    border-color: #3a5c4d;
+    color: #8af5aa;
+  }
+  
+  .patient-btn-light:hover {
+    background-color: #3a5c4d;
+    border-color: #6bc48a;
+  }
+}
+
+/* Loading States */
+.patient-loading {
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  min-height: 200px;
+}
+
+.patient-loading-spinner {
+  width: 40px;
+  height: 40px;
+  border: 4px solid #e8f8ed;
+  border-top: 4px solid #6bc48a;
+  border-radius: 50%;
+  animation: patient-spin 1s linear infinite;
+}
+
+@keyframes patient-spin {
+  0% { transform: rotate(0deg); }
+  100% { transform: rotate(360deg); }
+}
+

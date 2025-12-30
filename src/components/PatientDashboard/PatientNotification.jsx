@@ -4,7 +4,7 @@ import './PatientNotification.css';
 const PatientNotification = () => {
   // State for notifications
   const [notifications, setNotifications] = useState([]);
-  
+
   // Initialize notifications
   useEffect(() => {
     const initialNotifications = [
@@ -15,28 +15,28 @@ const PatientNotification = () => {
       { id: 5, type: 'appointment', title: 'Appointment Completed', description: 'Your consultation has been completed', time: '11:30 AM', date: 'Today', read: false },
       { id: 6, type: 'payment', title: 'Payment Success', description: 'Payment of $150 has been processed successfully', time: '11:35 AM', date: 'Today', read: false },
     ];
-    
+
     setNotifications(initialNotifications);
   }, []);
-  
+
   // Mark notification as read
   const markAsRead = (id) => {
-    setNotifications(notifications.map(notification => 
+    setNotifications(notifications.map(notification =>
       notification.id === id ? { ...notification, read: true } : notification
     ));
   };
-  
+
   // Mark all as read
   const markAllAsRead = () => {
     setNotifications(notifications.map(notification => ({ ...notification, read: true })));
   };
-  
+
   // Delete notification
   const deleteNotification = (id, e) => {
     e.stopPropagation();
     setNotifications(notifications.filter(notification => notification.id !== id));
   };
-  
+
   // Add a new notification for testing
   const addTestNotification = () => {
     const newId = notifications.length > 0 ? Math.max(...notifications.map(n => n.id)) + 1 : 1;
@@ -49,7 +49,7 @@ const PatientNotification = () => {
       'Prescription Ready',
       'Test Results Available'
     ];
-    
+
     const descriptions = [
       'Your appointment has been rescheduled to next Monday',
       'Your payment is being processed',
@@ -58,11 +58,11 @@ const PatientNotification = () => {
       'Your prescription is ready for pickup',
       'Your lab test results are now available'
     ];
-    
+
     const randomType = types[Math.floor(Math.random() * types.length)];
     const randomTitle = titles[Math.floor(Math.random() * titles.length)];
     const randomDesc = descriptions[Math.floor(Math.random() * descriptions.length)];
-    
+
     const newNotification = {
       id: newId,
       type: randomType,
@@ -72,27 +72,30 @@ const PatientNotification = () => {
       date: 'Today',
       read: false
     };
-    
+
     setNotifications([newNotification, ...notifications]);
   };
-  
+
   // Clear all notifications
   const clearAllNotifications = () => {
     if (window.confirm('Are you sure you want to clear all notifications?')) {
       setNotifications([]);
     }
   };
-  
+
   // Count unread notifications
   const unreadCount = notifications.filter(n => !n.read).length;
-  
+
   return (
-    <div className="patient-notification-container">
-      <header className="patient-notification-header">
-        <h1 className="patient-notification-title">Patient Notifications</h1>
-        <p className="patient-notification-subtitle">Stay updated with your appointments and payments</p>
+    <div className="patient-notification-container p-4">
+
+      <header className="app-header  d-flex flex-column flex-md-row justify-content-between align-items-start align-items-md-center mb-3 gap-3">
+        <h1 >Notifications</h1>
+
       </header>
-      
+
+
+
       <div className="patient-notification-main">
         <div className="patient-notification-panel">
           <div className="patient-notification-panel-header">
@@ -100,7 +103,7 @@ const PatientNotification = () => {
               <h2 className="patient-notification-panel-title">All Notifications</h2>
               <span className="patient-notification-unread-count">{unreadCount} unread</span>
             </div>
-            
+
             <div className="patient-notification-header-actions">
               <button className="patient-notification-action-btn mark-all-btn" onClick={markAllAsRead}>
                 <i className="fas fa-check-double"></i> Mark all as read
@@ -113,7 +116,7 @@ const PatientNotification = () => {
               </button>
             </div>
           </div>
-          
+
           {notifications.length === 0 ? (
             <div className="patient-notification-empty">
               <div className="empty-icon">📭</div>
@@ -126,8 +129,8 @@ const PatientNotification = () => {
           ) : (
             <div className="patient-notification-list">
               {notifications.map(notification => (
-                <div 
-                  key={notification.id} 
+                <div
+                  key={notification.id}
                   className={`patient-notification-item ${notification.read ? 'read' : 'unread'}`}
                   onClick={() => markAsRead(notification.id)}
                 >
@@ -137,7 +140,7 @@ const PatientNotification = () => {
                     {notification.type === 'appointment' && <div className="notification-icon appointment"><i className="fas fa-calendar-check"></i></div>}
                     {notification.type === 'payment' && <div className="notification-icon payment"><i className="fas fa-credit-card"></i></div>}
                   </div>
-                  
+
                   <div className="patient-notification-item-content">
                     <div className="patient-notification-item-header">
                       <h3 className="patient-notification-item-title">{notification.title}</h3>
@@ -149,13 +152,13 @@ const PatientNotification = () => {
                       <span className={`patient-notification-item-type ${notification.type}`}>{notification.type}</span>
                     </div>
                   </div>
-                  
+
                   <div className="patient-notification-item-actions">
                     {!notification.read && (
                       <span className="unread-badge">NEW</span>
                     )}
-                    <button 
-                      className="patient-notification-delete-btn" 
+                    <button
+                      className="patient-notification-delete-btn"
                       onClick={(e) => deleteNotification(notification.id, e)}
                     >
                       <i className="fas fa-times"></i>
@@ -167,7 +170,7 @@ const PatientNotification = () => {
           )}
         </div>
       </div>
-      
+
       <footer className="patient-notification-footer">
         <p className="patient-footer-text">
           <i className="fas fa-info-circle"></i> Notifications are automatically cleared after 30 days

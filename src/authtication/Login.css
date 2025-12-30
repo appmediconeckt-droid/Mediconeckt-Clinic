@@ -1,0 +1,649 @@
+/* Main Container */
+.medi-login-container {
+  display: flex;
+  height: 100vh;
+  font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+  overflow: hidden;
+}
+
+/* Left Side - Login Form */
+.medi-login-left-side {
+  flex: 1;
+  background: #ffffff;
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  padding: 2rem;
+  overflow-y: auto;
+}
+
+.medi-login-form-wrapper {
+  width: 100%;
+  max-width: 500px;
+  padding: 2rem;
+}
+
+/* Back Button */
+.medi-back-button {
+  margin-bottom: 2rem;
+}
+
+.medi-back-link {
+  display: inline-flex;
+  align-items: center;
+  gap: 0.5rem;
+  color: #64748b;
+  text-decoration: none;
+  font-size: 0.9rem;
+  font-weight: 500;
+  transition: color 0.3s ease;
+}
+
+.medi-back-link:hover {
+  color: #3b82f6;
+}
+
+/* Login Header */
+.medi-login-header {
+  text-align: center;
+  margin-bottom: 2.5rem;
+}
+
+.medi-login-header h2 {
+  font-size: 2.2rem;
+  color: #1e293b;
+  margin-bottom: 0.5rem;
+  font-weight: 700;
+}
+
+.medi-login-subtitle {
+  color: #64748b;
+  font-size: 1rem;
+  margin: 0;
+}
+
+/* Login Form */
+.medi-login-form {
+  width: 100%;
+}
+
+/* Input Groups */
+.medi-input-group {
+  margin-bottom: 1.8rem;
+}
+
+.medi-input-label {
+  display: flex;
+  align-items: center;
+  gap: 0.5rem;
+  color: #334155;
+  font-size: 0.9rem;
+  font-weight: 600;
+  margin-bottom: 0.5rem;
+}
+
+.medi-input-icon {
+  color: #3b82f6;
+  font-size: 0.9rem;
+}
+
+.medi-input-field {
+  width: 100%;
+  padding: 0.9rem 1rem;
+  border: 2px solid #e2e8f0;
+  border-radius: 10px;
+  font-size: 1rem;
+  color: #334155;
+  transition: all 0.3s ease;
+  background: #f8fafc;
+}
+
+.medi-input-field:focus {
+  outline: none;
+  border-color: #3b82f6;
+  background: white;
+  box-shadow: 0 0 0 3px rgba(59, 130, 246, 0.1);
+}
+
+.medi-input-field::placeholder {
+  color: #94a3b8;
+}
+
+.medi-input-underline {
+  height: 2px;
+  background: #3b82f6;
+  width: 0;
+  transition: width 0.3s ease;
+  margin-top: 2px;
+}
+
+.medi-input-field:focus + .medi-input-underline {
+  width: 100%;
+}
+
+/* Password Wrapper */
+.medi-password-wrapper {
+  position: relative;
+}
+
+.medi-password-toggle {
+  position: absolute;
+  right: 1rem;
+  top: 50%;
+  transform: translateY(-50%);
+  color: #64748b;
+  cursor: pointer;
+  font-size: 1.1rem;
+  transition: color 0.3s ease;
+}
+
+.medi-password-toggle:hover {
+  color: #3b82f6;
+}
+
+/* Login Options */
+.medi-login-options {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  margin-bottom: 1.5rem;
+  font-size: 0.9rem;
+}
+
+.medi-remember-label {
+  display: flex;
+  align-items: center;
+  gap: 0.5rem;
+  color: #475569;
+  cursor: pointer;
+}
+
+.medi-remember-label input {
+  width: 16px;
+  height: 16px;
+  border-radius: 4px;
+  border: 2px solid #cbd5e1;
+  cursor: pointer;
+}
+
+.medi-forgot-link {
+  color: #3b82f6;
+  text-decoration: none;
+  font-weight: 500;
+  transition: color 0.3s ease;
+}
+
+.medi-forgot-link:hover {
+  color: #2563eb;
+  text-decoration: underline;
+}
+
+/* Role Display */
+.medi-role-display {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  padding: 1rem;
+  background: #f0f9ff;
+  border-radius: 10px;
+  border: 1px solid #bae6fd;
+  margin-bottom: 1.5rem;
+}
+
+.medi-role-text {
+  color: #0369a1;
+  font-size: 0.9rem;
+}
+
+.medi-role-text strong {
+  font-weight: 600;
+}
+
+.medi-change-role {
+  background: transparent;
+  border: 1px solid #3b82f6;
+  color: #3b82f6;
+  padding: 0.4rem 0.8rem;
+  border-radius: 6px;
+  font-size: 0.8rem;
+  font-weight: 500;
+  cursor: pointer;
+  transition: all 0.3s ease;
+}
+
+.medi-change-role:hover {
+  background: #eff6ff;
+}
+
+/* Login Button */
+.medi-login-btn {
+  width: 100%;
+  padding: 1rem;
+  background: linear-gradient(135deg, #3b82f6 0%, #2563eb 100%);
+  color: white;
+  border: none;
+  border-radius: 10px;
+  font-size: 1rem;
+  font-weight: 600;
+  cursor: pointer;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  gap: 0.5rem;
+  transition: all 0.3s ease;
+  box-shadow: 0 4px 15px rgba(59, 130, 246, 0.3);
+  margin: 1.5rem 0;
+}
+
+.medi-login-btn:hover {
+  transform: translateY(-2px);
+  box-shadow: 0 6px 20px rgba(59, 130, 246, 0.4);
+}
+
+.medi-login-btn:active {
+  transform: translateY(0);
+}
+
+.medi-role-highlight {
+  background: rgba(255, 255, 255, 0.2);
+  padding: 0.2rem 0.6rem;
+  border-radius: 4px;
+  margin-left: 0.5rem;
+  font-size: 0.9rem;
+}
+
+/* Signup Prompt */
+.medi-signup-prompt {
+  text-align: center;
+  margin: 1.5rem 0;
+  font-size: 0.9rem;
+  color: #64748b;
+}
+
+.medi-signup-link {
+  color: #3b82f6;
+  text-decoration: none;
+  font-weight: 600;
+  transition: color 0.3s ease;
+}
+
+.medi-signup-link:hover {
+  color: #2563eb;
+  text-decoration: underline;
+}
+
+/* Demo Login */
+.medi-demo-login {
+  margin-top: 2rem;
+  padding-top: 1.5rem;
+  border-top: 1px solid #e2e8f0;
+}
+
+.medi-demo-title {
+  text-align: center;
+  color: #64748b;
+  font-size: 0.9rem;
+  margin-bottom: 1rem;
+}
+
+.medi-demo-buttons {
+  display: grid;
+  grid-template-columns: 1fr 1fr;
+  gap: 1rem;
+}
+
+.medi-demo-btn {
+  padding: 0.8rem;
+  border: 2px solid;
+  border-radius: 8px;
+  font-size: 0.9rem;
+  font-weight: 500;
+  cursor: pointer;
+  transition: all 0.3s ease;
+  background: transparent;
+}
+
+.medi-demo-doctor {
+  border-color: #3b82f6;
+  color: #3b82f6;
+}
+
+.medi-demo-doctor:hover {
+  background: #eff6ff;
+  transform: translateY(-2px);
+}
+
+.medi-demo-patient {
+  border-color: #10b981;
+  color: #10b981;
+}
+
+.medi-demo-patient:hover {
+  background: #ecfdf5;
+  transform: translateY(-2px);
+}
+
+/* Right Side - Logo Only */
+.medi-login-right-side {
+  flex: 1;
+  background: linear-gradient(135deg, #1a2980 0%, #26d0ce 100%);
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  padding: 2rem;
+  position: relative;
+  overflow: hidden;
+}
+
+.medi-login-right-side::before {
+  content: '';
+  position: absolute;
+  top: 0;
+  left: 0;
+  right: 0;
+  bottom: 0;
+  background: url('data:image/svg+xml,<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 100 100" preserveAspectRatio="none"><path d="M0,0 L100,0 L100,100 Z" fill="rgba(255,255,255,0.05)"/></svg>');
+  background-size: cover;
+  pointer-events: none;
+}
+
+.medi-right-logo-container {
+  text-align: center;
+  z-index: 1;
+  width: 100%;
+  max-width: 400px;
+}
+
+.medi-right-logo-wrapper {
+  width: 120px;
+  height: 120px;
+  background: rgba(255, 255, 255, 0.1);
+  border-radius: 30px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  margin: 0 auto 2rem;
+  backdrop-filter: blur(10px);
+  border: 1px solid rgba(255, 255, 255, 0.2);
+  box-shadow: 0 20px 40px rgba(0, 0, 0, 0.2);
+}
+
+.medi-right-logo-icon {
+  font-size: 4rem;
+  color: white;
+}
+
+.medi-right-logo-text {
+  font-size: 3rem;
+  font-weight: 700;
+  color: white;
+  margin-bottom: 0.5rem;
+  letter-spacing: 0.5px;
+}
+
+.medi-right-tagline {
+  font-size: 1.2rem;
+  color: rgba(255, 255, 255, 0.9);
+  font-weight: 300;
+  margin-bottom: 3rem;
+}
+
+/* Security Features */
+.medi-security-features {
+  display: flex;
+  flex-direction: column;
+  gap: 1rem;
+  margin-top: 3rem;
+}
+
+.medi-security-item {
+  display: flex;
+  align-items: center;
+  gap: 1rem;
+  padding: 1rem;
+  background: rgba(255, 255, 255, 0.08);
+  border-radius: 10px;
+  border: 1px solid rgba(255, 255, 255, 0.1);
+  transition: transform 0.3s ease, background 0.3s ease;
+}
+
+.medi-security-item:hover {
+  transform: translateX(5px);
+  background: rgba(255, 255, 255, 0.12);
+}
+
+.medi-security-icon {
+  font-size: 1.5rem;
+  min-width: 40px;
+  height: 40px;
+  background: rgba(255, 255, 255, 0.1);
+  border-radius: 10px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+}
+
+.medi-security-text {
+  text-align: left;
+  display: flex;
+  flex-direction: column;
+}
+
+.medi-security-text strong {
+  color: white;
+  font-size: 0.9rem;
+  margin-bottom: 0.2rem;
+}
+
+.medi-security-text small {
+  color: rgba(255, 255, 255, 0.7);
+  font-size: 0.8rem;
+}
+
+/* Notification Styles */
+.medi-notification-popup {
+  position: fixed;
+  top: 20px;
+  right: 20px;
+  z-index: 9999;
+  min-width: 350px;
+  max-width: 400px;
+  color: white;
+  border-radius: 12px;
+  overflow: hidden;
+  box-shadow: 0 10px 30px rgba(0, 0, 0, 0.15);
+  animation: medi-notification-slide-in 0.3s ease-out forwards;
+}
+
+.medi-notification-closing {
+  animation: medi-notification-slide-out 0.3s ease-out forwards !important;
+}
+
+.medi-notification-content {
+  padding: 1.2rem;
+}
+
+.medi-notification-header {
+  display: flex;
+  align-items: flex-start;
+  gap: 1rem;
+  margin-bottom: 0.8rem;
+}
+
+.medi-notification-icon-wrapper {
+  background: rgba(255, 255, 255, 0.2);
+  width: 40px;
+  height: 40px;
+  border-radius: 50%;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+}
+
+.medi-notification-icon {
+  font-size: 1.2rem;
+  color: white;
+}
+
+.medi-notification-title-section h5 {
+  margin: 0 0 0.2rem 0;
+  font-size: 1rem;
+  font-weight: 600;
+}
+
+.medi-notification-title-section small {
+  opacity: 0.8;
+  font-size: 0.8rem;
+}
+
+.medi-notification-body {
+  margin-bottom: 1rem;
+}
+
+.medi-notification-body p {
+  margin: 0;
+  font-size: 0.9rem;
+  line-height: 1.4;
+}
+
+.medi-notification-progress {
+  height: 3px;
+  background: rgba(255, 255, 255, 0.3);
+  border-radius: 2px;
+  overflow: hidden;
+}
+
+.medi-progress-bar {
+  height: 100%;
+  width: 100%;
+  background: white;
+  animation: medi-progress-bar 5s linear forwards;
+}
+
+/* Animations */
+@keyframes medi-notification-slide-in {
+  from {
+    transform: translateX(100%);
+    opacity: 0;
+  }
+  to {
+    transform: translateX(0);
+    opacity: 1;
+  }
+}
+
+@keyframes medi-notification-slide-out {
+  from {
+    transform: translateX(0);
+    opacity: 1;
+  }
+  to {
+    transform: translateX(100%);
+    opacity: 0;
+  }
+}
+
+@keyframes medi-progress-bar {
+  from {
+    width: 100%;
+  }
+  to {
+    width: 0%;
+  }
+}
+
+/* Responsive Design */
+@media (max-width: 992px) {
+  .medi-login-container {
+    flex-direction: column;
+    height: auto;
+    min-height: 100vh;
+  }
+  
+  .medi-login-left-side {
+    order: 2;
+    padding: 2rem 1rem;
+  }
+  
+  .medi-login-right-side {
+    order: 1;
+    min-height: 300px;
+    padding: 2rem;
+  }
+  
+  .medi-demo-buttons {
+    grid-template-columns: 1fr;
+  }
+  
+  .medi-right-logo-wrapper {
+    width: 80px;
+    height: 80px;
+    margin-bottom: 1rem;
+  }
+  
+  .medi-right-logo-icon {
+    font-size: 2.5rem;
+  }
+  
+  .medi-right-logo-text {
+    font-size: 2rem;
+  }
+  
+  .medi-right-tagline {
+    font-size: 1rem;
+  }
+  
+  .medi-security-features {
+    flex-direction: row;
+    flex-wrap: wrap;
+    justify-content: center;
+    gap: 0.5rem;
+  }
+  
+  .medi-security-item {
+    flex: 1;
+    min-width: 150px;
+  }
+}
+
+@media (max-width: 576px) {
+  .medi-login-form-wrapper {
+    padding: 1rem;
+  }
+  
+  .medi-login-header h2 {
+    font-size: 1.8rem;
+  }
+  
+  .medi-notification-popup {
+    min-width: 280px;
+    right: 10px;
+    left: 10px;
+  }
+  
+  .medi-security-features {
+    flex-direction: column;
+  }
+  
+  .medi-security-item {
+    min-width: 100%;
+  }
+}
+
+/* Scrollbar Styling */
+.medi-login-left-side::-webkit-scrollbar {
+  width: 6px;
+}
+
+.medi-login-left-side::-webkit-scrollbar-track {
+  background: #f1f5f9;
+}
+
+.medi-login-left-side::-webkit-scrollbar-thumb {
+  background: #cbd5e1;
+  border-radius: 3px;
+}
+
+.medi-login-left-side::-webkit-scrollbar-thumb:hover {
+  background: #94a3b8;
+}

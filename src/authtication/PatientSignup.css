@@ -1,476 +1,1356 @@
-/* MedicalSignup.css */
-.medical-signup-container {
-  max-width: 1000px;
-  margin: 0 auto;
-  padding: 30px;
-  font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
-  background-color: #f8f9fa;
-  border-radius: 12px;
-  box-shadow: 0 5px 20px rgba(0, 0, 0, 0.08);
-}
-
-.medical-signup-header {
-  text-align: center;
-  margin-bottom: 40px;
-}
-
-.medical-signup-header h1 {
-  color: #2c3e50;
-  margin-bottom: 30px;
-  font-size: 28px;
+/* Main Container */
+.med-patient-signup-container {
   display: flex;
-  align-items: center;
-  justify-content: center;
-  gap: 12px;
+  height: 100vh;
+  font-family: "Segoe UI", Tahoma, Geneva, Verdana, sans-serif;
+  overflow: hidden;
+  background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
 }
 
-.medical-signup-header h1 i {
-  color: #e74c3c;
-}
-
-.step-indicator {
-  display: flex;
+/* Left Side - Form */
+.med-patient-left-side {
+  flex: 1.2;
+  background: #ffffff;
+  /* display: flex; */
   justify-content: center;
   align-items: center;
-  margin-top: 30px;
-}
-
-.step {
-  display: flex;
-  flex-direction: column;
-  align-items: center;
+  padding: 2rem;
+  overflow-y: auto;
+  box-shadow: 0 20px 60px rgba(0, 0, 0, 0.3);
+  z-index: 10;
   position: relative;
 }
 
-.step span {
+.med-patient-form-wrapper {
+  width: 100%;
+  max-width: 800px;
+  padding: 2rem;
+  animation: slideInLeft 0.6s ease-out;
+}
+
+/* Back Button */
+.med-back-button {
+  margin-bottom: 2rem;
+}
+
+.med-back-link {
+  display: inline-flex;
+  align-items: center;
+  gap: 0.5rem;
+  color: #64748b;
+  text-decoration: none;
+  font-size: 0.9rem;
+  font-weight: 500;
+  padding: 0.5rem 1rem;
+  border-radius: 8px;
+  transition: all 0.3s ease;
+  background: #f8fafc;
+}
+
+.med-back-link:hover {
+  color: #3b82f6;
+  background: #e0f2fe;
+  transform: translateX(-5px);
+}
+
+.med-back-icon {
+  font-size: 0.8rem;
+}
+
+/* Progress Steps */
+.med-progress-steps {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  margin-bottom: 2.5rem;
+  padding: 1.5rem;
+  background: linear-gradient(135deg, #f8fafc 0%, #f1f5f9 100%);
+  border-radius: 16px;
+  box-shadow: 0 4px 20px rgba(0, 0, 0, 0.05);
+}
+
+.med-step {
+  display: flex;
+  align-items: center;
+  gap: 1rem;
+  padding: 1rem;
+}
+
+.med-step-number {
   width: 50px;
   height: 50px;
   border-radius: 50%;
-  background-color: #ecf0f1;
-  color: #7f8c8d;
+  background: #e2e8f0;
+  color: #64748b;
   display: flex;
   align-items: center;
   justify-content: center;
-  font-weight: bold;
-  font-size: 20px;
-  margin-bottom: 8px;
-  border: 3px solid #ecf0f1;
+  font-weight: 700;
+  font-size: 1.4rem;
   transition: all 0.3s ease;
+  border: 3px solid transparent;
 }
 
-.step p {
-  color: #7f8c8d;
-  font-weight: 500;
-  font-size: 14px;
-}
-
-.step.active span {
-  background-color: #3498db;
+.med-step.active .med-step-number {
+  background: linear-gradient(135deg, #3b82f6 0%, #1d4ed8 100%);
   color: white;
-  border-color: #3498db;
+  box-shadow: 0 4px 15px rgba(59, 130, 246, 0.4);
+  border-color: #93c5fd;
+  animation: pulse 2s infinite;
 }
 
-.step.active p {
-  color: #3498db;
-  font-weight: 600;
+.med-step-info {
+  display: flex;
+  flex-direction: column;
 }
 
-.step-connector {
-  width: 150px;
+.med-step-title {
+  font-weight: 700;
+  color: #334155;
+  font-size: 1rem;
+  letter-spacing: 0.5px;
+}
+
+.med-step.active .med-step-title {
+  color: #1d4ed8;
+  text-shadow: 0 1px 2px rgba(29, 78, 216, 0.1);
+}
+
+.med-step-desc {
+  font-size: 0.85rem;
+  color: #94a3b8;
+  margin-top: 0.2rem;
+}
+
+.med-step-connector {
+  width: 80px;
   height: 3px;
-  background-color: #ecf0f1;
-  margin: 0 20px;
-  position: relative;
-  top: -15px;
+  background: linear-gradient(to right, #e2e8f0, #e2e8f0);
+  margin: 0 1.5rem;
+  border-radius: 2px;
 }
 
-.medical-signup-form {
-  background-color: white;
-  padding: 30px;
-  border-radius: 10px;
-  margin-bottom: 20px;
+.med-step.active + .med-step-connector {
+  background: linear-gradient(to right, #3b82f6, #e2e8f0);
 }
 
-.medical-signup-form h2 {
-  color: #2c3e50;
-  margin-bottom: 25px;
-  padding-bottom: 15px;
-  border-bottom: 2px solid #f1f2f6;
-}
-
-.medical-signup-form h3 {
-  color: #34495e;
-  margin-bottom: 20px;
-  display: flex;
-  align-items: center;
-  gap: 10px;
-  font-size: 20px;
-}
-
-.medical-signup-form h3 i {
-  color: #3498db;
-}
-
-.form-row {
-  display: flex;
-  gap: 20px;
-  margin-bottom: 20px;
-}
-
-.form-group {
-  flex: 1;
-  margin-bottom: 20px;
-}
-
-.form-group label {
-  display: block;
-  margin-bottom: 8px;
-  font-weight: 600;
-  color: #2c3e50;
-}
-
-.required {
-  color: #e74c3c;
-}
-
-.form-group input,
-.form-group select,
-.form-group textarea {
-  width: 100%;
-  padding: 12px 15px;
-  border: 1px solid #ddd;
-  border-radius: 6px;
-  font-size: 16px;
-  transition: border-color 0.3s;
-  box-sizing: border-box;
-}
-
-.form-group input:focus,
-.form-group select:focus,
-.form-group textarea:focus {
-  border-color: #3498db;
-  outline: none;
-  box-shadow: 0 0 0 2px rgba(52, 152, 219, 0.2);
-}
-
-.form-group input.error,
-.form-group select.error,
-.form-group textarea.error {
-  border-color: #e74c3c;
-}
-
-.form-group input.error:focus,
-.form-group select.error:focus,
-.form-group textarea.error:focus {
-  box-shadow: 0 0 0 2px rgba(231, 76, 60, 0.2);
-}
-
-.error-message {
-  color: #e74c3c;
-  font-size: 14px;
-  margin-top: 5px;
-}
-
-.phone-input-wrapper {
-  display: flex;
-}
-
-.phone-input-wrapper .phone-prefix {
-  background-color: #f8f9fa;
-  padding: 12px 15px;
-  border: 1px solid #ddd;
-  border-right: none;
-  border-radius: 6px 0 0 6px;
-  color: #7f8c8d;
-  font-weight: 500;
-}
-
-.phone-input-wrapper input {
-  border-radius: 0 6px 6px 0;
-}
-
-.medical-info-section,
-.contact-info-section {
-  margin-top: 30px;
-  padding-top: 25px;
-  border-top: 1px solid #f1f2f6;
-}
-
-.form-actions {
-  margin-top: 30px;
+/* Form Header */
+.med-form-header {
+  margin-bottom: 2.5rem;
   text-align: center;
 }
 
-.btn-next,
-.btn-back,
-.btn-submit,
-.btn-verify,
-.btn-resend {
-  padding: 14px 30px;
-  border: none;
-  border-radius: 6px;
-  font-size: 16px;
+.med-form-header h2 {
+  font-size: 2.5rem;
+  color: #1e293b;
+  margin-bottom: 0.5rem;
+  font-weight: 800;
+  background: linear-gradient(135deg, #1e293b 0%, #334155 100%);
+  -webkit-background-clip: text;
+  -webkit-text-fill-color: transparent;
+  letter-spacing: -0.5px;
+}
+
+.med-form-subtitle {
+  color: #64748b;
+  font-size: 1.1rem;
+  font-weight: 400;
+  max-width: 600px;
+  margin: 0 auto;
+}
+
+/* Form Sections */
+.med-form-section {
+  margin-bottom: 2.5rem;
+  padding-bottom: 2.5rem;
+  border-bottom: 2px solid #f1f5f9;
+  position: relative;
+}
+
+.med-form-section:last-child {
+  border-bottom: none;
+}
+
+.med-section-title {
+  display: flex;
+  align-items: center;
+  gap: 0.8rem;
+  font-size: 1.3rem;
+  color: #334155;
+  margin-bottom: 2rem;
+  font-weight: 700;
+  padding: 0.5rem 1rem;
+  background: linear-gradient(135deg, #f8fafc 0%, #e2e8f0 100%);
+  border-radius: 12px;
+  border-left: 4px solid #3b82f6;
+}
+
+.med-section-icon {
+  color: #3b82f6;
+  font-size: 1.2rem;
+}
+
+/* Form Layout */
+.med-form-row {
+  display: grid;
+  grid-template-columns: 1fr 1fr;
+  gap: 2rem;
+  margin-bottom: 2rem;
+}
+
+.address {
+  display: grid;
+
+  gap: 2rem;
+  margin-bottom: 2rem;
+}
+
+/* Input Groups */
+.med-input-group {
+  margin-bottom: 1.5rem;
+}
+
+.med-input-label {
+  display: block;
+  color: #334155;
+  font-size: 0.95rem;
   font-weight: 600;
+  margin-bottom: 0.8rem;
+  display: flex;
+  align-items: center;
+  gap: 0.5rem;
+}
+
+.med-input-label .med-input-icon {
+  color: #3b82f6;
+  font-size: 0.9rem;
+}
+
+.med-required {
+  color: #ef4444;
+  font-size: 1.2rem;
+}
+
+.med-input-field,
+.med-select-field {
+  width: 100%;
+  padding: 1rem 1.2rem;
+  border: 2px solid #e2e8f0;
+  border-radius: 12px;
+  font-size: 1rem;
+  color: #334155;
+  background: #ffffff;
+  transition: all 0.3s ease;
+  box-shadow: 0 2px 5px rgba(0, 0, 0, 0.05);
+}
+
+.med-input-field:focus,
+.med-select-field:focus {
+  outline: none;
+  border-color: #3b82f6;
+  box-shadow: 0 0 0 4px rgba(59, 130, 246, 0.15);
+  transform: translateY(-1px);
+}
+
+.med-input-field.error,
+.med-select-field.error {
+  border-color: #ef4444;
+  animation: shake 0.5s ease-in-out;
+}
+
+.med-textarea-field {
+  width: 100%;
+  padding: 1rem 1.2rem;
+  border: 2px solid #e2e8f0;
+  border-radius: 12px;
+  font-size: 1rem;
+  color: #334155;
+  background: #ffffff;
+  resize: vertical;
+  transition: all 0.3s ease;
+  min-height: 100px;
+  box-shadow: 0 2px 5px rgba(0, 0, 0, 0.05);
+}
+
+.med-textarea-field:focus {
+  outline: none;
+  border-color: #3b82f6;
+  box-shadow: 0 0 0 4px rgba(59, 130, 246, 0.15);
+}
+
+/* Gender Options */
+.med-gender-options {
+  display: grid;
+  grid-template-columns: repeat(4, 1fr);
+  gap: 1rem;
+  margin-top: 0.5rem;
+}
+
+.med-gender-option {
   cursor: pointer;
-  transition: all 0.3s;
+}
+
+.med-gender-option input {
+  display: none;
+}
+
+.med-gender-content {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  gap: 0.5rem;
+  padding: 1rem 0.5rem;
+  border: 2px solid #e2e8f0;
+  border-radius: 12px;
+  transition: all 0.3s ease;
+  background: white;
+  text-align: center;
+  height: 100%;
+}
+
+.med-gender-option input:checked + .med-gender-content {
+  border-color: #3b82f6;
+  background: linear-gradient(135deg, #eff6ff 0%, #dbeafe 100%);
+  transform: translateY(-2px);
+  box-shadow: 0 4px 12px rgba(59, 130, 246, 0.2);
+}
+
+.med-gender-icon {
+  font-size: 1.5rem;
+  font-weight: bold;
+}
+
+.med-gender-text {
+  font-size: 0.85rem;
+  color: #64748b;
+  font-weight: 500;
+}
+
+/* Phone Input */
+.med-phone-input {
+  display: flex;
+  border-radius: 12px;
+  overflow: hidden;
+  box-shadow: 0 2px 5px rgba(0, 0, 0, 0.05);
+}
+
+.med-phone-prefix {
+  background: linear-gradient(135deg, #f1f5f9 0%, #e2e8f0 100%);
+  padding: 1rem 1.2rem;
+  border: 2px solid #e2e8f0;
+  border-right: none;
+  color: #64748b;
+  font-weight: 600;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  min-width: 70px;
+}
+
+.med-phone-input .med-input-field {
+  border-radius: 0 12px 12px 0;
+  border-left: none;
+}
+
+/* Error Messages */
+.med-error-message {
+  color: #ef4444;
+  font-size: 0.85rem;
+  margin-top: 0.5rem;
+  display: flex;
+  align-items: center;
+  gap: 0.5rem;
+  animation: fadeIn 0.3s ease;
+}
+
+/* Form Actions */
+.med-form-actions {
+  margin-top: 3rem;
+  text-align: center;
+}
+
+.med-next-button {
+  padding: 1.2rem 3rem;
+  background: linear-gradient(135deg, #3b82f6 0%, #2563eb 100%);
+  color: white;
+  border: none;
+  border-radius: 12px;
+  font-size: 1.1rem;
+  font-weight: 700;
+  cursor: pointer;
   display: inline-flex;
   align-items: center;
   justify-content: center;
-  gap: 8px;
+  gap: 1rem;
+  transition: all 0.3s ease;
+  box-shadow: 0 6px 20px rgba(59, 130, 246, 0.4);
+  letter-spacing: 0.5px;
+  position: relative;
+  overflow: hidden;
 }
 
-.btn-next {
-  background-color: #3498db;
-  color: white;
-  min-width: 250px;
+.med-next-button::before {
+  content: "";
+  position: absolute;
+  top: 0;
+  left: -100%;
+  width: 100%;
+  height: 100%;
+  background: linear-gradient(
+    90deg,
+    transparent,
+    rgba(255, 255, 255, 0.2),
+    transparent
+  );
+  transition: 0.5s;
 }
 
-.btn-next:hover {
-  background-color: #2980b9;
-  transform: translateY(-2px);
-  box-shadow: 0 4px 10px rgba(52, 152, 219, 0.3);
+.med-next-button:hover {
+  transform: translateY(-3px);
+  box-shadow: 0 10px 25px rgba(59, 130, 246, 0.5);
 }
 
-.verification-instruction {
-  color: #7f8c8d;
-  margin-bottom: 30px;
-  font-size: 16px;
-  line-height: 1.5;
-  background-color: #f8f9fa;
-  padding: 15px;
-  border-radius: 6px;
-  border-left: 4px solid #3498db;
+.med-next-button:hover::before {
+  left: 100%;
 }
 
-.otp-verification-section {
+.med-button-icon {
+  font-size: 1rem;
+  transition: transform 0.3s ease;
+}
+
+.med-next-button:hover .med-button-icon {
+  transform: translateX(5px);
+}
+
+/* OTP Verification */
+.med-otp-verification {
   display: flex;
   flex-direction: column;
-  gap: 25px;
-  margin-bottom: 40px;
+  gap: 2.5rem;
+  margin-bottom: 2rem;
 }
 
-.otp-box {
-  background-color: #f8f9fa;
-  padding: 25px;
-  border-radius: 8px;
-  border: 1px solid #e9ecef;
+.med-otp-section {
+  background: linear-gradient(135deg, #ffffff 0%, #f8fafc 100%);
+  padding: 2rem;
+  border-radius: 16px;
+  border: 2px solid #e2e8f0;
+  box-shadow: 0 8px 30px rgba(0, 0, 0, 0.08);
+  transition: transform 0.3s ease;
 }
 
-.otp-header {
+.med-otp-section:hover {
+  transform: translateY(-2px);
+}
+
+.med-otp-header {
   display: flex;
   justify-content: space-between;
   align-items: center;
-  margin-bottom: 15px;
+  margin-bottom: 1.5rem;
 }
 
-.otp-header h4 {
-  color: #2c3e50;
-  margin: 0;
+.med-otp-title {
   display: flex;
   align-items: center;
-  gap: 10px;
+  gap: 1rem;
+  font-weight: 700;
+  color: #334155;
+  font-size: 1.2rem;
 }
 
-.otp-header h4 i {
-  color: #3498db;
+.med-otp-icon {
+  color: #3b82f6;
+  font-size: 1.3rem;
 }
 
-.otp-status {
-  padding: 6px 15px;
-  border-radius: 20px;
-  font-size: 14px;
+.med-otp-status {
+  display: flex;
+  align-items: center;
+  gap: 0.5rem;
+  padding: 0.5rem 1.2rem;
+  border-radius: 25px;
+  font-size: 0.9rem;
   font-weight: 600;
+  letter-spacing: 0.5px;
 }
 
-.otp-status.pending {
-  background-color: #fff3cd;
-  color: #856404;
+.med-otp-status.pending {
+  background: linear-gradient(135deg, #fef3c7 0%, #fde68a 100%);
+  color: #92400e;
+  box-shadow: 0 2px 10px rgba(251, 191, 36, 0.2);
 }
 
-.otp-status.verified {
-  background-color: #d4edda;
-  color: #155724;
+.med-otp-status.verified {
+  background: linear-gradient(135deg, #d1fae5 0%, #a7f3d0 100%);
+  color: #065f46;
+  box-shadow: 0 2px 10px rgba(16, 185, 129, 0.2);
 }
 
-.otp-target {
-  color: #495057;
-  margin-bottom: 20px;
-  font-size: 15px;
+.med-otp-target {
+  color: #64748b;
+  font-size: 1rem;
+  margin-bottom: 1.5rem;
+  padding: 0.8rem 1rem;
+  background: #f8fafc;
+  border-radius: 8px;
+  border-left: 4px solid #3b82f6;
 }
 
-.otp-target strong {
-  color: #2c3e50;
-}
-
-.otp-input-group {
+.med-otp-input-group {
   display: flex;
-  gap: 15px;
+  gap: 1.5rem;
   align-items: center;
 }
 
-.otp-input-group input {
+.med-otp-input {
   flex: 1;
-  padding: 14px;
-  border: 1px solid #ddd;
-  border-radius: 6px;
-  font-size: 18px;
+  padding: 1.2rem;
+  border: 2px solid #e2e8f0;
+  border-radius: 12px;
+  font-size: 1.5rem;
   text-align: center;
   letter-spacing: 5px;
   font-weight: bold;
+  color: #1e293b;
+  background: white;
+  box-shadow: 0 4px 15px rgba(0, 0, 0, 0.05);
+  transition: all 0.3s ease;
 }
 
-.otp-input-group input:focus {
-  border-color: #3498db;
+.med-otp-input:focus {
   outline: none;
-  box-shadow: 0 0 0 2px rgba(52, 152, 219, 0.2);
+  border-color: #3b82f6;
+  box-shadow: 0 0 0 4px rgba(59, 130, 246, 0.15);
+  transform: translateY(-1px);
 }
 
-.otp-input-group input.error {
-  border-color: #e74c3c;
+.med-otp-input.error {
+  border-color: #ef4444;
+  animation: shake 0.5s ease-in-out;
 }
 
-.btn-verify {
-  background-color: #2ecc71;
-  color: white;
-  padding: 14px 25px;
+.med-otp-actions {
+  display: flex;
+  gap: 1rem;
 }
 
-.btn-verify:hover {
-  background-color: #27ae60;
-}
-
-.btn-resend {
-  background-color: #f8f9fa;
-  color: #3498db;
-  border: 1px solid #3498db;
-  padding: 14px 25px;
-}
-
-.btn-resend:hover:not(.disabled) {
-  background-color: #3498db;
-  color: white;
-}
-
-.btn-resend.disabled {
-  opacity: 0.6;
-  cursor: not-allowed;
-  background-color: #f8f9fa;
-  color: #95a5a6;
-  border-color: #bdc3c7;
-}
-
-.verified-badge {
-  background-color: #d4edda;
-  color: #155724;
-  padding: 12px 20px;
-  border-radius: 6px;
+.med-verify-button,
+.med-resend-button {
+  padding: 1rem 2rem;
+  border: none;
+  border-radius: 10px;
+  font-size: 1rem;
   font-weight: 600;
-  display: flex;
-  align-items: center;
-  gap: 8px;
+  cursor: pointer;
+  transition: all 0.3s ease;
+  letter-spacing: 0.5px;
+  min-width: 120px;
 }
 
-.verified-badge i {
-  color: #28a745;
-}
-
-.form-navigation {
-  display: flex;
-  justify-content: space-between;
-  margin-top: 30px;
-}
-
-.btn-back {
-  background-color: #f8f9fa;
-  color: #495057;
-  border: 1px solid #dee2e6;
-}
-
-.btn-back:hover {
-  background-color: #e9ecef;
-}
-
-.btn-submit {
-  background-color: #2ecc71;
+.med-verify-button {
+  background: linear-gradient(135deg, #10b981 0%, #059669 100%);
   color: white;
-  min-width: 200px;
+  box-shadow: 0 4px 15px rgba(16, 185, 129, 0.3);
 }
 
-.btn-submit:hover:not(:disabled) {
-  background-color: #27ae60;
+.med-verify-button:hover {
   transform: translateY(-2px);
-  box-shadow: 0 4px 10px rgba(46, 204, 113, 0.3);
+  box-shadow: 0 6px 20px rgba(16, 185, 129, 0.4);
 }
 
-.btn-submit:disabled {
-  opacity: 0.6;
+.med-resend-button {
+  background: transparent;
+  border: 2px solid #3b82f6;
+  color: #3b82f6;
+  box-shadow: 0 4px 15px rgba(59, 130, 246, 0.1);
+}
+
+.med-resend-button:hover:not(.disabled) {
+  background: linear-gradient(135deg, #eff6ff 0%, #dbeafe 100%);
+  transform: translateY(-2px);
+  box-shadow: 0 6px 20px rgba(59, 130, 246, 0.2);
+}
+
+.med-resend-button.disabled {
+  opacity: 0.5;
   cursor: not-allowed;
+  transform: none !important;
 }
 
-.form-footer {
-  text-align: center;
-  color: #6c757d;
-  font-size: 14px;
-}
-
-.form-footer a {
-  color: #3498db;
-  text-decoration: none;
-  font-weight: 600;
-}
-
-.form-footer a:hover {
-  text-decoration: underline;
-}
-
-.disclaimer {
-  margin-top: 15px;
-  padding: 12px;
-  background-color: #e8f4fc;
-  border-radius: 6px;
-  border-left: 4px solid #3498db;
-  font-size: 13px;
+.med-verified-badge {
   display: flex;
   align-items: center;
   justify-content: center;
-  gap: 10px;
+  gap: 0.8rem;
+  padding: 1rem 2rem;
+  background: linear-gradient(135deg, #d1fae5 0%, #a7f3d0 100%);
+  color: #065f46;
+  border-radius: 10px;
+  font-weight: 700;
+  font-size: 1rem;
+  min-width: 120px;
+  box-shadow: 0 4px 15px rgba(16, 185, 129, 0.2);
+  animation: fadeIn 0.5s ease;
 }
 
-.disclaimer i {
-  color: #3498db;
+/* Form Navigation */
+.med-form-navigation {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  margin-top: 3rem;
+  padding-top: 2rem;
+  border-top: 2px solid #f1f5f9;
 }
 
-/* Responsive styles */
-@media (max-width: 768px) {
-  .medical-signup-container {
-    padding: 20px;
+.med-back-button-secondary,
+.med-submit-button {
+  padding: 1.2rem 2.5rem;
+  border: none;
+  border-radius: 12px;
+  font-size: 1.1rem;
+  font-weight: 700;
+  cursor: pointer;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  gap: 1rem;
+  transition: all 0.3s ease;
+  letter-spacing: 0.5px;
+}
+
+.med-back-button-secondary {
+  background: linear-gradient(135deg, #f1f5f9 0%, #e2e8f0 100%);
+  color: #64748b;
+  border: 2px solid #e2e8f0;
+  box-shadow: 0 4px 15px rgba(0, 0, 0, 0.05);
+}
+
+.med-back-button-secondary:hover {
+  background: linear-gradient(135deg, #e2e8f0 0%, #cbd5e1 100%);
+  transform: translateX(-5px);
+  box-shadow: 0 6px 20px rgba(0, 0, 0, 0.1);
+}
+
+.med-submit-button {
+  background: linear-gradient(135deg, #10b981 0%, #059669 100%);
+  color: white;
+  box-shadow: 0 6px 20px rgba(16, 185, 129, 0.4);
+  position: relative;
+  overflow: hidden;
+}
+
+.med-submit-button::before {
+  content: "";
+  position: absolute;
+  top: 0;
+  left: -100%;
+  width: 100%;
+  height: 100%;
+  background: linear-gradient(
+    90deg,
+    transparent,
+    rgba(255, 255, 255, 0.2),
+    transparent
+  );
+  transition: 0.5s;
+}
+
+.med-submit-button:hover:not(:disabled) {
+  transform: translateY(-3px);
+  box-shadow: 0 10px 25px rgba(16, 185, 129, 0.5);
+}
+
+.med-submit-button:hover:not(:disabled)::before {
+  left: 100%;
+}
+
+.med-submit-button:disabled {
+  opacity: 0.5;
+  cursor: not-allowed;
+  transform: none !important;
+}
+
+/* Login Link */
+.med-login-link {
+  text-align: center;
+  margin-top: 3rem;
+  padding-top: 2rem;
+  border-top: 2px solid #f1f5f9;
+}
+
+.med-login-link p {
+  color: #64748b;
+  font-size: 1rem;
+  margin-bottom: 1rem;
+  line-height: 1.6;
+}
+
+.med-login-text {
+  color: #3b82f6;
+  text-decoration: none;
+  font-weight: 700;
+  position: relative;
+  padding: 0.2rem 0;
+}
+
+.med-login-text::after {
+  content: "";
+  position: absolute;
+  bottom: 0;
+  left: 0;
+  width: 0;
+  height: 2px;
+  background: linear-gradient(135deg, #3b82f6 0%, #2563eb 100%);
+  transition: width 0.3s ease;
+}
+
+.med-login-text:hover {
+  color: #2563eb;
+}
+
+.med-login-text:hover::after {
+  width: 100%;
+}
+
+.med-security-note {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  gap: 1rem;
+  font-size: 0.9rem;
+  color: #94a3b8;
+  margin-top: 1.5rem;
+  padding: 1rem;
+  background: linear-gradient(135deg, #f8fafc 0%, #f1f5f9 100%);
+  border-radius: 10px;
+  border: 1px solid #e2e8f0;
+}
+
+.med-security-icon {
+  color: #3b82f6;
+  font-size: 1.1rem;
+}
+
+/* Right Side - Logo & Info */
+.med-patient-right-side {
+  flex: 1;
+  background: linear-gradient(135deg, #1e3a8a 0%, #1e40af 100%);
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  padding: 2rem;
+  position: relative;
+  overflow: hidden;
+  animation: slideInRight 0.6s ease-out;
+}
+
+.med-right-content-wrapper {
+  position: relative;
+  z-index: 2;
+  width: 100%;
+  max-width: 500px;
+  text-align: center;
+}
+
+.med-right-logo-container {
+  animation: fadeInUp 0.8s ease-out 0.2s both;
+}
+
+.med-right-logo-wrapper {
+  width: 140px;
+  height: 140px;
+  background: rgba(255, 255, 255, 0.15);
+  border-radius: 35px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  margin: 0 auto 2.5rem;
+  backdrop-filter: blur(20px);
+  border: 2px solid rgba(255, 255, 255, 0.25);
+  box-shadow: 0 25px 50px rgba(0, 0, 0, 0.3);
+  position: relative;
+  transition: transform 0.5s ease;
+}
+
+.med-right-logo-wrapper:hover {
+  transform: scale(1.05) rotate(5deg);
+}
+
+.med-right-logo-icon {
+  font-size: 5rem;
+  color: white;
+  filter: drop-shadow(0 4px 10px rgba(0, 0, 0, 0.2));
+}
+
+.med-logo-glow {
+  position: absolute;
+  top: -10px;
+  left: -10px;
+  right: -10px;
+  bottom: -10px;
+  background: radial-gradient(
+    circle at center,
+    rgba(59, 130, 246, 0.5) 0%,
+    transparent 70%
+  );
+  border-radius: 45px;
+  z-index: -1;
+  animation: glow 2s ease-in-out infinite alternate;
+}
+
+.med-right-logo-text {
+  font-size: 3.5rem;
+  font-weight: 900;
+  color: white;
+  margin-bottom: 0.8rem;
+  letter-spacing: 1px;
+  text-shadow: 0 4px 15px rgba(0, 0, 0, 0.3);
+  background: linear-gradient(135deg, #ffffff 0%, #e2e8f0 100%);
+  -webkit-background-clip: text;
+  -webkit-text-fill-color: transparent;
+}
+
+.med-right-tagline {
+  font-size: 1.3rem;
+  color: rgba(255, 255, 255, 0.9);
+  font-weight: 300;
+  margin-bottom: 3rem;
+  letter-spacing: 0.5px;
+}
+
+/* Features Container */
+.med-features-container {
+  margin: 3rem 0;
+  animation: fadeInUp 0.8s ease-out 0.4s both;
+}
+
+.med-features-title {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  gap: 1rem;
+  font-size: 1.5rem;
+  color: white;
+  font-weight: 700;
+  margin-bottom: 2rem;
+  text-shadow: 0 2px 10px rgba(0, 0, 0, 0.2);
+}
+
+.med-feature-star-icon {
+  color: #fbbf24;
+  font-size: 1.8rem;
+  filter: drop-shadow(0 2px 5px rgba(251, 191, 36, 0.3));
+}
+
+.med-features-grid {
+  display: grid;
+  grid-template-columns: 1fr 1fr;
+  gap: 1.5rem;
+  margin-bottom: 2rem;
+}
+
+.med-feature-card {
+  background: rgba(255, 255, 255, 0.1);
+  border-radius: 16px;
+  padding: 1.5rem;
+  border: 1px solid rgba(255, 255, 255, 0.15);
+  backdrop-filter: blur(10px);
+  transition: all 0.3s ease;
+  text-align: left;
+}
+
+.med-feature-card:hover {
+  transform: translateY(-5px);
+  background: rgba(255, 255, 255, 0.15);
+  box-shadow: 0 15px 30px rgba(0, 0, 0, 0.2);
+}
+
+.med-feature-icon-wrapper {
+  width: 60px;
+  height: 60px;
+  background: linear-gradient(
+    135deg,
+    rgba(255, 255, 255, 0.2) 0%,
+    rgba(255, 255, 255, 0.1) 100%
+  );
+  border-radius: 15px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  margin-bottom: 1.2rem;
+  border: 1px solid rgba(255, 255, 255, 0.2);
+}
+
+.med-feature-card-icon {
+  font-size: 1.8rem;
+  color: white;
+}
+
+.med-feature-card-content h4 {
+  color: white;
+  font-size: 1.1rem;
+  font-weight: 700;
+  margin-bottom: 0.5rem;
+}
+
+.med-feature-card-content p {
+  color: rgba(255, 255, 255, 0.8);
+  font-size: 0.9rem;
+  line-height: 1.5;
+}
+
+/* Stats Container */
+.med-stats-container {
+  display: flex;
+  justify-content: space-around;
+  margin: 3rem 0;
+  animation: fadeInUp 0.8s ease-out 0.6s both;
+}
+
+.med-stat-card {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  text-align: center;
+  padding: 1.5rem;
+  background: rgba(255, 255, 255, 0.08);
+  border-radius: 15px;
+  border: 1px solid rgba(255, 255, 255, 0.1);
+  min-width: 100px;
+  transition: transform 0.3s ease;
+}
+
+.med-stat-card:hover {
+  transform: translateY(-5px);
+  background: rgba(255, 255, 255, 0.12);
+}
+
+.med-stat-number {
+  font-size: 2.2rem;
+  font-weight: 800;
+  color: white;
+  margin-bottom: 0.5rem;
+  text-shadow: 0 2px 10px rgba(0, 0, 0, 0.3);
+}
+
+.med-stat-label {
+  font-size: 0.85rem;
+  color: rgba(255, 255, 255, 0.9);
+  font-weight: 500;
+  letter-spacing: 0.5px;
+}
+
+/* Testimonial */
+.med-testimonial {
+  background: rgba(255, 255, 255, 0.1);
+  border-radius: 20px;
+  padding: 2rem;
+  margin-top: 3rem;
+  border: 1px solid rgba(255, 255, 255, 0.15);
+  backdrop-filter: blur(10px);
+  animation: fadeInUp 0.8s ease-out 0.8s both;
+  position: relative;
+  overflow: hidden;
+}
+
+.med-testimonial::before {
+  content: '"';
+  position: absolute;
+  top: -20px;
+  left: 20px;
+  font-size: 8rem;
+  color: rgba(255, 255, 255, 0.1);
+  font-family: Georgia, serif;
+  line-height: 1;
+}
+
+.med-testimonial-content {
+  color: white;
+  font-size: 1.1rem;
+  font-style: italic;
+  line-height: 1.6;
+  margin-bottom: 1.5rem;
+  position: relative;
+  z-index: 1;
+}
+
+.med-testimonial-author {
+  color: rgba(255, 255, 255, 0.9);
+  font-size: 0.9rem;
+  font-weight: 500;
+  text-align: right;
+}
+
+/* Background Elements */
+.med-right-bg-element {
+  position: absolute;
+  border-radius: 50%;
+  background: radial-gradient(
+    circle,
+    rgba(255, 255, 255, 0.1) 0%,
+    transparent 70%
+  );
+  filter: blur(20px);
+  animation: float 15s infinite ease-in-out;
+}
+
+.med-bg-1 {
+  width: 300px;
+  height: 300px;
+  top: -150px;
+  right: -150px;
+  animation-delay: 0s;
+}
+
+.med-bg-2 {
+  width: 200px;
+  height: 200px;
+  bottom: -100px;
+  left: -100px;
+  animation-delay: 5s;
+}
+
+.med-bg-3 {
+  width: 150px;
+  height: 150px;
+  top: 50%;
+  left: 10%;
+  animation-delay: 10s;
+}
+
+/* Animations */
+@keyframes slideInLeft {
+  from {
+    opacity: 0;
+    transform: translateX(-50px);
   }
-  
-  .medical-signup-form {
-    padding: 20px;
+  to {
+    opacity: 1;
+    transform: translateX(0);
   }
-  
-  .form-row {
+}
+
+@keyframes slideInRight {
+  from {
+    opacity: 0;
+    transform: translateX(50px);
+  }
+  to {
+    opacity: 1;
+    transform: translateX(0);
+  }
+}
+
+@keyframes fadeInUp {
+  from {
+    opacity: 0;
+    transform: translateY(30px);
+  }
+  to {
+    opacity: 1;
+    transform: translateY(0);
+  }
+}
+
+@keyframes pulse {
+  0%,
+  100% {
+    box-shadow: 0 4px 15px rgba(59, 130, 246, 0.4);
+  }
+  50% {
+    box-shadow: 0 4px 25px rgba(59, 130, 246, 0.6);
+  }
+}
+
+@keyframes glow {
+  from {
+    opacity: 0.5;
+    transform: scale(1);
+  }
+  to {
+    opacity: 0.8;
+    transform: scale(1.05);
+  }
+}
+
+@keyframes float {
+  0%,
+  100% {
+    transform: translateY(0) rotate(0deg);
+  }
+  33% {
+    transform: translateY(-20px) rotate(120deg);
+  }
+  66% {
+    transform: translateY(20px) rotate(240deg);
+  }
+}
+
+@keyframes shake {
+  0%,
+  100% {
+    transform: translateX(0);
+  }
+  10%,
+  30%,
+  50%,
+  70%,
+  90% {
+    transform: translateX(-5px);
+  }
+  20%,
+  40%,
+  60%,
+  80% {
+    transform: translateX(5px);
+  }
+}
+
+@keyframes fadeIn {
+  from {
+    opacity: 0;
+  }
+  to {
+    opacity: 1;
+  }
+}
+
+/* Responsive Design */
+@media (max-width: 1200px) {
+  .med-patient-signup-container {
     flex-direction: column;
-    gap: 0;
+    height: auto;
+    min-height: 100vh;
+    background: #667eea;
   }
-  
-  .step-connector {
-    width: 80px;
+
+  .med-patient-left-side {
+    order: 2;
+    padding: 1.5rem;
+    flex: none;
+    min-height: calc(100vh - 400px);
   }
-  
-  .otp-input-group {
+
+  .med-patient-right-side {
+    order: 1;
+    min-height: 400px;
+    padding: 2rem;
+    flex: none;
+  }
+
+  .med-right-logo-wrapper {
+    width: 100px;
+    height: 100px;
+    margin-bottom: 1.5rem;
+  }
+
+  .med-right-logo-icon {
+    font-size: 3.5rem;
+  }
+
+  .med-right-logo-text {
+    font-size: 2.5rem;
+  }
+
+  .med-right-tagline {
+    font-size: 1.1rem;
+  }
+
+  .med-features-grid {
+    grid-template-columns: 1fr;
+    gap: 1rem;
+  }
+
+  .med-stat-card {
+    padding: 1rem;
+    min-width: 80px;
+  }
+
+  .med-stat-number {
+    font-size: 1.8rem;
+  }
+}
+
+@media (max-width: 768px) {
+  .med-patient-form-wrapper {
+    padding: 1rem;
+  }
+
+  .med-progress-steps {
+    flex-direction: column;
+    align-items: flex-start;
+    gap: 1rem;
+    padding: 1rem;
+  }
+
+  .med-step-connector {
+    width: 2px;
+    height: 40px;
+    margin: 0 auto;
+  }
+
+  .med-form-row {
+    grid-template-columns: 1fr;
+    gap: 1rem;
+  }
+
+  .med-gender-options {
+    grid-template-columns: repeat(2, 1fr);
+  }
+
+  .med-otp-input-group {
     flex-direction: column;
     align-items: stretch;
   }
-  
-  .form-navigation {
+
+  .med-otp-actions {
     flex-direction: column;
-    gap: 15px;
   }
-  
-  .btn-back,
-  .btn-submit {
+
+  .med-verify-button,
+  .med-resend-button {
     width: 100%;
   }
+
+  .med-form-navigation {
+    flex-direction: column;
+    gap: 1rem;
+  }
+
+  .med-back-button-secondary,
+  .med-submit-button {
+    width: 100%;
+  }
+
+  .med-form-header h2 {
+    font-size: 2rem;
+  }
+
+  .med-stats-container {
+    flex-direction: column;
+    gap: 1rem;
+  }
+
+  .med-stat-card {
+    width: 100%;
+  }
+}
+
+@media (max-width: 480px) {
+  .med-patient-left-side,
+  .med-patient-right-side {
+    padding: 1rem;
+  }
+
+  .med-form-header h2 {
+    font-size: 1.8rem;
+  }
+
+  .med-section-title {
+    font-size: 1.1rem;
+  }
+
+  .med-gender-options {
+    grid-template-columns: 1fr;
+  }
+
+  .med-next-button,
+  .med-back-button-secondary,
+  .med-submit-button {
+    padding: 1rem 1.5rem;
+    font-size: 1rem;
+  }
+
+  .med-right-logo-wrapper {
+    width: 80px;
+    height: 80px;
+  }
+
+  .med-right-logo-icon {
+    font-size: 2.5rem;
+  }
+
+  .med-right-logo-text {
+    font-size: 2rem;
+  }
+
+  .med-testimonial {
+    padding: 1.5rem;
+  }
+}
+
+/* Scrollbar Styling */
+.med-patient-left-side::-webkit-scrollbar {
+  width: 8px;
+}
+
+.med-patient-left-side::-webkit-scrollbar-track {
+  background: #f1f5f9;
+  border-radius: 4px;
+}
+
+.med-patient-left-side::-webkit-scrollbar-thumb {
+  background: linear-gradient(135deg, #3b82f6 0%, #1d4ed8 100%);
+  border-radius: 4px;
+}
+
+.med-patient-left-side::-webkit-scrollbar-thumb:hover {
+  background: linear-gradient(135deg, #2563eb 0%, #1e40af 100%);
+}
+
+/* Print Styles */
+@media print {
+  .med-patient-right-side,
+  .med-back-button,
+  .med-progress-steps,
+  .med-form-actions,
+  .med-login-link {
+    display: none;
+  }
+
+  .med-patient-left-side {
+    flex: 1;
+    box-shadow: none;
+  }
+
+  .med-patient-form-wrapper {
+    max-width: none;
+    padding: 0;
+  }
+}
+
+/* Gender Dropdown Styling */
+.med-select-field {
+  width: 100%;
+  padding: 12px 15px;
+  border: 2px solid #e1e5e9;
+  border-radius: 8px;
+  font-size: 15px;
+  color: #2c3e50;
+  background-color: #fff;
+  transition: all 0.3s ease;
+  cursor: pointer;
+  appearance: none;
+  background-image: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='12' height='12' fill='%237e8c9a' viewBox='0 0 16 16'%3E%3Cpath d='M7.247 11.14 2.451 5.658C1.885 5.013 2.345 4 3.204 4h9.592a1 1 0 0 1 .753 1.659l-4.796 5.48a1 1 0 0 1-1.506 0z'/%3E%3C/svg%3E");
+  background-repeat: no-repeat;
+  background-position: right 15px center;
+  background-size: 12px;
+}
+
+.med-select-field:focus {
+  outline: none;
+  border-color: #3498db;
+  box-shadow: 0 0 0 3px rgba(52, 152, 219, 0.1);
+}
+
+.med-select-field.error {
+  border-color: #e74c3c;
+}
+
+.med-select-field option {
+  padding: 10px;
+  font-size: 15px;
 }

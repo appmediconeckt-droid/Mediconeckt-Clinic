@@ -135,7 +135,7 @@ export default function PatientLandingPage() {
 
             {/* ================= HERO SECTION ================= */}
             <section id="home" className="hero-section">
-                <div className="container">
+                <div className="p-4">
                     <div className="row align-items-center min-vh-100">
                         <div className="col-lg-6">
                             <h1 className="hero-title">Your Health, Our Priority</h1>
@@ -172,7 +172,7 @@ export default function PatientLandingPage() {
                                 </Link>
                             </div>
 
-                            <div className="row mt-5 pt-4 stats-container">
+                            <div className="row mt-5 pt-4 stats p-4">
                                 <div className="col-6 col-md-3">
                                     <h3 className="stats-number">10K+</h3>
                                     <p className="stats-label">Happy Patients</p>
@@ -193,7 +193,7 @@ export default function PatientLandingPage() {
                         </div>
 
                         <div className="col-lg-6">
-                            <div className="hero-image-container">
+                            <div className="hero-image p-4">
                                 <img
                                     src="https://images.unsplash.com/photo-1629909613654-28e377c37b09?w=600&auto=format&fit=crop&q=60&ixlib=rb-4.1.0&ixid=M3wxMjA3fDB8MHxzZWFyY2h8M3x8Y2xpbmljfGVufDB8fDB8fHww"
                                     alt="Doctor Consultation"
@@ -207,8 +207,8 @@ export default function PatientLandingPage() {
             </section>
 
             {/* ================= HOW IT WORKS ================= */}
-            <section className="how-it-works py-5 bg-light">
-                <div className="container">
+            <section className="how-it-works py-5 ">
+                <div className="p-4">
                     <div className="text-center mb-5">
                         <h2 className="section-title">How It Works</h2>
                         <p className="section-subtitle">Get medical help in 3 simple steps</p>
@@ -245,7 +245,7 @@ export default function PatientLandingPage() {
 
             {/* ================= SPECIALITIES ================= */}
             <section id="specialities" className="specialities-section py-5">
-                <div className="container">
+                <div className="p-4">
                     <div className="text-center mb-5">
                         <h2 className="section-title">Find Doctors by Speciality</h2>
                         <p className="section-subtitle">Choose from 50+ medical specialities</p>
@@ -280,7 +280,7 @@ export default function PatientLandingPage() {
 
             {/* ================= SERVICES ================= */}
             <section id="services" className="services-section py-5 bg-light">
-                <div className="container">
+                <div className="p-4">
                     <div className="text-center mb-5">
                         <h2 className="section-title">Our Patient Services</h2>
                         <p className="section-subtitle">Comprehensive healthcare services at your fingertips</p>
@@ -309,7 +309,7 @@ export default function PatientLandingPage() {
 
             {/* ================= TOP DOCTORS ================= */}
             <section id="doctors" className="doctors-section py-5">
-                <div className="container">
+                <div className="p-4 align-items-center">
                     <div className="text-center mb-5">
                         <h2 className="section-title">Our Top Doctors</h2>
                         <p className="section-subtitle">Verified and experienced medical professionals</p>
@@ -354,7 +354,7 @@ export default function PatientLandingPage() {
 
             {/* ================= TESTIMONIALS ================= */}
             <section id="testimonials" className="testimonials-section py-5 bg-light">
-                <div className="container">
+                <div className="p-4">
                     <div className="text-center mb-5">
                         <h2 className="section-title">Patient Testimonials</h2>
                         <p className="section-subtitle">What our patients say about us</p>
@@ -423,7 +423,7 @@ export default function PatientLandingPage() {
 
             {/* ================= FOOTER ================= */}
             <footer className="footer-section">
-                <div className="container pt-5 pb-4">
+                <div className="p-4 pt-5 pb-4">
                     <div className="row">
                         <div className="col-lg-3 mb-4">
                             <h4 className="footer-brand mb-3">

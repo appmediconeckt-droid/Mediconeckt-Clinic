@@ -29,6 +29,11 @@ import PatientNotification from "./components/PatientDashboard/PatientNotificati
 import WalkinClinic from "./authtication/WalkinClinic";
 import WalkinAppointment from "./authtication/WalkinAppointment";
 import PatientSettingsPage from "./components/PatientDashboard/SettingsPage";
+import QRBooking from "./components/PatientDashboard/QRBooking";
+import PatientSms from "./components/PatientDashboard/PatientSms";
+import DoctorChatPanel from "./components/PatientDashboard/DoctorChat";
+import DoctorChat from "./components/DoctorDashboard/DoctorChat";
+import PatientList from "./components/DoctorDashboard/DoctorSmsPatient";
 // import PatientDashboard from "./components/PatientDashboard/PatientDashboard";
 
 function App() {
@@ -50,10 +55,11 @@ function App() {
     location.pathname === "/doctor" ||
     location.pathname === "/signup" ||
     location.pathname === "/forgotpassword" ||
-    location.pathname === "/patientsignup"||
+    location.pathname === "/patientsignup" ||
     location.pathname === "/patient" ||
     location.pathname === "/appointmentbooking" ||
     location.pathname === "/walkinclinic" ||
+    location.pathname === "/qrappointment" ||
     location.pathname === "/walk-in-appointment";
 
   return (
@@ -74,6 +80,7 @@ function App() {
           <Route path="/appointmentbooking" element={<Walkin />} />
           <Route path="/walkinclinic" element={<WalkinClinic />} />
           <Route path="/walk-in-appointment" element={<WalkinAppointment />} />
+          <Route path="/qrappointment" element={<QRBooking />} />
 
         </Routes>
       ) : (
@@ -85,22 +92,23 @@ function App() {
           />
 
           <div
-            className={`right-side-content ${
-              isSidebarCollapsed ? "collapsed" : ""
-            }`}
+            className={`right-side-content ${isSidebarCollapsed ? "collapsed" : ""
+              }`}
           >
             <Routes>
               {/* Doctor Dashboard */}
               <Route path="/doctordashboard" element={<DoctorDashboard />} />
               <Route path="/doctorcalendar" element={<DoctorCalendar />} />
               <Route path="/doctorprofile" element={<DoctorProfileFlow />} />
-              <Route path="/doctorprofile" element={<DoctorProfile />} />
+              {/* <Route path="/doctorprofile" element={<DoctorProfile />} /> */}
               <Route path="/qrcode" element={<QRcode />} />
               <Route path="/appointmentlist" element={<AppointmentList />} />
               <Route path="/setting" element={<SettingsPage />} />
               <Route path="/doctor-notifications" element={<NotificationPage />} />
               <Route path="/clinicpage" element={<ClinicPage />} />
               <Route path="/walkinappointment" element={<WalkInAppointment />} />
+              <Route path="/patient-sms" element={<PatientList />} />
+              <Route path="/patient-chat/:patientId" element={<DoctorChat />} />
 
             </Routes>
             <Routes>
@@ -110,7 +118,9 @@ function App() {
               <Route path="/patient-appointment" element={<AppointmentBooking />} />
               <Route path="/patient-notifications" element={<PatientNotification />} />
               <Route path="/patient-settings" element={<PatientSettingsPage />} />
-              
+              <Route path="/doctor-sms" element={<PatientSms />} />
+              <Route path="/doctor-chat/:doctorId" element={<DoctorChatPanel />} />
+
 
             </Routes>
           </div>

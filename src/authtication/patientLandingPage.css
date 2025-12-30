@@ -1,4 +1,184 @@
-/* MedicalSignup.css */
+/* Patient Theme - Full CSS */
+
+/* ========== PATIENT THEME VARIABLES ========== */
+:root {
+  --patient-color: #6bc48a; /* Medium green - primary */
+  --patient-bg: #8af5aaff; /* Light green - background */
+  --patient-contrast: #ffffff; /* White text for buttons */
+  --patient-hover: #d4ffdf; /* Light green for hover */
+  --patient-active: #6bc48a; /* Medium green for active */
+  --patient-submenu-bg: #d4ffdf; /* Light green for submenu */
+  --patient-submenu-hover: #b3ffc9; /* Medium green hover */
+  --patient-submenu-text: #374151; /* Dark green text */
+  --patient-border: rgba(0, 0, 0, 0.1);
+}
+
+/* ========== PATIENT THEME UTILITIES ========== */
+.patient-text { color: var(--patient-color) !important; }
+.patient-bg { background-color: var(--patient-bg) !important; }
+.patient-border { border-color: var(--patient-color) !important; }
+.btn-patient { 
+  background-color: var(--patient-color); 
+  color: var(--patient-contrast); 
+  border-color: var(--patient-color); 
+}
+.btn-patient:hover { 
+  background-color: #5ab077; /* Darker green on hover */
+  border-color: #5ab077;
+}
+.bg-patient { background-color: var(--patient-bg); }
+
+/* ========== PATIENT SIDEBAR ========== */
+.sidebar-container.patient-theme {
+  background-color: var(--patient-bg);
+  width: 220px;
+  height: 100vh;
+  overflow-y: auto;
+  transition: width 0.3s ease, background-color 0.3s ease;
+  padding-top: 60px;
+  position: fixed;
+  z-index: 9;
+}
+
+.sidebar-container.patient-theme .menu-link {
+  color: #000000;
+  display: flex;
+  align-items: center;
+  padding: 10px;
+  cursor: pointer;
+  transition: background 0.3s ease, color 0.3s ease;
+  border-radius: 12px;
+  font-size: 18px;
+  font-weight: 600;
+}
+
+.sidebar-container.patient-theme .menu-link:hover {
+  background-color: var(--patient-hover);
+}
+
+.sidebar-container.patient-theme .menu-item.active .menu-link {
+  background-color: var(--patient-active);
+  color: white;
+}
+
+.sidebar-container.patient-theme .sidebar-footer {
+  color: #000000;
+  border-top: 1px solid var(--patient-border);
+  padding: 15px 10px;
+  margin-top: auto;
+}
+
+/* ========== COLLAPSED SIDEBAR ========== */
+.sidebar-container.patient-theme.collapsed {
+  width: 62px;
+}
+
+.sidebar-container.patient-theme.collapsed .menu-text {
+  opacity: 0;
+  visibility: hidden;
+}
+
+.sidebar-container.patient-theme.collapsed .submenu {
+  display: none;
+}
+
+/* ========== SIDEBAR STRUCTURE ========== */
+.sidebar-container.patient-theme .sidebar {
+  padding: 10px;
+  display: flex;
+  flex-direction: column;
+  height: 100%;
+}
+
+.sidebar-container.patient-theme .menu {
+  list-style: none;
+  padding: 0;
+  margin: 0;
+  flex: 1;
+}
+
+.sidebar-container.patient-theme .menu-item {
+  margin-bottom: 10px;
+  border-radius: 12px;
+}
+
+/* ========== SUBMENU STYLES ========== */
+.sidebar-container.patient-theme .submenu {
+  list-style: none;
+  padding-left: 20px;
+  overflow: hidden;
+  transition: max-height 0.3s ease;
+}
+
+.sidebar-container.patient-theme .submenu.collapsed {
+  max-height: 0;
+}
+
+.sidebar-container.patient-theme .submenu.expanded {
+  max-height: 500px;
+  padding: 8px;
+  background: var(--patient-submenu-bg);
+}
+
+.sidebar-container.patient-theme .submenu-item {
+  padding: 10px;
+  cursor: pointer;
+  border-radius: 10px;
+  transition: background 0.3s ease;
+  color: var(--patient-submenu-text);
+}
+
+.sidebar-container.patient-theme .submenu-item:hover {
+  background: var(--patient-submenu-hover);
+}
+
+.sidebar-container.patient-theme .submenu-item.active {
+  background-color: var(--patient-active);
+  color: white;
+}
+
+/* ========== ARROW ICONS ========== */
+.sidebar-container.patient-theme .submenu-arrow {
+  margin-left: auto;
+  transition: transform 0.3s ease;
+}
+
+.sidebar-container.patient-theme .submenu-arrow.rotated {
+  transform: rotate(180deg);
+}
+
+/* ========== USER INFO ========== */
+.sidebar-container.patient-theme .user-info {
+  display: flex;
+  flex-direction: column;
+  gap: 5px;
+}
+
+.sidebar-container.patient-theme .user-role {
+  font-weight: bold;
+  text-transform: capitalize;
+}
+
+.sidebar-container.patient-theme .user-email {
+  font-size: 12px;
+  opacity: 0.8;
+}
+
+/* ========== ICON COLORS ========== */
+.sidebar-container.patient-theme .fa-solid {
+  color: inherit;
+}
+
+.sidebar-container.patient-theme .menu-item.active .fa-solid {
+  color: white;
+}
+
+/* ========== HOVER EXPANDED STATE ========== */
+.sidebar-container.patient-theme.hover-expanded {
+  width: 220px;
+}
+
+/* ========== MEDICAL SIGNUP FORM (PATIENT THEME) ========== */
 .medical-signup-container {
   max-width: 1000px;
   margin: 0 auto;
@@ -25,9 +205,10 @@
 }
 
 .medical-signup-header h1 i {
-  color: #e74c3c;
+  color: var(--patient-color); /* Patient green for icons */
 }
 
+/* Step Indicator with Patient Theme */
 .step-indicator {
   display: flex;
   justify-content: center;
@@ -65,13 +246,13 @@
 }
 
 .step.active span {
-  background-color: #3498db;
+  background-color: var(--patient-color); /* Patient green */
   color: white;
-  border-color: #3498db;
+  border-color: var(--patient-color);
 }
 
 .step.active p {
-  color: #3498db;
+  color: var(--patient-color); /* Patient green */
   font-weight: 600;
 }
 
@@ -84,6 +265,7 @@
   top: -15px;
 }
 
+/* Form Styles */
 .medical-signup-form {
   background-color: white;
   padding: 30px;
@@ -108,9 +290,10 @@
 }
 
 .medical-signup-form h3 i {
-  color: #3498db;
+  color: var(--patient-color); /* Patient green */
 }
 
+/* Form Elements */
 .form-row {
   display: flex;
   gap: 20px;
@@ -148,9 +331,9 @@
 .form-group input:focus,
 .form-group select:focus,
 .form-group textarea:focus {
-  border-color: #3498db;
+  border-color: var(--patient-color); /* Patient green */
   outline: none;
-  box-shadow: 0 0 0 2px rgba(52, 152, 219, 0.2);
+  box-shadow: 0 0 0 2px rgba(107, 196, 138, 0.2);
 }
 
 .form-group input.error,
@@ -196,6 +379,7 @@
   border-top: 1px solid #f1f2f6;
 }
 
+/* Buttons with Patient Theme */
 .form-actions {
   margin-top: 30px;
   text-align: center;
@@ -220,15 +404,15 @@
 }
 
 .btn-next {
-  background-color: #3498db;
+  background-color: var(--patient-color); /* Patient green */
   color: white;
   min-width: 250px;
 }
 
 .btn-next:hover {
-  background-color: #2980b9;
+  background-color: #5ab077; /* Darker green */
   transform: translateY(-2px);
-  box-shadow: 0 4px 10px rgba(52, 152, 219, 0.3);
+  box-shadow: 0 4px 10px rgba(107, 196, 138, 0.3);
 }
 
 .verification-instruction {
@@ -239,7 +423,7 @@
   background-color: #f8f9fa;
   padding: 15px;
   border-radius: 6px;
-  border-left: 4px solid #3498db;
+  border-left: 4px solid var(--patient-color); /* Patient green */
 }
 
 .otp-verification-section {
@@ -272,7 +456,7 @@
 }
 
 .otp-header h4 i {
-  color: #3498db;
+  color: var(--patient-color); /* Patient green */
 }
 
 .otp-status {
@@ -320,9 +504,9 @@
 }
 
 .otp-input-group input:focus {
-  border-color: #3498db;
+  border-color: var(--patient-color); /* Patient green */
   outline: none;
-  box-shadow: 0 0 0 2px rgba(52, 152, 219, 0.2);
+  box-shadow: 0 0 0 2px rgba(107, 196, 138, 0.2);
 }
 
 .otp-input-group input.error {
@@ -341,13 +525,13 @@
 
 .btn-resend {
   background-color: #f8f9fa;
-  color: #3498db;
-  border: 1px solid #3498db;
+  color: var(--patient-color); /* Patient green */
+  border: 1px solid var(--patient-color);
   padding: 14px 25px;
 }
 
 .btn-resend:hover:not(.disabled) {
-  background-color: #3498db;
+  background-color: var(--patient-color); /* Patient green */
   color: white;
 }
 
@@ -391,15 +575,15 @@
 }
 
 .btn-submit {
-  background-color: #2ecc71;
+  background-color: var(--patient-color); /* Patient green */
   color: white;
   min-width: 200px;
 }
 
 .btn-submit:hover:not(:disabled) {
-  background-color: #27ae60;
+  background-color: #5ab077; /* Darker green */
   transform: translateY(-2px);
-  box-shadow: 0 4px 10px rgba(46, 204, 113, 0.3);
+  box-shadow: 0 4px 10px rgba(107, 196, 138, 0.3);
 }
 
 .btn-submit:disabled {
@@ -414,7 +598,7 @@
 }
 
 .form-footer a {
-  color: #3498db;
+  color: var(--patient-color); /* Patient green */
   text-decoration: none;
   font-weight: 600;
 }
@@ -428,7 +612,7 @@
   padding: 12px;
   background-color: #e8f4fc;
   border-radius: 6px;
-  border-left: 4px solid #3498db;
+  border-left: 4px solid var(--patient-color); /* Patient green */
   font-size: 13px;
   display: flex;
   align-items: center;
@@ -437,10 +621,10 @@
 }
 
 .disclaimer i {
-  color: #3498db;
+  color: var(--patient-color); /* Patient green */
 }
 
-/* Responsive styles */
+/* ========== RESPONSIVE STYLES ========== */
 @media (max-width: 768px) {
   .medical-signup-container {
     padding: 20px;
@@ -473,4 +657,28 @@
   .btn-submit {
     width: 100%;
   }
+  
+  /* Sidebar adjustments for mobile */
+  .sidebar-container.patient-theme {
+    width: 62px; /* Collapsed by default on mobile */
+  }
+  
+  .sidebar-container.patient-theme.hover-expanded {
+    width: 220px;
+  }
+}
+
+/* ========== RIGHT PANEL ADJUSTMENTS ========== */
+body.sidebar-hover-expanded .right-side-content {
+  padding-left: 220px;
+  transition: padding-left 0.3s ease;
+}
+
+body.sidebar-collapsed .right-side-content {
+  padding-left: 62px;
+  transition: padding-left 0.3s ease;
+}
+
+.right-side-content {
+  transition: padding-left 0.3s ease !important;
 }

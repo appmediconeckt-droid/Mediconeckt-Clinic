@@ -276,7 +276,7 @@ const DoctorDashboard = () => {
     <div className="p-4">
       {/* HEADER */}
       <div className="header d-flex flex-column flex-md-row justify-content-between align-items-start align-items-md-center mb-3 gap-3">
-        <h2>Doctor Dashboard</h2>
+        <h2>Dashboard</h2>
         <div className="text-end">
           <div className="current-time-label">Current time</div>
           <div className="current-time-value">

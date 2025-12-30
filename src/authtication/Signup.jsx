@@ -1,7 +1,7 @@
 import { useState, useEffect } from "react";
 import { Link, useNavigate } from "react-router-dom";
-import { FaEye, FaEyeSlash } from "react-icons/fa";
-import "bootstrap/dist/css/bootstrap.min.css";
+import { FaEye, FaEyeSlash, FaUserMd, FaStethoscope, FaPhone, FaEnvelope, FaLock, FaUser } from "react-icons/fa";
+import "./Signup.css";
 
 export default function Signup() {
   const navigate = useNavigate();
@@ -40,15 +40,13 @@ export default function Signup() {
 
   const [showPassword, setShowPassword] = useState(false);
   const [showConfirmPassword, setShowConfirmPassword] = useState(false);
-
   const [modalOpen, setModalOpen] = useState(false);
   const [emailOtp, setEmailOtp] = useState("");
   const [phoneOtp, setPhoneOtp] = useState("");
+  const [timeLeft, setTimeLeft] = useState(300); // 300 sec = 5 min
+  const [verificationStep, setVerificationStep] = useState(1); // 1: email, 2: phone
 
   // Timer
-  const [timeLeft, setTimeLeft] = useState(300); // 300 sec = 5 min
-
-  // ⏳ Timer Start When Modal Opens
   useEffect(() => {
     let timer;
     if (modalOpen && timeLeft > 0) {
@@ -68,210 +66,362 @@ export default function Signup() {
 
   const handleSubmit = () => {
     if (form.password !== form.confirmPassword) {
-      alert("Password & Confirm Password not match!");
+      alert("Password & Confirm Password do not match!");
       return;
     }
+    
+    // Check if all required fields are filled
+    if (!form.fullname || !form.email || !form.phone || !form.password) {
+      alert("Please fill all required fields!");
+      return;
+    }
+    
     setModalOpen(true);
     setTimeLeft(300); // reset timer on open
+    setVerificationStep(1);
   };
 
-  const handleVerify = () => {
+  const handleEmailVerification = () => {
+    if (emailOtp === "") {
+      alert("Please enter email OTP");
+      return;
+    }
+    setVerificationStep(2);
+    setEmailOtp("");
+  };
+
+  const handlePhoneVerification = () => {
     if (timeLeft <= 0) {
       alert("OTP Expired! Please resend OTP.");
       return;
     }
 
-    if (emailOtp === "" || phoneOtp === "") {
-      alert("Please enter both OTPs");
+    if (phoneOtp === "") {
+      alert("Please enter phone OTP");
       return;
     }
 
-    alert("Signup Successfully!");
+    alert("Signup Successful!");
     setModalOpen(false);
     navigate("/login");
   };
 
+  const handleResendOtp = () => {
+    setTimeLeft(300);
+    alert("New OTP sent to your email and phone!");
+  };
+
   return (
-    <div className="container d-flex justify-content-center align-items-center">
-      <div
-        className="bg-white p-4 shadow rounded-4"
-        style={{ width: "100%", maxWidth: "450px" }}
-      >
-        {/* Logo */}
-        <div className="text-center mb-3">
-          <img src="/logo192.png" alt="logo" width="80" />
-        </div>
+    <div className="medi-signup-container">
+      {/* Left Side - Complete Signup Form */}
+     
 
-        <h2 className="text-center fw-bold text-primary">Signup</h2>
-        <p className="text-center text-muted">Create your account</p>
-
-        {/* Full Name */}
-        <div className="mb-3">
-          <label className="form-label">Full Name</label>
-          <input
-            type="text"
-            className="form-control"
-            placeholder="Enter full name"
-            value={form.fullname}
-            onChange={(e) =>
-              setForm({ ...form, fullname: e.target.value })
-            }
-          />
-        </div>
-
-        {/* Speciality Dropdown */}
-        <div className="mb-3">
-          <label className="form-label">Speciality</label>
-          <select
-            className="form-select"
-            value={form.speciality}
-            onChange={(e) =>
-              setForm({ ...form, speciality: e.target.value })
-            }
-          >
-            <option value="">Select Speciality</option>
-            {specialties.map((sp, i) => (
-              <option key={i} value={sp}>
-                {sp}
-              </option>
-            ))}
-          </select>
-        </div>
-
-        {/* Phone Number */}
-        <div className="mb-3">
-          <label className="form-label">Contact Number</label>
-          <input
-            type="text"
-            className="form-control"
-            placeholder="Enter phone number"
-            value={form.phone}
-            onChange={(e) =>
-              setForm({ ...form, phone: e.target.value })
-            }
-          />
-        </div>
-
-        {/* Email */}
-        <div className="mb-3">
-          <label className="form-label">Email Address</label>
-          <input
-            type="email"
-            className="form-control"
-            placeholder="Enter email"
-            value={form.email}
-            onChange={(e) =>
-              setForm({ ...form, email: e.target.value })
-            }
-          />
-        </div>
-
-        {/* Password */}
-        <div className="mb-3">
-          <label className="form-label">Password</label>
-          <div className="position-relative">
-            <input
-              type={showPassword ? "text" : "password"}
-              className="form-control"
-              placeholder="Enter password"
-              value={form.password}
-              onChange={(e) =>
-                setForm({ ...form, password: e.target.value })
-              }
-            />
-            <span
-              className="position-absolute"
-              style={{ right: "12px", top: "5px", cursor: "pointer" }}
-              onClick={() => setShowPassword(!showPassword)}
-            >
-              {showPassword ? <FaEyeSlash /> : <FaEye />}
-            </span>
+      {/* Right Side - Only Logo */}
+      <div className="medi-signup-right-side">
+        <div className="medi-right-logo-container">
+          <div className="medi-right-logo-wrapper">
+            <FaUserMd className="medi-right-logo-icon" />
           </div>
-        </div>
-
-        {/* Confirm Password */}
-        <div className="mb-4">
-          <label className="form-label">Confirm Password</label>
-          <div className="position-relative">
-            <input
-              type={showConfirmPassword ? "text" : "password"}
-              className="form-control"
-              placeholder="Confirm password"
-              value={form.confirmPassword}
-              onChange={(e) =>
-                setForm({ ...form, confirmPassword: e.target.value })
-              }
-            />
-            <span
-              className="position-absolute"
-              style={{ right: "12px", top: "5px", cursor: "pointer" }}
-              onClick={() =>
-                setShowConfirmPassword(!showConfirmPassword)
-              }
-            >
-              {showConfirmPassword ? <FaEyeSlash /> : <FaEye />}
-            </span>
-          </div>
-        </div>
-
-        {/* Submit Button */}
-        <button
-          className="btn btn-primary w-100 fw-bold py-2"
-          onClick={handleSubmit}
-        >
-          Signup
-        </button>
-
-        <div className="text-center mt-3">
-          <Link to="/login" className="text-decoration-none">
-            Already have an account? Login
-          </Link>
+          <h1 className="medi-right-logo-text">MediConnect+</h1>
+          <p className="medi-right-tagline">Healthcare Redefined</p>
         </div>
       </div>
+ <div className="medi-signup-left-side">
+        <div className="medi-signup-form-wrapper">
+          {/* Back Button */}
+          <Link to="/" className="medi-back-link">
+          <button className="btn btn-primary  medi-back-button" style={{color:"white", background:"black"}}>
+            
+              ← Back to Home
+           
+          </button>
+           </Link>
+          {/* Logo */}
+          <div className="medi-signup-logo">
+            <FaUserMd className="medi-signup-logo-icon" />
+            <h1 className="medi-signup-logo-text">MediConnect+</h1>
+          </div>
 
-      {/* OTP Modal */}
-      {modalOpen && (
-        <div
-          className="position-fixed top-0 start-0 w-100 h-100 d-flex justify-content-center align-items-center"
-          style={{ background: "rgba(0,0,0,0.5)" }}
-        >
-          <div
-            className="bg-white p-4 rounded-4 shadow"
-            style={{ width: "350px" }}
-          >
-            <h5 className="fw-bold text-center mb-3">
-              Verify Your Account
-            </h5>
+          {/* Form Header */}
+          <div className="medi-form-header-section">
+            <h2>Create Your Account</h2>
+            <p className="medi-form-subtitle">Join thousands of healthcare professionals and patients</p>
+          </div>
 
-            <label>Email OTP</label>
-            <input
-              type="text"
-              className="form-control mb-2"
-              placeholder="Enter email OTP"
-              value={emailOtp}
-              onChange={(e) => setEmailOtp(e.target.value)}
-            />
+          {/* Signup Form */}
+          <div className="medi-signup-form">
+            <div className="medi-form-row">
+              {/* Full Name */}
+              <div className="medi-form-group">
+                <label className="medi-form-label">
+                  <FaUser className="medi-input-icon" />
+                  Full Name *
+                </label>
+                <input
+                  type="text"
+                  className="medi-form-input"
+                  placeholder="Enter your full name"
+                  value={form.fullname}
+                  onChange={(e) => setForm({ ...form, fullname: e.target.value })}
+                />
+              </div>
 
-            <label>Phone OTP</label>
-            <input
-              type="text"
-              className="form-control mb-3"
-              placeholder="Enter phone OTP"
-              value={phoneOtp}
-              onChange={(e) => setPhoneOtp(e.target.value)}
-            />
+              {/* Speciality Dropdown */}
+              <div className="medi-form-group">
+                <label className="medi-form-label">
+                  <FaStethoscope className="medi-input-icon" />
+                  Speciality
+                </label>
+                <div className="medi-custom-select">
+                  <select
+                    className="medi-select-input"
+                    value={form.speciality}
+                    onChange={(e) => setForm({ ...form, speciality: e.target.value })}
+                  >
+                    <option value="">Select your speciality</option>
+                    {specialties.map((sp, i) => (
+                      <option key={i} value={sp}>
+                        {sp}
+                      </option>
+                    ))}
+                  </select>
+                  <div className="medi-select-arrow">▼</div>
+                </div>
+              </div>
+            </div>
 
-            {/* Timer */}
-            <p className="text-center text-danger fw-bold mb-3">
-              OTP Valid For: {formatTime()}
-            </p>
+            <div className="medi-form-row">
+              {/* Contact Number */}
+              <div className="medi-form-group">
+                <label className="medi-form-label">
+                  <FaPhone className="medi-input-icon" />
+                  Contact Number *
+                </label>
+                <input
+                  type="text"
+                  className="medi-form-input"
+                  placeholder="Enter your phone number"
+                  value={form.phone}
+                  onChange={(e) => setForm({ ...form, phone: e.target.value })}
+                />
+              </div>
 
-            <button className="btn btn-success w-100" onClick={handleVerify}>
-              Verify & Complete Signup
+              {/* Email Address */}
+              <div className="medi-form-group">
+                <label className="medi-form-label">
+                  <FaEnvelope className="medi-input-icon" />
+                  Email Address *
+                </label>
+                <input
+                  type="email"
+                  className="medi-form-input"
+                  placeholder="Enter your email"
+                  value={form.email}
+                  onChange={(e) => setForm({ ...form, email: e.target.value })}
+                />
+              </div>
+            </div>
+
+            <div className="medi-form-row">
+              {/* Password */}
+              <div className="medi-form-group">
+                <label className="medi-form-label">
+                  <FaLock className="medi-input-icon" />
+                  Password *
+                </label>
+                <div className="medi-password-input-wrapper">
+                  <input
+                    type={showPassword ? "text" : "password"}
+                    className="medi-form-input"
+                    placeholder="Create a strong password"
+                    value={form.password}
+                    onChange={(e) => setForm({ ...form, password: e.target.value })}
+                  />
+                  <span
+                    className="medi-password-toggle"
+                    onClick={() => setShowPassword(!showPassword)}
+                  >
+                    {showPassword ? <FaEyeSlash /> : <FaEye />}
+                  </span>
+                </div>
+              </div>
+
+              {/* Confirm Password */}
+              <div className="medi-form-group">
+                <label className="medi-form-label">
+                  <FaLock className="medi-input-icon" />
+                  Confirm Password *
+                </label>
+                <div className="medi-password-input-wrapper">
+                  <input
+                    type={showConfirmPassword ? "text" : "password"}
+                    className="medi-form-input"
+                    placeholder="Confirm your password"
+                    value={form.confirmPassword}
+                    onChange={(e) => setForm({ ...form, confirmPassword: e.target.value })}
+                  />
+                  <span
+                    className="medi-password-toggle"
+                    onClick={() => setShowConfirmPassword(!showConfirmPassword)}
+                  >
+                    {showConfirmPassword ? <FaEyeSlash /> : <FaEye />}
+                  </span>
+                </div>
+              </div>
+            </div>
+
+            {/* Password Requirements */}
+            <div className="medi-password-requirements">
+              <p className="medi-requirements-title">Password must contain:</p>
+              <div className="medi-requirements-grid">
+                <div className={`medi-requirement-item ${form.password.length >= 8 ? 'valid' : ''}`}>
+                  <span className="medi-requirement-check">
+                    {form.password.length >= 8 ? '✓' : '○'}
+                  </span>
+                  <span className="medi-requirement-text">At least 8 characters</span>
+                </div>
+                <div className={`medi-requirement-item ${/[A-Z]/.test(form.password) ? 'valid' : ''}`}>
+                  <span className="medi-requirement-check">
+                    {/[A-Z]/.test(form.password) ? '✓' : '○'}
+                  </span>
+                  <span className="medi-requirement-text">One uppercase letter</span>
+                </div>
+                <div className={`medi-requirement-item ${/[0-9]/.test(form.password) ? 'valid' : ''}`}>
+                  <span className="medi-requirement-check">
+                    {/[0-9]/.test(form.password) ? '✓' : '○'}
+                  </span>
+                  <span className="medi-requirement-text">One number</span>
+                </div>
+                <div className={`medi-requirement-item ${/[!@#$%^&*]/.test(form.password) ? 'valid' : ''}`}>
+                  <span className="medi-requirement-check">
+                    {/[!@#$%^&*]/.test(form.password) ? '✓' : '○'}
+                  </span>
+                  <span className="medi-requirement-text">One special character</span>
+                </div>
+              </div>
+            </div>
+
+            {/* Terms & Conditions */}
+            <div className="medi-terms-section">
+              <label className="medi-terms-checkbox">
+                <input type="checkbox" required />
+                <span className="medi-terms-text">
+                  I agree to the <Link to="/terms" className="medi-terms-link">Terms of Service</Link> and <Link to="/privacy" className="medi-terms-link">Privacy Policy</Link>
+                </span>
+              </label>
+            </div>
+
+            {/* Submit Button */}
+            <button
+              className="medi-signup-button"
+              onClick={handleSubmit}
+            >
+              <span className="medi-button-text">CREATE ACCOUNT</span>
             </button>
 
+            {/* Login Link */}
+            <div className="medi-login-link">
+              <p>
+                Already have an account?{' '}
+                <Link to="/login" className="medi-login-text">
+                  Sign in here
+                </Link>
+              </p>
+            </div>
+          </div>
+        </div>
+      </div>
+      {/* OTP Verification Modal */}
+      {modalOpen && (
+        <div className="medi-otp-modal-overlay">
+          <div className="medi-otp-modal">
+            <div className="medi-otp-header">
+              <h3>Verify Your Account</h3>
+              <p className="medi-otp-subtitle">Secure verification for your protection</p>
+            </div>
+
+            <div className="medi-verification-steps">
+              <div className={`medi-step ${verificationStep >= 1 ? 'active' : ''}`}>
+                <div className="medi-step-number">1</div>
+                <div className="medi-step-text">Email Verification</div>
+              </div>
+              <div className="medi-step-connector"></div>
+              <div className={`medi-step ${verificationStep >= 2 ? 'active' : ''}`}>
+                <div className="medi-step-number">2</div>
+                <div className="medi-step-text">Phone Verification</div>
+              </div>
+            </div>
+
+            {verificationStep === 1 ? (
+              <div className="medi-verification-step">
+                <div className="medi-otp-input-group">
+                  <label className="medi-otp-label">
+                    <FaEnvelope className="medi-otp-icon" />
+                    Email OTP Verification
+                  </label>
+                  <input
+                    type="text"
+                    className="medi-otp-input"
+                    placeholder="Enter 6-digit OTP sent to your email"
+                    value={emailOtp}
+                    onChange={(e) => setEmailOtp(e.target.value)}
+                    maxLength={6}
+                  />
+                  <small className="medi-otp-hint">Check your inbox for the verification code</small>
+                </div>
+
+                <button 
+                  className="medi-verify-button medi-email-verify"
+                  onClick={handleEmailVerification}
+                >
+                  Verify Email & Continue
+                </button>
+              </div>
+            ) : (
+              <div className="medi-verification-step">
+                <div className="medi-otp-input-group">
+                  <label className="medi-otp-label">
+                    <FaPhone className="medi-otp-icon" />
+                    Phone OTP Verification
+                  </label>
+                  <input
+                    type="text"
+                    className="medi-otp-input"
+                    placeholder="Enter 6-digit OTP sent to your phone"
+                    value={phoneOtp}
+                    onChange={(e) => setPhoneOtp(e.target.value)}
+                    maxLength={6}
+                  />
+                  <small className="medi-otp-hint">OTP sent to: {form.phone}</small>
+                </div>
+
+                <div className="medi-timer-section">
+                  <div className="medi-timer-display">
+                    <span className="medi-timer-icon">⏱️</span>
+                    <span className="medi-timer-text">OTP Expires in: </span>
+                    <span className="medi-timer-countdown">{formatTime()}</span>
+                  </div>
+                  
+                  <button 
+                    className="medi-resend-button"
+                    onClick={handleResendOtp}
+                    disabled={timeLeft > 240}
+                  >
+                    Resend OTP {timeLeft > 240 && `(${Math.ceil((300 - timeLeft) / 60)} min)`}
+                  </button>
+                </div>
+
+                <button 
+                  className="medi-verify-button medi-phone-verify"
+                  onClick={handlePhoneVerification}
+                >
+                  Complete Verification
+                </button>
+              </div>
+            )}
+
             <button
-              className="btn btn-outline-secondary w-100 mt-2"
+              className="medi-cancel-button"
               onClick={() => setModalOpen(false)}
             >
               Cancel

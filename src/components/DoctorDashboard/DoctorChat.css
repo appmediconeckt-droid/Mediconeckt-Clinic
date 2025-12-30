@@ -1,0 +1,762 @@
+/* DoctorChat.css */
+
+/* Main container */
+.patient-chat-container {
+  display: flex;
+  flex-direction: column;
+  height: 86vh;
+  background: linear-gradient(135deg, #f5f7fa 0%, #e4e8f0 100%);
+  font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+  overflow: hidden;
+}
+
+/* Header styling - Updated */
+.chat-header {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  padding: 0rem 1.5rem;
+  background: white !important;
+  color: #2c3e50 !important;
+  box-shadow: 0 2px 10px rgba(0, 0, 0, 0.08);
+  position: sticky;
+  top: 0;
+  z-index: 100;
+  flex-shrink: 0;
+  min-height: 60px;
+  border-bottom: 1px solid #e9ecef;
+}
+
+/* Back button */
+.back-btn {
+  display: flex;
+  align-items: center;
+  gap: 6px;
+  background: #f8f9fa;
+  color: #2c3e50 !important;
+  border: 1px solid #e9ecef;
+  padding: 0.5rem 1rem;
+  border-radius: 8px;
+  font-weight: 600;
+  cursor: pointer;
+  transition: all 0.2s ease;
+  font-size: 0.9rem;
+}
+
+.back-btn:hover {
+  background: #e9ecef;
+  transform: translateX(-2px);
+  box-shadow: 0 2px 8px rgba(0, 0, 0, 0.1);
+}
+
+/* Patient profile header */
+.patient-profile-header {
+  display: flex;
+  align-items: center;
+  gap: 1rem;
+  flex-grow: 1;
+  justify-content: center;
+  max-width: 600px;
+}
+
+.patient-avatar-large {
+  width: 45px;
+  height: 45px;
+  border-radius: 50%;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  font-size: 1.2rem;
+  font-weight: bold;
+  color: white;
+  border: 2px solid rgba(52, 152, 219, 0.2);
+  box-shadow: 0 2px 6px rgba(0, 0, 0, 0.1);
+  transition: transform 0.2s ease;
+}
+
+.patient-avatar-large:hover {
+  transform: scale(1.05);
+}
+
+.patient-header-info {
+  text-align: center;
+}
+
+.patient-header-info h2 {
+  margin: 0;
+  font-size: 1.3rem;
+  font-weight: 700;
+  color: #2c3e50;
+  letter-spacing: 0.3px;
+}
+
+.patient-header-details {
+  display: flex;
+  align-items: center;
+  gap: 0.8rem;
+  margin-top: 0.3rem;
+  flex-wrap: wrap;
+  justify-content: center;
+}
+
+.patient-age-gender {
+  background: #f8f9fa;
+  color: #6c757d;
+  padding: 0.2rem 0.6rem;
+  border-radius: 12px;
+  font-size: 0.8rem;
+  font-weight: 500;
+  border: 1px solid #e9ecef;
+}
+
+.patient-condition {
+  background: #e3f2fd;
+  color: #1976d2;
+  padding: 0.2rem 0.6rem;
+  border-radius: 12px;
+  font-size: 0.8rem;
+  font-weight: 500;
+  border: 1px solid #bbdefb;
+}
+
+.patient-status {
+  padding: 0.2rem 0.6rem;
+  border-radius: 12px;
+  font-size: 0.8rem;
+  font-weight: 600;
+  text-transform: uppercase;
+  letter-spacing: 0.3px;
+}
+
+.patient-status.stable {
+  background: #d4edda;
+  color: #155724;
+  border: 1px solid #c3e6cb;
+}
+
+.patient-status.needs-attention {
+  background: #fff3cd;
+  color: #856404;
+  border: 1px solid #ffeaa7;
+}
+
+.patient-status.improving {
+  background: #e8eaf6;
+  color: #3949ab;
+  border: 1px solid #c5cae9;
+}
+
+.patient-status.critical {
+  background: #f8d7da;
+  color: #721c24;
+  border: 1px solid #f5c6cb;
+  animation: pulse 2s infinite;
+}
+
+@keyframes pulse {
+  0% { opacity: 1; }
+  50% { opacity: 0.7; }
+  100% { opacity: 1; }
+}
+
+/* Header actions */
+.header-actions {
+  display: flex;
+  align-items: center;
+}
+
+.call-btn {
+  display: flex;
+  align-items: center;
+  gap: 6px;
+  background: linear-gradient(135deg, #2ecc71 0%, #27ae60 100%);
+  color: white;
+  border: none;
+  padding: 0.5rem 1rem;
+  border-radius: 8px;
+  font-weight: 600;
+  cursor: pointer;
+  transition: all 0.2s ease;
+  font-size: 0.9rem;
+  box-shadow: 0 2px 8px rgba(46, 204, 113, 0.3);
+}
+
+.call-btn:hover {
+  transform: translateY(-1px);
+  box-shadow: 0 4px 12px rgba(46, 204, 113, 0.4);
+}
+
+/* Chat messages container */
+.chat-messages-container {
+  flex: 1;
+  overflow-y: auto;
+  padding: 1rem;
+  background: #f8f9fa;
+  display: flex;
+  flex-direction: column;
+  position: relative;
+}
+
+.chat-date {
+  text-align: center;
+  margin: 0.5rem 0 1.5rem;
+  position: sticky;
+  top: 0;
+  z-index: 10;
+}
+
+.chat-date span {
+  background: white;
+  color: #6c757d;
+  padding: 0.4rem 1.5rem;
+  border-radius: 20px;
+  font-size: 0.85rem;
+  font-weight: 600;
+  box-shadow: 0 2px 6px rgba(0, 0, 0, 0.08);
+  border: 1px solid #e9ecef;
+}
+
+/* Messages list */
+.messages-list {
+  display: flex;
+  flex-direction: column;
+  gap: 1rem;
+  padding: 0.5rem 0 2rem;
+  margin: 0 auto;
+  width: 100%;
+  position: relative;
+}
+
+.no-messages {
+  text-align: center;
+  padding: 3rem 1.5rem;
+  color: #6c757d;
+  font-size: 1rem;
+  background: white;
+  border-radius: 16px;
+  box-shadow: 0 4px 16px rgba(0, 0, 0, 0.05);
+  margin: 1.5rem 0;
+  border: 2px dashed #e9ecef;
+}
+
+.empty-chat-icon {
+  font-size: 2.5rem;
+  color: #3498db;
+  margin-bottom: 1rem;
+  opacity: 0.5;
+}
+
+.empty-chat-hint {
+  display: block;
+  margin-top: 0.5rem;
+  color: #95a5a6;
+  font-size: 0.85rem;
+}
+
+/* Individual message styling */
+.message {
+  display: flex;
+  max-width: 70%;
+  animation: fadeIn 0.3s ease forwards;
+  opacity: 0;
+  animation-delay: calc(var(--message-index, 0) * 0.1s);
+}
+
+@keyframes fadeIn {
+  from { 
+    opacity: 0; 
+    transform: translateY(10px); 
+  }
+  to { 
+    opacity: 1; 
+    transform: translateY(0); 
+  }
+}
+
+.message.patient {
+  align-self: flex-start;
+}
+
+.message.doctor {
+  align-self: flex-end;
+}
+
+.message-content {
+  padding: 0.8rem 1rem;
+  border-radius: 18px;
+  position: relative;
+  box-shadow: 0 2px 8px rgba(0, 0, 0, 0.05);
+  line-height: 1.5;
+  word-wrap: break-word;
+  max-width: 100%;
+}
+
+.message.patient .message-content {
+  background: white;
+  border-top-left-radius: 5px;
+  color: #2c3e50;
+  border: 1px solid #e9ecef;
+}
+
+.message.doctor .message-content {
+  background: linear-gradient(135deg, #3498db 0%, #2980b9 100%);
+  border-top-right-radius: 5px;
+  color: white;
+}
+
+/* Message bubble triangle effect */
+.message.patient .message-content::before {
+  content: '';
+  position: absolute;
+  left: -8px;
+  top: 0;
+  width: 0;
+  height: 0;
+  border-top: 12px solid transparent;
+  border-bottom: 12px solid transparent;
+  border-right: 12px solid white;
+}
+
+.message.doctor .message-content::after {
+  content: '';
+  position: absolute;
+  right: -8px;
+  top: 0;
+  width: 0;
+  height: 0;
+  border-top: 12px solid transparent;
+  border-bottom: 12px solid transparent;
+  border-left: 12px solid #2980b9;
+}
+
+.message-time {
+  display: block;
+  font-size: 0.7rem;
+  opacity: 0.8;
+  margin-top: 0.5rem;
+  text-align: right;
+  font-weight: 500;
+}
+
+.message.patient .message-time {
+  color: #6c757d;
+}
+
+.message.doctor .message-time {
+  color: rgba(5, 5, 5, 0.9);
+}
+
+/* File attachment styling */
+.file-attachment {
+  display: flex;
+  align-items: center;
+  gap: 0.8rem;
+  padding: 0.8rem;
+  background: white;
+  border-radius: 12px;
+  border: 2px solid;
+  margin-top: 0.8rem;
+  transition: all 0.2s ease;
+}
+
+.message.doctor .file-attachment {
+  background: rgba(255, 255, 255, 0.2);
+  border-color: rgba(255, 255, 255, 0.3);
+}
+
+.file-icon {
+  font-size: 1.5rem;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+}
+
+.file-info {
+  flex: 1;
+  display: flex;
+  flex-direction: column;
+  gap: 0.2rem;
+}
+
+.file-name {
+  font-weight: 600;
+  font-size: 0.85rem;
+  color: #2c3e50;
+}
+
+.message.doctor .file-name {
+  color: white;
+}
+
+.file-size {
+  font-size: 0.75rem;
+  color: #6c757d;
+}
+
+.message.doctor .file-size {
+  color: rgba(255, 255, 255, 0.8);
+}
+
+.file-download-btn {
+  background: transparent;
+  border: none;
+  color: #3498db;
+  cursor: pointer;
+  padding: 0.4rem;
+  border-radius: 6px;
+  transition: all 0.2s ease;
+  font-size: 1rem;
+}
+
+.message.doctor .file-download-btn {
+  color: white;
+}
+
+.file-download-btn:hover {
+  background: rgba(52, 152, 219, 0.1);
+  transform: scale(1.1);
+}
+
+/* Message Input - Updated */
+.message-input-form {
+  display: flex;
+  align-items: center;
+  gap: 0.8rem;
+  padding: 0.8rem 1rem;
+  margin-bottom: 0px;
+  /* background: white; */
+  border-top: 1px solid #e9ecef;
+  box-shadow: 0 -2px 10px rgba(0, 0, 0, 0.05);
+  position: sticky;
+  bottom: 0;
+  z-index: 50;
+  flex-shrink: 0;
+  min-height: 60px;
+}
+
+.attach-btn {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  background: #f8f9fa;
+  color: #6c757d;
+  border: 1px solid #e9ecef;
+  width: 42px;
+  height: 42px;
+  border-radius: 50%;
+  cursor: pointer;
+  transition: all 0.2s ease;
+  font-size: 1.1rem;
+}
+
+.attach-btn:hover {
+  background: #e9ecef;
+  color: #3498db;
+  transform: scale(1.05);
+}
+
+.message-input {
+  flex: 1;
+  padding: 0.8rem 1.2rem;
+  border: 2px solid #e9ecef;
+  border-radius: 25px;
+  font-size: 0.95rem;
+  transition: all 0.2s ease;
+  background: white;
+  outline: none;
+  box-shadow: 0 1px 4px rgba(0, 0, 0, 0.03);
+  min-height: 44px;
+}
+
+.message-input:focus {
+  border-color: #3498db;
+  background: white;
+  box-shadow: 0 0 0 3px rgba(52, 152, 219, 0.1);
+}
+
+.message-input::placeholder {
+  color: #95a5a6;
+  font-weight: 400;
+}
+
+.send-btn {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  background: linear-gradient(135deg, #3498db 0%, #2980b9 100%);
+  color: white;
+  border: none;
+  width: 44px;
+  height: 44px;
+  border-radius: 50%;
+  cursor: pointer;
+  transition: all 0.2s ease;
+  font-size: 1.1rem;
+  box-shadow: 0 3px 10px rgba(52, 152, 219, 0.3);
+}
+
+.send-btn:hover:not(:disabled) {
+  transform: translateY(-1px) scale(1.05);
+  box-shadow: 0 4px 12px rgba(52, 152, 219, 0.4);
+}
+
+.send-btn:active:not(:disabled) {
+  transform: translateY(0) scale(0.98);
+}
+
+.send-btn:disabled {
+  opacity: 0.5;
+  cursor: not-allowed;
+  background: #95a5a6;
+  box-shadow: none;
+}
+
+/* File Options Popup */
+.file-options-popup {
+  position: absolute;
+  bottom: 70px;
+  left: 1rem;
+  z-index: 60;
+  animation: slideUp 0.2s ease;
+}
+
+@keyframes slideUp {
+  from {
+    opacity: 0;
+    transform: translateY(10px);
+  }
+  to {
+    opacity: 1;
+    transform: translateY(0);
+  }
+}
+
+.file-options-content {
+  background: white;
+  border-radius: 12px;
+  box-shadow: 0 4px 20px rgba(0, 0, 0, 0.15);
+  padding: 0.8rem;
+  display: flex;
+  flex-direction: column;
+  gap: 0.5rem;
+  min-width: 180px;
+  border: 1px solid #e9ecef;
+}
+
+.file-option-btn {
+  display: flex;
+  align-items: center;
+  gap: 0.8rem;
+  padding: 0.8rem 1rem;
+  background: #f8f9fa;
+  border: 1px solid #e9ecef;
+  border-radius: 8px;
+  color: #2c3e50;
+  cursor: pointer;
+  transition: all 0.2s ease;
+  font-size: 0.9rem;
+  font-weight: 500;
+}
+
+.file-option-btn:hover {
+  background: #3498db;
+  color: white;
+  border-color: #3498db;
+  transform: translateX(3px);
+}
+
+.file-option-btn svg {
+  font-size: 1.1rem;
+}
+
+/* Patient not found styling */
+.patient-not-found {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+  height: 100vh;
+  background: linear-gradient(135deg, #f5f7fa 0%, #e4e8f0 100%);
+  text-align: center;
+  padding: 2rem;
+}
+
+.patient-not-found h2 {
+  color: #e74c3c;
+  font-size: 2rem;
+  margin-bottom: 1.5rem;
+  font-weight: 700;
+}
+
+/* Custom scrollbar */
+.chat-messages-container::-webkit-scrollbar {
+  width: 8px;
+}
+
+.chat-messages-container::-webkit-scrollbar-track {
+  background: #f1f1f1;
+  border-radius: 4px;
+}
+
+.chat-messages-container::-webkit-scrollbar-thumb {
+  background: #c1c1c1;
+  border-radius: 4px;
+}
+
+.chat-messages-container::-webkit-scrollbar-thumb:hover {
+  background: #a8a8a8;
+}
+
+/* Responsive design */
+@media (max-width: 1024px) {
+  .messages-list {
+    max-width: 90%;
+  }
+}
+
+@media (max-width: 768px) {
+  .chat-header {
+    padding: 0.7rem 1rem;
+  }
+  
+  .patient-profile-header {
+    gap: 0.7rem;
+  }
+  
+  .patient-header-details {
+    gap: 0.4rem;
+  }
+  
+  .patient-avatar-large {
+    width: 40px;
+    height: 40px;
+    font-size: 1.1rem;
+  }
+  
+  .patient-header-info h2 {
+    font-size: 1.1rem;
+  }
+  
+  .message {
+    max-width: 85%;
+  }
+  
+  .message-input-form {
+    padding: 0.7rem 0.8rem;
+  }
+  
+  .message-input {
+    padding: 0.7rem 1rem;
+    font-size: 0.9rem;
+  }
+  
+  .attach-btn,
+  .send-btn {
+    width: 40px;
+    height: 40px;
+  }
+}
+
+@media (max-width: 480px) {
+  .back-btn, .call-btn {
+    padding: 0.4rem 0.8rem;
+    font-size: 0.8rem;
+  }
+  
+  .patient-status, .patient-age-gender, .patient-condition {
+    font-size: 0.75rem;
+    padding: 0.2rem 0.5rem;
+  }
+  
+  .message-content {
+    padding: 0.7rem 0.9rem;
+  }
+  
+  .chat-messages-container {
+    padding: 0.8rem;
+  }
+  
+  .no-messages {
+    padding: 2rem 1rem;
+    font-size: 0.9rem;
+  }
+  
+  .empty-chat-icon {
+    font-size: 2rem;
+  }
+  
+  .file-options-popup {
+    left: 0.5rem;
+    right: 0.5rem;
+  }
+  
+  .file-options-content {
+    min-width: auto;
+  }
+}
+
+/* Typing indicator animation */
+.typing-indicator {
+  display: inline-block;
+  background: #e9ecef;
+  padding: 0.8rem 1rem;
+  border-radius: 16px;
+  margin: 0.8rem 0;
+}
+
+.typing-dots {
+  display: flex;
+  gap: 3px;
+}
+
+.typing-dots span {
+  width: 6px;
+  height: 6px;
+  background: #95a5a6;
+  border-radius: 50%;
+  animation: typing 1.4s infinite ease-in-out;
+}
+
+.typing-dots span:nth-child(1) { animation-delay: -0.32s; }
+.typing-dots span:nth-child(2) { animation-delay: -0.16s; }
+
+@keyframes typing {
+  0%, 80%, 100% { transform: scale(0); }
+  40% { transform: scale(1); }
+}
+
+/* Message status indicators */
+.message-status {
+  font-size: 0.65rem;
+  margin-left: 4px;
+  opacity: 0.7;
+}
+
+.message-status.sent {
+  color: #95a5a6;
+}
+
+.message-status.delivered {
+  color: #3498db;
+}
+
+.message-status.read {
+  color: #2ecc71;
+}
+
+/* Online status indicator */
+.online-status {
+  position: absolute;
+  bottom: 2px;
+  right: 2px;
+  width: 10px;
+  height: 10px;
+  background: #2ecc71;
+  border: 2px solid white;
+  border-radius: 50%;
+  box-shadow: 0 0 4px rgba(46, 204, 113, 0.5);
+}
+
+.online-status.offline {
+  background: #95a5a6;
+}

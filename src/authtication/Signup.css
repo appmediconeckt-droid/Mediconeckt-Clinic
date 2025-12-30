@@ -1,0 +1,765 @@
+/* Main Container */
+.medi-signup-container {
+  display: flex;
+  height: 100vh;
+  font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+  overflow: hidden;
+}
+
+/* Left Side - Form Side */
+.medi-signup-left-side {
+  flex: 1;
+  background: #ffffff;
+  
+  justify-content: center;
+  align-items: center;
+  padding: 2rem;
+  overflow-y: auto;
+}
+
+.medi-signup-form-wrapper {
+  width: 100%;
+  max-width: 800px;
+  padding: 2rem;
+}
+
+/* Back Button */
+.medi-back-button {
+  margin-bottom: 2rem;
+}
+
+.medi-back-link {
+  display: inline-flex;
+  align-items: center;
+  gap: 0.5rem;
+  color: #64748b;
+  text-decoration: none;
+  font-size: 0.9rem;
+  font-weight: 500;
+  transition: color 0.3s ease;
+}
+
+.medi-back-link:hover {
+  color: #3b82f6;
+}
+
+/* Logo Section */
+.medi-signup-logo {
+  display: flex;
+  align-items: center;
+  gap: 1rem;
+  justify-content: center;
+  margin-bottom: 2rem;
+}
+
+.medi-signup-logo-icon {
+  font-size: 2.5rem;
+  color: #3b82f6;
+}
+
+.medi-signup-logo-text {
+  font-size: 2rem;
+  font-weight: 700;
+  background: linear-gradient(135deg, #3b82f6 0%, #1d4ed8 100%);
+  -webkit-background-clip: text;
+  -webkit-text-fill-color: transparent;
+  margin: 0;
+}
+
+/* Form Header */
+.medi-form-header-section {
+    text-align: center;
+  margin-bottom: 2.5rem;
+}
+
+.medi-form-header-section h2 {
+  font-size: 2.2rem;
+  color: #1e293b;
+  margin-bottom: 0.5rem;
+  font-weight: 700;
+}
+
+.medi-form-subtitle {
+  color: #64748b;
+  font-size: 1rem;
+  margin: 0;
+}
+
+/* Form Layout */
+.medi-signup-form {
+  width: 100%;
+}
+
+.medi-form-row {
+  display: grid;
+  grid-template-columns: 1fr 1fr;
+  gap: 1.5rem;
+  margin-bottom: 1.5rem;
+}
+
+/* Form Elements */
+.medi-form-group {
+  margin-bottom: 1.5rem;
+}
+
+.medi-form-label {
+  display: flex;
+  align-items: center;
+  gap: 0.5rem;
+  color: #334155;
+  font-size: 0.9rem;
+  font-weight: 600;
+  margin-bottom: 0.5rem;
+}
+
+.medi-input-icon {
+  color: #3b82f6;
+  font-size: 0.9rem;
+}
+
+.medi-form-input {
+  width: 100%;
+  padding: 0.9rem 1rem;
+  border: 2px solid #e2e8f0;
+  border-radius: 10px;
+  font-size: 1rem;
+  color: #334155;
+  transition: all 0.3s ease;
+  background: #f8fafc;
+}
+
+.medi-form-input:focus {
+  outline: none;
+  border-color: #3b82f6;
+  background: white;
+  box-shadow: 0 0 0 3px rgba(59, 130, 246, 0.1);
+}
+
+.medi-form-input::placeholder {
+  color: #94a3b8;
+}
+
+/* Custom Select */
+.medi-custom-select {
+  position: relative;
+}
+
+.medi-select-input {
+  width: 100%;
+  padding: 0.9rem 1rem;
+  border: 2px solid #e2e8f0;
+  border-radius: 10px;
+  font-size: 1rem;
+  color: #334155;
+  background: #f8fafc;
+  appearance: none;
+  cursor: pointer;
+  transition: all 0.3s ease;
+}
+
+.medi-select-input:focus {
+  outline: none;
+  border-color: #3b82f6;
+  background: white;
+  box-shadow: 0 0 0 3px rgba(59, 130, 246, 0.1);
+}
+
+.medi-select-arrow {
+  position: absolute;
+  right: 1rem;
+  top: 50%;
+  transform: translateY(-50%);
+  color: #64748b;
+  font-size: 0.8rem;
+  pointer-events: none;
+}
+
+/* Password Input */
+.medi-password-input-wrapper {
+  position: relative;
+}
+
+.medi-password-toggle {
+  position: absolute;
+  right: 1rem;
+  top: 50%;
+  transform: translateY(-50%);
+  color: #64748b;
+  cursor: pointer;
+  font-size: 1.1rem;
+  transition: color 0.3s ease;
+}
+
+.medi-password-toggle:hover {
+  color: #3b82f6;
+}
+
+/* Password Requirements */
+.medi-password-requirements {
+  background: #f1f5f9;
+  padding: 1.5rem;
+  border-radius: 10px;
+  margin: 2rem 0;
+}
+
+.medi-requirements-title {
+  font-size: 0.9rem;
+  color: #475569;
+  font-weight: 600;
+  margin-bottom: 1rem;
+}
+
+.medi-requirements-grid {
+  display: grid;
+  grid-template-columns: repeat(2, 1fr);
+  gap: 0.8rem;
+}
+
+.medi-requirement-item {
+  display: flex;
+  align-items: center;
+  gap: 0.5rem;
+  font-size: 0.85rem;
+}
+
+.medi-requirement-check {
+  width: 20px;
+  height: 20px;
+  border-radius: 50%;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  font-size: 0.7rem;
+  color: #94a3b8;
+  border: 2px solid #cbd5e1;
+}
+
+.medi-requirement-item.valid .medi-requirement-check {
+  background: #10b981;
+  color: white;
+  border-color: #10b981;
+}
+
+.medi-requirement-text {
+  color: #64748b;
+}
+
+.medi-requirement-item.valid .medi-requirement-text {
+  color: #10b981;
+  font-weight: 500;
+}
+
+/* Terms Section */
+.medi-terms-section {
+  margin: 2rem 0;
+}
+
+.medi-terms-checkbox {
+  display: flex;
+  align-items: flex-start;
+  gap: 0.8rem;
+  color: #475569;
+  font-size: 0.9rem;
+  cursor: pointer;
+}
+
+.medi-terms-checkbox input {
+  margin-top: 0.2rem;
+  flex-shrink: 0;
+  width: 18px;
+  height: 18px;
+  cursor: pointer;
+}
+
+.medi-terms-text {
+  line-height: 1.5;
+}
+
+.medi-terms-link {
+  color: #3b82f6;
+  text-decoration: none;
+  font-weight: 500;
+}
+
+.medi-terms-link:hover {
+  text-decoration: underline;
+}
+
+/* Signup Button */
+.medi-signup-button {
+  width: 100%;
+  padding: 1rem;
+  background: linear-gradient(135deg, #3b82f6 0%, #2563eb 100%);
+  color: white;
+  border: none;
+  border-radius: 10px;
+  font-size: 1rem;
+  font-weight: 600;
+  cursor: pointer;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  gap: 0.5rem;
+  transition: all 0.3s ease;
+  box-shadow: 0 4px 15px rgba(59, 130, 246, 0.3);
+  margin: 2rem 0;
+}
+
+.medi-signup-button:hover {
+  transform: translateY(-2px);
+  box-shadow: 0 6px 20px rgba(59, 130, 246, 0.4);
+}
+
+.medi-signup-button:active {
+  transform: translateY(0);
+}
+
+.medi-button-text {
+  font-size: 1rem;
+  font-weight: 600;
+}
+
+/* Login Link */
+.medi-login-link {
+  text-align: center;
+  margin-top: 1.5rem;
+  font-size: 0.9rem;
+  color: #64748b;
+}
+
+.medi-login-text {
+  color: #3b82f6;
+  text-decoration: none;
+  font-weight: 600;
+  transition: color 0.3s ease;
+}
+
+.medi-login-text:hover {
+  color: #2563eb;
+  text-decoration: underline;
+}
+
+/* Right Side - Logo Only */
+.medi-signup-right-side {
+  flex: 1;
+  background: linear-gradient(135deg, #1a2980 0%, #26d0ce 100%);
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  padding: 2rem;
+  position: relative;
+  overflow: hidden;
+}
+
+.medi-signup-right-side::before {
+  content: '';
+  position: absolute;
+  top: 0;
+  left: 0;
+  right: 0;
+  bottom: 0;
+  background: url('data:image/svg+xml,<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 100 100" preserveAspectRatio="none"><path d="M0,0 L100,0 L100,100 Z" fill="rgba(255,255,255,0.05)"/></svg>');
+  background-size: cover;
+  pointer-events: none;
+}
+
+.medi-right-logo-container {
+  text-align: center;
+  z-index: 1;
+}
+
+.medi-right-logo-wrapper {
+  width: 120px;
+  height: 120px;
+  background: rgba(255, 255, 255, 0.1);
+  border-radius: 30px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  margin: 0 auto 2rem;
+  backdrop-filter: blur(10px);
+  border: 1px solid rgba(255, 255, 255, 0.2);
+  box-shadow: 0 20px 40px rgba(0, 0, 0, 0.2);
+}
+
+.medi-right-logo-icon {
+  font-size: 4rem;
+  color: white;
+}
+
+.medi-right-logo-text {
+  font-size: 3rem;
+  font-weight: 700;
+  color: white;
+  margin-bottom: 1rem;
+  letter-spacing: 0.5px;
+}
+
+.medi-right-tagline {
+  font-size: 1.2rem;
+  color: rgba(255, 255, 255, 0.9);
+  font-weight: 300;
+  margin: 0;
+}
+
+/* OTP Modal Styles */
+.medi-otp-modal-overlay {
+  position: fixed;
+  top: 0;
+  left: 0;
+  right: 0;
+  bottom: 0;
+  background: rgba(0, 0, 0, 0.7);
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  z-index: 10000;
+  backdrop-filter: blur(5px);
+  animation: medi-modal-fade-in 0.3s ease;
+}
+
+.medi-otp-modal {
+  background: white;
+  border-radius: 20px;
+  padding: 2rem;
+  width: 90%;
+  max-width: 450px;
+  box-shadow: 0 25px 50px rgba(0, 0, 0, 0.25);
+  animation: medi-modal-slide-up 0.4s ease;
+}
+
+.medi-otp-header {
+  text-align: center;
+  margin-bottom: 2rem;
+}
+
+.medi-otp-header h3 {
+  color: #1e293b;
+  font-size: 1.5rem;
+  margin-bottom: 0.5rem;
+  font-weight: 700;
+}
+
+.medi-otp-subtitle {
+  color: #64748b;
+  font-size: 0.9rem;
+}
+
+/* Verification Steps */
+.medi-verification-steps {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  margin-bottom: 2rem;
+}
+
+.medi-step {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  gap: 0.5rem;
+}
+
+.medi-step-number {
+  width: 35px;
+  height: 35px;
+  border-radius: 50%;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  font-weight: 600;
+  background: #e2e8f0;
+  color: #64748b;
+  transition: all 0.3s ease;
+}
+
+.medi-step.active .medi-step-number {
+  background: linear-gradient(135deg, #3b82f6 0%, #2563eb 100%);
+  color: white;
+  box-shadow: 0 4px 10px rgba(59, 130, 246, 0.3);
+}
+
+.medi-step-text {
+  font-size: 0.8rem;
+  color: #94a3b8;
+  font-weight: 500;
+}
+
+.medi-step.active .medi-step-text {
+  color: #3b82f6;
+  font-weight: 600;
+}
+
+.medi-step-connector {
+  width: 50px;
+  height: 2px;
+  background: #e2e8f0;
+  margin: 0 1rem;
+}
+
+.medi-step.active + .medi-step-connector {
+  background: linear-gradient(to right, #3b82f6, #e2e8f0);
+}
+
+/* OTP Input Groups */
+.medi-verification-step {
+  margin-bottom: 2rem;
+}
+
+.medi-otp-input-group {
+  margin-bottom: 1.5rem;
+}
+
+.medi-otp-label {
+  display: flex;
+  align-items: center;
+  gap: 0.5rem;
+  color: #334155;
+  font-size: 0.9rem;
+  font-weight: 600;
+  margin-bottom: 0.8rem;
+}
+
+.medi-otp-icon {
+  color: #3b82f6;
+  font-size: 1rem;
+}
+
+.medi-otp-input {
+  width: 100%;
+  padding: 0.9rem 1rem;
+  border: 2px solid #e2e8f0;
+  border-radius: 10px;
+  font-size: 1.1rem;
+  font-weight: 600;
+  text-align: center;
+  letter-spacing: 2px;
+  color: #1e293b;
+  transition: all 0.3s ease;
+}
+
+.medi-otp-input:focus {
+  outline: none;
+  border-color: #3b82f6;
+  box-shadow: 0 0 0 3px rgba(59, 130, 246, 0.1);
+}
+
+.medi-otp-hint {
+  display: block;
+  color: #64748b;
+  font-size: 0.8rem;
+  margin-top: 0.5rem;
+  text-align: center;
+}
+
+/* Timer Section */
+.medi-timer-section {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  margin-bottom: 1.5rem;
+  padding: 1rem;
+  background: #f1f5f9;
+  border-radius: 10px;
+}
+
+.medi-timer-display {
+  display: flex;
+  align-items: center;
+  gap: 0.5rem;
+}
+
+.medi-timer-icon {
+  font-size: 1rem;
+}
+
+.medi-timer-text {
+  color: #475569;
+  font-size: 0.9rem;
+}
+
+.medi-timer-countdown {
+  color: #ef4444;
+  font-weight: 700;
+  font-size: 1rem;
+  font-family: monospace;
+}
+
+.medi-resend-button {
+  background: transparent;
+  border: 1px solid #3b82f6;
+  color: #3b82f6;
+  padding: 0.5rem 1rem;
+  border-radius: 8px;
+  font-size: 0.85rem;
+  font-weight: 500;
+  cursor: pointer;
+  transition: all 0.3s ease;
+}
+
+.medi-resend-button:hover:not(:disabled) {
+  background: #eff6ff;
+}
+
+.medi-resend-button:disabled {
+  opacity: 0.5;
+  cursor: not-allowed;
+}
+
+/* Verify Buttons */
+.medi-verify-button {
+  width: 100%;
+  padding: 0.9rem;
+  border: none;
+  border-radius: 10px;
+  font-size: 1rem;
+  font-weight: 600;
+  cursor: pointer;
+  transition: all 0.3s ease;
+  margin-bottom: 1rem;
+}
+
+.medi-email-verify {
+  background: linear-gradient(135deg, #3b82f6 0%, #2563eb 100%);
+  color: white;
+}
+
+.medi-phone-verify {
+  background: linear-gradient(135deg, #10b981 0%, #059669 100%);
+  color: white;
+}
+
+.medi-verify-button:hover {
+  transform: translateY(-2px);
+  box-shadow: 0 6px 20px rgba(59, 130, 246, 0.3);
+}
+
+/* Cancel Button */
+.medi-cancel-button {
+  width: 100%;
+  padding: 0.8rem;
+  background: transparent;
+  border: 2px solid #e2e8f0;
+  color: #64748b;
+  border-radius: 10px;
+  font-size: 0.95rem;
+  font-weight: 500;
+  cursor: pointer;
+  transition: all 0.3s ease;
+}
+
+.medi-cancel-button:hover {
+  background: #f1f5f9;
+  border-color: #cbd5e1;
+}
+
+/* Animations */
+@keyframes medi-modal-fade-in {
+  from {
+    opacity: 0;
+  }
+  to {
+    opacity: 1;
+  }
+}
+
+@keyframes medi-modal-slide-up {
+  from {
+    transform: translateY(20px);
+    opacity: 0;
+  }
+  to {
+    transform: translateY(0);
+    opacity: 1;
+  }
+}
+
+/* Responsive Design */
+@media (max-width: 992px) {
+  .medi-signup-container {
+    flex-direction: column;
+    height: auto;
+    min-height: 100vh;
+  }
+  
+  .medi-signup-left-side {
+    order: 2;
+    padding: 2rem 1rem;
+  }
+  
+  .medi-signup-right-side {
+    order: 1;
+    min-height: 300px;
+    padding: 2rem;
+  }
+  
+  .medi-form-row {
+    grid-template-columns: 1fr;
+    gap: 1rem;
+  }
+  
+  .medi-requirements-grid {
+    grid-template-columns: 1fr;
+  }
+  
+  .medi-right-logo-wrapper {
+    width: 80px;
+    height: 80px;
+    margin-bottom: 1rem;
+  }
+  
+  .medi-right-logo-icon {
+    font-size: 2.5rem;
+  }
+  
+  .medi-right-logo-text {
+    font-size: 2rem;
+  }
+  
+  .medi-right-tagline {
+    font-size: 1rem;
+  }
+}
+
+@media (max-width: 576px) {
+  .medi-signup-form-wrapper {
+    padding: 1rem;
+  }
+  
+  .medi-form-header-section h2 {
+    font-size: 1.8rem;
+  }
+  
+  .medi-otp-modal {
+    padding: 1.5rem;
+    margin: 1rem;
+  }
+  
+  .medi-step-connector {
+    width: 30px;
+  }
+  
+  .medi-timer-section {
+    flex-direction: column;
+    gap: 1rem;
+    text-align: center;
+  }
+}
+
+/* Scrollbar Styling */
+.medi-signup-left-side::-webkit-scrollbar {
+  width: 6px;
+}
+
+.medi-signup-left-side::-webkit-scrollbar-track {
+  background: #f1f5f9;
+}
+
+.medi-signup-left-side::-webkit-scrollbar-thumb {
+  background: #cbd5e1;
+  border-radius: 3px;
+}
+
+.medi-signup-left-side::-webkit-scrollbar-thumb:hover {
+  background: #94a3b8;
+}

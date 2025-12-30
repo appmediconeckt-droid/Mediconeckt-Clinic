@@ -1,41 +1,47 @@
-// Walkin.js
 import React, { useState } from 'react';
 import './Walkin.css';
 import { useNavigate } from 'react-router-dom';
 
-
-
 function Walkin() {
   const [activeCard, setActiveCard] = useState(null);
   const [isLoading, setIsLoading] = useState(false);
+  const [showAppointmentModal, setShowAppointmentModal] = useState(false);
   const navigate = useNavigate();
-  
+
+  const handleCardClick = (cardType, routePath, alertMessage) => {
+    setActiveCard(cardType);
+    setIsLoading(true);
+
+    // Simulate loading/API call
+    setTimeout(() => {
+      setIsLoading(false);
+      alert(alertMessage);
+      navigate(routePath);
+    }, 800);
+  };
+
   const handleDashboardClick = () => {
-    setActiveCard('dashboard');
-    setIsLoading(true);
-    
-    // Simulate loading/API call
-    setTimeout(() => {
-      setIsLoading(false);
-      alert('Dashboard loaded successfully!');
-      navigate("/patientdashboard");
-      // In a real app: navigate('/dashboard') or set state to show dashboard content
-    }, 800);
+    handleCardClick('dashboard', '/patientdashboard', 'Dashboard loaded successfully!');
   };
-  
+
   const handleAppointmentClick = () => {
-    setActiveCard('appointment');
-    setIsLoading(true);
-    
-    // Simulate loading/API call
-    setTimeout(() => {
-      setIsLoading(false);
-      alert('Walk-in Appointment form opened!');
-      navigate("/walkinclinic");
-      // In a real app: navigate('/appointment') or set state to show appointment form
-    }, 800);
+    setShowAppointmentModal(true);
   };
-  
+
+  const handleWalkinAppointment = () => {
+    setShowAppointmentModal(false);
+    handleCardClick('walkin', '/walk-in-appointment', 'Walk-in Appointment form opened!');
+  };
+
+  const handleOnlineAppointment = () => {
+    setShowAppointmentModal(false);
+    handleCardClick('online', '/qrappointment', 'Online Appointment form opened!');
+  };
+
+  const closeModal = () => {
+    setShowAppointmentModal(false);
+  };
+
   return (
     <div className="Walkin">
       <div className="">
@@ -45,75 +51,130 @@ function Walkin() {
           </div>
           <h1>HealthCare Portal</h1>
           <p className="subtitle">Choose an option below to access healthcare services</p>
-           <footer className=''>
-          <p>© {new Date().getFullYear()} MediCare Solutions. All rights reserved.</p>
-          <p className="emergency-contact">
-            <i className="fas fa-phone-alt"></i> Emergency: <strong>1-800-MED-HELP</strong>
-          </p>
-        </footer>
+          <footer className=''>
+            <p>© {new Date().getFullYear()} MediCare Solutions. All rights reserved.</p>
+            <p className="emergency-contact">
+              <i className="fas fa-phone-alt"></i> Emergency: <strong>1-800-MED-HELP</strong>
+            </p>
+          </footer>
         </header>
-        
-        
-        
-        
-         <div className="cards" style={{gap:"5px"}}>
-            {/* Dashboard Card Button */}
-            <button 
-              className={`card-button dashboard-card ${activeCard === 'dashboard' ? 'active' : ''}`}
-              onClick={handleDashboardClick}
-              disabled={isLoading}
-              style={{marginRight:"30px"}}
-            >
-              <div className="card-icon">
-                <i className="fas fa-tachometer-alt"></i>
+
+        <div className="cards" style={{ gap: "5px" }}>
+          {/* Dashboard Card Button */}
+          <button
+            className={`card-button dashboard-card ${activeCard === 'dashboard' ? 'active' : ''}`}
+            onClick={handleDashboardClick}
+            disabled={isLoading}
+            style={{ marginRight: "15px" }}
+          >
+            <div className="card-icon">
+              <i className="fas fa-tachometer-alt"></i>
+            </div>
+            <h2 className="card-title">Dashboard</h2>
+            <p className="card-description">
+              Access patient records, view analytics, and manage healthcare operations
+            </p>
+            <div className="card-footer">
+              <span className="card-badge">Patient dashboard</span>
+              <div className="card-arrow">
+                <i className="fas fa-arrow-right"></i>
               </div>
-              <h2 className="card-title">Dashboard</h2>
-              <p className="card-description">
-                Access patient records, view analytics, and manage healthcare operations
-              </p>
-              <div className="card-footer">
-                <span className="card-badge">Patient dashboard</span>
-                <div className="card-arrow">
-                  <i className="fas fa-arrow-right"></i>
-                </div>
+            </div>
+
+            {activeCard === 'dashboard' && isLoading && (
+              <div className="loading-overlay">
+                <div className="spinner"></div>
+                <p>Loading Dashboard...</p>
+              </div>
+            )}
+          </button>
+
+          {/* Appointment Card Button */}
+          <button
+            className={`card-button appointment-card ${activeCard === 'appointment' ? 'active' : ''}`}
+            onClick={handleAppointmentClick}
+            disabled={isLoading}
+          >
+            <div className="card-icon">
+              <i className="fas fa-calendar-check"></i>
+            </div>
+            <h2 className="card-title">Appointment</h2>
+            <p className="card-description">
+              Choose between Walk-in or Online appointments for medical consultations
+            </p>
+            <div className="card-footer">
+              <span className="card-badge">Book Now</span>
+              <div className="card-arrow">
+                <i className="fas fa-arrow-right"></i>
+              </div>
+            </div>
+
+            {activeCard === 'appointment' && isLoading && (
+              <div className="loading-overlay">
+                <div className="spinner"></div>
+                <p>Loading Appointment Options...</p>
+              </div>
+            )}
+          </button>
+        </div>
+
+        {/* Appointment Modal */}
+        {showAppointmentModal && (
+          <div className="modal-overlay" onClick={closeModal}>
+            <div className="modal-content" onClick={(e) => e.stopPropagation()}>
+              <div className="modal-header">
+                <h2>Choose Appointment Type</h2>
+                <button className="modal-close" onClick={closeModal}>
+                  <i className="fas fa-times"></i>
+                </button>
               </div>
               
-              {activeCard === 'dashboard' && isLoading && (
-                <div className="loading-overlay">
-                  <div className="spinner"></div>
-                  <p>Loading Dashboard...</p>
+              <div className="modal-body">
+                <div className="modal-cards">
+                  {/* Walk-in Option */}
+                  <button
+                    className="modal-card walkin-option"
+                    onClick={handleWalkinAppointment}
+                    disabled={isLoading}
+                  >
+                    <div className="modal-card-icon">
+                      <i className="fas fa-walking"></i>
+                    </div>
+                    <h3>Walk-in</h3>
+                    <p>Visit our clinic for immediate consultation and medical care</p>
+                    <div className="modal-card-footer">
+                      <span className="modal-badge">In-person</span>
+                      <i className="fas fa-chevron-right"></i>
+                    </div>
+                  </button>
+
+                  {/* Online Appointment Option */}
+                  <button
+                    className="modal-card online-option"
+                    onClick={handleOnlineAppointment}
+                    disabled={isLoading}
+                  >
+                    <div className="modal-card-icon">
+                      <i className="fas fa-video"></i>
+                    </div>
+                    <h3>Online Appointment</h3>
+                    <p>Schedule virtual consultations from anywhere via QR code</p>
+                    <div className="modal-card-footer">
+                      <span className="modal-badge">Virtual</span>
+                      <i className="fas fa-chevron-right"></i>
+                    </div>
+                  </button>
                 </div>
-              )}
-            </button>
-            
-            {/* Appointment Card Button */}
-            <button 
-              className={`card-button appointment-card ${activeCard === 'appointment' ? 'active' : ''}`}
-              onClick={handleAppointmentClick}
-              disabled={isLoading}
-            >
-              <div className="card-icon">
-                <i className="fas fa-calendar-plus"></i>
+
+                <div className="modal-footer">
+                  <button className="modal-cancel" onClick={closeModal}>
+                    Cancel
+                  </button>
+                </div>
               </div>
-              <h2 className="card-title">Walk-in Appointment</h2>
-              <p className="card-description">
-                Register new patients for immediate consultation and medical care
-              </p>
-              <div className="card-footer">
-                <span className="card-badge">Walk-in-clinic</span>
-                <div className="card-arrow">
-                  <i className="fas fa-arrow-right"></i>
-                </div>
-              </div>
-              
-              {activeCard === 'appointment' && isLoading && (
-                <div className="loading-overlay">
-                  <div className="spinner"></div>
-                  <p>Loading Appointment Form...</p>
-                </div>
-              )}
-            </button>
+            </div>
           </div>
+        )}
       </div>
     </div>
   );

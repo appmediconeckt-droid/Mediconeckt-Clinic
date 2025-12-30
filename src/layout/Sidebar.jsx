@@ -12,7 +12,30 @@ const Sidebar = ({ menuItemClick }) => {
   useEffect(() => {
     const role = localStorage.getItem("userRole");
     setUserRole(role);
+    
+    // Initialize body class based on initial sidebar state
+    updateBodyClass(hoverExpand);
+    
+    return () => {
+      // Clean up classes when component unmounts
+      document.body.classList.remove('sidebar-hover-expanded', 'sidebar-collapsed');
+    };
   }, []);
+
+  // Update body class when hover state changes
+  useEffect(() => {
+    updateBodyClass(hoverExpand);
+  }, [hoverExpand]);
+
+  const updateBodyClass = (isExpanded) => {
+    if (isExpanded) {
+      document.body.classList.add('sidebar-hover-expanded');
+      document.body.classList.remove('sidebar-collapsed');
+    } else {
+      document.body.classList.add('sidebar-collapsed');
+      document.body.classList.remove('sidebar-hover-expanded');
+    }
+  };
 
   const isActive = (path) => location.pathname === path;
 
@@ -24,13 +47,15 @@ const Sidebar = ({ menuItemClick }) => {
     menuItemClick();
   };
 
+  // Your existing menu items arrays remain the same
   const doctorMenuItems = [
     { path: "/doctordashboard", icon: "fa-gauge-high", text: "Dashboard" },
     { path: "/doctorcalendar", icon: "fa-calendar-days", text: "Calendar" },
     { path: "/doctorprofile", icon: "fa-user-check", text: "Profile" },
     { path: "/qrcode", icon: "fa-qrcode", text: "QR Code" },
+       { path: "/patient-sms", icon: "fa-message", text: "Patient SMS" },
     { path: "/appointmentlist", icon: "fa-list-check", text: "Appointment List" },
-    { path: "/walkinappointment", icon: "fa-list-check", text: "Walk in" },
+    { path: "/walkinappointment", icon: "fa-solid fa-person-walking", text: "Walk in" },
     { path: "/clinicpage", icon: "fa-hospital", text: "Clinic Page" },
     { path: "/doctor-notifications", icon: "fa-bell", text: "Notification" },
     { path: "/setting", icon: "fa-gear", text: "Setting" },
@@ -42,6 +67,7 @@ const Sidebar = ({ menuItemClick }) => {
     // { path: "/patientprofile", icon: "fa-user-check", text: "Profile" },
     // { path: "/patientrecords", icon: "fa-file-medical", text: "Medical Records" },
     // { path: "/patientdoctors", icon: "fa-user-md", text: "Find Doctors" },
+     { path: "/doctor-sms", icon: "fa-message", text: "Doctor SMS" },
     { path: "/patient-notifications", icon: "fa-bell", text: "Notifications" },
     { path: "/patient-settings", icon: "fa-gear", text: "Settings" },
   ];
@@ -68,7 +94,7 @@ const Sidebar = ({ menuItemClick }) => {
 
   return (
     <div
-      className={`sidebar-container ${hoverExpand ? "" : "collapsed"} ${
+      className={`sidebar-container ${hoverExpand ? "hover-expanded" : "collapsed"} ${
         userRole === "doctor" ? "doctor-theme" : "patient-theme"
       }`}
       onMouseEnter={() => setHoverExpand(true)}
@@ -96,11 +122,7 @@ const Sidebar = ({ menuItemClick }) => {
         {hoverExpand && (
           <div className="sidebar-footer">
             <div className="user-info">
-              
-              
-              {/* <small className="user-email">
-                {localStorage.getItem("userEmail") || "user@example.com"}
-              </small> */}
+              {/* User info content */}
             </div>
           </div>
         )}

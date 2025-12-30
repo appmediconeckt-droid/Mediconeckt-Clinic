@@ -3,7 +3,7 @@ import "./ProfileCard.css";
 
 export default function ProfileCard({
   profile = {
-    name: "Dr. Arun Badode",
+    name: "Dr. Ronit Roy",
     role: "General Physician",
     clinic: "MedicOne Clinic",
     phone: "+91 98765 43210",
@@ -25,9 +25,10 @@ export default function ProfileCard({
   }, [qrData]);
 
   return (
-    <div className="atm-card container">
+  <div>
+      <div className="atm-card ">
       {/* Left Side */}
-      <div className="atm-left">
+      <div className="atm-left ">
         <div className="dropdown profile-element">
           <div
             className="fw-bold p-1 rounded-4 profile d-flex align-items-center"
@@ -59,5 +60,6 @@ export default function ProfileCard({
         <p className="atm-scan">Scan for Appointment</p>
       </div>
     </div>
+  </div>
   );
 }

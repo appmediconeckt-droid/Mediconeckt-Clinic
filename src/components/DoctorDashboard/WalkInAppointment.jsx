@@ -54,7 +54,7 @@ export default function WalkInAppointment() {
   };
 
   return (
-    <div className="walkin-main">
+    <div className="walkin-main p-4">
       <div className="walkin-header-section">
         <div className="header d-flex flex-column flex-md-row justify-content-between align-items-start align-items-md-center mb-3 gap-3">
              <h2 className="walkin-title ">🏥 Walk-in Appointment</h2>
@@ -95,7 +95,7 @@ export default function WalkInAppointment() {
         {/* TABLE SECTION */}
         <div className="walkin-table-section">
           <div className="walkin-card">
-            <h2 className="walkin-section-title">📋 Appointments List ({appointments.length})</h2>
+            <h2 className="walkin-section-title mb-3">📋 Appointments List ({appointments.length})</h2>
             
             {appointments.length === 0 ? (
               <div className="walkin-empty-state">

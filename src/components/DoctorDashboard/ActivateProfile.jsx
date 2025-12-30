@@ -4,7 +4,6 @@ import "bootstrap-icons/font/bootstrap-icons.css";
 import "./ActivateProfile.css";
 
 export default function DoctorProfileFlow() {
-  const [activeTab, setActiveTab] = useState("setup");
   const [profile, setProfile] = useState({
     // PERSONAL DETAILS
     name: "",
@@ -24,34 +23,13 @@ export default function DoctorProfileFlow() {
     languages: "",
     about: "",
     expertise: "",
-
-    // CONSULTATION SETTINGS
-    availability: [],
-    consultationType: "",
-    fees: "",
-    followUpFees: "",
-
-    // CLINIC DETAILS
-    clinicName: "",
-    clinicAddress: "",
-    googleMapLink: "",
-    consultationTiming: "",
-    daysAvailable: "",
-
-    // AVAILABILITY
-    todayAvailable: true,
-    onlineConsultation: true,
   });
 
   const [statusPersonal, setStatusPersonal] = useState("Incomplete");
   const [statusProfessional, setStatusProfessional] = useState("Incomplete");
-  const [statusConsultation, setStatusConsultation] = useState("Incomplete");
   const [editingSection, setEditingSection] = useState(null);
   const [editFormData, setEditFormData] = useState({});
-  const [showMapModal, setShowMapModal] = useState(false);
-  const [mapLinkInput, setMapLinkInput] = useState("");
-
-  const days = ["Sun", "Mon", "Tue", "Wed", "Thu", "Fri", "Sat"];
+  const [isEditMode, setIsEditMode] = useState(false);
 
   // Load saved profile from localStorage
   useEffect(() => {
@@ -103,38 +81,9 @@ export default function DoctorProfileFlow() {
     }
   };
 
-  const validateConsultation = () => {
-    if (
-      profile.availability.length > 0 &&
-      profile.consultationType !== "" &&
-      profile.fees !== "" &&
-      profile.clinicName &&
-      profile.clinicAddress
-    ) {
-      setStatusConsultation("Completed");
-      return true;
-    } else {
-      setStatusConsultation("Incomplete");
-      return false;
-    }
-  };
-
   const validateAllSections = (profileData = profile) => {
     validatePersonal(profileData);
     validateProfessional(profileData);
-    validateConsultation(profileData);
-  };
-
-  const handleAvailabilityToggle = (day) => {
-    let updated = [...profile.availability];
-
-    if (updated.some((d) => d.day === day)) {
-      updated = updated.filter((d) => d.day !== day);
-    } else {
-      updated.push({ day, startTime: "09:00", endTime: "17:00" });
-    }
-
-    setProfile({ ...profile, availability: updated });
   };
 
   const handlePhotoUpload = (e) => {
@@ -167,6 +116,7 @@ export default function DoctorProfileFlow() {
       validateAllSections(editFormData);
       setEditingSection(null);
       setEditFormData({});
+      setIsEditMode(false);
       alert("Profile updated successfully!");
     }
   };
@@ -174,45 +124,19 @@ export default function DoctorProfileFlow() {
   const handleCancelClick = () => {
     setEditingSection(null);
     setEditFormData({});
-  };
-
-  const handleOpenMapModal = () => {
-    setMapLinkInput(profile.googleMapLink);
-    setShowMapModal(true);
-  };
-
-  const handleSaveMapLink = () => {
-    setProfile({
-      ...profile,
-      googleMapLink: mapLinkInput,
-    });
-    setShowMapModal(false);
-  };
-
-  const handleGetCurrentLocation = () => {
-    if (navigator.geolocation) {
-      navigator.geolocation.getCurrentPosition(
-        (position) => {
-          const { latitude, longitude } = position.coords;
-          const newMapLink = `https://www.google.com/maps?q=${latitude},${longitude}`;
-          setMapLinkInput(newMapLink);
-        },
-        (error) => {
-          alert("Unable to retrieve your location. Please enter manually.");
-        }
-      );
-    } else {
-      alert("Geolocation is not supported by your browser.");
-    }
+    setIsEditMode(false);
   };
 
   const handleCompleteProfile = () => {
-    if (statusPersonal === "Completed" && statusConsultation === "Completed" && statusProfessional === "Completed") {
+    if (statusPersonal === "Completed" && statusProfessional === "Completed") {
       alert("Profile setup completed successfully!");
-      setActiveTab("view");
     } else {
       alert("Please complete all sections before finalizing.");
     }
+  };
+
+  const handleEditProfileClick = () => {
+    setIsEditMode(true);
   };
 
   // Render Professional Profile View
@@ -243,41 +167,7 @@ export default function DoctorProfileFlow() {
           { label: "About", key: "about" },
           { label: "Expertise", key: "expertise" },
         ]
-      },
-      {
-        id: "consultationSettings",
-        title: "Consultation Settings",
-        fields: [
-          { label: "Consultation Type", key: "consultationType" },
-          { label: "Consultation Fees", key: "fees" },
-          { label: "Follow-up Fees", key: "followUpFees" },
-          { label: "Clinic Name", key: "clinicName" },
-          { label: "Clinic Address", key: "clinicAddress" },
-          { label: "Consultation Timing", key: "consultationTiming" },
-          { label: "Days Available", key: "daysAvailable" },
-        ]
-      },
-      {
-        id: "availability",
-        title: "Availability",
-        fields: [
-          {
-            label: "Today Available",
-            key: "todayAvailable",
-            type: "boolean"
-          },
-          {
-            label: "Online Consultation",
-            key: "onlineConsultation",
-            type: "boolean"
-          },
-          {
-            label: "Google Map Link",
-            key: "googleMapLink",
-            type: "link"
-          },
-        ]
-      },
+      }
     ];
 
     return (
@@ -308,7 +198,7 @@ export default function DoctorProfileFlow() {
           </div>
           <button
             className="btn-edit-profile"
-            onClick={() => setActiveTab("setup")}
+            onClick={handleEditProfileClick}
           >
             <i className="bi bi-pencil me-2"></i>
             Edit Profile
@@ -320,35 +210,20 @@ export default function DoctorProfileFlow() {
             <div key={section.id} className="profile-section-card">
               <div className="section-header">
                 <h4>{section.title}</h4>
-                <button
+                {/* <button
                   className="btn-edit-section"
                   onClick={() => handleEditClick(section.id)}
                 >
                   <i className="bi bi-pencil me-1"></i>
                   Edit
-                </button>
+                </button> */}
               </div>
               <div className="section-content">
                 {section.fields.map((field) => (
                   <div key={field.key} className="profile-field">
                     <span className="field-label">{field.label}:</span>
                     <span className="field-value">
-                      {field.type === "boolean" ? (
-                        <span className={`availability ${profile[field.key] ? "available" : "not-available"}`}>
-                          {profile[field.key] ? "Yes" : "No"}
-                        </span>
-                      ) : field.type === "link" && profile[field.key] ? (
-                        <a
-                          href={profile[field.key]}
-                          target="_blank"
-                          rel="noopener noreferrer"
-                          className="map-link"
-                        >
-                          View on Google Maps
-                        </a>
-                      ) : (
-                        profile[field.key] || "Not set"
-                      )}
+                      {profile[field.key] || "Not set"}
                     </span>
                   </div>
                 ))}
@@ -357,55 +232,56 @@ export default function DoctorProfileFlow() {
           ))}
         </div>
 
-        {/* Availability Grid in View Mode */}
-        <div className="profile-section-card">
-          <div className="section-header">
-            <h4>Weekly Availability</h4>
+        {/* Profile Completion Status */}
+        <div className="overall-status mt-4">
+          <h4>Profile Completion Status</h4>
+          <div className="status-display">
+            <div className="status-item">
+              <span className="status-label">Personal Details</span>
+              <span className={`status-value ${statusPersonal === "Completed" ? "status-completed" : "status-incomplete"}`}>
+                {statusPersonal}
+              </span>
+            </div>
+            <div className="status-item">
+              <span className="status-label">Professional Details</span>
+              <span className={`status-value ${statusProfessional === "Completed" ? "status-completed" : "status-incomplete"}`}>
+                {statusProfessional}
+              </span>
+            </div>
           </div>
-          <div className="availability-grid-view">
-            {days.map((day) => {
-              const daySlot = profile.availability.find(d => d.day === day);
-              return (
-                <div key={day} className="day-slot-view">
-                  <div className={`day-label ${daySlot ? "active" : ""}`}>
-                    {day}
-                  </div>
-                  {daySlot ? (
-                    <div className="time-slot">
-                      {daySlot.startTime} - {daySlot.endTime}
-                    </div>
-                  ) : (
-                    <div className="time-slot unavailable">Not Available</div>
-                  )}
-                </div>
-              );
-            })}
-          </div>
+          {statusPersonal === "Completed" &&
+            statusProfessional === "Completed" && (
+              <div className="mt-4 text-center">
+                <button
+                  className="complete-btn"
+                  onClick={handleCompleteProfile}
+                >
+                  <i className="bi bi-check-lg me-2"></i>
+                  Profile Complete
+                </button>
+                <p className="text-muted mt-2">
+                  Your profile is fully completed and ready!
+                </p>
+              </div>
+            )}
         </div>
       </div>
     );
   };
 
-  // Render Profile Setup Form
-  const renderProfileSetup = () => {
+  // Render Edit Form
+  const renderEditForm = () => {
     return (
       <div className="profile-flow">
         <div className="header d-flex justify-content-between align-items-center mb-4">
-          <h2 className="profile-header">Doctor Profile</h2>
-          <div className="tab-switcher">
-            <button
-              className={`tab-btn ${activeTab === 'setup' ? 'active' : ''}`}
-              onClick={() => setActiveTab('setup')}
-            >
-              Setup
-            </button>
-            <button
-              className={`tab-btn ${activeTab === 'view' ? 'active' : ''}`}
-              onClick={() => setActiveTab('view')}
-            >
-              View Profile
-            </button>
-          </div>
+          <h2 className="profile-header">Edit Profile</h2>
+          <button
+            className="btn btn-outline-secondary"
+            onClick={() => setIsEditMode(false)}
+          >
+            <i className="bi bi-arrow-left me-1"></i>
+            Back to View
+          </button>
         </div>
 
         {/* Progress Tracker */}
@@ -418,13 +294,9 @@ export default function DoctorProfileFlow() {
             2
             <span>Professional</span>
           </div>
-          <div className={`progress-step ${statusConsultation === "Completed" ? "active" : ""}`}>
-            3
-            <span>Consultation</span>
-          </div>
         </div>
 
-        {/* PERSONAL DETAILS */}
+        {/* PERSONAL DETAILS - Edit Mode */}
         <div className="profile-card">
           <div className="section-header">
             <h3 className="section-title">Personal Details</h3>
@@ -557,13 +429,22 @@ export default function DoctorProfileFlow() {
             />
           </div>
 
-          <button className="save-btn" onClick={validatePersonal}>
-            <i className="bi bi-check-circle me-2"></i>
-            Save Personal Details
-          </button>
+          <div className="d-flex justify-content-between mt-3">
+            <button className="btn btn-secondary" onClick={() => setIsEditMode(false)}>
+              <i className="bi bi-x-circle me-2"></i>
+              Cancel
+            </button>
+            <button className="save-btn" onClick={validatePersonal}>
+
+
+              <i className="bi bi-check-circle me-2"></i>
+              Save Personal Details
+            </button>
+
+          </div>
         </div>
 
-        {/* PROFESSIONAL DETAILS */}
+        {/* PROFESSIONAL DETAILS - Edit Mode */}
         <div className="profile-card">
           <div className="section-header">
             <h3 className="section-title">Professional Details</h3>
@@ -628,200 +509,25 @@ export default function DoctorProfileFlow() {
             </div>
           </div>
 
-          <button className="save-btn" onClick={validateProfessional}>
-            <i className="bi bi-check-circle me-2"></i>
-            Save Professional Details
-          </button>
+          <div className="d-flex justify-content-between mt-3">
+            <button className="btn btn-secondary" onClick={() => setIsEditMode(false)}>
+              <i className="bi bi-x-circle me-2"></i>
+              Cancel
+            </button>
+
+            <button className="save-btn" onClick={validateProfessional}>
+              <i className="bi bi-check-circle me-2"></i>
+              Save Professional Details
+            </button>
+          </div>
+
         </div>
-
-        {/* CONSULTATION SETTINGS */}
-        <div className="profile-card">
-          <div className="section-header">
-            <h3 className="section-title">Consultation Settings</h3>
-            <span className={`status-badge ${statusConsultation === "Completed" ? "status-completed" : "status-incomplete"}`}>
-              {statusConsultation}
-            </span>
-          </div>
-
-          <h6 className="mt-3 form-label">Select Available Days</h6>
-          <div className="availability-grid">
-            {days.map((day) => (
-              <button
-                key={day}
-                className={`day-btn ${profile.availability.some((x) => x.day === day) ? "active" : ""}`}
-                onClick={() => handleAvailabilityToggle(day)}
-              >
-                {day}
-              </button>
-            ))}
-          </div>
-
-          {profile.availability.length > 0 && (
-            <div className="time-slot-container">
-              <h6 className="time-slot-header">
-                <i className="bi bi-clock me-2"></i>
-                Set Time Slots for Selected Days
-              </h6>
-              {profile.availability.map((item, index) => (
-                <div className="row mb-3" key={index}>
-                  <div className="col-md-6">
-                    <label className="form-label">{item.day} - Start Time</label>
-                    <input
-                      type="time"
-                      className="form-input form-control"
-                      value={item.startTime}
-                      onChange={(e) => {
-                        const updated = [...profile.availability];
-                        updated[index].startTime = e.target.value;
-                        setProfile({ ...profile, availability: updated });
-                      }}
-                    />
-                  </div>
-                  <div className="col-md-6">
-                    <label className="form-label">{item.day} - End Time</label>
-                    <input
-                      type="time"
-                      className="form-input form-control"
-                      value={item.endTime}
-                      onChange={(e) => {
-                        const updated = [...profile.availability];
-                        updated[index].endTime = e.target.value;
-                        setProfile({ ...profile, availability: updated });
-                      }}
-                    />
-                  </div>
-                </div>
-              ))}
-            </div>
-          )}
-
-          <div className="row mt-4">
-            <div className="col-md-4 mb-3">
-              <label className="form-label">Consultation Type</label>
-              <select
-                className="form-input form-control"
-                value={profile.consultationType}
-                onChange={(e) =>
-                  setProfile({ ...profile, consultationType: e.target.value })
-                }
-              >
-                <option value="">Select Type</option>
-                <option value="video">Video Consultation</option>
-                <option value="audio">Audio Call</option>
-                <option value="chat">Chat Consultation</option>
-                <option value="clinic">Clinic Visit</option>
-              </select>
-            </div>
-
-            <div className="col-md-4 mb-3">
-              <label className="form-label">Consultation Fees (₹)</label>
-              <input
-                className="form-input form-control"
-                type="number"
-                value={profile.fees}
-                onChange={(e) => setProfile({ ...profile, fees: e.target.value })}
-                placeholder="Enter fees"
-              />
-            </div>
-
-            <div className="col-md-4 mb-3">
-              <label className="form-label">Follow-up Fees (₹)</label>
-              <input
-                className="form-input form-control"
-                type="number"
-                value={profile.followUpFees}
-                onChange={(e) =>
-                  setProfile({ ...profile, followUpFees: e.target.value })
-                }
-                placeholder="Enter follow-up fees"
-              />
-            </div>
-          </div>
-
-          <div className="row mt-3">
-            <div className="col-md-6 mb-3">
-              <label className="form-label">Clinic/Hospital Name</label>
-              <input
-                className="form-input form-control"
-                value={profile.clinicName}
-                onChange={(e) => setProfile({ ...profile, clinicName: e.target.value })}
-                placeholder="Enter clinic name"
-              />
-            </div>
-            <div className="col-md-6 mb-3">
-              <label className="form-label">Clinic Address</label>
-              <input
-                className="form-input form-control"
-                value={profile.clinicAddress}
-                onChange={(e) => setProfile({ ...profile, clinicAddress: e.target.value })}
-                placeholder="Enter clinic address"
-              />
-            </div>
-          </div>
-
-          <div className="row mt-3">
-            <div className="col-md-6 mb-3">
-              <label className="form-label">Consultation Timing</label>
-              <input
-                className="form-input form-control"
-                value={profile.consultationTiming}
-                onChange={(e) => setProfile({ ...profile, consultationTiming: e.target.value })}
-                placeholder="9:00 AM - 6:00 PM"
-              />
-            </div>
-            <div className="col-md-6 mb-3">
-              <label className="form-label">Days Available</label>
-              <input
-                className="form-input form-control"
-                value={profile.daysAvailable}
-                onChange={(e) => setProfile({ ...profile, daysAvailable: e.target.value })}
-                placeholder="Mon, Wed, Fri, Sat"
-              />
-            </div>
-          </div>
-
-          <div className="row mt-3">
-            <div className="col-md-6 mb-3">
-              <label className="form-label">Google Maps Link</label>
-              <div className="input-group">
-                <input
-                  type="text"
-                  className="form-input form-control"
-                  value={profile.googleMapLink}
-                  onChange={(e) => setProfile({ ...profile, googleMapLink: e.target.value })}
-                  placeholder="https://maps.google.com/..."
-                />
-                <button
-                  className="btn btn-outline-secondary"
-                  type="button"
-                  onClick={handleOpenMapModal}
-                >
-                  <i className="bi bi-map"></i>
-                </button>
-              </div>
-            </div>
-            <div className="col-md-6 mb-3 d-flex align-items-end">
-              <div className="form-check">
-                <input
-                  className="form-check-input"
-                  type="checkbox"
-                  id="onlineConsultation"
-                  checked={profile.onlineConsultation}
-                  onChange={(e) => setProfile({ ...profile, onlineConsultation: e.target.checked })}
-                />
-                <label className="form-check-label" htmlFor="onlineConsultation">
-                  Available for Online Consultation
-                </label>
-              </div>
-            </div>
-          </div>
-
-          <button className="save-btn" onClick={validateConsultation}>
-            <i className="bi bi-save me-2"></i>
-            Save Consultation Settings
-          </button>
+        <div className="text-center">
+          <button className="save-btn" onClick={() => setIsEditMode(false)}>
+          <i className="bi bi-check-circle me-2"></i>
+          Save
+        </button>
         </div>
-
         {/* FINAL STATUS */}
         <div className="overall-status">
           <h4>Profile Completion Status</h4>
@@ -838,26 +544,20 @@ export default function DoctorProfileFlow() {
                 {statusProfessional}
               </span>
             </div>
-            <div className="status-item">
-              <span className="status-label">Consultation Settings</span>
-              <span className={`status-value ${statusConsultation === "Completed" ? "status-completed" : "status-incomplete"}`}>
-                {statusConsultation}
-              </span>
-            </div>
           </div>
           {statusPersonal === "Completed" &&
-            statusProfessional === "Completed" &&
-            statusConsultation === "Completed" && (
+            statusProfessional === "Completed" && (
               <div className="mt-4 text-center">
                 <button
                   className="complete-btn"
                   onClick={handleCompleteProfile}
+
                 >
                   <i className="bi bi-check-lg me-2"></i>
                   Complete Profile Setup
                 </button>
                 <p className="text-muted mt-2">
-                  Your profile is ready! Click above to finalize or switch to View mode.
+                  Your profile is ready! Click above to finalize.
                 </p>
               </div>
             )}
@@ -866,7 +566,7 @@ export default function DoctorProfileFlow() {
     );
   };
 
-  // Render Edit Modal for View Mode
+  // Render Edit Modal for View Mode (for section-wise editing)
   const renderEditModal = () => {
     if (!editingSection) return null;
 
@@ -900,27 +600,6 @@ export default function DoctorProfileFlow() {
                     </div>
                   </div>
                 );
-              } else if (key === 'googleMapLink') {
-                return (
-                  <div key={key} className="mb-3">
-                    <label className="form-label">Google Map Link</label>
-                    <div className="input-group">
-                      <input
-                        type="text"
-                        className="form-control"
-                        value={editFormData[key] || ''}
-                        onChange={(e) => handleInputChange(e, key)}
-                      />
-                      <button
-                        className="btn btn-outline-secondary"
-                        type="button"
-                        onClick={handleOpenMapModal}
-                      >
-                        <i className="bi bi-map"></i>
-                      </button>
-                    </div>
-                  </div>
-                );
               } else {
                 return (
                   <div key={key} className="mb-3">
@@ -951,63 +630,10 @@ export default function DoctorProfileFlow() {
     );
   };
 
-  // Render Map Modal
-  const renderMapModal = () => {
-    if (!showMapModal) return null;
-
-    return (
-      <div className="modal-overlay" onClick={() => setShowMapModal(false)}>
-        <div className="modal" onClick={(e) => e.stopPropagation()}>
-          <div className="modal-header">
-            <h3>Update Map Location</h3>
-            <button className="modal-close" onClick={() => setShowMapModal(false)}>
-              <i className="bi bi-x-lg"></i>
-            </button>
-          </div>
-          <div className="modal-body">
-            <input
-              type="text"
-              value={mapLinkInput}
-              onChange={(e) => setMapLinkInput(e.target.value)}
-              placeholder="Enter Google Maps link"
-              className="form-control mb-3"
-            />
-            <div className="map-preview mb-3">
-              <p>Preview:</p>
-              <a
-                href={mapLinkInput}
-                target="_blank"
-                rel="noopener noreferrer"
-                className="preview-link"
-              >
-                {mapLinkInput || "No link provided"}
-              </a>
-            </div>
-            <div className="d-flex justify-content-between">
-              <button className="btn btn-outline-primary" onClick={handleGetCurrentLocation}>
-                <i className="bi bi-geo-alt me-2"></i>
-                Use Current Location
-              </button>
-              <div>
-                <button className="btn btn-secondary me-2" onClick={() => setShowMapModal(false)}>
-                  Cancel
-                </button>
-                <button className="btn btn-primary" onClick={handleSaveMapLink}>
-                  Save Map Link
-                </button>
-              </div>
-            </div>
-          </div>
-        </div>
-      </div>
-    );
-  };
-
   return (
     <div className="doctor-profile-container">
-      {activeTab === 'setup' ? renderProfileSetup() : renderProfileView()}
+      {isEditMode ? renderEditForm() : renderProfileView()}
       {renderEditModal()}
-      {renderMapModal()}
     </div>
   );
 }

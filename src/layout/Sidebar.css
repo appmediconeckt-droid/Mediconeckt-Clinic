@@ -9,9 +9,9 @@
   z-index: 9;
 }
 
-/* ========== DOCTOR THEME (Blue) ========== */
+/* ========== DOCTOR THEME (Light Blue) ========== */
 .sidebar-container.doctor-theme {
-  background-color: #41a0f8;
+  background-color: #a8d8ff; /* Light blue */
 }
 
 .sidebar-container.doctor-theme .menu-link {
@@ -19,24 +19,24 @@
 }
 
 .sidebar-container.doctor-theme .menu-link:hover {
-  background-color: #e9f9f4;
+  background-color: #d4edff; /* Lighter blue for hover */
   border-radius: 12px;
 }
 
 .sidebar-container.doctor-theme .menu-item.active .menu-link {
-  background-color: #2a2b2d;
+  background-color: #4a9eff; /* Medium blue for active */
   color: white;
   border-radius: 12px;
 }
 
 .sidebar-container.doctor-theme .sidebar-footer {
   color: #000000;
-  border-top: 1px solid rgba(255, 255, 255, 0.3);
+  border-top: 1px solid rgba(0, 0, 0, 0.1);
 }
 
-/* ========== PATIENT THEME (Red) ========== */
+/* ========== PATIENT THEME (Light Green) ========== */
 .sidebar-container.patient-theme {
-  background-color: #ff6b6b;
+  background-color: #8af5aaff; /* Light green */
 }
 
 .sidebar-container.patient-theme .menu-link {
@@ -44,19 +44,19 @@
 }
 
 .sidebar-container.patient-theme .menu-link:hover {
-  background-color: #ffeaea;
+  background-color: #d4ffdf; /* Lighter green for hover */
   border-radius: 12px;
 }
 
 .sidebar-container.patient-theme .menu-item.active .menu-link {
-  background-color: #cc0000;
+  background-color: #6bc48a; /* Medium green for active */
   color: white;
   border-radius: 12px;
 }
 
 .sidebar-container.patient-theme .sidebar-footer {
   color: #000000;
-  border-top: 1px solid rgba(255, 255, 255, 0.3);
+  border-top: 1px solid rgba(0, 0, 0, 0.1);
 }
 
 /* ========== COLLAPSED STATE ========== */
@@ -128,12 +128,12 @@
 
 /* Doctor theme specific submenu */
 .sidebar-container.doctor-theme .submenu.expanded {
-  background: #e3f2fd;
+  background: #d4edff; /* Light blue background for submenu */
 }
 
 /* Patient theme specific submenu */
 .sidebar-container.patient-theme .submenu.expanded {
-  background: #ffebee;
+  background: #d4ffdf; /* Light green background for submenu */
 }
 
 .submenu-item {
@@ -145,29 +145,29 @@
 
 /* Doctor theme submenu items */
 .sidebar-container.doctor-theme .submenu-item {
-  color: #1976d2;
+  color: #0066cc; /* Darker blue text */
 }
 
 .sidebar-container.doctor-theme .submenu-item:hover {
-  background: #bbdefb;
+  background: #b3d9ff; /* Medium blue hover */
 }
 
 .sidebar-container.doctor-theme .submenu-item.active {
-  background-color: #1976d2;
+  background-color: #4a9eff; /* Medium blue active */
   color: white;
 }
 
 /* Patient theme submenu items */
 .sidebar-container.patient-theme .submenu-item {
-  color: #d32f2f;
+  color: #374151; /* Darker green text */
 }
 
 .sidebar-container.patient-theme .submenu-item:hover {
-  background: #ffcdd2;
+  background: #b3ffc9; /* Medium green hover */
 }
 
 .sidebar-container.patient-theme .submenu-item.active {
-  background-color: #d32f2f;
+  background-color: #dcfce7; /* Medium green active */
   color: white;
 }
 
@@ -221,4 +221,26 @@
 
 .sidebar-container.patient-theme .menu-item.active .fa-solid {
   color: white;
+}
+
+/* ========== HOVER EXPANDED STATE FOR RIGHT PANEL ========== */
+.sidebar-container.hover-expanded {
+  width: 220px;
+}
+
+/* When sidebar is expanded by hover, adjust right panel */
+body.sidebar-hover-expanded .right-side-content {
+  padding-left: 220px;
+  transition: padding-left 0.3s ease;
+}
+
+/* When sidebar is collapsed (no hover) */
+body.sidebar-collapsed .right-side-content {
+  padding-left: 62px;
+  transition: padding-left 0.3s ease;
+}
+
+/* Ensure smooth transition for all states */
+.right-side-content {
+  transition: padding-left 0.3s ease !important;
 }

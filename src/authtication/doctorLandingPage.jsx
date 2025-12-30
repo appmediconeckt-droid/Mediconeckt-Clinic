@@ -258,7 +258,7 @@ export default function DoctorLandingPage() {
       </section>
 
       {/* ================= SPECIALITY SECTION ================= */}
-      <section id="specialities" className="container py-5">
+      <section id="specialities" className="p-4 py-5">
         <div className="text-center mb-5">
           <h2 className="fw-bold mb-3">Our Medical Specialities</h2>
           <p className="text-muted">
@@ -293,7 +293,7 @@ export default function DoctorLandingPage() {
 
       {/* ================= FEATURED DOCTORS SECTION ================= */}
       <section id="doctors" className="bg-light py-5">
-        <div className="container">
+        <div className="p-4">
           <div className="text-center mb-5">
             <h2 className="fw-bold mb-3">Meet Our Expert Doctors</h2>
             <p className="text-muted">
@@ -337,7 +337,7 @@ export default function DoctorLandingPage() {
       </section>
 
       {/* ================= SERVICES SECTION ================= */}
-      <section id="services" className="container py-5">
+      <section id="services" className="p-4 py-5">
         <div className="text-center mb-5">
           <h2 className="fw-bold mb-3">Our Healthcare Services</h2>
           <p className="text-muted">
@@ -368,7 +368,7 @@ export default function DoctorLandingPage() {
 
       {/* ================= WHY CHOOSE US SECTION ================= */}
       <section className="bg-primary text-white py-5">
-        <div className="container">
+        <div className="p-4">
           <div className="text-center mb-5">
             <h2 className="fw-bold mb-3">Why Choose DoctorCare?</h2>
             <p>We provide exceptional healthcare with patient-first approach</p>
@@ -423,7 +423,7 @@ export default function DoctorLandingPage() {
 
       {/* ================= FOOTER ================= */}
       <footer className="bg-dark text-white pt-5 pb-4">
-        <div className="container">
+        <div className="p-4">
           <div className="row">
             <div className="col-lg-4 mb-4">
               <h4 className="mb-3">

@@ -507,7 +507,7 @@ export default function LandingPage() {
 
       {/* FOOTER */}
       <footer className="bg-dark text-white py-5">
-        <div className="container py-5">
+        <div className="p-4 py-5">
           <div className="row g-4">
             <motion.div
               initial={{ opacity: 0, y: 20 }}

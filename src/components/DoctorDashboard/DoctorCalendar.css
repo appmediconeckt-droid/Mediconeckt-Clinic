@@ -62,12 +62,12 @@
 
 /* Header Section */
 .header h2 {
-  background: var(--primary-gradient);
+  background: #4a9eff;
   -webkit-background-clip: text;
   -webkit-text-fill-color: transparent;
   background-clip: text;
   font-weight: 800;
-  font-size: 2.5rem;
+  font-size: 2.1rem;
   margin-bottom: 0.5rem;
   position: relative;
   display: inline-block;
@@ -244,7 +244,7 @@
 /* Calendar Cell */
 .calendar-cell {
   min-height: 180px;
-  background: white;
+  background: #a8d8ff;
   border-radius: var(--radius-md);
   padding: 1rem;
   transition: all var(--transition-medium);
@@ -906,5 +906,62 @@
   .modal,
   .weekday-bar {
     display: none !important;
+  }
+}
+
+/* Add these to your DoctorCalendar.css file */
+
+/* Clinic dropdown styles */
+.dropdown-menu.show {
+  animation: fadeIn 0.2s ease-in-out;
+}
+
+.clinic-item {
+  transition: all 0.2s ease;
+}
+
+.clinic-item:hover {
+  transform: translateY(-1px);
+  box-shadow: 0 2px 4px rgba(0,0,0,0.1);
+}
+
+.clinic-item.selected {
+  border-width: 2px !important;
+}
+
+.clinic-list::-webkit-scrollbar {
+  width: 6px;
+}
+
+.clinic-list::-webkit-scrollbar-track {
+  background: #f1f1f1;
+  border-radius: 3px;
+}
+
+.clinic-list::-webkit-scrollbar-thumb {
+  background: #888;
+  border-radius: 3px;
+}
+
+.clinic-list::-webkit-scrollbar-thumb:hover {
+  background: #555;
+}
+
+/* Slot badges */
+.slot-list .badge {
+  font-size: 0.75rem;
+  padding: 0.25em 0.5em;
+}
+
+/* Responsive adjustments */
+@media (max-width: 768px) {
+  .header .dropdown {
+    width: 100%;
+    margin-bottom: 10px;
+  }
+  
+  .header .dropdown > button {
+    width: 100%;
+    justify-content: center;
   }
 }

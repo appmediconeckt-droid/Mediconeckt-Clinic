@@ -91,11 +91,11 @@ const PatientAppointment = () => {
   ];
 
   const filteredDoctors = doctors.filter(doctor => {
-    const matchesSearch = doctor.name.toLowerCase().includes(searchTerm.toLowerCase()) || 
-                         doctor.specialty.toLowerCase().includes(searchTerm.toLowerCase());
+    const matchesSearch = doctor.name.toLowerCase().includes(searchTerm.toLowerCase()) ||
+      doctor.specialty.toLowerCase().includes(searchTerm.toLowerCase());
     const matchesSpecialty = !selectedSpecialty || doctor.specialty === selectedSpecialty;
     const matchesLocation = !selectedLocation || doctor.location === selectedLocation;
-    
+
     return matchesSearch && matchesSpecialty && matchesLocation;
   });
 
@@ -105,10 +105,10 @@ const PatientAppointment = () => {
   };
 
   return (
-    <div className="doctor-appointment">
-      <header className="app-header">
+    <div className="doctor-appointment p-4">
+      <header className="app-header  d-flex flex-column flex-md-row justify-content-between align-items-start align-items-md-center mb-3 gap-3">
         <h1>Book Appointment</h1>
-        <p>Find and book appointments with top doctors</p>
+        
       </header>
 
       <div className="search-section">
@@ -121,7 +121,7 @@ const PatientAppointment = () => {
             onChange={(e) => setSearchTerm(e.target.value)}
           />
         </div>
-        
+
         <div className="filters">
           <div className="filter-group">
             <label htmlFor="specialty">
@@ -138,7 +138,7 @@ const PatientAppointment = () => {
               ))}
             </select>
           </div>
-          
+
           <div className="filter-group">
             <label htmlFor="location">
               <i className="fas fa-map-marker-alt"></i> Location
@@ -154,9 +154,9 @@ const PatientAppointment = () => {
               ))}
             </select>
           </div>
-          
-          <button 
-            className="clear-filters" 
+
+          <button
+            className="clear-filters"
             onClick={() => {
               setSearchTerm('');
               setSelectedSpecialty('');
@@ -189,7 +189,7 @@ const PatientAppointment = () => {
                   )}
                 </div>
               </div>
-              
+
               <div className="card-body">
                 <h3>{doctor.name}</h3>
                 <div className="doctor-specialty">
@@ -209,9 +209,9 @@ const PatientAppointment = () => {
                   <span>{doctor.rating}/5.0</span>
                 </div>
               </div>
-              
+
               <div className="appointment-card-footer">
-                <Link to="/patient-appointment" style={{textDecorationLine:"none"}}>
+                <Link to="/patient-appointment" style={{ textDecorationLine: "none" }}>
                   <button className="book-btn">
                     <i className="fas fa-calendar-check"></i> Book Appointment
                   </button>

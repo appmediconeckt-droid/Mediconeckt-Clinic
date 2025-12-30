@@ -1,5 +1,14 @@
 /* File: doctorLandingPage.css */
 
+/* Doctor Theme Utilities */
+.doctor-text { color: var(--doctor-color) !important; }
+.doctor-bg { background-color: var(--doctor-bg) !important; }
+.doctor-border { border-color: var(--doctor-color) !important; }
+.btn-doctor { background-color: var(--doctor-color); color: var(--doctor-contrast); border-color: var(--doctor-color); }
+.bg-doctor { background-color: var(--doctor-bg); }
+
+/* End Doctor Theme Utilities */
+
 /* Hero Section */
 .hero {
   min-height: 100vh;
@@ -494,7 +503,8 @@ body {
 }
 
 .doctor-image {
-  height: 200px;
+  /* height: 200px; */
+  text-align: center;
   overflow: hidden;
 }
  
