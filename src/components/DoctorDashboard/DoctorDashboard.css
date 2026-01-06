@@ -527,15 +527,15 @@
   border-radius: 1px;
 }
 
-.current-time-label {
+.location-time-label {
   font-size: 15px;
-  color: #4a5568;
+  color: black;
   font-weight: 600;
   position: relative;
   padding-left: 24px;
 }
 
-.current-time-label::before {
+.location-time-label::before {
   content: '🕒';
   position: absolute;
   left: 0;

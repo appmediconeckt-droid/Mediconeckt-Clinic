@@ -6,6 +6,136 @@ const DoctorChat = () => {
     const { doctorId } = useParams();
     const navigate = useNavigate();
     const messagesEndRef = useRef(null);
+    const [appointmentType, setAppointmentType] = useState('in_clinic'); // 'video', 'voice', 'in_clinic'
+    const [isVideoActive, setIsVideoActive] = useState(false);
+    const [isVoiceActive, setIsVoiceActive] = useState(false);
+    const [appointmentDetails, setAppointmentDetails] = useState(null);
+
+    // Fetch appointment details
+    useEffect(() => {
+        const fetchAppointmentDetails = () => {
+            // In a real app, this would come from an API based on doctorId
+            // For demo, we'll simulate different appointment types based on doctorId
+            
+            const appointmentData = {
+                1: { type: 'video', date: '2024-01-15', time: '10:30 AM', status: 'scheduled' },
+                2: { type: 'voice', date: '2024-01-16', time: '2:00 PM', status: 'scheduled' },
+                3: { type: 'in_clinic', date: '2024-01-17', time: '11:00 AM', status: 'scheduled' },
+                4: { type: 'video', date: '2024-01-18', time: '3:30 PM', status: 'scheduled' },
+                5: { type: 'voice', date: '2024-01-19', time: '9:00 AM', status: 'scheduled' }
+            };
+            
+            const details = appointmentData[parseInt(doctorId)] || { type: 'in_clinic', date: '2024-01-20', time: '1:00 PM', status: 'scheduled' };
+            
+            setAppointmentDetails(details);
+            setAppointmentType(details.type);
+            
+            // Update button states based on appointment type
+            if (details.type === 'video') {
+                setIsVideoActive(true);
+                setIsVoiceActive(false);
+            } else if (details.type === 'voice') {
+                setIsVideoActive(false);
+                setIsVoiceActive(true);
+            } else if (details.type === 'in_clinic') {
+                setIsVideoActive(false);
+                setIsVoiceActive(false);
+            }
+        };
+        
+        fetchAppointmentDetails();
+    }, [doctorId]);
+    
+    // Handle video call button click
+    const handleVideoCall = () => {
+        if (appointmentType === 'video') {
+            alert(`Starting video call with ${activeDoctor?.name || 'doctor'}...`);
+            // Add actual video call logic here
+        } else if (appointmentType === 'voice') {
+            alert('This is a voice appointment. Please use the voice call button.');
+        } else {
+            alert('This is an in-clinic appointment. Video call is not available.');
+        }
+    };
+    
+    // Handle voice call button click
+    const handleVoiceCall = () => {
+        if (appointmentType === 'voice') {
+            alert(`Starting voice call with ${activeDoctor?.name || 'doctor'}...`);
+            // Add actual voice call logic here
+        } else if (appointmentType === 'video') {
+            alert('This is a video appointment. Please use the video call button.');
+        } else {
+            alert('This is an in-clinic appointment. Voice call is not available.');
+        }
+    };
+    
+    // Handle in-clinic appointment
+    const handleInClinicVisit = () => {
+        if (appointmentType === 'in_clinic') {
+            alert(`Your in-clinic appointment is scheduled for ${appointmentDetails?.date} at ${appointmentDetails?.time}`);
+        } else {
+            alert('This is not an in-clinic appointment.');
+        }
+    };
+    
+    // Get status display text
+    const getStatusText = () => {
+        switch(appointmentType) {
+            case 'video':
+                return 'Video Appointment';
+            case 'voice':
+                return 'Voice Appointment';
+            case 'in_clinic':
+                return 'In-Clinic Visit';
+            default:
+                return 'Unknown Status';
+        }
+    };
+    
+    // Get status color class
+    const getStatusColor = () => {
+        switch(appointmentType) {
+            case 'video':
+                return 'status-video';
+            case 'voice':
+                return 'status-voice';
+            case 'in_clinic':
+                return 'status-in-clinic';
+            default:
+                return '';
+        }
+    };
+    
+    // Get appointment type icon
+    const getAppointmentIcon = () => {
+        switch(appointmentType) {
+            case 'video':
+                return 'fa-video';
+            case 'voice':
+                return 'fa-phone';
+            case 'in_clinic':
+                return 'fa-hospital';
+            default:
+                return 'fa-calendar';
+        }
+    };
+    
+    // Get detailed appointment info
+    const getAppointmentInfo = () => {
+        if (!appointmentDetails) return '';
+        
+        switch(appointmentType) {
+            case 'video':
+                return `Video consultation on ${appointmentDetails.date} at ${appointmentDetails.time}`;
+            case 'voice':
+                return `Phone consultation on ${appointmentDetails.date} at ${appointmentDetails.time}`;
+            case 'in_clinic':
+                return `In-person visit on ${appointmentDetails.date} at ${appointmentDetails.time}`;
+            default:
+                return '';
+        }
+    };
 
     // Mock data for doctors
     const doctorsData = [
@@ -155,11 +285,11 @@ const DoctorChat = () => {
 
         // Simulate doctor typing
         setIsTyping(true);
-        
+
         // Simulate doctor reply after 1-2 seconds
         setTimeout(() => {
             setIsTyping(false);
-            
+
             const doctorReply = {
                 id: messages.length + 2,
                 text: getRandomDoctorResponse(),
@@ -209,11 +339,11 @@ const DoctorChat = () => {
     // Format date for message grouping
     const formatMessageDate = (dateString) => {
         const date = new Date(dateString);
-        return date.toLocaleDateString('en-US', { 
-            weekday: 'long', 
-            year: 'numeric', 
-            month: 'long', 
-            day: 'numeric' 
+        return date.toLocaleDateString('en-US', {
+            weekday: 'long',
+            year: 'numeric',
+            month: 'long',
+            day: 'numeric'
         });
     };
 
@@ -256,23 +386,88 @@ const DoctorChat = () => {
                             </div>
                         </div>
                     </div>
-                    
+
                     <div className="dc-header-right">
-                        <button className="dc-call-btn dc-video-btn">
-                            <i className="fas fa-video"></i>
-                        </button>
-                        <button className="dc-call-btn dc-voice-btn">
-                            <i className="fas fa-phone"></i>
-                        </button>
-                        <button className="dc-menu-btn">
-                            <i className="fas fa-ellipsis-v"></i>
-                        </button>
+                        <div className="dc-button-wrapper">
+                            {/* Appointment Type Display */}
+                            <div className="appointment-type-display">
+                                <div className={`appointment-type-badge ${getStatusColor()}`}>
+                                    <i className={`fas ${getAppointmentIcon()}`}></i>
+                                    <span className="appointment-type-text">{getStatusText()}</span>
+                                </div>
+                                
+                                {appointmentDetails && (
+                                    <div className="appointment-details">
+                                        <small>{getAppointmentInfo()}</small>
+                                    </div>
+                                )}
+                            </div>
+                            
+                            {/* Video Call Button */}
+                            <button 
+                                className={`dc-call-btn dc-video-btn ${isVideoActive ? 'active' : 'disabled'}`}
+                                onClick={handleVideoCall}
+                                disabled={!isVideoActive}
+                                title={appointmentType === 'video' ? 'Start Video Call' : appointmentType === 'voice' ? 'Voice Only Appointment' : 'In-Clinic Appointment'}
+                            >
+                                <i className="fas fa-video"></i>
+                                <span className="btn-label">Video</span>
+                            </button>
+                            
+                            {/* Voice Call Button */}
+                            <button 
+                                className={`dc-call-btn dc-voice-btn ${isVoiceActive ? 'active' : 'disabled'}`}
+                                onClick={handleVoiceCall}
+                                disabled={!isVoiceActive}
+                                title={appointmentType === 'voice' ? 'Start Voice Call' : appointmentType === 'video' ? 'Video Appointment' : 'In-Clinic Appointment'}
+                            >
+                                <i className="fas fa-phone"></i>
+                                <span className="btn-label">Voice</span>
+                            </button>
+                            
+                            {/* In-Clinic Button */}
+                            <button 
+                                className={`dc-call-btn dc-inclinic-btn ${appointmentType === 'in_clinic' ? 'active' : 'disabled'}`}
+                                onClick={handleInClinicVisit}
+                                disabled={appointmentType !== 'in_clinic'}
+                                title={appointmentType === 'in_clinic' ? 'View In-Clinic Details' : 'Not an In-Clinic Appointment'}
+                            >
+                                <i className="fas fa-hospital"></i>
+                                <span className="btn-label">Clinic</span>
+                            </button>
+                        </div>
                     </div>
                 </div>
 
                 {/* Scrollable Messages Area */}
                 <div className="dc-messages-area">
                     <div className="dc-messages-container">
+                        {/* Appointment Status Banner */}
+                        <div className={`appointment-status-banner ${getStatusColor()}`}>
+                            <div className="banner-content">
+                                <i className={`fas ${getAppointmentIcon()}`}></i>
+                                <div className="banner-text">
+                                    <strong>{getStatusText()}</strong>
+                                    <span>{getAppointmentInfo()}</span>
+                                </div>
+                                {appointmentType === 'video' && (
+                                    <button className="banner-action-btn" onClick={handleVideoCall}>
+                                        Join Video Call
+                                    </button>
+                                )}
+                                {appointmentType === 'voice' && (
+                                    <button className="banner-action-btn" onClick={handleVoiceCall}>
+                                        Start Voice Call
+                                    </button>
+                                )}
+                                {appointmentType === 'in_clinic' && (
+                                    <button className="banner-action-btn" onClick={handleInClinicVisit}>
+                                        View Details
+                                    </button>
+                                )}
+                            </div>
+                        </div>
+
                         {messages.length === 0 ? (
                             <div className="dc-no-messages">
                                 <div className="dc-welcome-illustration">
@@ -280,13 +475,19 @@ const DoctorChat = () => {
                                 </div>
                                 <h3>Start a Conversation</h3>
                                 <p>Send your first message to {activeDoctor.name}</p>
+                                <div className="appointment-note">
+                                    <p>
+                                        <i className={`fas ${getAppointmentIcon()}`}></i>
+                                        You have a scheduled {appointmentType} appointment
+                                    </p>
+                                </div>
                             </div>
                         ) : (
                             <div className="dc-messages-list">
                                 <div className="dc-date-divider">
                                     <span>{formatMessageDate(new Date())}</span>
                                 </div>
-                                
+
                                 {messages.map(message => (
                                     <div
                                         key={message.id}
@@ -297,7 +498,7 @@ const DoctorChat = () => {
                                                 {getInitials(activeDoctor.name)}
                                             </div>
                                         )}
-                                        
+
                                         <div className="dc-message-content">
                                             <div className="dc-message-bubble">
                                                 <p className="dc-message-text">{message.text}</p>
@@ -311,7 +512,7 @@ const DoctorChat = () => {
                                                 )}
                                             </div>
                                         </div>
-                                        
+
                                         {message.sender === 'patient' && (
                                             <div className="dc-patient-avatar">
                                                 <i className="fas fa-user"></i>
@@ -319,7 +520,7 @@ const DoctorChat = () => {
                                         )}
                                     </div>
                                 ))}
-                                
+
                                 {/* Typing indicator */}
                                 {isTyping && (
                                     <div className="dc-typing-indicator">
@@ -335,7 +536,7 @@ const DoctorChat = () => {
                                         </div>
                                     </div>
                                 )}
-                                
+
                                 {/* Scroll anchor */}
                                 <div ref={messagesEndRef} />
                             </div>
@@ -356,7 +557,7 @@ const DoctorChat = () => {
                             <i className="fas fa-file-medical"></i>
                         </button>
                     </div>
-                    
+
                     <div className="dc-textarea-wrapper">
                         <textarea
                             className="dc-textarea"
@@ -368,19 +569,19 @@ const DoctorChat = () => {
                         />
                         {newMessage.trim() === "" && (
                             <div className="dc-quick-replies">
-                                <button 
+                                <button
                                     className="dc-quick-reply"
                                     onClick={() => setNewMessage("Can you explain my prescription?")}
                                 >
                                     Prescription help
                                 </button>
-                                <button 
+                                <button
                                     className="dc-quick-reply"
                                     onClick={() => setNewMessage("I need to schedule an appointment")}
                                 >
                                     Schedule appointment
                                 </button>
-                                <button 
+                                <button
                                     className="dc-quick-reply"
                                     onClick={() => setNewMessage("I'm experiencing side effects")}
                                 >
@@ -389,7 +590,7 @@ const DoctorChat = () => {
                             </div>
                         )}
                     </div>
-                    
+
                     <button
                         className="dc-send-btn"
                         onClick={handleSendMessage}

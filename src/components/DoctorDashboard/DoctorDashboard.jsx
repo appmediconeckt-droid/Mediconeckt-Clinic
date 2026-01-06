@@ -278,7 +278,7 @@ const DoctorDashboard = () => {
       <div className="header d-flex flex-column flex-md-row justify-content-between align-items-start align-items-md-center mb-3 gap-3">
         <h2>Dashboard</h2>
         <div className="text-end">
-          <div className="current-time-label">Current time</div>
+          <div className="location-time-label">Indore Saket Nager </div>
           <div className="current-time-value">
             {new Date(now).toLocaleTimeString()}
           </div>

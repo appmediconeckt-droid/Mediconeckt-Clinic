@@ -6,20 +6,80 @@ import { Link } from "react-router-dom";
 export default function PatientLandingPage() {
     const [activeSection, setActiveSection] = useState("home");
 
-    const specialities = [
-        { name: "Cardiologist", img: "https://img.icons8.com/color/96/heart-with-pulse.png", desc: "Heart care experts" },
-        { name: "Dentist", img: "https://img.icons8.com/color/96/tooth.png", desc: "Dental treatments" },
-        { name: "Neurologist", img: "https://img.icons8.com/color/96/brain.png", desc: "Brain & nerves" },
-        { name: "Orthopedic", img: "https://img.icons8.com/color/96/bone.png", desc: "Bones & joints" },
-        { name: "Eye Specialist", img: "https://img.icons8.com/color/96/visible.png", desc: "Eye care" },
-        { name: "Skin Specialist", img: "https://img.icons8.com/color/96/skin-type-3.png", desc: "Skin treatments" },
-        { name: "Pediatrician", img: "https://img.icons8.com/color/96/baby-feet.png", desc: "Child healthcare" },
-        { name: "Gynecologist", img: "https://img.icons8.com/color/96/woman-obstetrician.png", desc: "Women's health" },
-        { name: "Psychiatrist", img: "https://img.icons8.com/color/96/mental-health.png", desc: "Mental health" },
-        { name: "ENT Specialist", img: "https://img.icons8.com/color/96/ear.png", desc: "Ear, Nose, Throat" },
-        { name: "Physiotherapist", img: "https://img.icons8.com/color/96/physiotherapy.png", desc: "Physical therapy" },
-        { name: "General Physician", img: "https://img.icons8.com/color/96/doctor.png", desc: "Primary care" },
-    ];
+   const specialities = [
+    { 
+      name: "Cardiologist", 
+      img: "https://img.icons8.com/color/96/heart-with-pulse.png", 
+      desc: "Heart care experts",
+      link: "/cardiologist" 
+    },
+    { 
+      name: "Dentist", 
+      img: "https://img.icons8.com/color/96/tooth.png", 
+      desc: "Dental treatments",
+      link: "/dentist" 
+    },
+    { 
+      name: "Neurologist", 
+      img: "https://img.icons8.com/color/96/brain.png", 
+      desc: "Brain & nerves",
+      link: "/neurologist" 
+    },
+    { 
+      name: "Orthopedic", 
+      img: "https://cdn-icons-png.flaticon.com/512/2966/2966486.png", 
+      desc: "Bones & joints",
+      link: "/orthopedic" 
+    },
+    { 
+      name: "Eye Specialist", 
+      img: "https://img.icons8.com/color/96/visible.png", 
+      desc: "Eye care",
+      link: "/eye-specialist" 
+    },
+    { 
+      name: "Skin Specialist", 
+      img: "https://cdn-icons-png.flaticon.com/512/3774/3774299.png", 
+      desc: "Skin treatments",
+      link: "/skin-specialist" 
+    },
+    { 
+      name: "Pediatrician", 
+      img: "https://img.icons8.com/color/96/baby-feet.png", 
+      desc: "Child healthcare",
+      link: "/pediatrician" 
+    },
+    { 
+      name: "Gynecologist", 
+      img: "https://cdn-icons-png.flaticon.com/512/3774/3774296.png", 
+      desc: "Women's health",
+      link: "/gynecologist" 
+    },
+    { 
+      name: "Psychiatrist", 
+      img: "https://img.icons8.com/color/96/mental-health.png", 
+      desc: "Mental health",
+      link: "/psychiatrist" 
+    },
+    { 
+      name: "ENT Specialist", 
+      img: "https://cdn-icons-png.flaticon.com/512/3774/3774301.png", 
+      desc: "Ear, Nose, Throat",
+      link: "/ent-specialist" 
+    },
+    { 
+      name: "Physiotherapist", 
+      img: "https://cdn-icons-png.flaticon.com/512/3774/3774314.png", 
+      desc: "Physical therapy",
+      link: "/physiotherapist" 
+    },
+    { 
+      name: "General Physician", 
+      img: "https://cdn-icons-png.flaticon.com/512/3774/3774294.png", 
+      desc: "Primary care",
+      link: "/general-physician" 
+    },
+  ];
 
     const services = [
         { title: "Book Appointment", desc: "Instant doctor appointment", icon: "📅", link: "/appointment" },
@@ -251,22 +311,25 @@ export default function PatientLandingPage() {
                         <p className="section-subtitle">Choose from 50+ medical specialities</p>
                     </div>
 
-                    <div className="row">
-                        {specialities.map((item, i) => (
-                            <div className="col-6 col-md-4 col-lg-2 mb-4" key={i}>
-                                <div className="speciality-card text-center p-3 h-100">
-                                    <div className="speciality-icon mb-3">
-                                        <img src={item.img} alt={item.name} width="60" />
-                                    </div>
-                                    <h6 className="fw-bold">{item.name}</h6>
+                   <div className="row">
+                            {specialities.map((item, index) => (
+                              <div className="col-6 col-md-4 col-lg-2 mb-4" key={index}>
+                                <Link to={item.link} style={{textDecoration:"none"}}>
+                                  <div className="card speciality-card text-center p-3 shadow-sm border-0 h-100">
+                                    <img
+                                      src={item.img}
+                                      alt={item.name}
+                                      className="img-fluid mx-auto"
+                                      width="70"
+                                      height="70"
+                                    />
+                                    <h6 className="mt-3 mb-2 fw-bold">{item.name}</h6>
                                     <small className="text-muted">{item.desc}</small>
-                                    <button className="btn btn-sm btn-outline-primary mt-2">
-                                        Find Doctors
-                                    </button>
-                                </div>
-                            </div>
-                        ))}
-                    </div>
+                                  </div>
+                                </Link>
+                              </div>
+                            ))}
+                          </div>
 
                     <div className="text-center mt-4">
                         <Link to="/all-specialities">

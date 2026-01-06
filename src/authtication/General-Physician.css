@@ -1,0 +1,2163 @@
+/* Reset and Base Styles */
+.genphys-container {
+  font-family: 'Inter', -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, sans-serif;
+  line-height: 1.6;
+  color: #1f2937;
+  overflow-x: hidden;
+}
+
+* {
+  margin: 0;
+  padding: 0;
+  box-sizing: border-box;
+}
+
+/* Navigation Styles */
+.genphys-navbar {
+  position: fixed;
+  top: 0;
+  left: 0;
+  right: 0;
+  background: rgba(255, 255, 255, 0.98);
+  backdrop-filter: blur(10px);
+  border-bottom: 2px solid rgba(229, 231, 235, 0.8);
+  z-index: 1000;
+  padding: 1.25rem 0;
+  box-shadow: 0 2px 25px rgba(0, 0, 0, 0.04);
+}
+
+.genphys-nav-container {
+  /* max-width: 1280px; */
+  margin: 0 auto;
+  padding: 0 2rem;
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+}
+
+.genphys-logo {
+  display: flex;
+  align-items: center;
+  gap: 1.125rem;
+}
+
+.genphys-logo-icon {
+  font-size: 2.75rem;
+  background: linear-gradient(135deg, #3b82f6, #10b981);
+  -webkit-background-clip: text;
+  /* -webkit-text-fill-color: transparent; */
+  background-clip: text;
+}
+
+.genphys-logo-text {
+  display: flex;
+  flex-direction: column;
+}
+
+.genphys-logo-title {
+  font-size: 1.875rem;
+  font-weight: 800;
+  color: #1e40af;
+  line-height: 1.15;
+}
+
+.genphys-logo-subtitle {
+  font-size: 0.875rem;
+  color: #6b7280;
+  font-weight: 500;
+  letter-spacing: 0.5px;
+}
+
+.genphys-menu-btn {
+  display: none;
+  flex-direction: column;
+  gap: 6px;
+  background: none;
+  border: none;
+  cursor: pointer;
+  padding: 12px;
+  z-index: 1001;
+  border-radius: 10px;
+  transition: background 0.3s ease;
+}
+
+.genphys-menu-btn:hover {
+  background: rgba(30, 64, 175, 0.05);
+}
+
+.genphys-menu-line {
+  width: 30px;
+  height: 3px;
+  background: linear-gradient(135deg, #1e40af, #10b981);
+  transition: all 0.4s cubic-bezier(0.68, -0.55, 0.265, 1.55);
+  border-radius: 3px;
+}
+
+.genphys-menu-active .genphys-line-1 {
+  transform: rotate(45deg) translate(8px, 8px);
+}
+
+.genphys-menu-active .genphys-line-2 {
+  opacity: 0;
+  transform: translateX(-15px);
+}
+
+.genphys-menu-active .genphys-line-3 {
+  transform: rotate(-45deg) translate(9px, -9px);
+}
+
+.genphys-nav-menu {
+  display: flex;
+  align-items: center;
+}
+
+.genphys-nav-list {
+  display: flex;
+  list-style: none;
+  gap: 2.75rem;
+  align-items: center;
+}
+
+.genphys-nav-link {
+  text-decoration: none;
+  color: #4b5563;
+  font-weight: 600;
+  transition: all 0.3s ease;
+  padding: 0.5rem 0;
+  position: relative;
+  font-size: 1.0625rem;
+}
+
+.genphys-nav-link:hover {
+  color: #1e40af;
+}
+
+.genphys-nav-link::after {
+  content: '';
+  position: absolute;
+  bottom: 0;
+  left: 0;
+  width: 0;
+  height: 3px;
+  background: linear-gradient(90deg, #1e40af, #10b981);
+  border-radius: 2px;
+  transition: width 0.4s cubic-bezier(0.4, 0, 0.2, 1);
+}
+
+.genphys-nav-link:hover::after {
+  width: 100%;
+}
+
+.genphys-nav-cta {
+  background: linear-gradient(135deg, #1e40af, #3b82f6);
+  color: white;
+  padding: 0.9375rem 2.25rem;
+  border-radius: 12px;
+  text-decoration: none;
+  font-weight: 700;
+  transition: all 0.4s ease;
+  border: none;
+  cursor: pointer;
+  font-size: 1.0625rem;
+  box-shadow: 0 6px 20px rgba(30, 64, 175, 0.2);
+}
+
+.genphys-nav-cta:hover {
+  transform: translateY(-3px);
+  box-shadow: 0 12px 35px rgba(30, 64, 175, 0.3);
+}
+
+/* Hero Section */
+.genphys-hero {
+  padding-top: 130px;
+  padding-bottom: 6rem;
+  position: relative;
+  background: linear-gradient(135deg, #f0f9ff 0%, #f8fafc 100%);
+  overflow: hidden;
+}
+
+.genphys-hero-background {
+  position: absolute;
+  top: 0;
+  left: 0;
+  right: 0;
+  bottom: 0;
+  overflow: hidden;
+}
+
+.genphys-hero-gradient {
+  position: absolute;
+  top: -20%;
+  right: -15%;
+  width: 65%;
+  height: 140%;
+  background: radial-gradient(circle, rgba(30, 64, 175, 0.12) 0%, rgba(30, 64, 175, 0) 70%);
+}
+
+.genphys-hero-pattern {
+  position: absolute;
+  top: 0;
+  left: 0;
+  right: 0;
+  bottom: 0;
+  background-image: url("data:image/svg+xml,%3Csvg width='100' height='100' viewBox='0 0 100 100' xmlns='http://www.w3.org/2000/svg'%3E%3Cg fill='none' fill-rule='evenodd'%3E%3Cg fill='%233B82F6' fill-opacity='0.04'%3E%3Cpath d='M60 60c0-6.627 5.373-12 12-12s12 5.373 12 12-5.373 12-12 12c0 6.627-5.373 12-12 12s-12-5.373-12-12 5.373-12 12-12zM20 20c0-6.627 5.373-12 12-12s12 5.373 12 12-5.373 12-12 12c0 6.627-5.373 12-12 12S8 38.627 8 32s5.373-12 12-12zm12 10c5.523 0 10-4.477 10-10S37.523 0 32 0 22 4.477 22 10s4.477 10 10 10zm40 40c5.523 0 10-4.477 10-10s-4.477-10-10-10-10 4.477-10 10 4.477 10 10 10z'/%3E%3C/g%3E%3C/g%3E%3C/svg%3E");
+}
+
+.genphys-hero-content {
+  max-width: 1280px;
+  margin: 0 auto;
+  padding: 0 2rem;
+  display: grid;
+  grid-template-columns: 1.1fr 0.9fr;
+  gap: 6rem;
+  align-items: center;
+  position: relative;
+  z-index: 1;
+}
+
+.genphys-hero-text {
+  max-width: 680px;
+}
+
+.genphys-hero-badge {
+  display: inline-block;
+  background: rgba(30, 64, 175, 0.15);
+  color: #1e40af;
+  padding: 0.75rem 1.5rem;
+  border-radius: 2.5rem;
+  font-size: 0.9375rem;
+  font-weight: 700;
+  margin-bottom: 2rem;
+  border: 1px solid rgba(30, 64, 175, 0.2);
+  letter-spacing: 0.75px;
+}
+
+.genphys-hero-title {
+  font-size: 3.5rem;
+  font-weight: 800;
+  line-height: 1.1;
+  color: #111827;
+  margin-bottom: 1.75rem;
+  background: linear-gradient(135deg, #111827 0%, #1e40af 100%);
+  -webkit-background-clip: text;
+  -webkit-text-fill-color: transparent;
+  background-clip: text;
+}
+
+.genphys-hero-description {
+  font-size: 1.25rem;
+  color: #4b5563;
+  margin-bottom: 3rem;
+  line-height: 1.8;
+}
+
+.genphys-hero-actions {
+  display: flex;
+  gap: 1.5rem;
+  flex-wrap: wrap;
+}
+
+.genphys-btn {
+  display: inline-flex;
+  align-items: center;
+  gap: 1rem;
+  padding: 1.25rem 2.5rem;
+  border-radius: 14px;
+  text-decoration: none;
+  font-weight: 700;
+  font-size: 1.125rem;
+  transition: all 0.4s cubic-bezier(0.4, 0, 0.2, 1);
+  border: none;
+  cursor: pointer;
+}
+
+.genphys-btn-primary {
+  background: linear-gradient(135deg, #1e40af, #3b82f6);
+  color: white;
+  box-shadow: 0 8px 25px rgba(30, 64, 175, 0.25);
+}
+
+.genphys-btn-primary:hover {
+  transform: translateY(-4px) scale(1.03);
+  box-shadow: 0 18px 40px rgba(30, 64, 175, 0.35);
+}
+
+.genphys-btn-secondary {
+  background: white;
+  color: #1e40af;
+  border: 2px solid #dbeafe;
+  box-shadow: 0 6px 20px rgba(30, 64, 175, 0.1);
+}
+
+.genphys-btn-secondary:hover {
+  border-color: #3b82f6;
+  transform: translateY(-4px);
+  box-shadow: 0 12px 30px rgba(30, 64, 175, 0.15);
+}
+
+.genphys-btn-icon {
+  font-size: 1.5rem;
+}
+
+.genphys-hero-visual {
+  display: flex;
+  justify-content: center;
+  align-items: center;
+}
+
+.genphys-visual-main {
+  position: relative;
+  width: 480px;
+  height: 480px;
+}
+
+.genphys-visual-element {
+  position: absolute;
+  width: 100px;
+  height: 100px;
+  border-radius: 28px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  font-size: 3.5rem;
+  animation: genphys-float 8s ease-in-out infinite;
+  box-shadow: 0 20px 40px rgba(0, 0, 0, 0.12);
+  border: 4px solid white;
+}
+
+.genphys-element-1 {
+  top: 15%;
+  left: 10%;
+  background: linear-gradient(135deg, #dbeafe, #93c5fd);
+  animation-delay: 0s;
+}
+
+.genphys-element-2 {
+  top: 60%;
+  left: 5%;
+  background: linear-gradient(135deg, #f0f9ff, #e0f2fe);
+  animation-delay: 1.5s;
+}
+
+.genphys-element-3 {
+  top: 25%;
+  right: 10%;
+  background: linear-gradient(135deg, #fef3c7, #fde68a);
+  animation-delay: 3s;
+}
+
+.genphys-element-4 {
+  bottom: 20%;
+  right: 15%;
+  background: linear-gradient(135deg, #f3e8ff, #e9d5ff);
+  animation-delay: 4.5s;
+}
+
+@keyframes genphys-float {
+  0%, 100% { 
+    transform: translateY(0px) rotate(0deg); 
+  }
+  33% { 
+    transform: translateY(-30px) rotate(5deg); 
+  }
+  66% { 
+    transform: translateY(15px) rotate(-5deg); 
+  }
+}
+
+.genphys-hero-stats {
+  max-width: 1280px;
+  margin: 6rem auto 0;
+  padding: 0 2rem;
+  display: grid;
+  grid-template-columns: repeat(auto-fit, minmax(240px, 1fr));
+  gap: 2.5rem;
+}
+
+.genphys-stat-card {
+  background: white;
+  padding: 3rem 2.5rem;
+  border-radius: 24px;
+  box-shadow: 0 15px 35px rgba(0, 0, 0, 0.07);
+  text-align: center;
+  transition: all 0.4s ease;
+  border: 2px solid #f3f4f6;
+}
+
+.genphys-stat-card:hover {
+  transform: translateY(-10px);
+  box-shadow: 0 25px 50px rgba(30, 64, 175, 0.12);
+  border-color: #1e40af;
+}
+
+.genphys-stat-content {
+  display: flex;
+  flex-direction: column;
+  gap: 1rem;
+  align-items: center;
+}
+
+.genphys-stat-icon {
+  font-size: 3rem;
+  margin-bottom: 0.75rem;
+}
+
+.genphys-stat-number {
+  font-size: 3.25rem;
+  font-weight: 800;
+  background: linear-gradient(135deg, #1e40af, #3b82f6);
+  -webkit-background-clip: text;
+  -webkit-text-fill-color: transparent;
+  background-clip: text;
+  line-height: 1;
+}
+
+.genphys-stat-label {
+  color: #6b7280;
+  font-size: 1.0625rem;
+  font-weight: 600;
+  letter-spacing: 0.75px;
+}
+
+/* Services Section */
+.genphys-services {
+  padding: 8rem 2rem;
+  background: white;
+}
+
+.genphys-section-header {
+  text-align: center;
+  max-width: 900px;
+  margin: 0 auto 6rem;
+}
+
+.genphys-section-badge {
+  display: inline-block;
+  background: rgba(30, 64, 175, 0.15);
+  color: #1e40af;
+  padding: 0.75rem 1.75rem;
+  border-radius: 2.5rem;
+  font-size: 1rem;
+  font-weight: 700;
+  margin-bottom: 1.5rem;
+  border: 1px solid rgba(30, 64, 175, 0.2);
+}
+
+.genphys-section-title {
+  font-size: 3rem;
+  font-weight: 800;
+  color: #111827;
+  margin-bottom: 1.5rem;
+  line-height: 1.15;
+}
+
+.genphys-section-subtitle {
+  font-size: 1.25rem;
+  color: #6b7280;
+  line-height: 1.8;
+  max-width: 750px;
+  margin: 0 auto;
+}
+
+.genphys-services-grid {
+  max-width: 1280px;
+  margin: 0 auto;
+  display: grid;
+  grid-template-columns: repeat(auto-fit, minmax(320px, 1fr));
+  gap: 3rem;
+}
+
+.genphys-service-card {
+  background: white;
+  padding: 3rem 2.5rem;
+  border-radius: 24px;
+  border: 2px solid #f3f4f6;
+  transition: all 0.5s cubic-bezier(0.4, 0, 0.2, 1);
+  position: relative;
+  overflow: hidden;
+}
+
+.genphys-service-special {
+  border-color: #1e40af;
+  box-shadow: 0 20px 40px rgba(30, 64, 175, 0.1);
+}
+
+.genphys-service-special:hover {
+  transform: translateY(-12px) scale(1.03);
+  box-shadow: 0 35px 60px rgba(30, 64, 175, 0.15);
+}
+
+.genphys-service-card:hover {
+  border-color: #1e40af;
+  transform: translateY(-8px);
+  box-shadow: 0 30px 50px rgba(30, 64, 175, 0.12);
+}
+
+.genphys-service-card::before {
+  content: '';
+  position: absolute;
+  top: 0;
+  left: 0;
+  right: 0;
+  height: 6px;
+  background: linear-gradient(90deg, #1e40af, #3b82f6);
+  transform: scaleX(0);
+  transition: transform 0.7s cubic-bezier(0.4, 0, 0.2, 1);
+}
+
+.genphys-service-card:hover::before {
+  transform: scaleX(1);
+}
+
+.genphys-service-badge {
+  position: absolute;
+  top: 1.5rem;
+  right: 1.5rem;
+  background: linear-gradient(135deg, #1e40af, #3b82f6);
+  color: white;
+  padding: 0.5rem 1.25rem;
+  border-radius: 1.5rem;
+  font-size: 0.8125rem;
+  font-weight: 700;
+  letter-spacing: 0.5px;
+}
+
+.genphys-service-icon-wrapper {
+  width: 90px;
+  height: 90px;
+  border-radius: 24px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  margin-bottom: 2.5rem;
+  transition: all 0.5s ease;
+}
+
+.genphys-service-card:hover .genphys-service-icon-wrapper {
+  transform: rotate(15deg) scale(1.15);
+}
+
+.genphys-service-icon {
+  font-size: 3rem;
+}
+
+.genphys-service-name {
+  font-size: 1.75rem;
+  font-weight: 800;
+  color: #111827;
+  margin-bottom: 1.25rem;
+}
+
+.genphys-service-description {
+  color: #6b7280;
+  font-size: 1.125rem;
+  line-height: 1.7;
+  margin-bottom: 2.25rem;
+}
+
+.genphys-service-meta {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  padding-top: 2rem;
+  border-top: 2px solid #f3f4f6;
+}
+
+.genphys-service-duration {
+  color: #1e40af;
+  font-weight: 700;
+  font-size: 1.0625rem;
+  display: flex;
+  align-items: center;
+  gap: 0.75rem;
+}
+
+.genphys-service-link {
+  display: inline-flex;
+  align-items: center;
+  gap: 0.75rem;
+  color: #3b82f6;
+  text-decoration: none;
+  font-weight: 700;
+  font-size: 1.0625rem;
+  transition: all 0.4s ease;
+  padding: 0.75rem 1.5rem;
+  border-radius: 12px;
+  background: rgba(59, 130, 246, 0.12);
+}
+
+.genphys-service-link:hover {
+  background: rgba(59, 130, 246, 0.2);
+  gap: 1rem;
+}
+
+.genphys-link-arrow {
+  transition: transform 0.4s ease;
+}
+
+.genphys-service-link:hover .genphys-link-arrow {
+  transform: translateX(8px);
+}
+
+/* Conditions Section */
+.genphys-conditions {
+  padding: 8rem 2rem;
+  background: linear-gradient(135deg, #f8fafc 0%, #f0f9ff 100%);
+}
+
+.genphys-conditions-container {
+  max-width: 1280px;
+  margin: 0 auto;
+  display: grid;
+  grid-template-columns: 1.2fr 0.8fr;
+  gap: 6rem;
+  align-items: start;
+}
+
+.genphys-conditions-content {
+  max-width: 700px;
+}
+
+.genphys-conditions-badge {
+  display: inline-block;
+  background: rgba(30, 64, 175, 0.15);
+  color: #1e40af;
+  padding: 0.75rem 1.75rem;
+  border-radius: 2.5rem;
+  font-size: 1rem;
+  font-weight: 700;
+  margin-bottom: 1.5rem;
+  border: 1px solid rgba(30, 64, 175, 0.2);
+}
+
+.genphys-conditions-title {
+  font-size: 3rem;
+  font-weight: 800;
+  color: #111827;
+  margin-bottom: 1.5rem;
+  line-height: 1.15;
+}
+
+.genphys-conditions-description {
+  font-size: 1.25rem;
+  color: #6b7280;
+  line-height: 1.8;
+  margin-bottom: 4rem;
+}
+
+.genphys-conditions-grid {
+  display: grid;
+  grid-template-columns: repeat(auto-fit, minmax(300px, 1fr));
+  gap: 2.5rem;
+}
+
+.genphys-condition-card {
+  background: white;
+  padding: 2.5rem 2.25rem;
+  border-radius: 22px;
+  border: 2px solid #e5e7eb;
+  display: flex;
+  align-items: center;
+  gap: 2rem;
+  transition: all 0.5s ease;
+  box-shadow: 0 12px 30px rgba(0, 0, 0, 0.05);
+}
+
+.genphys-condition-card:hover {
+  border-color: #1e40af;
+  transform: translateY(-8px);
+  box-shadow: 0 25px 45px rgba(30, 64, 175, 0.12);
+}
+
+.genphys-condition-icon {
+  font-size: 3rem;
+  flex-shrink: 0;
+  width: 80px;
+  height: 80px;
+  background: rgba(30, 64, 175, 0.12);
+  border-radius: 22px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  transition: all 0.4s ease;
+}
+
+.genphys-condition-card:hover .genphys-condition-icon {
+  transform: scale(1.1);
+  background: rgba(30, 64, 175, 0.2);
+}
+
+.genphys-condition-info {
+  flex: 1;
+}
+
+.genphys-condition-name {
+  font-size: 1.5rem;
+  font-weight: 800;
+  color: #111827;
+  margin-bottom: 0.75rem;
+}
+
+.genphys-condition-category {
+  display: inline-block;
+  background: rgba(59, 130, 246, 0.15);
+  color: #3b82f6;
+  padding: 0.5rem 1.25rem;
+  border-radius: 2rem;
+  font-size: 0.875rem;
+  font-weight: 700;
+  margin-bottom: 1rem;
+  letter-spacing: 0.5px;
+}
+
+.genphys-condition-desc {
+  font-size: 1.0625rem;
+  color: #6b7280;
+  line-height: 1.6;
+}
+
+.genphys-conditions-visual {
+  position: relative;
+}
+
+.genphys-care-process {
+  background: white;
+  padding: 3rem;
+  border-radius: 28px;
+  box-shadow: 0 20px 50px rgba(0, 0, 0, 0.08);
+  position: sticky;
+  top: 150px;
+  border: 2px solid #f3f4f6;
+}
+
+.genphys-care-header {
+  display: flex;
+  align-items: center;
+  gap: 1.5rem;
+  margin-bottom: 3rem;
+}
+
+.genphys-care-icon {
+  font-size: 3rem;
+  background: linear-gradient(135deg, #1e40af, #3b82f6);
+  -webkit-background-clip: text;
+  -webkit-text-fill-color: transparent;
+  background-clip: text;
+}
+
+.genphys-care-title {
+  font-size: 2rem;
+  font-weight: 800;
+  color: #111827;
+}
+
+.genphys-care-list {
+  display: flex;
+  flex-direction: column;
+  gap: 2.25rem;
+}
+
+.genphys-care-step {
+  display: flex;
+  align-items: flex-start;
+  gap: 1.75rem;
+  padding: 1.75rem;
+  border-radius: 20px;
+  background: #f8fafc;
+  transition: all 0.4s ease;
+  border: 2px solid transparent;
+}
+
+.genphys-care-step:hover {
+  background: white;
+  border-color: #1e40af;
+  transform: translateX(10px);
+  box-shadow: 0 15px 35px rgba(30, 64, 175, 0.1);
+}
+
+.genphys-care-step-number {
+  width: 48px;
+  height: 48px;
+  background: linear-gradient(135deg, #1e40af, #3b82f6);
+  color: white;
+  border-radius: 14px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  font-weight: 800;
+  font-size: 1.5rem;
+  flex-shrink: 0;
+  box-shadow: 0 8px 20px rgba(30, 64, 175, 0.2);
+}
+
+.genphys-care-step-content {
+  flex: 1;
+}
+
+.genphys-care-step-content h4 {
+  font-size: 1.375rem;
+  font-weight: 800;
+  color: #111827;
+  margin-bottom: 0.5rem;
+}
+
+.genphys-care-step-content p {
+  font-size: 1.0625rem;
+  color: #6b7280;
+  line-height: 1.7;
+}
+
+/* Doctors Section */
+.genphys-doctors {
+  padding: 8rem 2rem;
+  background: white;
+}
+
+.genphys-doctors-grid {
+  max-width: 1280px;
+  margin: 0 auto;
+  display: grid;
+  grid-template-columns: repeat(auto-fit, minmax(400px, 1fr));
+  gap: 3.5rem;
+}
+
+.genphys-doctor-card {
+  background: white;
+  padding: 3.5rem;
+  border-radius: 28px;
+  box-shadow: 0 20px 50px rgba(0, 0, 0, 0.07);
+  transition: all 0.5s cubic-bezier(0.4, 0, 0.2, 1);
+  border: 2px solid #f3f4f6;
+}
+
+.genphys-doctor-card:hover {
+  transform: translateY(-12px);
+  box-shadow: 0 35px 70px rgba(30, 64, 175, 0.15);
+  border-color: #1e40af;
+}
+
+.genphys-doctor-header {
+  display: flex;
+  gap: 2.5rem;
+  margin-bottom: 3rem;
+}
+
+.genphys-doctor-image {
+  flex-shrink: 0;
+}
+
+.genphys-doctor-avatar {
+  width: 140px;
+  height: 140px;
+  background: linear-gradient(135deg, #dbeafe, #93c5fd);
+  border-radius: 50%;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  margin-bottom: 1.5rem;
+  border: 5px solid white;
+  box-shadow: 0 15px 40px rgba(0, 0, 0, 0.12);
+  transition: all 0.5s ease;
+}
+
+.genphys-doctor-card:hover .genphys-doctor-avatar {
+  transform: scale(1.08);
+  box-shadow: 0 20px 50px rgba(30, 64, 175, 0.2);
+}
+
+.genphys-avatar-icon {
+  font-size: 4rem;
+}
+
+.genphys-doctor-badge {
+  background: linear-gradient(135deg, #1e40af, #3b82f6);
+  color: white;
+  padding: 0.75rem 1.5rem;
+  border-radius: 2rem;
+  font-size: 0.9375rem;
+  font-weight: 800;
+  display: flex;
+  align-items: center;
+  gap: 0.5rem;
+  justify-content: center;
+  letter-spacing: 0.75px;
+}
+
+.genphys-badge-icon {
+  font-size: 1.125rem;
+}
+
+.genphys-doctor-info {
+  flex: 1;
+}
+
+.genphys-doctor-name {
+  font-size: 2.25rem;
+  font-weight: 800;
+  color: #111827;
+  margin-bottom: 0.5rem;
+}
+
+.genphys-doctor-education {
+  color: #1e40af;
+  font-size: 1.125rem;
+  font-weight: 700;
+  margin-bottom: 0.5rem;
+  letter-spacing: 0.75px;
+}
+
+.genphys-doctor-specialty {
+  color: #6b7280;
+  font-size: 1.25rem;
+  margin-bottom: 2rem;
+  font-weight: 600;
+}
+
+.genphys-doctor-details {
+  display: flex;
+  gap: 1.5rem;
+  flex-wrap: wrap;
+}
+
+.genphys-doctor-detail {
+  display: flex;
+  align-items: center;
+  gap: 0.75rem;
+  font-size: 1.0625rem;
+  color: #4b5563;
+  background: #f8fafc;
+  padding: 0.75rem 1.25rem;
+  border-radius: 14px;
+  border: 2px solid #e5e7eb;
+}
+
+.genphys-detail-icon {
+  font-size: 1.375rem;
+  color: #1e40af;
+}
+
+.genphys-doctor-expertise {
+  margin-bottom: 2.5rem;
+  padding-bottom: 2.5rem;
+  border-bottom: 2px solid #f3f4f6;
+}
+
+.genphys-doctor-expertise h4 {
+  font-size: 1.25rem;
+  font-weight: 700;
+  color: #4b5563;
+  margin-bottom: 1.25rem;
+}
+
+.genphys-expertise-tags {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 1rem;
+}
+
+.genphys-expertise-tag {
+  background: rgba(30, 64, 175, 0.12);
+  color: #1e40af;
+  padding: 0.75rem 1.5rem;
+  border-radius: 2rem;
+  font-size: 1rem;
+  font-weight: 700;
+  transition: all 0.4s ease;
+}
+
+.genphys-expertise-tag:hover {
+  background: rgba(30, 64, 175, 0.2);
+  transform: translateY(-3px);
+}
+
+.genphys-doctor-languages {
+  margin-bottom: 2.5rem;
+}
+
+.genphys-doctor-languages h4 {
+  font-size: 1.25rem;
+  font-weight: 700;
+  color: #4b5563;
+  margin-bottom: 1.25rem;
+}
+
+.genphys-languages-list {
+  display: flex;
+  gap: 1rem;
+  flex-wrap: wrap;
+}
+
+.genphys-language-tag {
+  background: rgba(16, 185, 129, 0.12);
+  color: #10b981;
+  padding: 0.75rem 1.5rem;
+  border-radius: 2rem;
+  font-size: 1rem;
+  font-weight: 700;
+}
+
+.genphys-doctor-philosophy {
+  background: #f0f9ff;
+  padding: 2rem;
+  border-radius: 20px;
+  margin-bottom: 2.5rem;
+  display: flex;
+  gap: 1.5rem;
+  border: 2px solid #dbeafe;
+}
+
+.genphys-philosophy-icon {
+  font-size: 1.75rem;
+  flex-shrink: 0;
+  color: #3b82f6;
+}
+
+.genphys-philosophy-text {
+  font-size: 1.25rem;
+  font-style: italic;
+  color: #4b5563;
+  line-height: 1.7;
+  font-weight: 500;
+}
+
+.genphys-doctor-consult {
+  display: block;
+  text-align: center;
+  background: linear-gradient(135deg, #1e40af, #3b82f6);
+  color: white;
+  padding: 1.5rem;
+  border-radius: 16px;
+  text-decoration: none;
+  font-weight: 800;
+  transition: all 0.5s ease;
+  font-size: 1.25rem;
+  letter-spacing: 0.75px;
+  box-shadow: 0 12px 30px rgba(30, 64, 175, 0.25);
+}
+
+.genphys-doctor-consult:hover {
+  transform: translateY(-4px);
+  box-shadow: 0 20px 45px rgba(30, 64, 175, 0.35);
+}
+
+/* Health Tips Section */
+.genphys-health-tips {
+  padding: 8rem 2rem;
+  background: linear-gradient(135deg, #f8fafc 0%, #f0f9ff 100%);
+}
+
+.genphys-tips-grid {
+  max-width: 1280px;
+  margin: 0 auto 6rem;
+  display: grid;
+  grid-template-columns: repeat(auto-fit, minmax(280px, 1fr));
+  gap: 3rem;
+}
+
+.genphys-tip-card {
+  background: white;
+  padding: 3rem 2.5rem;
+  border-radius: 24px;
+  border: 2px solid #f3f4f6;
+  text-align: center;
+  transition: all 0.5s ease;
+  position: relative;
+  overflow: hidden;
+}
+
+.genphys-tip-card:hover {
+  border-color: #1e40af;
+  transform: translateY(-10px);
+  box-shadow: 0 30px 55px rgba(30, 64, 175, 0.12);
+}
+
+.genphys-tip-card::after {
+  content: '';
+  position: absolute;
+  bottom: 0;
+  left: 0;
+  right: 0;
+  height: 6px;
+  background: linear-gradient(90deg, #1e40af, #3b82f6);
+  transform: scaleX(0);
+  transition: transform 0.7s ease;
+}
+
+.genphys-tip-card:hover::after {
+  transform: scaleX(1);
+}
+
+.genphys-tip-icon {
+  width: 120px;
+  height: 120px;
+  margin: 0 auto 2.5rem;
+  background: linear-gradient(135deg, #dbeafe, #93c5fd);
+  border-radius: 50%;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  transition: all 0.5s ease;
+}
+
+.genphys-tip-card:hover .genphys-tip-icon {
+  transform: rotate(20deg) scale(1.15);
+  background: linear-gradient(135deg, #1e40af, #3b82f6);
+}
+
+.genphys-tip-icon-inner {
+  font-size: 4rem;
+  transition: all 0.5s ease;
+}
+
+.genphys-tip-card:hover .genphys-tip-icon-inner {
+  color: white;
+}
+
+.genphys-tip-title {
+  font-size: 1.75rem;
+  font-weight: 800;
+  color: #111827;
+  margin-bottom: 1.25rem;
+}
+
+.genphys-tip-description {
+  color: #6b7280;
+  font-size: 1.125rem;
+  line-height: 1.7;
+}
+
+.genphys-preventive-care {
+  max-width: 1280px;
+  margin: 0 auto;
+  background: linear-gradient(135deg, #1e40af, #3b82f6);
+  padding: 5rem;
+  border-radius: 32px;
+  color: white;
+  box-shadow: 0 25px 70px rgba(30, 64, 175, 0.2);
+}
+
+.genphys-care-content {
+  text-align: center;
+}
+
+.genphys-care-subtitle {
+  font-size: 2.5rem;
+  font-weight: 800;
+  margin-bottom: 4rem;
+  line-height: 1.2;
+}
+
+.genphys-care-features {
+  display: grid;
+  grid-template-columns: repeat(auto-fit, minmax(240px, 1fr));
+  gap: 3rem;
+}
+
+.genphys-care-feature {
+  display: flex;
+  align-items: center;
+  gap: 1.5rem;
+  font-size: 1.25rem;
+  font-weight: 600;
+  background: rgba(255, 255, 255, 0.12);
+  padding: 2rem;
+  border-radius: 20px;
+  transition: all 0.4s ease;
+}
+
+.genphys-care-feature:hover {
+  background: rgba(255, 255, 255, 0.2);
+  transform: translateY(-8px);
+}
+
+.genphys-care-feature-icon {
+  font-size: 2rem;
+  flex-shrink: 0;
+}
+
+/* Testimonials */
+.genphys-testimonials {
+  padding: 8rem 2rem;
+  background: white;
+}
+
+.genphys-testimonials-container {
+  max-width: 1280px;
+  margin: 0 auto;
+}
+
+.genphys-testimonials-header {
+  text-align: center;
+  max-width: 900px;
+  margin: 0 auto 6rem;
+}
+
+.genphys-testimonials-badge {
+  display: inline-block;
+  background: rgba(30, 64, 175, 0.15);
+  color: #1e40af;
+  padding: 0.75rem 1.75rem;
+  border-radius: 2.5rem;
+  font-size: 1rem;
+  font-weight: 700;
+  margin-bottom: 1.5rem;
+  border: 1px solid rgba(30, 64, 175, 0.2);
+}
+
+.genphys-testimonials-title {
+  font-size: 3rem;
+  font-weight: 800;
+  color: #111827;
+  margin-bottom: 1.5rem;
+  line-height: 1.15;
+}
+
+.genphys-testimonials-subtitle {
+  font-size: 1.25rem;
+  color: #6b7280;
+  line-height: 1.8;
+}
+
+.genphys-testimonials-grid {
+  display: grid;
+  grid-template-columns: repeat(auto-fit, minmax(360px, 1fr));
+  gap: 3.5rem;
+}
+
+.genphys-testimonial-card {
+  background: white;
+  padding: 3.5rem;
+  border-radius: 28px;
+  border: 2px solid #e5e7eb;
+  transition: all 0.5s ease;
+  position: relative;
+  overflow: hidden;
+}
+
+.genphys-testimonial-card:hover {
+  border-color: #1e40af;
+  transform: translateY(-10px);
+  box-shadow: 0 35px 60px rgba(30, 64, 175, 0.12);
+}
+
+.genphys-testimonial-card::before {
+  content: '';
+  position: absolute;
+  top: 0;
+  left: 0;
+  right: 0;
+  height: 6px;
+  background: linear-gradient(90deg, #1e40af, #3b82f6);
+  transform: scaleX(0);
+  transition: transform 0.7s ease;
+}
+
+.genphys-testimonial-card:hover::before {
+  transform: scaleX(1);
+}
+
+.genphys-testimonial-header {
+  display: flex;
+  justify-content: space-between;
+  align-items: start;
+  margin-bottom: 2.5rem;
+}
+
+.genphys-testimonial-rating {
+  display: flex;
+  gap: 0.375rem;
+}
+
+.genphys-rating-star {
+  color: #e5e7eb;
+  font-size: 1.75rem;
+}
+
+.genphys-star-active {
+  color: #f59e0b;
+}
+
+.genphys-testimonial-condition {
+  background: rgba(30, 64, 175, 0.15);
+  color: #1e40af;
+  padding: 0.75rem 1.5rem;
+  border-radius: 2rem;
+  font-size: 0.9375rem;
+  font-weight: 700;
+  letter-spacing: 0.75px;
+}
+
+.genphys-testimonial-text {
+  font-size: 1.375rem;
+  color: #4b5563;
+  line-height: 1.8;
+  font-style: italic;
+  margin-bottom: 2.5rem;
+  quotes: "“" "”";
+  position: relative;
+  padding-left: 2rem;
+}
+
+.genphys-testimonial-text::before {
+  content: open-quote;
+  color: #1e40af;
+  font-size: 4rem;
+  line-height: 0;
+  position: absolute;
+  left: -0.5rem;
+  top: 1.5rem;
+}
+
+.genphys-testimonial-history {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  background: #f8fafc;
+  padding: 1.5rem 2rem;
+  border-radius: 16px;
+  margin-bottom: 2.5rem;
+  border: 2px solid #e5e7eb;
+}
+
+.genphys-history-label {
+  font-size: 1.125rem;
+  color: #6b7280;
+  font-weight: 600;
+}
+
+.genphys-history-value {
+  font-size: 1.375rem;
+  color: #1e40af;
+  font-weight: 800;
+}
+
+.genphys-testimonial-author {
+  display: flex;
+  align-items: center;
+  gap: 1.75rem;
+}
+
+.genphys-author-avatar {
+  width: 70px;
+  height: 70px;
+  background: linear-gradient(135deg, #1e40af, #3b82f6);
+  color: white;
+  border-radius: 50%;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  font-weight: 800;
+  font-size: 1.75rem;
+  flex-shrink: 0;
+  border: 4px solid white;
+  box-shadow: 0 10px 25px rgba(0, 0, 0, 0.12);
+}
+
+.genphys-author-info {
+  flex: 1;
+}
+
+.genphys-author-name {
+  font-size: 1.5rem;
+  font-weight: 800;
+  color: #111827;
+  margin-bottom: 0.5rem;
+}
+
+.genphys-author-details {
+  display: flex;
+  gap: 1.75rem;
+  font-size: 1.125rem;
+  color: #6b7280;
+}
+
+.genphys-author-status {
+  color: #10b981;
+  font-weight: 700;
+  display: flex;
+  align-items: center;
+  gap: 0.5rem;
+}
+
+.genphys-author-status::before {
+  content: '✓';
+  font-weight: bold;
+  font-size: 1.25rem;
+}
+
+/* Appointment Section */
+.genphys-appointment {
+  padding: 8rem 2rem;
+  background: linear-gradient(135deg, #f0f9ff 0%, #e0f2fe 100%);
+}
+
+.genphys-appointment-container {
+  max-width: 1280px;
+  margin: 0 auto;
+  display: grid;
+  grid-template-columns: 1.2fr 0.8fr;
+  gap: 6rem;
+}
+
+.genphys-appointment-form {
+  background: white;
+  padding: 4rem;
+  border-radius: 32px;
+  box-shadow: 0 30px 80px rgba(0, 0, 0, 0.08);
+  border: 2px solid #f3f4f6;
+}
+
+.genphys-form-header {
+  margin-bottom: 3rem;
+  padding-bottom: 3rem;
+  border-bottom: 2px solid #f3f4f6;
+}
+
+.genphys-form-title {
+  font-size: 2.75rem;
+  font-weight: 800;
+  color: #111827;
+  margin-bottom: 1rem;
+  line-height: 1.2;
+}
+
+.genphys-form-subtitle {
+  font-size: 1.375rem;
+  color: #6b7280;
+  line-height: 1.6;
+}
+
+.genphys-booking-form {
+  display: flex;
+  flex-direction: column;
+  gap: 2.5rem;
+}
+
+.genphys-form-row {
+  display: grid;
+  grid-template-columns: 1fr 1fr;
+  gap: 2rem;
+}
+
+.genphys-form-group {
+  display: flex;
+  flex-direction: column;
+  gap: 1rem;
+}
+
+.genphys-form-label {
+  font-size: 1.125rem;
+  font-weight: 700;
+  color: #374151;
+  display: flex;
+  align-items: center;
+  gap: 0.5rem;
+}
+
+.genphys-form-label::after {
+  content: '*';
+  color: #ef4444;
+  font-size: 1.25rem;
+}
+
+.genphys-form-input,
+.genphys-form-select,
+.genphys-form-textarea {
+  padding: 1.25rem 1.5rem;
+  border: 2px solid #e5e7eb;
+  border-radius: 16px;
+  font-size: 1.125rem;
+  transition: all 0.4s ease;
+  font-family: inherit;
+  background: white;
+}
+
+.genphys-form-input:focus,
+.genphys-form-select:focus,
+.genphys-form-textarea:focus {
+  outline: none;
+  border-color: #1e40af;
+  box-shadow: 0 0 0 5px rgba(30, 64, 175, 0.1);
+}
+
+.genphys-form-textarea {
+  resize: vertical;
+  min-height: 140px;
+  line-height: 1.7;
+}
+
+.genphys-form-urgency {
+  display: flex;
+  flex-direction: column;
+  gap: 1.25rem;
+  margin: 1.5rem 0;
+}
+
+.genphys-urgency-label {
+  display: flex;
+  align-items: center;
+  gap: 1rem;
+  cursor: pointer;
+  padding: 1rem 1.25rem;
+  border-radius: 12px;
+  transition: background 0.4s ease;
+}
+
+.genphys-urgency-label:hover {
+  background: #f8fafc;
+}
+
+.genphys-urgency-label input[type="checkbox"] {
+  width: 24px;
+  height: 24px;
+  accent-color: #1e40af;
+  flex-shrink: 0;
+}
+
+.genphys-urgency-text {
+  font-size: 1.0625rem;
+  color: #374151;
+  font-weight: 500;
+}
+
+.genphys-btn-submit {
+  background: linear-gradient(135deg, #1e40af, #3b82f6);
+  color: white;
+  border: none;
+  font-size: 1.375rem;
+  padding: 1.75rem;
+  justify-content: center;
+  border-radius: 18px;
+  margin-top: 2rem;
+  box-shadow: 0 15px 35px rgba(30, 64, 175, 0.25);
+}
+
+.genphys-btn-submit:hover {
+  transform: translateY(-4px) scale(1.02);
+  box-shadow: 0 25px 50px rgba(30, 64, 175, 0.35);
+}
+
+.genphys-submit-icon {
+  font-size: 1.75rem;
+}
+
+.genphys-form-notice {
+  text-align: center;
+  font-size: 1.0625rem;
+  color: #6b7280;
+  margin-top: 2rem;
+  padding: 2rem;
+  background: #f8fafc;
+  border-radius: 16px;
+  border: 2px solid #e5e7eb;
+  line-height: 1.8;
+}
+
+.genphys-appointment-info {
+  position: relative;
+}
+
+.genphys-info-card {
+  background: white;
+  padding: 3.5rem;
+  border-radius: 28px;
+  box-shadow: 0 20px 50px rgba(0, 0, 0, 0.07);
+  position: sticky;
+  top: 150px;
+  border: 2px solid #f3f4f6;
+}
+
+.genphys-info-header {
+  margin-bottom: 3rem;
+  padding-bottom: 3rem;
+  border-bottom: 2px solid #f3f4f6;
+}
+
+.genphys-info-title {
+  font-size: 2.25rem;
+  font-weight: 800;
+  color: #111827;
+  margin-bottom: 1rem;
+  line-height: 1.2;
+}
+
+.genphys-info-subtitle {
+  font-size: 1.25rem;
+  color: #6b7280;
+  font-weight: 500;
+}
+
+.genphys-info-features {
+  display: flex;
+  flex-direction: column;
+  gap: 2.5rem;
+  margin-bottom: 3rem;
+}
+
+.genphys-info-feature {
+  display: flex;
+  gap: 1.75rem;
+  align-items: flex-start;
+}
+
+.genphys-feature-icon {
+  font-size: 2rem;
+  flex-shrink: 0;
+  width: 70px;
+  height: 70px;
+  background: rgba(30, 64, 175, 0.12);
+  border-radius: 18px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  color: #1e40af;
+}
+
+.genphys-info-feature h4 {
+  font-size: 1.375rem;
+  font-weight: 800;
+  color: #111827;
+  margin-bottom: 0.5rem;
+}
+
+.genphys-info-feature p {
+  font-size: 1.125rem;
+  color: #6b7280;
+  line-height: 1.6;
+}
+
+.genphys-clinic-hours {
+  margin-bottom: 3rem;
+  padding-bottom: 3rem;
+  border-bottom: 2px solid #f3f4f6;
+}
+
+.genphys-hours-title {
+  font-size: 1.75rem;
+  font-weight: 800;
+  color: #111827;
+  margin-bottom: 2rem;
+}
+
+.genphys-hours-grid {
+  display: flex;
+  flex-direction: column;
+  gap: 1.5rem;
+}
+
+.genphys-hour-item {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  padding: 1.5rem;
+  background: #f8fafc;
+  border-radius: 16px;
+  border: 2px solid #e5e7eb;
+}
+
+.genphys-hour-day {
+  font-weight: 700;
+  color: #374151;
+  font-size: 1.125rem;
+}
+
+.genphys-hour-time {
+  color: #6b7280;
+  font-size: 1.0625rem;
+  font-weight: 500;
+}
+
+.genphys-emergency {
+  background: #fef2f2;
+  border-color: #fecaca;
+}
+
+.genphys-emergency .genphys-hour-day {
+  color: #dc2626;
+  font-weight: 800;
+}
+
+.genphys-emergency .genphys-hour-time {
+  color: #dc2626;
+  font-weight: 700;
+}
+
+.genphys-insurance {
+  margin-bottom: 3rem;
+}
+
+.genphys-insurance-title {
+  font-size: 1.75rem;
+  font-weight: 800;
+  color: #111827;
+  margin-bottom: 2rem;
+}
+
+.genphys-insurance-features {
+  display: grid;
+  grid-template-columns: 1fr 1fr;
+  gap: 1.5rem;
+}
+
+.genphys-insurance-feature {
+  display: flex;
+  align-items: center;
+  gap: 1rem;
+  font-size: 1.125rem;
+  color: #374151;
+  font-weight: 500;
+  padding: 1.25rem;
+  background: #f8fafc;
+  border-radius: 14px;
+}
+
+.genphys-insurance-icon {
+  color: #10b981;
+  font-size: 1.5rem;
+  font-weight: bold;
+}
+
+.genphys-facilities {
+  margin-bottom: 3rem;
+}
+
+.genphys-facilities-title {
+  font-size: 1.75rem;
+  font-weight: 800;
+  color: #111827;
+  margin-bottom: 2rem;
+}
+
+.genphys-facilities-features {
+  display: grid;
+  grid-template-columns: 1fr 1fr;
+  gap: 1.5rem;
+}
+
+.genphys-facilities-feature {
+  display: flex;
+  align-items: center;
+  gap: 1rem;
+  font-size: 1.125rem;
+  color: #374151;
+  padding: 1.25rem;
+  background: #f8fafc;
+  border-radius: 14px;
+}
+
+.genphys-facilities-icon {
+  color: #1e40af;
+  font-size: 1.5rem;
+  font-weight: bold;
+}
+
+.genphys-contact-details {
+  display: flex;
+  flex-direction: column;
+  gap: 1.75rem;
+}
+
+.genphys-contact-item {
+  display: flex;
+  align-items: center;
+  gap: 1.75rem;
+  padding: 1.75rem;
+  background: #f8fafc;
+  border-radius: 18px;
+  border: 2px solid #e5e7eb;
+  transition: all 0.4s ease;
+}
+
+.genphys-contact-item:hover {
+  background: white;
+  border-color: #1e40af;
+  transform: translateX(8px);
+}
+
+.genphys-contact-icon {
+  font-size: 2rem;
+  flex-shrink: 0;
+  color: #1e40af;
+}
+
+.genphys-contact-item h4 {
+  font-size: 1.25rem;
+  font-weight: 800;
+  color: #111827;
+  margin-bottom: 0.375rem;
+}
+
+.genphys-contact-item p {
+  font-size: 1.125rem;
+  color: #6b7280;
+}
+
+/* Footer */
+.genphys-footer {
+  background: linear-gradient(135deg, #111827, #1f2937);
+  color: white;
+  padding: 6rem 2rem 3rem;
+  border-top: 6px solid #1e40af;
+}
+
+.genphys-footer-container {
+  max-width: 1280px;
+  margin: 0 auto;
+}
+
+.genphys-footer-main {
+  display: grid;
+  grid-template-columns: 1.3fr 1.7fr;
+  gap: 6rem;
+  margin-bottom: 5rem;
+}
+
+.genphys-footer-brand {
+  display: flex;
+  flex-direction: column;
+  gap: 2.5rem;
+}
+
+.genphys-footer-logo {
+  display: flex;
+  align-items: center;
+  gap: 1.5rem;
+}
+
+.genphys-footer-icon {
+  font-size: 3rem;
+  background: linear-gradient(135deg, #3b82f6, #10b981);
+  -webkit-background-clip: text;
+  -webkit-text-fill-color: transparent;
+  background-clip: text;
+}
+
+.genphys-footer-title {
+  font-size: 2.25rem;
+  font-weight: 800;
+  margin-bottom: 0.5rem;
+  background: linear-gradient(135deg, #93c5fd, #a7f3d0);
+  -webkit-background-clip: text;
+  -webkit-text-fill-color: transparent;
+  background-clip: text;
+}
+
+.genphys-footer-tagline {
+  font-size: 1.125rem;
+  color: #d1d5db;
+  font-weight: 500;
+  letter-spacing: 0.75px;
+}
+
+.genphys-footer-description {
+  font-size: 1.1875rem;
+  color: #9ca3af;
+  line-height: 1.9;
+}
+
+.genphys-footer-social {
+  display: flex;
+  gap: 1.25rem;
+}
+
+.genphys-social-link {
+  width: 56px;
+  height: 56px;
+  background: rgba(255, 255, 255, 0.08);
+  border-radius: 16px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  text-decoration: none;
+  color: white;
+  transition: all 0.5s ease;
+}
+
+.genphys-social-link:hover {
+  background: linear-gradient(135deg, #1e40af, #3b82f6);
+  transform: translateY(-6px) rotate(8deg);
+  box-shadow: 0 15px 35px rgba(30, 64, 175, 0.3);
+}
+
+.genphys-social-icon {
+  font-size: 1.5rem;
+}
+
+.genphys-footer-links {
+  display: grid;
+  grid-template-columns: repeat(3, 1fr);
+  gap: 5rem;
+}
+
+.genphys-footer-column {
+  display: flex;
+  flex-direction: column;
+  gap: 1.75rem;
+}
+
+.genphys-column-title {
+  font-size: 1.375rem;
+  font-weight: 800;
+  margin-bottom: 1rem;
+  color: white;
+  position: relative;
+  padding-bottom: 1rem;
+}
+
+.genphys-column-title::after {
+  content: '';
+  position: absolute;
+  bottom: 0;
+  left: 0;
+  width: 50px;
+  height: 4px;
+  background: linear-gradient(90deg, #1e40af, #3b82f6);
+  border-radius: 3px;
+}
+
+.genphys-footer-link {
+  text-decoration: none;
+  color: #d1d5db;
+  font-size: 1.0625rem;
+  transition: all 0.4s ease;
+  padding: 0.5rem 0;
+  position: relative;
+}
+
+.genphys-footer-link:hover {
+  color: #93c5fd;
+  transform: translateX(8px);
+}
+
+.genphys-contact-info {
+  font-size: 1.0625rem;
+  color: #d1d5db;
+  line-height: 1.9;
+  display: flex;
+  align-items: flex-start;
+  gap: 1rem;
+  margin-bottom: 1rem;
+}
+
+.genphys-footer-bottom {
+  padding-top: 3rem;
+  border-top: 1px solid rgba(255, 255, 255, 0.12);
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  flex-wrap: wrap;
+  gap: 2rem;
+}
+
+.genphys-copyright {
+  font-size: 1.0625rem;
+  color: #9ca3af;
+}
+
+.genphys-footer-legal {
+  display: flex;
+  gap: 3rem;
+}
+
+.genphys-legal-link {
+  text-decoration: none;
+  color: #d1d5db;
+  font-size: 1.0625rem;
+  transition: color 0.4s ease;
+  font-weight: 500;
+}
+
+.genphys-legal-link:hover {
+  color: #93c5fd;
+}
+
+/* Responsive Design */
+@media (max-width: 1200px) {
+  .genphys-hero-content,
+  .genphys-conditions-container,
+  .genphys-appointment-container {
+    grid-template-columns: 1fr;
+    gap: 5rem;
+  }
+  
+  .genphys-footer-main {
+    grid-template-columns: 1fr;
+    gap: 5rem;
+  }
+  
+  .genphys-footer-links {
+    grid-template-columns: repeat(2, 1fr);
+  }
+}
+
+@media (max-width: 900px) {
+  .genphys-menu-btn {
+    display: flex;
+  }
+  
+  .genphys-nav-menu {
+    position: fixed;
+    top: 0;
+    right: -100%;
+    height: 100vh;
+    width: 380px;
+    background: white;
+    box-shadow: -20px 0 50px rgba(0, 0, 0, 0.12);
+    transition: right 0.5s cubic-bezier(0.4, 0, 0.2, 1);
+    padding-top: 140px;
+    padding-left: 3rem;
+  }
+  
+  .genphys-nav-show {
+    right: 0;
+  }
+  
+  .genphys-nav-list {
+    flex-direction: column;
+    align-items: flex-start;
+    gap: 2.5rem;
+  }
+  
+  .genphys-hero-title {
+    font-size: 3rem;
+  }
+  
+  .genphys-section-title {
+    font-size: 2.75rem;
+  }
+  
+  .genphys-form-row,
+  .genphys-insurance-features,
+  .genphys-facilities-features,
+  .genphys-footer-links {
+    grid-template-columns: 1fr;
+  }
+  
+  .genphys-hero-stats,
+  .genphys-services-grid,
+  .genphys-tips-grid,
+  .genphys-doctors-grid,
+  .genphys-testimonials-grid {
+    grid-template-columns: 1fr;
+  }
+  
+  .genphys-hero-actions {
+    flex-direction: column;
+  }
+  
+  .genphys-btn {
+    width: 100%;
+    justify-content: center;
+  }
+  
+  .genphys-care-features {
+    grid-template-columns: 1fr;
+    gap: 2.5rem;
+  }
+  
+  .genphys-footer-bottom {
+    flex-direction: column;
+    text-align: center;
+  }
+  
+  .genphys-footer-legal {
+    justify-content: center;
+    flex-wrap: wrap;
+    gap: 2rem;
+  }
+}
+
+@media (max-width: 640px) {
+  .genphys-hero-title {
+    font-size: 2.5rem;
+  }
+  
+  .genphys-section-title {
+    font-size: 2.5rem;
+  }
+  
+  .genphys-hero,
+  .genphys-services,
+  .genphys-conditions,
+  .genphys-doctors,
+  .genphys-health-tips,
+  .genphys-testimonials,
+  .genphys-appointment {
+    padding: 6rem 1.5rem;
+  }
+  
+  .genphys-nav-container,
+  .genphys-hero-content,
+  .genphys-appointment-form,
+  .genphys-info-card {
+    padding-left: 1.5rem;
+    padding-right: 1.5rem;
+  }
+  
+  .genphys-appointment-form {
+    padding: 3rem 1.5rem;
+  }
+  
+  .genphys-preventive-care {
+    padding: 4rem 1.5rem;
+  }
+  
+  .genphys-visual-main {
+    width: 400px;
+    height: 400px;
+  }
+  
+  .genphys-visual-element {
+    width: 90px;
+    height: 90px;
+    font-size: 3rem;
+  }
+  
+  .genphys-doctor-card,
+  .genphys-testimonial-card,
+  .genphys-service-card,
+  .genphys-tip-card {
+    padding: 3rem 2rem;
+  }
+  
+  .genphys-footer {
+    padding: 5rem 1.5rem 2.5rem;
+  }
+}
+
+@media (max-width: 480px) {
+  .genphys-hero-title {
+    font-size: 2.25rem;
+  }
+  
+  .genphys-section-title {
+    font-size: 2.25rem;
+  }
+  
+  .genphys-logo-title {
+    font-size: 1.75rem;
+  }
+  
+  .genphys-nav-container {
+    padding: 0 1.5rem;
+  }
+  
+  .genphys-visual-main {
+    width: 350px;
+    height: 350px;
+  }
+  
+  .genphys-visual-element {
+    width: 80px;
+    height: 80px;
+    font-size: 2.5rem;
+  }
+  
+  .genphys-stat-number {
+    font-size: 2.75rem;
+  }
+  
+  .genphys-nav-menu {
+    width: 100%;
+  }
+}

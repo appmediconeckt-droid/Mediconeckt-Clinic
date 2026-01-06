@@ -1,5 +1,3 @@
-// File: doctorLandingPage.js
-
 import React from "react";
 import "bootstrap/dist/css/bootstrap.min.css";
 import "./doctorLandingPage.css";
@@ -7,97 +5,224 @@ import { Link } from "react-router-dom";
 
 export default function DoctorLandingPage() {
   const specialities = [
-    {
-      name: "Cardiologist",
-      img: "https://img.icons8.com/color/96/heart-with-pulse.png",
-      desc: "Heart and blood vessel specialists",
+    { 
+      name: "Cardiologist", 
+      img: "https://img.icons8.com/color/96/heart-with-pulse.png", 
+      desc: "Heart care experts",
+      link: "/cardiologist" 
     },
-    {
-      name: "Dentist",
-      img: "https://img.icons8.com/color/96/tooth.png",
-      desc: "Oral health and dental care",
+    { 
+      name: "Dentist", 
+      img: "https://img.icons8.com/color/96/tooth.png", 
+      desc: "Dental treatments",
+      link: "/dentist" 
     },
-    {
-      name: "Neurologist",
-      img: "https://img.icons8.com/color/96/brain.png",
-      desc: "Brain and nervous system specialists",
+    { 
+      name: "Neurologist", 
+      img: "https://img.icons8.com/color/96/brain.png", 
+      desc: "Brain & nerves",
+      link: "/neurologist" 
     },
-    {
-      name: "Orthopedic",
-      img: "https://img.icons8.com/color/96/bone.png",
-      desc: "Bone and joint specialists",
+    { 
+      name: "Orthopedic", 
+      img: "https://cdn-icons-png.flaticon.com/512/2966/2966486.png", 
+      desc: "Bones & joints",
+      link: "/orthopedic" 
     },
-    {
-      name: "Eye Specialist",
-      img: "https://img.icons8.com/color/96/visible.png",
-      desc: "Vision and eye care",
+    { 
+      name: "Eye Specialist", 
+      img: "https://img.icons8.com/color/96/visible.png", 
+      desc: "Eye care",
+      link: "/eye-specialist" 
     },
-    {
-      name: "Skin Specialist",
-      img: "https://img.icons8.com/color/96/skin-type-3.png",
-      desc: "Dermatology and skin care",
+    { 
+      name: "Skin Specialist", 
+      img: "https://cdn-icons-png.flaticon.com/512/3774/3774299.png", 
+      desc: "Skin treatments",
+      link: "/skin-specialist" 
     },
-    {
-      name: "Pediatrician",
-      img: "https://img.icons8.com/color/96/baby.png",
-      desc: "Child health specialists",
+    { 
+      name: "Pediatrician", 
+      img: "https://img.icons8.com/color/96/baby-feet.png", 
+      desc: "Child healthcare",
+      link: "/pediatrician" 
     },
-    {
-      name: "Gynecologist",
-      img: "https://img.icons8.com/color/96/women-health.png",
-      desc: "Women's health specialists",
+    { 
+      name: "Gynecologist", 
+      img: "https://cdn-icons-png.flaticon.com/512/3774/3774296.png", 
+      desc: "Women's health",
+      link: "/gynecologist" 
     },
-    {
-      name: "Psychiatrist",
-      img: "https://img.icons8.com/color/96/mental-health.png",
-      desc: "Mental health specialists",
+    { 
+      name: "Psychiatrist", 
+      img: "https://img.icons8.com/color/96/mental-health.png", 
+      desc: "Mental health",
+      link: "/psychiatrist" 
     },
-    {
-      name: "ENT Specialist",
-      img: "https://img.icons8.com/color/96/ear-nose-throat.png",
-      desc: "Ear, Nose and Throat",
+    { 
+      name: "ENT Specialist", 
+      img: "https://cdn-icons-png.flaticon.com/512/3774/3774301.png", 
+      desc: "Ear, Nose, Throat",
+      link: "/ent-specialist" 
     },
-    {
-      name: "Gastroenterologist",
-      img: "https://img.icons8.com/color/96/stomach.png",
-      desc: "Digestive system specialists",
+    { 
+      name: "Physiotherapist", 
+      img: "https://cdn-icons-png.flaticon.com/512/3774/3774314.png", 
+      desc: "Physical therapy",
+      link: "/physiotherapist" 
     },
-    {
-      name: "Urologist",
-      img: "https://img.icons8.com/color/96/kidney.png",
-      desc: "Urinary system specialists",
+    { 
+      name: "General Physician", 
+      img: "https://cdn-icons-png.flaticon.com/512/3774/3774294.png", 
+      desc: "Primary care",
+      link: "/general-physician" 
     },
   ];
 
-  const doctors = [
+  const Doctors = [
     {
+      id: 0,
       name: "Dr. Sarah Johnson",
       specialization: "Cardiologist",
-      experience: "15 years",
       rating: 4.8,
-      image: "https://randomuser.me/api/portraits/women/65.jpg",
-    },
-    {
-      name: "Dr. Michael Chen",
-      specialization: "Neurologist",
       experience: "12 years",
-      rating: 4.9,
-      image: "https://randomuser.me/api/portraits/men/32.jpg",
+      image: "https://images.unsplash.com/photo-1559839734-2b71ea197ec2?w=150&h=150&fit=crop&crop=face",
+      description: "Dr. Sarah Johnson is a board-certified cardiologist with over 12 years of experience in treating heart-related conditions. She specializes in interventional cardiology and preventive heart care.",
+      education: [
+        "MD - Harvard Medical School",
+        "Fellowship in Cardiology - Johns Hopkins Hospital",
+        "Board Certified in Cardiovascular Disease"
+      ],
+      contact: {
+        phone: "+1 (555) 123-4567",
+        email: "sarah.johnson@medicalclinic.com",
+        clinicAddress: "123 Medical Center Blvd, Suite 405, New York, NY 10001"
+      },
+      availability: {
+        days: ["Monday", "Wednesday", "Friday", "Saturday"],
+        timings: "9:00 AM - 5:00 PM",
+        nextAvailable: "Tomorrow at 10:00 AM"
+      },
+      appointmentTypes: [
+        { type: "In-Clinic Visit", duration: "30 min", price: "$150" },
+        { type: "Video Consultation", duration: "20 min", price: "$120" },
+        { type: "Voice Call", duration: "15 min", price: "$80" },
+        { type: "Emergency Consultation", duration: "45 min", price: "$250" }
+      ],
+      specialties: ["Coronary Artery Disease", "Heart Failure", "Hypertension", "Arrhythmia"],
+      languages: ["English", "Spanish", "French"],
+      reviews: [
+        { patient: "Robert Chen", rating: 5, comment: "Excellent doctor, very thorough and caring." },
+        { patient: "Maria Garcia", rating: 4.5, comment: "Great experience, explained everything clearly." }
+      ]
     },
     {
+      id: 1,
+      name: "Dr. Michael Rodriguez",
+      specialization: "Neurologist",
+      rating: 4.9,
+      experience: "15 years",
+      image: "https://images.unsplash.com/photo-1612349317150-e413f6a5b16d?w=150&h=150&fit=crop&crop=face",
+      description: "Dr. Michael Rodriguez is a renowned neurologist specializing in movement disorders and neurodegenerative diseases. He has published over 50 research papers in international journals.",
+      education: [
+        "MD - Stanford University School of Medicine",
+        "PhD in Neuroscience - MIT",
+        "Fellowship in Movement Disorders - Mayo Clinic"
+      ],
+      contact: {
+        phone: "+1 (555) 987-6543",
+        email: "m.rodriguez@neurocare.com",
+        clinicAddress: "456 Brain Health Ave, Suite 210, Boston, MA 02115"
+      },
+      availability: {
+        days: ["Tuesday", "Thursday", "Friday"],
+        timings: "10:00 AM - 6:00 PM",
+        nextAvailable: "Next Tuesday at 2:00 PM"
+      },
+      appointmentTypes: [
+        { type: "In-Clinic Visit", duration: "45 min", price: "$200" },
+        { type: "Video Consultation", duration: "30 min", price: "$150" },
+        { type: "Follow-up Consultation", duration: "20 min", price: "$100" }
+      ],
+      specialties: ["Parkinson's Disease", "Alzheimer's", "Migraine", "Epilepsy"],
+      languages: ["English", "Spanish"],
+      reviews: [
+        { patient: "James Wilson", rating: 5, comment: "Life-changing treatment for my Parkinson's." },
+        { patient: "Lisa Thompson", rating: 5, comment: "Very knowledgeable and patient." }
+      ]
+    },
+    {
+      id: 2,
       name: "Dr. Priya Sharma",
       specialization: "Pediatrician",
-      experience: "10 years",
       rating: 4.7,
-      image: "https://randomuser.me/api/portraits/women/44.jpg",
+      experience: "8 years",
+      image: "https://images.unsplash.com/photo-1612349317150-e413f6a5b16d?w=150&h=150&fit=crop&crop=face",
+      description: "Dr. Priya Sharma is a compassionate pediatrician dedicated to children's health and wellbeing. She believes in preventive care and building strong relationships with her young patients and their families.",
+      education: [
+        "MD - University of California, San Francisco",
+        "Residency in Pediatrics - Boston Children's Hospital",
+        "Board Certified in Pediatrics"
+      ],
+      contact: {
+        phone: "+1 (555) 456-7890",
+        email: "priya.sharma@childcareclinic.com",
+        clinicAddress: "789 Children's Way, Suite 105, Chicago, IL 60611"
+      },
+      availability: {
+        days: ["Monday", "Tuesday", "Wednesday", "Thursday", "Saturday"],
+        timings: "8:00 AM - 4:00 PM",
+        nextAvailable: "Today at 3:00 PM"
+      },
+      appointmentTypes: [
+        { type: "Well-Child Visit", duration: "30 min", price: "$120" },
+        { type: "Sick Visit", duration: "20 min", price: "$100" },
+        { type: "Video Consultation", duration: "15 min", price: "$80" },
+        { type: "Vaccination Appointment", duration: "15 min", price: "$60" }
+      ],
+      specialties: ["Newborn Care", "Vaccinations", "Childhood Asthma", "Developmental Screening"],
+      languages: ["English", "Hindi", "Gujarati"],
+      reviews: [
+        { patient: "Amanda Lee", rating: 4.5, comment: "My kids love visiting Dr. Sharma!" },
+        { patient: "David Miller", rating: 5, comment: "Always patient and understanding with children." }
+      ]
     },
     {
-      name: "Dr. Robert Kim",
-      specialization: "Orthopedic",
+      id: 3,
+      name: "Dr. James Wilson",
+      specialization: "Orthopedic Surgeon",
+      rating: 4.6,
       experience: "18 years",
-      rating: 4.9,
-      image: "https://randomuser.me/api/portraits/men/75.jpg",
-    },
+      image: "https://images.unsplash.com/photo-1537368910025-700350fe46c7?w=150&h=150&fit=crop&crop=face",
+      description: "Dr. James Wilson is an experienced orthopedic surgeon specializing in sports injuries and joint replacement surgeries. He has served as the team doctor for several professional sports teams.",
+      education: [
+        "MD - Duke University School of Medicine",
+        "Orthopedic Surgery Residency - Hospital for Special Surgery",
+        "Fellowship in Sports Medicine - Andrews Sports Medicine Center"
+      ],
+      contact: {
+        phone: "+1 (555) 234-5678",
+        email: "j.wilson@orthocare.com",
+        clinicAddress: "321 Sports Medicine Plaza, Suite 500, Los Angeles, CA 90024"
+      },
+      availability: {
+        days: ["Monday", "Wednesday", "Thursday"],
+        timings: "7:00 AM - 3:00 PM",
+        nextAvailable: "Next Wednesday at 11:00 AM"
+      },
+      appointmentTypes: [
+        { type: "Surgical Consultation", duration: "45 min", price: "$250" },
+        { type: "Follow-up Visit", duration: "20 min", price: "$120" },
+        { type: "Video Consultation", duration: "25 min", price: "$150" },
+        { type: "Second Opinion", duration: "60 min", price: "$300" }
+      ],
+      specialties: ["Knee Replacement", "ACL Reconstruction", "Shoulder Surgery", "Arthroscopy"],
+      languages: ["English"],
+      reviews: [
+        { patient: "Tom Harris", rating: 5, comment: "Successful knee surgery, back to running in 6 months!" },
+        { patient: "Susan Clark", rating: 4, comment: "Professional and skilled surgeon." }
+      ]
+    }
   ];
 
   const services = [
@@ -126,9 +251,9 @@ export default function DoctorLandingPage() {
       {/* ================= NAVBAR ================= */}
       <nav className="navbar navbar-expand-lg bg-white shadow-sm fixed-top mb-4">
         <div className="container">
-          <a className="navbar-brand fw-bold text-primary fs-3" href="#">
+          <Link className="navbar-brand fw-bold text-primary fs-3" to="/">
             <span className="text-primary">🩺</span> DoctorCare
-          </a>
+          </Link>
 
           <button
             className="navbar-toggler"
@@ -226,30 +351,20 @@ export default function DoctorLandingPage() {
             Find trusted doctors & book appointments instantly. 5000+ happy
             patients monthly.
           </p>
-          {/* <div className="d-flex justify-content-center gap-3">
-            <Link to="/appointment">
-              <button className="btn btn-light btn-lg px-4">
-                Book Appointment
-              </button>
-            </Link>
-            <button className="btn btn-outline-light btn-lg px-4">
-              Consult Online
-            </button>
-          </div> */}
           <div className="row mt-5 stats-row">
-            <div className="col-md-3" style={{borderRadius:"100%"}}>
+            <div className="col-md-3" style={{ borderRadius: "100%" }}>
               <h3 className="fw-bold">500+</h3>
               <p>Expert Doctors</p>
             </div>
-            <div className="col-md-3" style={{borderRadius:"100%"}}>
+            <div className="col-md-3" style={{ borderRadius: "100%" }}>
               <h3 className="fw-bold">50+</h3>
               <p>Specialities</p>
             </div>
-            <div className="col-md-3"style={{borderRadius:"100%"}}>
+            <div className="col-md-3" style={{ borderRadius: "100%" }}>
               <h3 className="fw-bold">10K+</h3>
               <p>Happy Patients</p>
             </div>
-            <div className="col-md-3"style={{borderRadius:"100%"}}>
+            <div className="col-md-3" style={{ borderRadius: "100%" }}>
               <h3 className="fw-bold">24/7</h3>
               <p>Emergency Service</p>
             </div>
@@ -269,17 +384,19 @@ export default function DoctorLandingPage() {
         <div className="row">
           {specialities.map((item, index) => (
             <div className="col-6 col-md-4 col-lg-2 mb-4" key={index}>
-              <div className="card speciality-card text-center p-3 shadow-sm border-0 h-100">
-                <img
-                  src={item.img}
-                  alt={item.name}
-                  className="img-fluid mx-auto"
-                  width="70"
-                  height="70"
-                />
-                <h6 className="mt-3 mb-2 fw-bold">{item.name}</h6>
-                <small className="text-muted">{item.desc}</small>
-              </div>
+              <Link to={item.link} style={{textDecoration:"none"}}>
+                <div className="card speciality-card text-center p-3 shadow-sm border-0 h-100">
+                  <img
+                    src={item.img}
+                    alt={item.name}
+                    className="img-fluid mx-auto"
+                    width="70"
+                    height="70"
+                  />
+                  <h6 className="mt-3 mb-2 fw-bold">{item.name}</h6>
+                  <small className="text-muted">{item.desc}</small>
+                </div>
+              </Link>
             </div>
           ))}
         </div>
@@ -302,7 +419,7 @@ export default function DoctorLandingPage() {
           </div>
 
           <div className="row">
-            {doctors.map((doctor, index) => (
+            {Doctors.map((doctor, index) => (
               <div className="col-md-6 col-lg-3 mb-4" key={index}>
                 <div className="card doctor-card shadow-sm border-0 h-100">
                   <div className="text-center pt-4">
@@ -323,7 +440,7 @@ export default function DoctorLandingPage() {
                       <span>⭐ {doctor.rating}/5</span>
                       <span>{doctor.experience} exp</span>
                     </div>
-                    <Link to={`/doctor/${index}`}>
+                    <Link to={`/doctor-details/${doctor.id}`}>
                       <button className="btn btn-primary btn-sm mt-3 w-100">
                         View Details
                       </button>

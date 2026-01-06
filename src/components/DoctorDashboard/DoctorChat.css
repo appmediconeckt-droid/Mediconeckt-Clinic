@@ -256,7 +256,7 @@
 /* Individual message styling */
 .message {
   display: flex;
-  max-width: 70%;
+  /* max-width: 70%; */
   animation: fadeIn 0.3s ease forwards;
   opacity: 0;
   animation-delay: calc(var(--message-index, 0) * 0.1s);

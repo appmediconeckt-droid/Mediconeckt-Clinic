@@ -75,10 +75,10 @@ const PatientChat = () => {
   const [messages, setMessages] = useState([]);
   const [showFileOptions, setShowFileOptions] = useState(false);
   const fileInputRef = useRef(null);
-  
+
   // Ref for auto-scrolling to latest message
   const messagesEndRef = useRef(null);
-  
+
   // Find current patient
   const currentPatient = mockPatients.find(p => p.id === parseInt(patientId));
 
@@ -87,18 +87,18 @@ const PatientChat = () => {
     1: [
       { id: 1, text: 'Hello Doctor, I am feeling dizzy today.', sender: 'patient', time: '10:30 AM' },
       { id: 2, text: 'Please take your prescribed medicine and rest.', sender: 'doctor', time: '10:35 AM' },
-      { 
-        id: 3, 
-        text: 'My latest blood report', 
-        sender: 'patient', 
+      {
+        id: 3,
+        text: 'My latest blood report',
+        sender: 'patient',
         time: '11:00 AM',
         file: { name: 'blood_report.pdf', type: 'pdf', size: '2.4 MB' }
       },
       { id: 4, text: 'Monitor your BP and let me know in 2 hours.', sender: 'doctor', time: '11:05 AM' },
-      { 
-        id: 5, 
-        text: 'BP readings chart', 
-        sender: 'doctor', 
+      {
+        id: 5,
+        text: 'BP readings chart',
+        sender: 'doctor',
         time: '11:10 AM',
         file: { name: 'bp_chart.png', type: 'image', size: '1.2 MB' }
       },
@@ -106,10 +106,10 @@ const PatientChat = () => {
     2: [
       { id: 1, text: 'My blood sugar is 250 mg/dL.', sender: 'patient', time: '09:00 AM' },
       { id: 2, text: 'Please avoid sweets and take insulin as prescribed.', sender: 'doctor', time: '09:15 AM' },
-      { 
-        id: 3, 
-        text: 'Insulin prescription', 
-        sender: 'doctor', 
+      {
+        id: 3,
+        text: 'Insulin prescription',
+        sender: 'doctor',
         time: '09:20 AM',
         file: { name: 'prescription.pdf', type: 'pdf', size: '1.8 MB' }
       },
@@ -120,10 +120,10 @@ const PatientChat = () => {
     ],
     4: [
       { id: 1, text: 'Breathing is normal now, thank you doctor.', sender: 'patient', time: '2 days ago' },
-      { 
-        id: 2, 
-        text: 'X-Ray results', 
-        sender: 'doctor', 
+      {
+        id: 2,
+        text: 'X-Ray results',
+        sender: 'doctor',
         time: '2 days ago',
         file: { name: 'xray_results.jpg', type: 'image', size: '3.5 MB' }
       },
@@ -131,10 +131,10 @@ const PatientChat = () => {
     5: [
       { id: 1, text: 'Chest pain has started again.', sender: 'patient', time: 'Today' },
       { id: 2, text: 'Come to emergency immediately!', sender: 'doctor', time: 'Today' },
-      { 
-        id: 3, 
-        text: 'ECG Report', 
-        sender: 'patient', 
+      {
+        id: 3,
+        text: 'ECG Report',
+        sender: 'patient',
         time: 'Today',
         file: { name: 'ecg_report.pdf', type: 'pdf', size: '4.1 MB' }
       },
@@ -185,7 +185,7 @@ const PatientChat = () => {
       const fileSize = (file.size / (1024 * 1024)).toFixed(1) + ' MB';
       const fileType = file.type.startsWith('image/') ? 'image' : 'document';
       const fileName = file.name;
-      
+
       const newMessage = {
         id: messages.length + 1,
         text: `File: ${fileName}`,
@@ -204,29 +204,29 @@ const PatientChat = () => {
 
   const formatTime = (timeString) => {
     const now = new Date();
-    
+
     if (timeString.toLowerCase() === 'today') {
       return new Date().toLocaleTimeString([], { hour: '2-digit', minute: '2-digit' });
     }
-    
+
     if (timeString.toLowerCase() === 'yesterday') {
       const yesterday = new Date(now);
       yesterday.setDate(yesterday.getDate() - 1);
       return yesterday.toLocaleTimeString([], { hour: '2-digit', minute: '2-digit' });
     }
-    
+
     if (timeString.includes('days ago')) {
       const days = parseInt(timeString);
       const pastDate = new Date(now);
       pastDate.setDate(pastDate.getDate() - days);
       return pastDate.toLocaleTimeString([], { hour: '2-digit', minute: '2-digit' });
     }
-    
+
     return timeString;
   };
 
   const getFileIcon = (fileType) => {
-    switch(fileType) {
+    switch (fileType) {
       case 'pdf': return <FaFilePdf />;
       case 'image': return <FaImage />;
       default: return <FaFile />;
@@ -234,7 +234,7 @@ const PatientChat = () => {
   };
 
   const getFileColor = (fileType) => {
-    switch(fileType) {
+    switch (fileType) {
       case 'pdf': return '#e74c3c';
       case 'image': return '#3498db';
       default: return '#2ecc71';
@@ -259,7 +259,7 @@ const PatientChat = () => {
         <button onClick={() => navigate('/patient-sms')} className="back-btn">
           <FaArrowLeft /> Back to List
         </button>
-        
+
         <div className="patient-profile-header">
           <div className="patient-avatar-large" style={{ backgroundColor: currentPatient.avatarColor }}>
             {currentPatient.name.split(' ').map(n => n[0]).join('')}
@@ -276,9 +276,15 @@ const PatientChat = () => {
           </div>
         </div>
 
-        <div className="header-actions">
-          <button className="call-btn">
-            <FaPhone /> Call
+        <div className="dc-header-right">
+          <button className="dc-call-btn dc-video-btn">
+            <i className="fas fa-video"></i>
+          </button>
+          <button className="dc-call-btn dc-voice-btn">
+            <i className="fas fa-phone"></i>
+          </button>
+          <button className="dc-menu-btn">
+            <i className="fas fa-ellipsis-v"></i>
           </button>
         </div>
       </div>
@@ -288,7 +294,7 @@ const PatientChat = () => {
         <div className="chat-date">
           <span>Today</span>
         </div>
-        
+
         <div className="messages-list">
           {messages.length === 0 ? (
             <div className="no-messages">
@@ -301,14 +307,14 @@ const PatientChat = () => {
           ) : (
             <>
               {messages.map((msg, index) => (
-                <div 
-                  key={msg.id} 
+                <div
+                  key={msg.id}
                   className={`message ${msg.sender}`}
                   style={{ '--message-index': index }}
                 >
                   <div className="message-content">
                     <p>{msg.text}</p>
-                    
+
                     {msg.file && (
                       <div className="file-attachment" style={{ borderColor: getFileColor(msg.file.type) }}>
                         <div className="file-icon" style={{ color: getFileColor(msg.file.type) }}>
@@ -323,7 +329,7 @@ const PatientChat = () => {
                         </button>
                       </div>
                     )}
-                    
+
                     <span className="message-time">{formatTime(msg.time)}</span>
                   </div>
                 </div>
@@ -361,15 +367,15 @@ const PatientChat = () => {
 
       {/* Message Input */}
       <form className="message-input-form" onSubmit={handleSendMessage}>
-        <button 
-          type="button" 
+        <button
+          type="button"
           className="attach-btn"
           onClick={() => setShowFileOptions(!showFileOptions)}
           aria-label="Attach file"
         >
           <FaPaperclip />
         </button>
-        
+
         <input
           type="text"
           placeholder="Type your message here..."
@@ -378,10 +384,10 @@ const PatientChat = () => {
           className="message-input"
           autoFocus
         />
-        
-        <button 
-          type="submit" 
-          className="send-btn" 
+
+        <button
+          type="submit"
+          className="send-btn"
           disabled={!message.trim()}
           aria-label="Send message"
         >

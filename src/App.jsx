@@ -34,6 +34,19 @@ import PatientSms from "./components/PatientDashboard/PatientSms";
 import DoctorChatPanel from "./components/PatientDashboard/DoctorChat";
 import DoctorChat from "./components/DoctorDashboard/DoctorChat";
 import PatientList from "./components/DoctorDashboard/DoctorSmsPatient";
+import DoctorDetailPage from "./authtication/DoctorDetailPage";
+import Cardiologist from "./authtication/Cardiologist";
+import DentalClinic from "./authtication/Dentist";
+import NeuroCareClinic from "./authtication/Neurologist";
+import OrthoCareClinic from "./authtication/Orthopedic";
+import EyeCareSpecialists from "./authtication/Eye-Specialist";
+import SkinCareClinic from "./authtication/Skin-Specialist";
+import PediatricCareClinic from "./authtication/Pediatrician";
+import WomenHealthCare from "./authtication/Gynecologist";
+import MindCareClinic from "./authtication/Psychiatrist";
+import EntCareClinic from "./authtication/Ent-Specialist";
+import PhysiotherapyClinic from "./authtication/Physiotherapist";
+import GeneralPhysicianClinic from "./authtication/General-Physician";
 // import PatientDashboard from "./components/PatientDashboard/PatientDashboard";
 
 function App() {
@@ -60,7 +73,20 @@ function App() {
     location.pathname === "/appointmentbooking" ||
     location.pathname === "/walkinclinic" ||
     location.pathname === "/qrappointment" ||
-    location.pathname === "/walk-in-appointment";
+    location.pathname === "/walk-in-appointment" ||
+    location.pathname === "/cardiologist" ||
+    location.pathname === "/dentist" ||
+    location.pathname === "/neurologist" ||
+    location.pathname === "/orthopedic" ||
+    location.pathname === "/eye-specialist" ||
+    location.pathname === "/skin-specialist" ||
+    location.pathname === "/pediatrician" ||
+    location.pathname === "/gynecologist" ||
+    location.pathname === "/psychiatrist" ||
+    location.pathname === "/ent-specialist" ||
+    location.pathname === "/physiotherapist" ||
+    location.pathname === "/general-physician" ||
+    location.pathname.startsWith("/doctor-details/");
 
   return (
     <>
@@ -81,6 +107,23 @@ function App() {
           <Route path="/walkinclinic" element={<WalkinClinic />} />
           <Route path="/walk-in-appointment" element={<WalkinAppointment />} />
           <Route path="/qrappointment" element={<QRBooking />} />
+          <Route path="/doctor-details/:id" element={<DoctorDetailPage />} />
+          <Route path="/cardiologist" element={<Cardiologist />} />
+          <Route path="/dentist" element={<DentalClinic />} />
+          <Route path="/neurologist" element={<NeuroCareClinic />} />
+          <Route path="/orthopedic" element={<OrthoCareClinic />} />
+          <Route path="/eye-specialist" element={<EyeCareSpecialists />} />
+          <Route path="/skin-specialist" element={<SkinCareClinic />} />
+          <Route path="/pediatrician" element={<PediatricCareClinic />} />
+          <Route path="/gynecologist" element={<WomenHealthCare />} />
+          <Route path="/psychiatrist" element={<MindCareClinic />} />
+          <Route path="/ent-specialist" element={<EntCareClinic />} />
+          <Route path="/physiotherapist" element={<PhysiotherapyClinic />} />
+          <Route path="/general-physician" element={<GeneralPhysicianClinic />} />
+
+          {/* Doctor Details */}
+
+
 
         </Routes>
       ) : (
@@ -110,8 +153,7 @@ function App() {
               <Route path="/patient-sms" element={<PatientList />} />
               <Route path="/patient-chat/:patientId" element={<DoctorChat />} />
 
-            </Routes>
-            <Routes>
+
               {/* Patient Dashboard */}
               <Route path="/patientdashboard" element={<PatientDashboard />} />
               <Route path="/patientappointment" element={<PatientAppointment />} />

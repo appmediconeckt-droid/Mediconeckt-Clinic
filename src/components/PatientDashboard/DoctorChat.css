@@ -743,3 +743,249 @@
     outline: 2px solid var(--dc-primary);
     outline-offset: 2px;
 }
+
+
+
+
+
+
+
+/* DoctorChat.css - Appointment Type Styles */
+
+/* Appointment Type Colors */
+.status-video {
+    background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+    color: white;
+}
+
+.status-voice {
+    background: linear-gradient(135deg, #f093fb 0%, #f5576c 100%);
+    color: white;
+}
+
+.status-in-clinic {
+    background: linear-gradient(135deg, #4facfe 0%, #00f2fe 100%);
+    color: white;
+}
+
+/* Appointment Type Display in Header */
+.appointment-type-display {
+    display: flex;
+    flex-direction: column;
+    align-items: flex-end;
+    margin-right: 15px;
+}
+
+.appointment-type-badge {
+    display: flex;
+    align-items: center;
+    gap: 8px;
+    padding: 6px 12px;
+    border-radius: 20px;
+    font-size: 12px;
+    font-weight: 600;
+    box-shadow: 0 2px 8px rgba(0,0,0,0.1);
+}
+
+.appointment-details {
+    margin-top: 4px;
+    color: #666;
+    font-size: 11px;
+    text-align: right;
+}
+
+/* Call Buttons */
+.dc-button-wrapper {
+    display: flex;
+    gap: 10px;
+    align-items: center;
+}
+
+.dc-call-btn {
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    justify-content: center;
+    width: 70px;
+    height: 70px;
+    border: none;
+    border-radius: 12px;
+    cursor: pointer;
+    transition: all 0.3s ease;
+    font-size: 14px;
+    gap: 6px;
+}
+
+.dc-video-btn.active {
+    background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+    color: white;
+    box-shadow: 0 4px 15px rgba(102, 126, 234, 0.4);
+}
+
+.dc-video-btn.disabled {
+    background: #f0f0f0;
+    color: #999;
+    cursor: not-allowed;
+    opacity: 0.6;
+}
+
+.dc-voice-btn.active {
+    background: linear-gradient(135deg, #f093fb 0%, #f5576c 100%);
+    color: white;
+    box-shadow: 0 4px 15px rgba(240, 147, 251, 0.4);
+}
+
+.dc-voice-btn.disabled {
+    background: #f0f0f0;
+    color: #999;
+    cursor: not-allowed;
+    opacity: 0.6;
+}
+
+.dc-inclinic-btn.active {
+    background: linear-gradient(135deg, #4facfe 0%, #00f2fe 100%);
+    color: white;
+    box-shadow: 0 4px 15px rgba(79, 172, 254, 0.4);
+}
+
+.dc-inclinic-btn.disabled {
+    background: #f0f0f0;
+    color: #999;
+    cursor: not-allowed;
+    opacity: 0.6;
+}
+
+.dc-call-btn:hover:not(.disabled) {
+    transform: translateY(-2px);
+    box-shadow: 0 6px 20px rgba(0,0,0,0.15);
+}
+
+.dc-call-btn .btn-label {
+    font-size: 11px;
+    font-weight: 600;
+    margin-top: 2px;
+}
+
+/* Appointment Status Banner */
+.appointment-status-banner {
+    margin: 15px;
+    padding: 15px;
+    border-radius: 12px;
+    color: white;
+    animation: slideIn 0.5s ease;
+}
+
+@keyframes slideIn {
+    from {
+        opacity: 0;
+        transform: translateY(-20px);
+    }
+    to {
+        opacity: 1;
+        transform: translateY(0);
+    }
+}
+
+.banner-content {
+    display: flex;
+    align-items: center;
+    gap: 15px;
+}
+
+.banner-content i {
+    font-size: 24px;
+}
+
+.banner-text {
+    flex: 1;
+    display: flex;
+    flex-direction: column;
+    gap: 4px;
+}
+
+.banner-text strong {
+    font-size: 16px;
+}
+
+.banner-text span {
+    font-size: 13px;
+    opacity: 0.9;
+}
+
+.banner-action-btn {
+    background: rgba(255, 255, 255, 0.2);
+    border: 1px solid rgba(255, 255, 255, 0.3);
+    color: white;
+    padding: 8px 16px;
+    border-radius: 20px;
+    cursor: pointer;
+    font-weight: 600;
+    font-size: 14px;
+    transition: all 0.3s ease;
+}
+
+.banner-action-btn:hover {
+    background: rgba(255, 255, 255, 0.3);
+    transform: translateY(-1px);
+}
+
+/* No Messages State */
+.appointment-note {
+    margin-top: 20px;
+    padding: 15px;
+    background: linear-gradient(135deg, #f5f7fa 0%, #c3cfe2 100%);
+    border-radius: 10px;
+    text-align: center;
+    max-width: 400px;
+    margin-left: auto;
+    margin-right: auto;
+}
+
+.appointment-note i {
+    margin-right: 8px;
+    color: #667eea;
+}
+
+/* Responsive Design */
+@media (max-width: 768px) {
+    .dc-button-wrapper {
+        gap: 5px;
+    }
+    
+    .dc-call-btn {
+        width: 60px;
+        height: 60px;
+        font-size: 12px;
+    }
+    
+    .appointment-type-display {
+        display: none;
+    }
+    
+    .banner-content {
+        flex-direction: column;
+        text-align: center;
+        gap: 10px;
+    }
+    
+    .banner-text {
+        align-items: center;
+    }
+    
+    .banner-action-btn {
+        width: 100%;
+    }
+}
+
+@media (max-width: 480px) {
+    .dc-call-btn {
+        width: 50px;
+        height: 50px;
+        font-size: 10px;
+    }
+    
+    .appointment-status-banner {
+        margin: 10px;
+        padding: 12px;
+    }
+}

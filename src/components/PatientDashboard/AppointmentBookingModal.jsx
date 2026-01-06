@@ -11,6 +11,39 @@ const AppointmentBooking = ({ userData }) => {
   const [isBooked, setIsBooked] = useState(false);
   const [showClinicDropdown, setShowClinicDropdown] = useState(false);
   const [selectedClinic, setSelectedClinic] = useState(null);
+  const [showConsultationModeDropdown, setShowConsultationModeDropdown] = useState(false);
+  const [selectedConsultationMode, setSelectedConsultationMode] = useState('in-clinic');
+
+  // Consultation mode options
+  const consultationModes = [
+    {
+      id: 'in-clinic',
+      name: 'In-Clinic Visit',
+      description: 'Visit the clinic in person for consultation',
+      icon: 'fas fa-hospital',
+      color: '#007bff',
+      available: true,
+      additionalFee: 0
+    },
+    {
+      id: 'video-call',
+      name: 'Video Consultation',
+      description: 'Connect with doctor via video call',
+      icon: 'fas fa-video',
+      color: '#28a745',
+      available: true,
+      additionalFee: 10
+    },
+    {
+      id: 'voice-call',
+      name: 'Voice Consultation',
+      description: 'Talk to doctor over phone call',
+      icon: 'fas fa-phone-alt',
+      color: '#6f42c1',
+      available: true,
+      additionalFee: 5
+    }
+  ];
 
   // Simulated doctor data with multiple clinics
   const doctorInfo = {
@@ -18,7 +51,6 @@ const AppointmentBooking = ({ userData }) => {
     specialty: "Cardiologist",
     experience: "15 years",
     languages: "English, Spanish",
-    consultationFee: 150,
     clinics: [
       {
         id: 1,
@@ -27,7 +59,9 @@ const AppointmentBooking = ({ userData }) => {
         color: "#007bff",
         consultationFee: 150,
         availableDays: ["Mon", "Tue", "Wed", "Thu", "Fri"],
-        timings: "9:00 AM - 5:00 PM"
+        timings: "9:00 AM - 5:00 PM",
+        supportsVideoCall: true,
+        supportsVoiceCall: true
       },
       {
         id: 2,
@@ -36,7 +70,9 @@ const AppointmentBooking = ({ userData }) => {
         color: "#28a745",
         consultationFee: 180,
         availableDays: ["Mon", "Wed", "Fri", "Sat"],
-        timings: "10:00 AM - 6:00 PM"
+        timings: "10:00 AM - 6:00 PM",
+        supportsVideoCall: true,
+        supportsVoiceCall: true
       },
       {
         id: 3,
@@ -45,7 +81,9 @@ const AppointmentBooking = ({ userData }) => {
         color: "#dc3545",
         consultationFee: 130,
         availableDays: ["Tue", "Thu", "Sat"],
-        timings: "8:00 AM - 4:00 PM"
+        timings: "8:00 AM - 4:00 PM",
+        supportsVideoCall: false,
+        supportsVoiceCall: true
       },
       {
         id: 4,
@@ -54,7 +92,9 @@ const AppointmentBooking = ({ userData }) => {
         color: "#ffc107",
         consultationFee: 200,
         availableDays: ["Mon", "Tue", "Wed", "Thu", "Fri", "Sat"],
-        timings: "7:00 AM - 7:00 PM"
+        timings: "7:00 AM - 7:00 PM",
+        supportsVideoCall: true,
+        supportsVoiceCall: true
       }
     ]
   };
@@ -63,22 +103,38 @@ const AppointmentBooking = ({ userData }) => {
   useEffect(() => {
     if (doctorInfo.clinics.length > 0) {
       setSelectedClinic(doctorInfo.clinics[0]);
+      // Check if selected clinic supports video/voice calls
+      updateConsultationModeAvailability(doctorInfo.clinics[0]);
     }
   }, []);
+
+  // Update consultation mode availability based on selected clinic
+  const updateConsultationModeAvailability = (clinic) => {
+    const updatedModes = consultationModes.map(mode => {
+      if (mode.id === 'video-call') {
+        return { ...mode, available: clinic.supportsVideoCall };
+      }
+      if (mode.id === 'voice-call') {
+        return { ...mode, available: clinic.supportsVoiceCall };
+      }
+      return mode;
+    });
+    // Update the consultationModes array (you might want to store it in state if it needs to be dynamic)
+  };
 
   // Generate next 10 days for calendar
   const generateAvailableDates = () => {
     const dates = [];
     const today = new Date();
-    
+
     for (let i = 1; i <= 10; i++) {
       const date = new Date(today);
       date.setDate(today.getDate() + i);
       const dayName = date.toLocaleDateString('en-US', { weekday: 'short' });
-      
+
       // Check if clinic is available on this day
       const isClinicAvailable = selectedClinic?.availableDays.includes(dayName);
-      
+
       dates.push({
         date: date.getDate(),
         day: dayName,
@@ -90,46 +146,46 @@ const AppointmentBooking = ({ userData }) => {
     return dates;
   };
 
-  // Generate time slots based on clinic timings
+  // Generate time slots based on clinic timings and consultation mode
   const generateTimeSlots = () => {
     if (!selectedClinic) return [];
-    
+
     const slots = [];
     const timings = selectedClinic.timings.split('-');
     const startTime = timings[0].trim();
     const endTime = timings[1].trim();
-    
+
     // Parse start time
     const [startHourStr, startMinuteStr] = startTime.split(':');
     let startHour = parseInt(startHourStr);
     const startMinute = parseInt(startMinuteStr || '0');
-    
+
     // Parse end time
     const [endHourStr, endMinuteStr] = endTime.split(':');
     let endHour = parseInt(endHourStr);
     const endMinute = parseInt(endMinuteStr || '0');
-    
+
     // Convert to 24-hour format if needed
     if (startTime.includes('PM') && startHour < 12) startHour += 12;
     if (startTime.includes('AM') && startHour === 12) startHour = 0;
     if (endTime.includes('PM') && endHour < 12) endHour += 12;
     if (endTime.includes('AM') && endHour === 12) endHour = 0;
-    
+
     let hour = startHour;
     let minute = startMinute;
-    
+
     while (hour < endHour || (hour === endHour && minute < endMinute)) {
       const timeString = `${hour.toString().padStart(2, '0')}:${minute.toString().padStart(2, '0')}`;
       const displayHour = hour > 12 ? hour - 12 : hour === 0 ? 12 : hour;
       const ampm = hour >= 12 ? 'PM' : 'AM';
       const displayTime = `${displayHour}:${minute === 0 ? '00' : minute} ${ampm}`;
-      
+
       slots.push({
         value: timeString,
         display: displayTime,
         available: Math.random() > 0.2 // Random availability for demo
       });
-      
+
       minute += 30;
       if (minute >= 60) {
         hour += 1;
@@ -165,9 +221,36 @@ const AppointmentBooking = ({ userData }) => {
     setSelectedTime('');
     setSelectedPayment('');
     setTokenNumber(null);
+
+    // Update consultation mode based on clinic support
+    if (!clinic.supportsVideoCall && selectedConsultationMode === 'video-call') {
+      setSelectedConsultationMode('in-clinic');
+    }
+    if (!clinic.supportsVoiceCall && selectedConsultationMode === 'voice-call') {
+      setSelectedConsultationMode('in-clinic');
+    }
+
     if (bookingStep > 1) {
       setBookingStep(1);
     }
+  };
+
+  const handleConsultationModeSelect = (mode) => {
+    if (mode.available) {
+      setSelectedConsultationMode(mode.id);
+      setShowConsultationModeDropdown(false);
+    }
+  };
+
+  const getSelectedModeDetails = () => {
+    return consultationModes.find(mode => mode.id === selectedConsultationMode);
+  };
+
+  const calculateTotalFee = () => {
+    const clinicFee = selectedClinic?.consultationFee || 0;
+    const modeDetails = getSelectedModeDetails();
+    const additionalFee = modeDetails?.additionalFee || 0;
+    return clinicFee + additionalFee;
   };
 
   const handleBookAppointment = () => {
@@ -176,22 +259,29 @@ const AppointmentBooking = ({ userData }) => {
       return;
     }
 
+    const modeDetails = getSelectedModeDetails();
+    const totalFee = calculateTotalFee();
+
     const appointmentData = {
       patient: patientData,
       doctor: doctorInfo.name,
       clinic: selectedClinic.name,
       clinicLocation: selectedClinic.location,
+      consultationMode: selectedConsultationMode,
+      consultationModeName: modeDetails?.name,
       date: selectedDate,
       time: selectedTime,
       tokenNumber: tokenNumber,
       paymentMethod: selectedPayment,
       consultationFee: selectedClinic.consultationFee,
+      additionalFee: modeDetails?.additionalFee,
+      totalFee: totalFee,
       timestamp: new Date().toISOString()
     };
-    
+
     console.log('Booking appointment:', appointmentData);
     setIsBooked(true);
-    
+
     setTimeout(() => {
       resetForm();
     }, 5000);
@@ -209,7 +299,7 @@ const AppointmentBooking = ({ userData }) => {
   const formatDisplayDate = (dateStr) => {
     if (!dateStr) return '';
     const date = new Date(dateStr);
-    return date.toLocaleDateString('en-US', { 
+    return date.toLocaleDateString('en-US', {
       weekday: 'short',
       month: 'short',
       day: 'numeric'
@@ -229,6 +319,9 @@ const AppointmentBooking = ({ userData }) => {
   };
 
   if (isBooked) {
+    const modeDetails = getSelectedModeDetails();
+    const totalFee = calculateTotalFee();
+
     return (
       <div className="apt-booking-container apt-p-4">
         <div className="apt-confirmation-card">
@@ -250,6 +343,10 @@ const AppointmentBooking = ({ userData }) => {
               <span>Clinic: <strong>{selectedClinic.name}</strong></span>
             </div>
             <div className="apt-detail-item">
+              <i className={modeDetails?.icon}></i>
+              <span>Consultation Mode: <strong>{modeDetails?.name}</strong></span>
+            </div>
+            <div className="apt-detail-item">
               <i className="fas fa-location-arrow"></i>
               <span>Location: <strong>{selectedClinic.location}</strong></span>
             </div>
@@ -267,7 +364,7 @@ const AppointmentBooking = ({ userData }) => {
             </div>
             <div className="apt-detail-item">
               <i className="fas fa-money-bill-wave"></i>
-              <span>Fee: <strong>${selectedClinic.consultationFee}</strong></span>
+              <span>Total Fee: <strong>${totalFee}</strong></span>
             </div>
           </div>
           <button className="apt-new-appointment-btn" onClick={resetForm}>
@@ -281,141 +378,324 @@ const AppointmentBooking = ({ userData }) => {
   return (
     <div className="apt-booking-container">
       <div className="apt-booking-header">
-        {/* Clinic Selection Dropdown */}
-        <div className="apt-clinic-selection-container">
-          {doctorInfo.clinics.length === 1 ? (
-            <div className="apt-single-clinic-display">
-              <h2 className="apt-clinic-name">{doctorInfo.clinics[0].name}</h2>
-              <div className="apt-clinic-badge apt-single">
-                <i className="fas fa-hospital"></i>
-                <span>Only Clinic</span>
-              </div>
-            </div>
-          ) : (
-            <div className="apt-clinic-dropdown-section">
-              <div className="dropdown" style={{ position: 'relative' }}>
-                <button
-                  className="apt-clinic-dropdown-toggle apt-d-flex apt-align-items-center apt-gap-2"
-                  onClick={() => setShowClinicDropdown(!showClinicDropdown)}
-                  style={{
-                   
-                    borderColor: selectedClinic ? selectedClinic.color : '#007bff',
-                    color: selectedClinic ? selectedClinic.color : '#007bff',
-                    border: '1px solid',
-                    outline: 'none',
-                    cursor: 'pointer',
-                    background: 'white'
-                  }}
-                  aria-expanded={showClinicDropdown}
-                  aria-haspopup="true"
-                >
-                  <div 
-                    className="apt-rounded-circle" 
-                    style={{
-                      width: "12px",
-                      height: "12px",
-                      backgroundColor: selectedClinic ? selectedClinic.color : '#007bff'
-                    }}
-                  />
-                  <div className="apt-text-start">
-                    <strong>{selectedClinic ? selectedClinic.name : 'Select Clinic'}</strong>
-                    <div className="apt-small apt-text-muted">
-                      {selectedClinic ? selectedClinic.location : 'Choose a clinic'}
+        {/* Clinic and Consultation Mode Selection */}
+        <div className="apt-selection-container">
+          <div className="apt-row" style={{ display: 'flex', flexWrap: 'wrap', margin: '0 -10px' }}>
+            {/* Clinic Selection Column */}
+            <div className="apt-col" style={{ flex: '0 0 50%', maxWidth: '50%', padding: '0 10px' }}>
+              <div className="apt-clinic-selection-container apt-mb-3">
+                {doctorInfo.clinics.length === 1 ? (
+                  <div className="apt-single-clinic-display">
+                    <h2 className="apt-clinic-name">{doctorInfo.clinics[0].name}</h2>
+                    <div className="apt-clinic-badge apt-single">
+                      <i className="fas fa-hospital"></i>
+                      <span>Only Clinic</span>
                     </div>
                   </div>
-                  <svg width="16" height="16" viewBox="0 0 24 24" fill="none">
-                    <path
-                      d={showClinicDropdown ? "M5 15l7-7 7 7" : "M19 9l-7 7-7-7"}
-                      stroke="currentColor"
-                      strokeWidth="2"
-                      strokeLinecap="round"
-                      strokeLinejoin="round"
-                    />
-                  </svg>
-                </button>
-                
-                {showClinicDropdown && (
-                  <div 
-                    className="apt-clinic-dropdown-menu apt-p-3 apt-shadow-lg"
-                    style={{
-                      position: "absolute",
-                      left: 0,
-                      right: 0,
-                      minWidth: "100%",
-                      zIndex: 1001,
-                      // maxHeight: "300px",
-                      overflowY: "auto",
-                      background: "white",
-                      borderRadius: "8px",
-                      border: "1px solid #dee2e6"
-                    }}
-                  >
-                    <h6 className="apt-mb-3">
-                      <i className="fas fa-hospital me-2"></i>
-                      Select Clinic for {doctorInfo.name}
-                    </h6>
-                    <div className="apt-clinic-options-list">
-                      {doctorInfo.clinics.map(clinic => (
-                        <div 
-                          key={clinic.id}
-                          className={`apt-clinic-option apt-p-3 apt-mb-2 apt-rounded ${selectedClinic?.id === clinic.id ? 'selected' : ''}`}
-                          onClick={() => handleClinicSelect(clinic)}
+                ) : (
+                  <div className="apt-clinic-dropdown-section">
+                    <div className="dropdown" style={{ position: 'relative' }}>
+                      <button
+                        className="apt-clinic-dropdown-toggle apt-d-flex apt-align-items-center apt-gap-2 apt-w-100"
+                        onClick={() => setShowClinicDropdown(!showClinicDropdown)}
+                        style={{
+                          borderColor: selectedClinic ? selectedClinic.color : '#007bff',
+                          color: selectedClinic ? selectedClinic.color : '#007bff',
+                          border: '1px solid',
+                          outline: 'none',
+                          cursor: 'pointer',
+                          background: 'white',
+                          padding: '10px 15px',
+                          borderRadius: '8px',
+                          textAlign: 'left'
+                        }}
+                        aria-expanded={showClinicDropdown}
+                        aria-haspopup="true"
+                      >
+                        <div
+                          className="apt-rounded-circle"
                           style={{
-                            cursor: "pointer",
-                            backgroundColor: selectedClinic?.id === clinic.id ? clinic.color + "20" : "#f8f9fa",
-                            border: selectedClinic?.id === clinic.id ? `2px solid ${clinic.color}` : "1px solid #dee2e6",
-                            transition: "all 0.2s"
+                            width: "12px",
+                            height: "12px",
+                            backgroundColor: selectedClinic ? selectedClinic.color : '#007bff'
+                          }}
+                        />
+                        <div className="apt-text-start apt-flex-grow-1">
+                          <div className="apt-small apt-text-muted apt-mb-1">
+                            <i className="fas fa-hospital me-1"></i> Clinic
+                          </div>
+                          <strong>{selectedClinic ? selectedClinic.name : 'Select Clinic'}</strong>
+                          <div className="apt-small apt-text-muted apt-mt-1">
+                            {selectedClinic ? selectedClinic.location : 'Choose a clinic'}
+                          </div>
+                        </div>
+                        <svg width="16" height="16" viewBox="0 0 24 24" fill="none">
+                          <path
+                            d={showClinicDropdown ? "M5 15l7-7 7 7" : "M19 9l-7 7-7-7"}
+                            stroke="currentColor"
+                            strokeWidth="2"
+                            strokeLinecap="round"
+                            strokeLinejoin="round"
+                          />
+                        </svg>
+                      </button>
+
+                      {showClinicDropdown && (
+                        <div
+                          className="apt-clinic-dropdown-menu apt-p-3 apt-shadow-lg"
+                          style={{
+                            position: "absolute",
+                            left: 0,
+                            right: 0,
+                            top: '100%',
+                            marginTop: '5px',
+                            minWidth: "100%",
+                            zIndex: 1001,
+                            maxHeight: "400px",
+                            overflowY: "auto",
+                            background: "white",
+                            borderRadius: "8px",
+                            border: "1px solid #dee2e6"
                           }}
                         >
-                          <div className="apt-d-flex apt-justify-content-between apt-align-items-start">
-                            <div className="apt-d-flex apt-align-items-start apt-gap-3">
-                              <div 
-                                className="apt-rounded-circle apt-mt-2" 
+                          <h6 className="apt-mb-3">
+                            <i className="fas fa-hospital me-2"></i>
+                            Select Clinic for {doctorInfo.name}
+                          </h6>
+                          <div className="apt-clinic-options-list">
+                            {doctorInfo.clinics.map(clinic => (
+                              <div
+                                key={clinic.id}
+                                className={`apt-clinic-option apt-p-3 apt-mb-2 apt-rounded ${selectedClinic?.id === clinic.id ? 'selected' : ''}`}
+                                onClick={() => handleClinicSelect(clinic)}
                                 style={{
-                                  width: "12px",
-                                  height: "12px",
-                                  backgroundColor: clinic.color
+                                  cursor: "pointer",
+                                  backgroundColor: selectedClinic?.id === clinic.id ? clinic.color + "20" : "#f8f9fa",
+                                  border: selectedClinic?.id === clinic.id ? `2px solid ${clinic.color}` : "1px solid #dee2e6",
+                                  transition: "all 0.2s"
                                 }}
-                              />
-                              <div>
-                                <strong style={{ color: clinic.color }}>{clinic.name}</strong>
-                                <div className="apt-small apt-text-muted apt-mb-1">{clinic.location}</div>
-                                <div className="apt-mt-2">
-                                  <div className="apt-d-flex apt-flex-wrap apt-gap-2">
-                                    <span className="apt-badge" style={{ backgroundColor: clinic.color, color: 'white' }}>
-                                      <i className="fas fa-calendar me-1"></i>
-                                      {clinic.availableDays.join(', ')}
+                              >
+                                <div className="apt-d-flex apt-justify-content-between apt-align-items-start">
+                                  <div className="apt-d-flex apt-align-items-start apt-gap-3">
+                                    <div
+                                      className="apt-rounded-circle apt-mt-2"
+                                      style={{
+                                        width: "12px",
+                                        height: "12px",
+                                        backgroundColor: clinic.color
+                                      }}
+                                    />
+                                    <div>
+                                      <strong style={{ color: clinic.color }}>{clinic.name}</strong>
+                                      <div className="apt-small apt-text-muted apt-mb-1">{clinic.location}</div>
+                                      <div className="apt-mt-2">
+                                        <div className="apt-d-flex apt-flex-wrap apt-gap-2">
+                                          <span className="apt-badge" style={{ backgroundColor: clinic.color, color: 'white' }}>
+                                            <i className="fas fa-calendar me-1"></i>
+                                            {clinic.availableDays.join(', ')}
+                                          </span>
+                                          <span className="apt-badge apt-bg-secondary">
+                                            <i className="fas fa-clock me-1"></i>
+                                            {clinic.timings}
+                                          </span>
+                                          <span className="apt-badge apt-bg-success">
+                                            <i className="fas fa-money-bill-wave me-1"></i>
+                                            ${clinic.consultationFee}
+                                          </span>
+                                        </div>
+                                      </div>
+                                    </div>
+                                  </div>
+                                  {selectedClinic?.id === clinic.id && (
+                                    <span className="apt-badge" style={{ backgroundColor: clinic.color }}>
+                                      <i className="fas fa-check"></i> Selected
                                     </span>
-                                    <span className="apt-badge apt-bg-secondary">
-                                      <i className="fas fa-clock me-1"></i>
-                                      {clinic.timings}
+                                  )}
+                                </div>
+                                <div className="apt-mt-2 apt-pt-2 apt-border-top">
+                                  <div className="apt-d-flex apt-gap-3">
+                                    <span className={`apt-small ${clinic.supportsVideoCall ? 'apt-text-success' : 'apt-text-muted'}`}>
+                                      <i className="fas fa-video me-1"></i>
+                                      Video Call {clinic.supportsVideoCall ? '✓' : '✗'}
                                     </span>
-                                    <span className="apt-badge apt-bg-success">
-                                      <i className="fas fa-money-bill-wave me-1"></i>
-                                      ${clinic.consultationFee}
+                                    <span className={`apt-small ${clinic.supportsVoiceCall ? 'apt-text-success' : 'apt-text-muted'}`}>
+                                      <i className="fas fa-phone-alt me-1"></i>
+                                      Voice Call {clinic.supportsVoiceCall ? '✓' : '✗'}
                                     </span>
                                   </div>
                                 </div>
                               </div>
-                            </div>
-                            {selectedClinic?.id === clinic.id && (
-                              <span className="apt-badge" style={{ backgroundColor: clinic.color }}>
-                                <i className="fas fa-check"></i> Selected
-                              </span>
-                            )}
+                            ))}
                           </div>
                         </div>
-                      ))}
+                      )}
                     </div>
                   </div>
                 )}
               </div>
             </div>
-          )}
+
+            {/* Consultation Mode Selection Column */}
+            <div className="apt-col" style={{ flex: '0 0 50%', maxWidth: '50%', padding: '0 10px' }}>
+              <div className="apt-consultation-mode-container apt-mb-3">
+                <div className="dropdown" style={{ position: 'relative' }}>
+                  <button
+                    className="apt-consultation-mode-toggle apt-d-flex apt-align-items-center apt-gap-2 apt-w-100"
+                    onClick={() => setShowConsultationModeDropdown(!showConsultationModeDropdown)}
+                    style={{
+                      borderColor: getSelectedModeDetails()?.color || '#007bff',
+                      color: getSelectedModeDetails()?.color || '#007bff',
+                      border: '1px solid',
+                      outline: 'none',
+                      cursor: 'pointer',
+                      background: 'white',
+                      padding: '10px 15px',
+                      width: '100%',
+                      justifyContent: "center",
+                      borderRadius: '8px',
+                      textAlign: 'left'
+                    }}
+                    aria-expanded={showConsultationModeDropdown}
+                    aria-haspopup="true"
+                  >
+                    <i className={getSelectedModeDetails()?.icon || 'fas fa-stethoscope'}></i>
+                    <div className="apt-text-start apt-flex-grow-1 justify-content-between">
+                      <div className="apt-small apt-text-muted apt-mb-1">
+                        <i className="fas fa-comment-medical me-1"></i> Consultation Mode
+                      </div>
+                      <strong>{getSelectedModeDetails()?.name || 'Select Mode'}</strong>
+                      <div className="apt-small apt-text-muted apt-mt-1">
+                        {getSelectedModeDetails()?.description || 'Choose consultation type'}
+                      </div>
+                    </div>
+                    <svg width="16" height="16" viewBox="0 0 24 24" fill="none">
+                      <path
+                        d={showConsultationModeDropdown ? "M5 15l7-7 7 7" : "M19 9l-7 7-7-7"}
+                        stroke="currentColor"
+                        strokeWidth="2"
+                        strokeLinecap="round"
+                        strokeLinejoin="round"
+                      />
+                    </svg>
+                  </button>
+
+                  {showConsultationModeDropdown && (
+                    <div
+                      className="apt-consultation-mode-dropdown-menu apt-p-3 apt-shadow-lg"
+                      style={{
+                        position: "absolute",
+                        left: 0,
+                        right: 0,
+                        top: '100%',
+                        marginTop: '5px',
+                        minWidth: "100%",
+                        zIndex: 1001,
+                        background: "white",
+                        borderRadius: "8px",
+                        border: "1px solid #dee2e6"
+                      }}
+                    >
+                      <h6 className="apt-mb-3">
+                        <i className="fas fa-comment-medical me-2"></i>
+                        Select Consultation Mode
+                      </h6>
+                      <div className="apt-consultation-mode-options-list">
+                        {consultationModes.map(mode => {
+                          const isDisabled = selectedClinic &&
+                            ((mode.id === 'video-call' && !selectedClinic.supportsVideoCall) ||
+                              (mode.id === 'voice-call' && !selectedClinic.supportsVoiceCall));
+
+                          return (
+                            <div
+                              key={mode.id}
+                              className={`apt-consultation-mode-option apt-p-3 apt-mb-2 apt-rounded ${selectedConsultationMode === mode.id ? 'selected' : ''} ${isDisabled ? 'disabled' : ''}`}
+                              onClick={() => !isDisabled && handleConsultationModeSelect(mode)}
+                              style={{
+                                cursor: isDisabled ? 'not-allowed' : 'pointer',
+                                backgroundColor: selectedConsultationMode === mode.id ? mode.color + "20" : "#f8f9fa",
+                                border: selectedConsultationMode === mode.id ? `2px solid ${mode.color}` : "1px solid #dee2e6",
+                                opacity: isDisabled ? 0.5 : 1,
+                                transition: "all 0.2s"
+                              }}
+                            >
+                              <div className="apt-d-flex apt-justify-content-between apt-align-items-start">
+                                <div className="apt-d-flex apt-align-items-start apt-gap-3">
+                                  <div className="apt-mode-icon" style={{ color: mode.color }}>
+                                    <i className={mode.icon}></i>
+                                  </div>
+                                  <div>
+                                    <strong style={{ color: mode.color }}>{mode.name}</strong>
+                                    <div className="apt-small apt-text-muted apt-mb-1">{mode.description}</div>
+                                    <div className="apt-mt-2">
+                                      <span className={`apt-badge ${mode.additionalFee > 0 ? 'apt-bg-success' : 'apt-bg-secondary'}`}>
+                                        <i className="fas fa-money-bill-wave me-1"></i>
+                                        Additional Fee: ${mode.additionalFee}
+                                      </span>
+                                    </div>
+                                  </div>
+                                </div>
+                                {selectedConsultationMode === mode.id && (
+                                  <span className="apt-badge" style={{ backgroundColor: mode.color }}>
+                                    <i className="fas fa-check"></i> Selected
+                                  </span>
+                                )}
+                                {isDisabled && (
+                                  <span className="apt-badge apt-bg-danger">
+                                    <i className="fas fa-times"></i> Not Available
+                                  </span>
+                                )}
+                              </div>
+                            </div>
+                          );
+                        })}
+                      </div>
+                    </div>
+                  )}
+                </div>
+              </div>
+            </div>
+          </div>
+
+          {/* Selected Options Display */}
+          <div className="apt-selected-options-display apt-mt-3 apt-p-3 apt-rounded mb-3"
+            style={{ backgroundColor: '#f8f9fa', border: '1px solid #dee2e6' }}>
+            <div className="apt-row" style={{ display: 'flex', flexWrap: 'wrap', margin: '0 -10px' }}>
+              <div className="apt-col" style={{ flex: '0 0 50%', maxWidth: '50%', padding: '0 10px' }}>
+                <div className="apt-selected-option">
+                  <div className="apt-small apt-text-muted apt-mb-1">Selected Clinic:</div>
+                  <div className="apt-d-flex apt-align-items-center apt-gap-2">
+                    <div
+                      className="apt-rounded-circle"
+                      style={{
+                        width: "10px",
+                        height: "10px",
+                        backgroundColor: selectedClinic?.color
+                      }}
+                    />
+                    <strong style={{ color: selectedClinic?.color }}>{selectedClinic?.name || 'Not selected'}</strong>
+                  </div>
+                </div>
+              </div>
+              <div className="apt-col" style={{ flex: '0 0 50%', maxWidth: '50%', padding: '0 10px' }}>
+                <div className="apt-selected-option">
+                  <div className="apt-small apt-text-muted apt-mb-1">Consultation Mode:</div>
+                  <div className="apt-d-flex apt-align-items-center apt-gap-2">
+                    <i className={getSelectedModeDetails()?.icon} style={{ color: getSelectedModeDetails()?.color }}></i>
+                    <strong style={{ color: getSelectedModeDetails()?.color }}>{getSelectedModeDetails()?.name || 'Not selected'}</strong>
+                    {getSelectedModeDetails()?.additionalFee > 0 && (
+                      <span className="apt-badge apt-bg-success apt-small">
+                        +${getSelectedModeDetails()?.additionalFee}
+                      </span>
+                    )}
+                  </div>
+                </div>
+              </div>
+            </div>
+          </div>
         </div>
 
         {/* Doctor Information */}
-        <div className="apt-doctor-info-section">
+        <div className="apt-doctor-info-section apt-mt-4">
           <div className="apt-row" style={{ display: 'flex', flexWrap: 'wrap', margin: '0 -15px' }}>
             <div className="apt-col-md-6" style={{ flex: '0 0 50%', maxWidth: '50%', padding: '0 15px' }}>
               <h4 className="apt-doctor-name">
@@ -455,10 +735,25 @@ const AppointmentBooking = ({ userData }) => {
                       <i className="fas fa-clock me-2"></i>
                       <strong>Timings:</strong> {selectedClinic.timings}
                     </p>
+                    <p className="apt-mb-1">
+                      <i className="fas fa-comment-medical me-2"></i>
+                      <strong>Remote Support:</strong>
+                      <span className={`apt-badge apt-small ${selectedClinic.supportsVideoCall ? 'apt-bg-success' : 'apt-bg-secondary'} apt-mx-2`}>
+                        Video {selectedClinic.supportsVideoCall ? '✓' : '✗'}
+                      </span>
+                      <span className={`apt-badge apt-small ${selectedClinic.supportsVoiceCall ? 'apt-bg-success' : 'apt-bg-secondary'}`}>
+                        Voice {selectedClinic.supportsVoiceCall ? '✓' : '✗'}
+                      </span>
+                    </p>
                     <p className="apt-mb-0">
                       <i className="fas fa-money-bill-wave me-2"></i>
-                      <strong>Consultation Fee:</strong> 
+                      <strong>Consultation Fee:</strong>
                       <span className="apt-text-success apt-fw-bold"> ${selectedClinic.consultationFee}</span>
+                      {getSelectedModeDetails()?.additionalFee > 0 && (
+                        <span className="apt-text-primary apt-fw-bold">
+                          + ${getSelectedModeDetails()?.additionalFee} ({getSelectedModeDetails()?.name})
+                        </span>
+                      )}
                     </p>
                   </div>
                 </div>
@@ -468,7 +763,7 @@ const AppointmentBooking = ({ userData }) => {
         </div>
 
         {/* Patient Information Banner */}
-        <div className="apt-patient-info-banner">
+        <div className="apt-patient-info-banner apt-mt-4">
           <div className="apt-patient-info-item">
             <i className="fas fa-user"></i>
             <span>{patientData.name}</span>
@@ -493,7 +788,7 @@ const AppointmentBooking = ({ userData }) => {
       </div>
 
       {/* Progress Bar */}
-      <div className="apt-booking-progress">
+      <div className="apt-booking-progress apt-mt-4">
         <div className={`apt-progress-step ${bookingStep >= 1 ? 'active' : ''}`}>
           <div className="apt-step-circle"></div>
           <span className="apt-step-label">Select Date</span>
@@ -508,7 +803,7 @@ const AppointmentBooking = ({ userData }) => {
         </div>
       </div>
 
-      <div className="apt-booking-content">
+      <div className="apt-booking-content apt-mt-4">
         {/* Step 1: Date Selection */}
         {bookingStep === 1 && (
           <div className="apt-booking-step active">
@@ -516,16 +811,23 @@ const AppointmentBooking = ({ userData }) => {
               <i className="fas fa-calendar-alt"></i>
               Select Appointment Date
             </div>
-            
+
             {selectedClinic && (
               <div className="apt-clinic-availability-note">
                 <i className="fas fa-info-circle"></i>
                 <span>
                   <strong>{selectedClinic.name}</strong> is available on: {selectedClinic.availableDays.join(', ')}
+                </span>,
+
+                <i className={getSelectedModeDetails()?.icon}></i>
+
+                <span className="apt-consultation-mode-note apt-ml-3 " style={{ padding: "10px" }}>
+
+                  <strong>{getSelectedModeDetails()?.name}</strong> consultation selected
                 </span>
               </div>
             )}
-            
+
             <div className="apt-calendar-container">
               <div className="apt-calendar-dates">
                 {availableDates.map((date, index) => (
@@ -566,10 +868,13 @@ const AppointmentBooking = ({ userData }) => {
               <i className="fas fa-calendar-alt"></i>
               {formatDisplayDate(selectedDate)}
               {selectedClinic && (
-                <span className="apt-clinic-tag" style={{ backgroundColor: selectedClinic.color }}>
+                <span className="apt-clinic-tag" >
                   <i className="fas fa-hospital"></i> {selectedClinic.name}
                 </span>
               )}
+              <span className="apt-consultation-mode-tag" >
+                <i className={getSelectedModeDetails()?.icon}></i> {getSelectedModeDetails()?.name}
+              </span>
             </div>
             <div className="apt-time-selection">
               <div className="apt-time-slots-grid">
@@ -602,7 +907,7 @@ const AppointmentBooking = ({ userData }) => {
               <i className="fas fa-credit-card"></i>
               Review & Payment
             </div>
-            
+
             {tokenNumber && (
               <div className="apt-token-display">
                 <div className="apt-token-card">
@@ -620,7 +925,7 @@ const AppointmentBooking = ({ userData }) => {
               <div className="apt-summary-card">
                 <h4>Appointment Summary</h4>
                 <div className="apt-summary-details">
-                  <div className="apt-summary-item ">
+                  <div className="apt-summary-item">
                     <i className="fas fa-user"></i>
                     <span>Patient:</span>
                     <strong>{patientData.name}</strong>
@@ -634,6 +939,11 @@ const AppointmentBooking = ({ userData }) => {
                     <i className="fas fa-hospital"></i>
                     <span>Clinic:</span>
                     <strong style={{ color: selectedClinic?.color }}>{selectedClinic?.name}</strong>
+                  </div>
+                  <div className="apt-summary-item">
+                    <i className={getSelectedModeDetails()?.icon}></i>
+                    <span>Mode:</span>
+                    <strong style={{ color: getSelectedModeDetails()?.color }}>{getSelectedModeDetails()?.name}</strong>
                   </div>
                   <div className="apt-summary-item">
                     <i className="fas fa-calendar-alt"></i>
@@ -650,10 +960,25 @@ const AppointmentBooking = ({ userData }) => {
                     <span>Token:</span>
                     <strong className="apt-token-highlight">#{tokenNumber}</strong>
                   </div>
-                  <div className="apt-summary-item">
+                  <div className="apt-summary-item apt-fee-breakdown">
                     <i className="fas fa-money-bill-wave"></i>
-                    <span>Fee:</span>
-                    <strong>${selectedClinic?.consultationFee}</strong>
+                    <span>Fee Breakdown:</span>
+                    <div className="apt-fee-details">
+                      <div className="apt-fee-item">
+                        <span>Consultation Fee:</span>
+                        <span>${selectedClinic?.consultationFee}</span>
+                      </div>
+                      {getSelectedModeDetails()?.additionalFee > 0 && (
+                        <div className="apt-fee-item">
+                          <span>{getSelectedModeDetails()?.name} Fee:</span>
+                          <span className="apt-text-primary">+ ${getSelectedModeDetails()?.additionalFee}</span>
+                        </div>
+                      )}
+                      <div className="apt-fee-total">
+                        <span>Total:</span>
+                        <strong className="apt-text-success">${calculateTotalFee()}</strong>
+                      </div>
+                    </div>
                   </div>
                 </div>
               </div>
@@ -700,7 +1025,11 @@ const AppointmentBooking = ({ userData }) => {
 
             <div className="apt-booking-note">
               <i className="fas fa-exclamation-circle"></i>
-              <p>Your appointment will be confirmed immediately after payment. You will receive a confirmation email with all details.</p>
+              <p>
+                {selectedConsultationMode === 'in-clinic'
+                  ? 'Your appointment will be confirmed immediately after payment. You will receive a confirmation email with all details.'
+                  : 'Your virtual consultation link will be sent to your email after payment confirmation.'}
+              </p>
             </div>
           </div>
         )}
@@ -714,9 +1043,9 @@ const AppointmentBooking = ({ userData }) => {
             Back
           </button>
         )}
-        
+
         {bookingStep < 3 ? (
-          <button 
+          <button
             className={`apt-btn-next ${(
               (bookingStep === 1 && !selectedDate) ||
               (bookingStep === 2 && !selectedTime)
@@ -731,13 +1060,13 @@ const AppointmentBooking = ({ userData }) => {
             <i className="fas fa-arrow-right"></i>
           </button>
         ) : (
-          <button 
+          <button
             className={`apt-btn-book ${!selectedPayment ? 'disabled' : ''}`}
             onClick={handleBookAppointment}
             disabled={!selectedPayment}
           >
             <i className="fas fa-calendar-check"></i>
-            Confirm & Book Appointment
+            Confirm & Book Appointment (${calculateTotalFee()})
           </button>
         )}
       </div>

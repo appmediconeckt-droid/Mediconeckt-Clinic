@@ -1,0 +1,1658 @@
+/* WomenHealthCare.css */
+
+/* Reset and Base Styles */
+.womenshealth-container {
+  margin: 0;
+  padding: 0;
+  font-family: 'Inter', -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, sans-serif;
+  color: #1f2937;
+  background-color: #ffffff;
+  line-height: 1.6;
+  overflow-x: hidden;
+}
+
+* {
+  box-sizing: border-box;
+}
+
+/* Navigation Styles */
+.womenshealth-navbar {
+  position: fixed;
+  top: 0;
+  left: 0;
+  right: 0;
+  z-index: 1000;
+  background-color: rgba(255, 255, 255, 0.98);
+  backdrop-filter: blur(10px);
+  border-bottom: 1px solid #fdf2f8;
+  box-shadow: 0 2px 20px rgba(0, 0, 0, 0.05);
+  padding: 1rem 0;
+}
+
+.womenshealth-nav-container {
+  max-width: 1280px;
+  margin: 0 auto;
+  padding: 0 2rem;
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+}
+
+.womenshealth-logo {
+  display: flex;
+  align-items: center;
+  gap: 1rem;
+}
+
+.womenshealth-logo-icon {
+  font-size: 2.5rem;
+  background: linear-gradient(135deg, #EC4899, #8B5CF6);
+  -webkit-background-clip: text;
+  /* -webkit-text-fill-color: transparent; */
+}
+
+.womenshealth-logo-text {
+  display: flex;
+  flex-direction: column;
+}
+
+.womenshealth-logo-title {
+  font-size: 1.5rem;
+  font-weight: 700;
+  color: #1e293b;
+  margin: 0;
+  line-height: 1.2;
+}
+
+.womenshealth-logo-subtitle {
+  font-size: 0.75rem;
+  color: #6b7280;
+  margin: 0;
+  letter-spacing: 0.5px;
+}
+
+.womenshealth-menu-btn {
+  display: none;
+  flex-direction: column;
+  gap: 6px;
+  background: transparent;
+  border: none;
+  cursor: pointer;
+  padding: 0.5rem;
+  z-index: 1001;
+}
+
+.womenshealth-menu-line {
+  width: 24px;
+  height: 2px;
+  background-color: #4b5563;
+  border-radius: 2px;
+  transition: all 0.3s ease;
+}
+
+.womenshealth-menu-active .womenshealth-line-1 {
+  transform: rotate(45deg) translate(6px, 6px);
+}
+
+.womenshealth-menu-active .womenshealth-line-2 {
+  opacity: 0;
+}
+
+.womenshealth-menu-active .womenshealth-line-3 {
+  transform: rotate(-45deg) translate(6px, -6px);
+}
+
+.womenshealth-nav-menu {
+  display: flex;
+  align-items: center;
+}
+
+.womenshealth-nav-list {
+  display: flex;
+  list-style: none;
+  margin: 0;
+  padding: 0;
+  gap: 2.5rem;
+  align-items: center;
+}
+
+.womenshealth-nav-link {
+  text-decoration: none;
+  color: #4b5563;
+  font-weight: 500;
+  font-size: 0.95rem;
+  padding: 0.5rem 0;
+  position: relative;
+  transition: color 0.3s ease;
+}
+
+.womenshealth-nav-link:hover {
+  color: #EC4899;
+}
+
+.womenshealth-nav-link::after {
+  content: '';
+  position: absolute;
+  bottom: 0;
+  left: 0;
+  width: 0;
+  height: 2px;
+  background: linear-gradient(135deg, #EC4899, #8B5CF6);
+  transition: width 0.3s ease;
+}
+
+.womenshealth-nav-link:hover::after {
+  width: 100%;
+}
+
+.womenshealth-nav-cta {
+  background: linear-gradient(135deg, #EC4899, #8B5CF6);
+  color: white;
+  padding: 0.75rem 1.5rem;
+  border-radius: 50px;
+  text-decoration: none;
+  font-weight: 600;
+  font-size: 0.95rem;
+  transition: all 0.3s ease;
+  box-shadow: 0 4px 15px rgba(236, 72, 153, 0.3);
+}
+
+.womenshealth-nav-cta:hover {
+  transform: translateY(-2px);
+  box-shadow: 0 6px 20px rgba(236, 72, 153, 0.4);
+}
+
+/* Hero Section */
+.womenshealth-hero {
+  position: relative;
+  padding: 8rem 2rem 12rem;
+  background: linear-gradient(135deg, #fdf2f8 0%, #faf5ff 100%);
+  overflow: hidden;
+  margin-top: 80px;
+}
+
+.womenshealth-hero-background {
+  position: absolute;
+  top: 0;
+  left: 0;
+  right: 0;
+  bottom: 0;
+  overflow: hidden;
+}
+
+.womenshealth-hero-gradient {
+  position: absolute;
+  top: 0;
+  left: 0;
+  right: 0;
+  height: 600px;
+  background: linear-gradient(135deg, 
+    rgba(236, 72, 153, 0.1) 0%, 
+    rgba(139, 92, 246, 0.1) 100%);
+  clip-path: polygon(0 0, 100% 0, 100% 70%, 0 100%);
+}
+
+.womenshealth-hero-pattern {
+  position: absolute;
+  top: 0;
+  left: 0;
+  right: 0;
+  bottom: 0;
+  background-image: 
+    radial-gradient(circle at 10% 20%, rgba(236, 72, 153, 0.05) 0%, transparent 50%),
+    radial-gradient(circle at 90% 80%, rgba(139, 92, 246, 0.05) 0%, transparent 50%);
+}
+
+.womenshealth-hero-content {
+  position: relative;
+  z-index: 1;
+  max-width: 1280px;
+  margin: 0 auto;
+  display: flex;
+  align-items: center;
+  gap: 4rem;
+}
+
+.womenshealth-hero-text {
+  flex: 1;
+}
+
+.womenshealth-hero-badge {
+  display: inline-block;
+  background: linear-gradient(135deg, #EC4899, #8B5CF6);
+  color: white;
+  padding: 0.5rem 1.5rem;
+  border-radius: 50px;
+  font-size: 0.9rem;
+  font-weight: 600;
+  margin-bottom: 2rem;
+  letter-spacing: 0.5px;
+}
+
+.womenshealth-hero-title {
+  font-size: 3.5rem;
+  font-weight: 800;
+  line-height: 1.1;
+  color: #1e293b;
+  margin-bottom: 1.5rem;
+  background: linear-gradient(135deg, #1e293b, #EC4899);
+  -webkit-background-clip: text;
+  -webkit-text-fill-color: transparent;
+}
+
+.womenshealth-hero-description {
+  font-size: 1.25rem;
+  color: #4b5563;
+  margin-bottom: 2.5rem;
+  max-width: 600px;
+  line-height: 1.7;
+}
+
+.womenshealth-hero-actions {
+  display: flex;
+  gap: 1rem;
+  flex-wrap: wrap;
+}
+
+.womenshealth-btn {
+  padding: 1rem 2rem;
+  border-radius: 50px;
+  font-weight: 600;
+  text-decoration: none;
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  gap: 0.75rem;
+  transition: all 0.3s ease;
+  border: none;
+  cursor: pointer;
+  font-size: 1rem;
+}
+
+.womenshealth-btn-primary {
+  background: linear-gradient(135deg, #EC4899, #8B5CF6);
+  color: white;
+  box-shadow: 0 4px 15px rgba(236, 72, 153, 0.3);
+}
+
+.womenshealth-btn-primary:hover {
+  transform: translateY(-3px);
+  box-shadow: 0 8px 25px rgba(236, 72, 153, 0.4);
+}
+
+.womenshealth-btn-secondary {
+  background: transparent;
+  color: #EC4899;
+  border: 2px solid #EC4899;
+}
+
+.womenshealth-btn-secondary:hover {
+  background-color: rgba(236, 72, 153, 0.1);
+  transform: translateY(-3px);
+}
+
+.womenshealth-btn-icon {
+  font-size: 1.2rem;
+}
+
+.womenshealth-hero-visual {
+  flex: 1;
+  display: flex;
+  justify-content: center;
+}
+
+.womenshealth-visual-main {
+  position: relative;
+  width: 400px;
+  height: 400px;
+}
+
+.womenshealth-visual-element {
+  position: absolute;
+  width: 100px;
+  height: 100px;
+  border-radius: 24px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  font-size: 3rem;
+  animation-duration: 3s;
+  animation-iteration-count: infinite;
+  animation-timing-function: ease-in-out;
+  box-shadow: 0 10px 30px rgba(0, 0, 0, 0.1);
+}
+
+.womenshealth-element-1 {
+  top: 0;
+  left: 50px;
+  background: linear-gradient(135deg, #fce7f3, #fbcfe8);
+  animation-name: womenshealth-float-1;
+}
+
+.womenshealth-element-2 {
+  top: 10%;
+  right: 30px;
+  transform: translateY(-50%);
+  background: linear-gradient(135deg, #f3e8ff, #e9d5ff);
+  animation-name: womenshealth-float-2;
+}
+
+.womenshealth-element-3 {
+  bottom: 130px;
+  left: 50px;
+  background: linear-gradient(135deg, #fef3c7, #fde68a);
+  animation-name: womenshealth-float-3;
+}
+
+.womenshealth-element-4 {
+  top: 120px;
+  right: 100px;
+  background: linear-gradient(135deg, #dbeafe, #bfdbfe);
+  animation-name: womenshealth-float-4;
+}
+
+.womenshealth-element-icon {
+  font-size: 3rem;
+  background: linear-gradient(135deg, #EC4899, #8B5CF6);
+  -webkit-background-clip: text;
+  /* -webkit-text-fill-color: transparent; */
+}
+
+@keyframes womenshealth-float-1 {
+  0%, 100% { transform: translateY(0) rotate(0); }
+  50% { transform: translateY(-20px) rotate(10deg); }
+}
+
+@keyframes womenshealth-float-2 {
+  0%, 100% { transform: translateY(-50%) scale(1); }
+  50% { transform: translateY(-60%) scale(1.1); }
+}
+
+@keyframes womenshealth-float-3 {
+  0%, 100% { transform: translateX(0) translateY(0); }
+  50% { transform: translateX(10px) translateY(10px); }
+}
+
+@keyframes womenshealth-float-4 {
+  0%, 100% { transform: translateY(0) scale(1); }
+  50% { transform: translateY(-15px) scale(1.05); }
+}
+
+.womenshealth-hero-stats {
+  position: relative;
+  z-index: 1;
+  max-width: 1280px;
+  margin: -6rem auto 0;
+  display: grid;
+  grid-template-columns: repeat(auto-fit, minmax(200px, 1fr));
+  gap: 2rem;
+  background: white;
+  padding: 3rem;
+  border-radius: 24px;
+  box-shadow: 0 20px 60px rgba(0, 0, 0, 0.1);
+}
+
+.womenshealth-stat-card {
+  text-align: center;
+  padding: 1.5rem;
+  position: relative;
+}
+
+.womenshealth-stat-card:not(:last-child)::after {
+  content: '';
+  position: absolute;
+  top: 50%;
+  right: 0;
+  transform: translateY(-50%);
+  width: 1px;
+  height: 40px;
+  background: linear-gradient(135deg, transparent, #e5e7eb, transparent);
+}
+
+@media (max-width: 768px) {
+  .womenshealth-stat-card:not(:last-child)::after {
+    display: none;
+  }
+}
+
+.womenshealth-stat-content {
+  position: relative;
+}
+
+.womenshealth-stat-number {
+  display: block;
+  font-size: 2.8rem;
+  font-weight: 800;
+  background: linear-gradient(135deg, #EC4899, #8B5CF6);
+  -webkit-background-clip: text;
+  -webkit-text-fill-color: transparent;
+  margin-bottom: 0.5rem;
+  line-height: 1;
+}
+
+.womenshealth-stat-label {
+  font-size: 1rem;
+  color: #6b7280;
+  font-weight: 500;
+}
+
+/* Services Section */
+.womenshealth-services {
+  padding: 10rem 2rem 8rem;
+  background-color: #ffffff;
+}
+
+.womenshealth-section-header {
+  text-align: center;
+  max-width: 800px;
+  margin: 0 auto 4rem;
+}
+
+.womenshealth-section-badge {
+  display: inline-block;
+  background: linear-gradient(135deg, #EC4899, #8B5CF6);
+  color: white;
+  padding: 0.5rem 1.5rem;
+  border-radius: 50px;
+  font-size: 0.9rem;
+  font-weight: 600;
+  margin-bottom: 1rem;
+  letter-spacing: 0.5px;
+}
+
+.womenshealth-section-title {
+  font-size: 3rem;
+  font-weight: 700;
+  color: #1e293b;
+  margin-bottom: 1rem;
+  line-height: 1.2;
+}
+
+.womenshealth-section-subtitle {
+  font-size: 1.2rem;
+  color: #6b7280;
+  max-width: 600px;
+  margin: 0 auto;
+}
+
+.womenshealth-services-grid {
+  max-width: 1280px;
+  margin: 0 auto;
+  display: grid;
+  grid-template-columns: repeat(auto-fit, minmax(280px, 1fr));
+  gap: 2.5rem;
+}
+
+.womenshealth-service-card {
+  background: white;
+  border-radius: 20px;
+  padding: 2.5rem;
+  box-shadow: 0 5px 20px rgba(0, 0, 0, 0.05);
+  transition: all 0.3s ease;
+  border: 1px solid #f3f4f6;
+  position: relative;
+  overflow: hidden;
+}
+
+.womenshealth-service-card:hover {
+  transform: translateY(-10px);
+  box-shadow: 0 20px 40px rgba(236, 72, 153, 0.15);
+  border-color: #EC4899;
+}
+
+.womenshealth-service-card::before {
+  content: '';
+  position: absolute;
+  top: 0;
+  left: 0;
+  right: 0;
+  height: 4px;
+  background: linear-gradient(135deg, #EC4899, #8B5CF6);
+  transform: scaleX(0);
+  transition: transform 0.3s ease;
+}
+
+.womenshealth-service-card:hover::before {
+  transform: scaleX(1);
+}
+
+.womenshealth-service-icon-wrapper {
+  width: 80px;
+  height: 80px;
+  border-radius: 20px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  margin-bottom: 1.5rem;
+}
+
+.womenshealth-service-icon {
+  font-size: 2.5rem;
+}
+
+.womenshealth-service-name {
+  font-size: 1.5rem;
+  font-weight: 600;
+  color: #1e293b;
+  margin-bottom: 1rem;
+}
+
+.womenshealth-service-description {
+  color: #6b7280;
+  margin-bottom: 1.5rem;
+  line-height: 1.6;
+  font-size: 0.95rem;
+}
+
+.womenshealth-service-link {
+  display: inline-flex;
+  align-items: center;
+  gap: 0.5rem;
+  color: #EC4899;
+  text-decoration: none;
+  font-weight: 600;
+  transition: gap 0.3s ease;
+}
+
+.womenshealth-service-link:hover {
+  gap: 0.75rem;
+}
+
+.womenshealth-link-arrow {
+  transition: transform 0.3s ease;
+}
+
+.womenshealth-service-link:hover .womenshealth-link-arrow {
+  transform: translateX(5px);
+}
+
+/* Conditions Section */
+.womenshealth-conditions {
+  padding: 8rem 2rem;
+  background: linear-gradient(135deg, #fdf2f8 0%, #faf5ff 100%);
+}
+
+.womenshealth-conditions-container {
+  max-width: 1280px;
+  margin: 0 auto;
+  display: flex;
+  gap: 6rem;
+  align-items: center;
+}
+
+.womenshealth-conditions-content {
+  flex: 1;
+}
+
+.womenshealth-conditions-badge {
+  display: inline-block;
+  background: linear-gradient(135deg, #EC4899, #8B5CF6);
+  color: white;
+  padding: 0.5rem 1.5rem;
+  border-radius: 50px;
+  font-size: 0.9rem;
+  font-weight: 600;
+  margin-bottom: 1.5rem;
+  letter-spacing: 0.5px;
+}
+
+.womenshealth-conditions-title {
+  font-size: 2.5rem;
+  font-weight: 700;
+  color: #1e293b;
+  margin-bottom: 1.5rem;
+  line-height: 1.2;
+}
+
+.womenshealth-conditions-description {
+  font-size: 1.1rem;
+  color: #4b5563;
+  margin-bottom: 3rem;
+  line-height: 1.7;
+}
+
+.womenshealth-conditions-list {
+  display: flex;
+  flex-direction: column;
+  gap: 1.5rem;
+  margin-bottom: 3rem;
+}
+
+.womenshealth-condition-item {
+  display: flex;
+  gap: 1.5rem;
+  align-items: flex-start;
+  padding: 1.5rem;
+  background: white;
+  border-radius: 16px;
+  transition: all 0.3s ease;
+}
+
+.womenshealth-condition-item:hover {
+  transform: translateX(10px);
+  box-shadow: 0 5px 15px rgba(0, 0, 0, 0.1);
+}
+
+.womenshealth-condition-icon {
+  font-size: 2rem;
+  width: 60px;
+  height: 60px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  background: linear-gradient(135deg, #EC4899, #8B5CF6);
+  -webkit-background-clip: text;
+  -webkit-text-fill-color: transparent;
+  flex-shrink: 0;
+}
+
+.womenshealth-condition-info {
+  flex: 1;
+}
+
+.womenshealth-condition-name {
+  font-size: 1.3rem;
+  font-weight: 600;
+  color: #1e293b;
+  margin-bottom: 0.5rem;
+}
+
+.womenshealth-condition-desc {
+  color: #6b7280;
+  font-size: 0.95rem;
+  line-height: 1.6;
+}
+
+.womenshealth-btn-outline {
+  background: transparent;
+  color: #EC4899;
+  border: 2px solid #EC4899;
+  padding: 0.875rem 2rem;
+}
+
+.womenshealth-btn-outline:hover {
+  background-color: rgba(236, 72, 153, 0.1);
+}
+
+.womenshealth-conditions-visual {
+  flex: 1;
+}
+
+.womenshealth-health-journey {
+  background: white;
+  border-radius: 24px;
+  padding: 2.5rem;
+  box-shadow: 0 20px 60px rgba(0, 0, 0, 0.1);
+}
+
+.womenshealth-journey-header {
+  text-align: center;
+  margin-bottom: 2.5rem;
+}
+
+.womenshealth-journey-icon {
+  font-size: 4rem;
+  background: linear-gradient(135deg, #EC4899, #8B5CF6);
+  -webkit-background-clip: text;
+  -webkit-text-fill-color: transparent;
+  margin-bottom: 1rem;
+}
+
+.womenshealth-journey-title {
+  font-size: 1.8rem;
+  font-weight: 700;
+  color: #1e293b;
+  margin-bottom: 0.5rem;
+}
+
+.womenshealth-journey-steps {
+  display: flex;
+  flex-direction: column;
+  gap: 1.5rem;
+}
+
+.womenshealth-journey-step {
+  display: flex;
+  gap: 1.5rem;
+  align-items: flex-start;
+}
+
+.womenshealth-step-number {
+  width: 40px;
+  height: 40px;
+  background: linear-gradient(135deg, #EC4899, #8B5CF6);
+  color: white;
+  border-radius: 50%;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  font-weight: 600;
+  font-size: 1.1rem;
+  flex-shrink: 0;
+}
+
+.womenshealth-step-content {
+  flex: 1;
+}
+
+.womenshealth-step-content h4 {
+  font-size: 1.2rem;
+  font-weight: 600;
+  color: #1e293b;
+  margin-bottom: 0.5rem;
+}
+
+.womenshealth-step-content p {
+  color: #6b7280;
+  font-size: 0.95rem;
+  line-height: 1.6;
+}
+
+/* Doctors Section */
+.womenshealth-doctors {
+  padding: 8rem 2rem;
+  background-color: white;
+}
+
+.womenshealth-doctors-grid {
+  max-width: 1280px;
+  margin: 4rem auto 0;
+  display: grid;
+  grid-template-columns: repeat(auto-fit, minmax(350px, 1fr));
+  gap: 3rem;
+}
+
+.womenshealth-doctor-card {
+  background: white;
+  border-radius: 24px;
+  overflow: hidden;
+  box-shadow: 0 10px 40px rgba(0, 0, 0, 0.08);
+  transition: all 0.3s ease;
+  border: 1px solid #f1f5f9;
+}
+
+.womenshealth-doctor-card:hover {
+  transform: translateY(-10px);
+  box-shadow: 0 25px 60px rgba(236, 72, 153, 0.15);
+}
+
+.womenshealth-doctor-header {
+  padding: 2.5rem;
+  background: linear-gradient(135deg, #fdf2f8, #faf5ff);
+}
+
+.womenshealth-doctor-image {
+  display: flex;
+  align-items: center;
+  gap: 2rem;
+  margin-bottom: 1.5rem;
+}
+
+.womenshealth-doctor-avatar {
+  width: 100px;
+  height: 100px;
+  background: white;
+  border-radius: 50%;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  box-shadow: 0 10px 30px rgba(0, 0, 0, 0.1);
+}
+
+.womenshealth-avatar-icon {
+  font-size: 4rem;
+  background: linear-gradient(135deg, #EC4899, #8B5CF6);
+  -webkit-background-clip: text;
+  -webkit-text-fill-color: transparent;
+}
+
+.womenshealth-doctor-badge {
+  display: inline-flex;
+  align-items: center;
+  gap: 0.5rem;
+  background: linear-gradient(135deg, #EC4899, #8B5CF6);
+  color: white;
+  padding: 0.5rem 1rem;
+  border-radius: 50px;
+  font-size: 0.85rem;
+  font-weight: 600;
+}
+
+.womenshealth-badge-icon {
+  font-size: 0.9rem;
+}
+
+.womenshealth-doctor-info {
+  text-align: center;
+}
+
+.womenshealth-doctor-name {
+  font-size: 1.8rem;
+  font-weight: 700;
+  color: #1e293b;
+  margin-bottom: 0.5rem;
+}
+
+.womenshealth-doctor-education {
+  color: #EC4899;
+  font-weight: 600;
+  margin-bottom: 0.5rem;
+  font-size: 1rem;
+}
+
+.womenshealth-doctor-specialty {
+  color: #4b5563;
+  font-weight: 500;
+  margin-bottom: 1.5rem;
+  font-size: 1.1rem;
+}
+
+.womenshealth-doctor-details {
+  display: flex;
+  justify-content: center;
+  gap: 1.5rem;
+  margin-bottom: 2rem;
+}
+
+.womenshealth-doctor-detail {
+  display: flex;
+  align-items: center;
+  gap: 0.5rem;
+  color: #6b7280;
+  font-size: 0.9rem;
+}
+
+.womenshealth-detail-icon {
+  font-size: 1.2rem;
+  color: #EC4899;
+}
+
+.womenshealth-doctor-expertise {
+  padding: 0 2.5rem;
+  margin-bottom: 2rem;
+}
+
+.womenshealth-doctor-expertise h4 {
+  font-size: 1.1rem;
+  font-weight: 600;
+  color: #1e293b;
+  margin-bottom: 1rem;
+}
+
+.womenshealth-expertise-tags {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 0.5rem;
+}
+
+.womenshealth-expertise-tag {
+  background: #fdf2f8;
+  color: #EC4899;
+  padding: 0.4rem 0.8rem;
+  border-radius: 20px;
+  font-size: 0.85rem;
+  font-weight: 500;
+}
+
+.womenshealth-doctor-philosophy {
+  display: flex;
+  align-items: flex-start;
+  gap: 1rem;
+  padding: 1.5rem 2.5rem;
+  background: #f8fafc;
+  margin: 0 2.5rem 2rem;
+  border-radius: 12px;
+}
+
+.womenshealth-philosophy-icon {
+  font-size: 1.5rem;
+  color: #EC4899;
+  flex-shrink: 0;
+}
+
+.womenshealth-philosophy-text {
+  color: #4b5563;
+  font-style: italic;
+  line-height: 1.6;
+  margin: 0;
+}
+
+.womenshealth-doctor-consult {
+  display: block;
+  text-align: center;
+  background: linear-gradient(135deg, #EC4899, #8B5CF6);
+  color: white;
+  padding: 1rem;
+  text-decoration: none;
+  font-weight: 600;
+  transition: all 0.3s ease;
+}
+
+.womenshealth-doctor-consult:hover {
+  transform: translateY(-3px);
+  box-shadow: 0 5px 20px rgba(236, 72, 153, 0.4);
+}
+
+/* Testimonials Section */
+.womenshealth-testimonials {
+  padding: 8rem 2rem;
+  background: linear-gradient(135deg, #fdf2f8 0%, #faf5ff 100%);
+}
+
+.womenshealth-testimonials-container {
+  max-width: 1280px;
+  margin: 0 auto;
+}
+
+.womenshealth-testimonials-header {
+  text-align: center;
+  margin-bottom: 4rem;
+}
+
+.womenshealth-testimonials-badge {
+  display: inline-block;
+  background: linear-gradient(135deg, #EC4899, #8B5CF6);
+  color: white;
+  padding: 0.5rem 1.5rem;
+  border-radius: 50px;
+  font-size: 0.9rem;
+  font-weight: 600;
+  margin-bottom: 1rem;
+  letter-spacing: 0.5px;
+}
+
+.womenshealth-testimonials-title {
+  font-size: 3rem;
+  font-weight: 700;
+  color: #1e293b;
+  margin-bottom: 1rem;
+}
+
+.womenshealth-testimonials-subtitle {
+  font-size: 1.2rem;
+  color: #6b7280;
+  max-width: 600px;
+  margin: 0 auto;
+}
+
+.womenshealth-testimonials-grid {
+  display: grid;
+  grid-template-columns: repeat(auto-fit, minmax(350px, 1fr));
+  gap: 2.5rem;
+}
+
+.womenshealth-testimonial-card {
+  background: white;
+  border-radius: 20px;
+  padding: 2.5rem;
+  box-shadow: 0 5px 20px rgba(0, 0, 0, 0.05);
+  transition: all 0.3s ease;
+}
+
+.womenshealth-testimonial-card:hover {
+  transform: translateY(-5px);
+  box-shadow: 0 15px 40px rgba(0, 0, 0, 0.1);
+}
+
+.womenshealth-testimonial-header {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  margin-bottom: 1.5rem;
+}
+
+.womenshealth-testimonial-rating {
+  display: flex;
+  gap: 0.25rem;
+}
+
+.womenshealth-rating-star {
+  color: #d1d5db;
+  font-size: 1.5rem;
+}
+
+.womenshealth-star-active {
+  color: #fbbf24;
+}
+
+.womenshealth-testimonial-treatment {
+  background: linear-gradient(135deg, #EC4899, #8B5CF6);
+  color: white;
+  padding: 0.5rem 1rem;
+  border-radius: 50px;
+  font-size: 0.85rem;
+  font-weight: 600;
+}
+
+.womenshealth-testimonial-text {
+  font-size: 1.1rem;
+  color: #4b5563;
+  line-height: 1.7;
+  margin-bottom: 2rem;
+  font-style: italic;
+}
+
+.womenshealth-testimonial-author {
+  display: flex;
+  align-items: center;
+  gap: 1rem;
+}
+
+.womenshealth-author-avatar {
+  width: 50px;
+  height: 50px;
+  background: linear-gradient(135deg, #EC4899, #8B5CF6);
+  border-radius: 50%;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  color: white;
+  font-weight: 600;
+  font-size: 1.2rem;
+  flex-shrink: 0;
+}
+
+.womenshealth-author-info {
+  flex: 1;
+}
+
+.womenshealth-author-name {
+  font-size: 1.2rem;
+  font-weight: 600;
+  color: #1e293b;
+  margin-bottom: 0.25rem;
+}
+
+.womenshealth-author-details {
+  display: flex;
+  gap: 1rem;
+}
+
+.womenshealth-author-age {
+  color: #6b7280;
+  font-size: 0.9rem;
+}
+
+.womenshealth-author-experience {
+  color: #EC4899;
+  font-weight: 500;
+  font-size: 0.9rem;
+}
+
+/* Appointment Section */
+.womenshealth-appointment {
+  padding: 8rem 2rem;
+  background-color: white;
+}
+
+.womenshealth-appointment-container {
+  max-width: 1280px;
+  margin: 0 auto;
+  display: flex;
+  gap: 4rem;
+  background: white;
+  border-radius: 24px;
+  overflow: hidden;
+  box-shadow: 0 20px 60px rgba(0, 0, 0, 0.1);
+}
+
+.womenshealth-appointment-form {
+  flex: 1;
+  padding: 4rem;
+}
+
+.womenshealth-form-header {
+  margin-bottom: 3rem;
+}
+
+.womenshealth-form-title {
+  font-size: 2.5rem;
+  font-weight: 700;
+  color: #1e293b;
+  margin-bottom: 1rem;
+}
+
+.womenshealth-form-subtitle {
+  font-size: 1.1rem;
+  color: #6b7280;
+}
+
+.womenshealth-booking-form {
+  display: flex;
+  flex-direction: column;
+  gap: 1.5rem;
+}
+
+.womenshealth-form-row {
+  display: flex;
+  gap: 1.5rem;
+}
+
+.womenshealth-form-group {
+  flex: 1;
+}
+
+.womenshealth-form-label {
+  display: block;
+  font-size: 0.9rem;
+  font-weight: 600;
+  color: #374151;
+  margin-bottom: 0.5rem;
+}
+
+.womenshealth-form-input,
+.womenshealth-form-select,
+.womenshealth-form-textarea {
+  width: 100%;
+  padding: 1rem 1.25rem;
+  border: 2px solid #e5e7eb;
+  border-radius: 12px;
+  font-size: 1rem;
+  transition: all 0.3s ease;
+  background-color: white;
+  color: #1f2937;
+}
+
+.womenshealth-form-input:focus,
+.womenshealth-form-select:focus,
+.womenshealth-form-textarea:focus {
+  outline: none;
+  border-color: #EC4899;
+  box-shadow: 0 0 0 4px rgba(236, 72, 153, 0.1);
+}
+
+.womenshealth-form-textarea {
+  resize: vertical;
+  min-height: 120px;
+}
+
+.womenshealth-form-privacy {
+  margin: 1rem 0;
+}
+
+.womenshealth-privacy-label {
+  display: flex;
+  align-items: flex-start;
+  gap: 0.75rem;
+  cursor: pointer;
+}
+
+.womenshealth-privacy-label input[type="checkbox"] {
+  margin-top: 0.25rem;
+  accent-color: #EC4899;
+}
+
+.womenshealth-privacy-text {
+  font-size: 0.9rem;
+  color: #6b7280;
+  line-height: 1.5;
+}
+
+.womenshealth-btn-submit {
+  background: linear-gradient(135deg, #EC4899, #8B5CF6);
+  color: white;
+  font-size: 1.1rem;
+  padding: 1.2rem;
+  border-radius: 12px;
+  margin-top: 1rem;
+  box-shadow: 0 4px 15px rgba(236, 72, 153, 0.3);
+}
+
+.womenshealth-btn-submit:hover {
+  transform: translateY(-3px);
+  box-shadow: 0 8px 25px rgba(236, 72, 153, 0.4);
+}
+
+.womenshealth-submit-icon {
+  font-size: 1.2rem;
+}
+
+.womenshealth-form-notice {
+  text-align: center;
+  color: #6b7280;
+  font-size: 0.9rem;
+  margin-top: 1.5rem;
+}
+
+.womenshealth-appointment-info {
+  flex: 1;
+  background: linear-gradient(135deg, #EC4899, #8B5CF6);
+  padding: 4rem;
+  color: white;
+}
+
+.womenshealth-info-card {
+  height: 100%;
+  display: flex;
+  flex-direction: column;
+}
+
+.womenshealth-info-header {
+  margin-bottom: 3rem;
+}
+
+.womenshealth-info-title {
+  font-size: 2rem;
+  font-weight: 700;
+  margin-bottom: 0.5rem;
+  color: white;
+}
+
+.womenshealth-info-subtitle {
+  opacity: 0.9;
+  font-size: 1.1rem;
+}
+
+.womenshealth-info-features {
+  display: flex;
+  flex-direction: column;
+  gap: 2rem;
+  margin-bottom: 3rem;
+}
+
+.womenshealth-info-feature {
+  display: flex;
+  gap: 1rem;
+  align-items: flex-start;
+}
+
+.womenshealth-info-feature .womenshealth-feature-icon {
+  flex-shrink: 0;
+  width: 50px;
+  height: 50px;
+  background: rgba(255, 255, 255, 0.1);
+  border-radius: 12px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  font-size: 1.5rem;
+}
+
+.womenshealth-info-feature h4 {
+  font-size: 1.2rem;
+  font-weight: 600;
+  margin-bottom: 0.5rem;
+}
+
+.womenshealth-info-feature p {
+  opacity: 0.9;
+  font-size: 0.95rem;
+  line-height: 1.6;
+}
+
+.womenshealth-clinic-info {
+  margin-bottom: 3rem;
+}
+
+.womenshealth-clinic-title {
+  font-size: 1.2rem;
+  font-weight: 600;
+  margin-bottom: 1.5rem;
+}
+
+.womenshealth-clinic-features {
+  display: grid;
+  grid-template-columns: repeat(2, 1fr);
+  gap: 1rem;
+}
+
+.womenshealth-clinic-feature {
+  display: flex;
+  align-items: center;
+  gap: 0.75rem;
+  font-size: 0.9rem;
+}
+
+.womenshealth-clinic-icon {
+  color: #10B981;
+  font-size: 1rem;
+}
+
+.womenshealth-contact-details {
+  margin-bottom: 3rem;
+}
+
+.womenshealth-contact-item {
+  display: flex;
+  gap: 1rem;
+  align-items: flex-start;
+  margin-bottom: 1.5rem;
+}
+
+.womenshealth-contact-icon {
+  font-size: 1.5rem;
+  opacity: 0.9;
+}
+
+.womenshealth-contact-item h4 {
+  font-size: 1.1rem;
+  font-weight: 600;
+  margin-bottom: 0.25rem;
+}
+
+.womenshealth-contact-item p {
+  opacity: 0.8;
+  font-size: 0.95rem;
+}
+
+.womenshealth-insurance-title {
+  font-size: 1.2rem;
+  font-weight: 600;
+  margin-bottom: 1rem;
+}
+
+.womenshealth-insurance-info {
+  display: flex;
+  flex-direction: column;
+  gap: 1rem;
+}
+
+.womenshealth-insurance-item {
+  display: flex;
+  gap: 1rem;
+  align-items: flex-start;
+  font-size: 0.9rem;
+}
+
+.womenshealth-insurance-icon {
+  font-size: 1.2rem;
+  opacity: 0.9;
+  flex-shrink: 0;
+}
+
+/* Footer */
+.womenshealth-footer {
+  background: linear-gradient(135deg, #1e293b, #0f172a);
+  color: white;
+  padding-top: 6rem;
+}
+
+.womenshealth-footer-container {
+  max-width: 1280px;
+  margin: 0 auto;
+  padding: 0 2rem;
+}
+
+.womenshealth-footer-main {
+  display: flex;
+  justify-content: space-between;
+  padding-bottom: 4rem;
+  border-bottom: 1px solid rgba(255, 255, 255, 0.1);
+  flex-wrap: wrap;
+  gap: 4rem;
+}
+
+.womenshealth-footer-brand {
+  flex: 1;
+  min-width: 300px;
+}
+
+.womenshealth-footer-logo {
+  display: flex;
+  gap: 1rem;
+  align-items: center;
+  margin-bottom: 1.5rem;
+}
+
+.womenshealth-footer-icon {
+  font-size: 2.5rem;
+  color: #f472b6;
+}
+
+.womenshealth-footer-title {
+  font-size: 1.8rem;
+  font-weight: 700;
+  margin-bottom: 0.25rem;
+}
+
+.womenshealth-footer-tagline {
+  color: #94a3b8;
+  font-size: 0.95rem;
+}
+
+.womenshealth-footer-description {
+  color: #94a3b8;
+  margin-bottom: 2rem;
+  line-height: 1.6;
+  max-width: 400px;
+}
+
+.womenshealth-footer-social {
+  display: flex;
+  gap: 1rem;
+}
+
+.womenshealth-social-link {
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  width: 40px;
+  height: 40px;
+  background: rgba(255, 255, 255, 0.1);
+  border-radius: 50%;
+  color: white;
+  text-decoration: none;
+  font-size: 1.2rem;
+  transition: all 0.3s ease;
+}
+
+.womenshealth-social-link:hover {
+  background: #EC4899;
+  transform: translateY(-3px);
+}
+
+.womenshealth-social-icon {
+  font-size: 1.2rem;
+}
+
+.womenshealth-footer-links {
+  display: flex;
+  gap: 4rem;
+  flex-wrap: wrap;
+}
+
+.womenshealth-footer-column {
+  min-width: 180px;
+}
+
+.womenshealth-column-title {
+  font-size: 1.2rem;
+  font-weight: 600;
+  margin-bottom: 1.5rem;
+  color: #f8fafc;
+}
+
+.womenshealth-footer-link {
+  display: block;
+  color: #94a3b8;
+  text-decoration: none;
+  margin-bottom: 0.75rem;
+  transition: color 0.3s ease;
+  font-size: 0.95rem;
+}
+
+.womenshealth-footer-link:hover {
+  color: white;
+}
+
+.womenshealth-contact-info {
+  color: #94a3b8;
+  margin-bottom: 0.75rem;
+  font-size: 0.95rem;
+}
+
+.womenshealth-footer-bottom {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  padding: 2rem 0;
+  flex-wrap: wrap;
+  gap: 1rem;
+}
+
+.womenshealth-copyright {
+  color: #94a3b8;
+  font-size: 0.9rem;
+}
+
+.womenshealth-footer-legal {
+  display: flex;
+  gap: 2rem;
+}
+
+.womenshealth-legal-link {
+  color: #94a3b8;
+  text-decoration: none;
+  font-size: 0.9rem;
+  transition: color 0.3s ease;
+}
+
+.womenshealth-legal-link:hover {
+  color: white;
+}
+
+/* Responsive Styles */
+@media (max-width: 1024px) {
+  .womenshealth-hero-content {
+    flex-direction: column;
+    text-align: center;
+    gap: 3rem;
+  }
+  
+  .womenshealth-hero-description {
+    margin-left: auto;
+    margin-right: auto;
+  }
+  
+  .womenshealth-conditions-container {
+    flex-direction: column;
+    gap: 4rem;
+  }
+  
+  .womenshealth-appointment-container {
+    flex-direction: column;
+  }
+  
+  .womenshealth-hero-stats {
+    margin-top: -4rem;
+  }
+}
+
+@media (max-width: 768px) {
+  .womenshealth-menu-btn {
+    display: flex;
+  }
+  
+  .womenshealth-nav-menu {
+    position: fixed;
+    top: 80px;
+    left: 0;
+    right: 0;
+    background: white;
+    padding: 2rem;
+    box-shadow: 0 10px 30px rgba(0, 0, 0, 0.1);
+    transform: translateY(-100%);
+    opacity: 0;
+    visibility: hidden;
+    transition: all 0.3s ease;
+  }
+  
+  .womenshealth-nav-show {
+    transform: translateY(0);
+    opacity: 1;
+    visibility: visible;
+  }
+  
+  .womenshealth-nav-list {
+    flex-direction: column;
+    align-items: stretch;
+    gap: 1.5rem;
+  }
+  
+  .womenshealth-hero-title {
+    font-size: 2.5rem;
+  }
+  
+  .womenshealth-section-title {
+    font-size: 2.2rem;
+  }
+  
+  .womenshealth-form-row {
+    flex-direction: column;
+    gap: 1rem;
+  }
+  
+  .womenshealth-hero-stats {
+    grid-template-columns: repeat(2, 1fr);
+    padding: 2rem;
+  }
+  
+  .womenshealth-clinic-features {
+    grid-template-columns: 1fr;
+  }
+  
+  .womenshealth-hero {
+    padding: 6rem 1.5rem 8rem;
+  }
+}
+
+@media (max-width: 480px) {
+  .womenshealth-hero-title {
+    font-size: 2rem;
+  }
+  
+  .womenshealth-section-title,
+  .womenshealth-testimonials-title {
+    font-size: 1.8rem;
+  }
+  
+  .womenshealth-hero-stats {
+    grid-template-columns: 1fr;
+  }
+  
+  .womenshealth-services-grid,
+  .womenshealth-doctors-grid,
+  .womenshealth-testimonials-grid {
+    grid-template-columns: 1fr;
+  }
+  
+  .womenshealth-hero,
+  .womenshealth-services,
+  .womenshealth-conditions,
+  .womenshealth-doctors,
+  .womenshealth-testimonials,
+  .womenshealth-appointment {
+    padding-left: 1.5rem;
+    padding-right: 1.5rem;
+  }
+  
+  .womenshealth-appointment-form,
+  .womenshealth-appointment-info {
+    padding: 2.5rem 1.5rem;
+  }
+  
+  .womenshealth-footer-main {
+    flex-direction: column;
+  }
+  
+  .womenshealth-visual-main {
+    width: 300px;
+    height: 300px;
+  }
+  
+  .womenshealth-visual-element {
+    width: 80px;
+    height: 80px;
+    font-size: 2rem;
+  }
+  
+  .womenshealth-doctor-header {
+    flex-direction: column;
+    text-align: center;
+  }
+  
+  .womenshealth-doctor-image {
+    flex-direction: column;
+    gap: 1rem;
+  }
+}
