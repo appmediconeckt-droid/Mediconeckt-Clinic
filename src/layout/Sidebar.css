@@ -7,6 +7,15 @@
   padding-top: 60px;
   position: fixed;
   z-index: 9;
+  
+  /* Hide scrollbar for Chrome, Safari and Opera */
+  &::-webkit-scrollbar {
+    display: none;
+  }
+  
+  /* Hide scrollbar for IE, Edge and Firefox */
+  -ms-overflow-style: none;  /* IE and Edge */
+  scrollbar-width: none;  /* Firefox */
 }
 
 /* ========== DOCTOR THEME (Light Blue) ========== */
@@ -61,7 +70,7 @@
 
 /* ========== COLLAPSED STATE ========== */
 .sidebar-container.collapsed {
-  width: 62px;
+  width: 70px;
 }
 
 /* Hide text on collapse */
@@ -243,4 +252,21 @@ body.sidebar-collapsed .right-side-content {
 /* Ensure smooth transition for all states */
 .right-side-content {
   transition: padding-left 0.3s ease !important;
+}
+
+/* Hide scrollbar for sidebar menu */
+.sidebar::-webkit-scrollbar {
+  display: none;
+}
+
+.sidebar {
+  -ms-overflow-style: none; /* IE and Edge */
+  scrollbar-width: none; /* Firefox */
+}
+
+/* Ensure smooth scrolling */
+.sidebar-container,
+.sidebar,
+.menu {
+  scroll-behavior: smooth;
 }

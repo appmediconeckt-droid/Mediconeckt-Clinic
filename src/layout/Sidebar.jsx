@@ -55,6 +55,7 @@ const Sidebar = ({ menuItemClick }) => {
     { path: "/qrcode", icon: "fa-qrcode", text: "QR Code" },
        { path: "/patient-sms", icon: "fa-message", text: "Patient SMS" },
     { path: "/appointmentlist", icon: "fa-list-check", text: "Appointment List" },
+    { path: "/followup", icon: "fa-history", text: "Follow Up" },
     { path: "/walkinappointment", icon: "fa-solid fa-person-walking", text: "Walk in" },
     { path: "/clinicpage", icon: "fa-hospital", text: "Clinic Page" },
     { path: "/doctor-notifications", icon: "fa-bell", text: "Notification" },

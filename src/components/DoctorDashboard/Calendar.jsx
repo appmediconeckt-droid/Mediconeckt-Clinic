@@ -33,7 +33,7 @@ const DoctorCalendar = () => {
   const [slotPreview, setSlotPreview] = useState([]);
   const [showAddTimeModal, setShowAddTimeModal] = useState(false);
   const [quickRanges, setQuickRanges] = useState({});
-  
+
   // Clinic states
   const [clinics, setClinics] = useState(defaultClinics);
   const [selectedClinic, setSelectedClinic] = useState(defaultClinics[0]);
@@ -292,7 +292,7 @@ const DoctorCalendar = () => {
 
     const updatedClinics = clinics.filter(clinic => clinic.id !== clinicId);
     setClinics(updatedClinics);
-    
+
     // If the deleted clinic was selected, select the first one
     if (selectedClinic.id === clinicId) {
       setSelectedClinic(updatedClinics[0]);
@@ -361,9 +361,8 @@ const DoctorCalendar = () => {
                 {day && (
                   <div className="d-flex gap-2 align-items-center">
                     <button
-                      className={`btn btn-sm btn-ghost p-0 m-0 quick-toggle ${
-                        isPast ? "disabled" : ""
-                      }`}
+                      className={`btn btn-sm btn-ghost p-0 m-0 quick-toggle ${isPast ? "disabled" : ""
+                        }`}
                       onClick={(e) => {
                         e.stopPropagation();
                         if (isPast) return;
@@ -383,9 +382,8 @@ const DoctorCalendar = () => {
                     </button>
 
                     <button
-                      className={`btn btn-sm btn-outline-secondary p-1 ${
-                        isPast ? "disabled" : ""
-                      }`}
+                      className={`btn btn-sm btn-outline-secondary p-1 ${isPast ? "disabled" : ""
+                        }`}
                       onClick={(e) => {
                         e.stopPropagation();
                         if (isPast) return;
@@ -510,7 +508,7 @@ const DoctorCalendar = () => {
                                     className="form-select form-select-sm"
                                     value={
                                       quickRanges[dateKey] &&
-                                      quickRanges[dateKey].durationMode ===
+                                        quickRanges[dateKey].durationMode ===
                                         "preset"
                                         ? quickRanges[dateKey].duration
                                         : "custom"
@@ -553,7 +551,7 @@ const DoctorCalendar = () => {
 
                                   {quickRanges[dateKey] &&
                                     quickRanges[dateKey].durationMode ===
-                                      "custom" && (
+                                    "custom" && (
                                       <input
                                         type="number"
                                         min={1}
@@ -814,7 +812,7 @@ const DoctorCalendar = () => {
 
         // Filter ranges to only include slots for the selected clinic
         const filteredRanges = ranges.filter(range => range.clinicId === selectedClinic.id);
-        
+
         const slots = [];
         filteredRanges.forEach((r) => {
           slots.push(...generateSlotsForRange(year, month, d, r));
@@ -848,10 +846,10 @@ const DoctorCalendar = () => {
 
   return (
     <div className="p-4 doctor-calendar-root">
-     
+
       <div className="header d-flex flex-column flex-md-row justify-content-between align-items-start align-items-md-center mb-3 gap-3">
-        <div style={{display:"grid"}}>
-           <h2 className="mb-3" >Calendar</h2>
+        <div style={{ display: "grid" }}>
+          <h2 className="mb-3" >Calendar</h2>
           <small className="text-muted">
             Recurring & date-specific availability — Modern Blue Theme
           </small>
@@ -876,8 +874,8 @@ const DoctorCalendar = () => {
               aria-expanded={showClinicDropdown}
               aria-haspopup="true"
             >
-              <div 
-                className="rounded-circle" 
+              <div
+                className="rounded-circle"
                 style={{
                   width: "12px",
                   height: "12px",
@@ -896,9 +894,9 @@ const DoctorCalendar = () => {
                 />
               </svg>
             </button>
-            
+
             {showClinicDropdown && (
-              <div 
+              <div
                 className="dropdown-menu show p-3 shadow-lg"
                 style={{
                   position: "absolute",
@@ -910,7 +908,7 @@ const DoctorCalendar = () => {
                 <h6 className="mb-3">Select Clinic</h6>
                 <div className="clinic-list mb-3" style={{ maxHeight: "200px", overflowY: "auto" }}>
                   {clinics.map(clinic => (
-                    <div 
+                    <div
                       key={clinic.id}
                       className={`clinic-item p-2 mb-1 rounded ${selectedClinic.id === clinic.id ? 'selected' : ''}`}
                       onClick={() => {
@@ -925,8 +923,8 @@ const DoctorCalendar = () => {
                     >
                       <div className="d-flex justify-content-between align-items-center">
                         <div className="d-flex align-items-center gap-2">
-                          <div 
-                            className="rounded-circle" 
+                          <div
+                            className="rounded-circle"
                             style={{
                               width: "12px",
                               height: "12px",
@@ -942,17 +940,7 @@ const DoctorCalendar = () => {
                           {selectedClinic.id === clinic.id && (
                             <span className="badge" style={{ backgroundColor: clinic.color }}>Selected</span>
                           )}
-                          {clinics.length > 1 && (
-                            <button
-                              className="btn btn-sm btn-outline-danger ms-2"
-                              onClick={(e) => {
-                                e.stopPropagation();
-                                handleDeleteClinic(clinic.id);
-                              }}
-                            >
-                              ×
-                            </button>
-                          )}
+                          
                         </div>
                       </div>
                     </div>
@@ -974,9 +962,8 @@ const DoctorCalendar = () => {
         {days.map((d, i) => (
           <button
             key={d}
-            className={`btn btn-sm weekday-btn ${
-              recurringWeekdays.includes(i) ? "active" : ""
-            }`}
+            className={`btn btn-sm weekday-btn ${recurringWeekdays.includes(i) ? "active" : ""
+              }`}
             onClick={() => toggleRecurringWeekday(i)}
             onDoubleClick={() => openEditorForWeekday(i)}
             title="Click to toggle recurring weekday. Double-click to edit weekday ranges."
@@ -990,8 +977,8 @@ const DoctorCalendar = () => {
           onClick={() => setShowAddTimeModal(true)}
           style={{ backgroundColor: selectedClinic.color, borderColor: selectedClinic.color }}
         >
-          <div 
-            className="rounded-circle d-inline-block me-1" 
+          <div
+            className="rounded-circle d-inline-block me-1"
             style={{
               width: "8px",
               height: "8px",
@@ -1006,14 +993,14 @@ const DoctorCalendar = () => {
         className="nav-controls btn-group mt-4"
         role="group"
         aria-label="Month navigation"
-        style={{width:"500px", justifyContent:"center" , alignItems:"center"}}
+        style={{ width: "500px", justifyContent: "center", alignItems: "center" }}
       >
         <button
           className="btn btn-outline-primary"
           onClick={() => changeMonth(-1)}
-          style={{boxShadow:"none"}}
+          style={{ boxShadow: "none" }}
           aria-label="Previous month"
-          
+
         >
           <svg width="16" height="16" viewBox="0 0 24 24" fill="none">
             <path
@@ -1035,7 +1022,7 @@ const DoctorCalendar = () => {
         <button
           className="btn btn-outline-primary"
           onClick={() => changeMonth(1)}
-          style={{boxShadow:"none"}}
+          style={{ boxShadow: "none" }}
           aria-label="Next month"
         >
           <span className="me-2 d-none d-sm-inline">Next</span>
@@ -1077,8 +1064,8 @@ const DoctorCalendar = () => {
           </div>
 
           <div className="d-flex gap-2">
-            <button 
-              className="btn btn-primary" 
+            <button
+              className="btn btn-primary"
               onClick={generateAllSlots}
               style={{ backgroundColor: selectedClinic.color, borderColor: selectedClinic.color }}
             >
@@ -1102,9 +1089,9 @@ const DoctorCalendar = () => {
       <div className="mt-4">
         <h5>
           Slot Preview - {selectedClinic.name}
-          <span 
+          <span
             className="badge ms-2"
-            style={{ 
+            style={{
               backgroundColor: selectedClinic.color,
               color: "white",
               fontSize: "0.7em"
@@ -1136,10 +1123,10 @@ const DoctorCalendar = () => {
                     ) : e.slots.length ? (
                       <div className="slot-list">
                         {e.slots.map((slot, idx) => (
-                          <span 
+                          <span
                             key={idx}
                             className="badge me-1 mb-1"
-                            style={{ 
+                            style={{
                               backgroundColor: slot.clinicColor,
                               color: "white"
                             }}
@@ -1174,13 +1161,13 @@ const DoctorCalendar = () => {
             style={{ width: "500px", maxWidth: "95%" }}
             onClick={(e) => e.stopPropagation()}
           >
-            <div 
+            <div
               className="card-header text-white"
               style={{ backgroundColor: selectedClinic.color }}
             >
               <h5 className="mb-0 d-flex align-items-center">
-                <div 
-                  className="rounded-circle me-2" 
+                <div
+                  className="rounded-circle me-2"
                   style={{
                     width: "12px",
                     height: "12px",
@@ -1410,8 +1397,8 @@ const DoctorCalendar = () => {
                     : `Weekday: ${days[editingTarget.key]}`}
                 </h5>
                 <div className="d-flex align-items-center gap-2">
-                  <div 
-                    className="rounded-circle" 
+                  <div
+                    className="rounded-circle"
                     style={{
                       width: "12px",
                       height: "12px",
@@ -1433,10 +1420,45 @@ const DoctorCalendar = () => {
                 <ul className="list-group mb-2">
                   {editingTarget.type === "date"
                     ? (
-                        (availabilityDateMap[editingTarget.key] &&
-                          availabilityDateMap[editingTarget.key].ranges) ||
-                        []
-                      ).map((r, idx) => {
+                      (availabilityDateMap[editingTarget.key] &&
+                        availabilityDateMap[editingTarget.key].ranges) ||
+                      []
+                    ).map((r, idx) => {
+                      const clinic = clinics.find(c => c.id === r.clinicId) || selectedClinic;
+                      return (
+                        <li
+                          key={idx}
+                          className="list-group-item d-flex justify-content-between align-items-center"
+                        >
+                          <div>
+                            <span className="fw-bold">
+                              {r.start} → {r.end}
+                            </span>{" "}
+                            — {r.duration || 15} min
+                            <span
+                              className="badge ms-2"
+                              style={{
+                                backgroundColor: clinic.color,
+                                color: "white",
+                                fontSize: "0.7em"
+                              }}
+                            >
+                              {clinic.name}
+                            </span>
+                          </div>
+                          <div>
+                            <button
+                              className="btn btn-sm btn-danger me-2"
+                              onClick={() => removeRange(idx)}
+                            >
+                              Remove
+                            </button>
+                          </div>
+                        </li>
+                      );
+                    })
+                    : (availabilityWeekdayMap[editingTarget.key] || []).map(
+                      (r, idx) => {
                         const clinic = clinics.find(c => c.id === r.clinicId) || selectedClinic;
                         return (
                           <li
@@ -1448,9 +1470,9 @@ const DoctorCalendar = () => {
                                 {r.start} → {r.end}
                               </span>{" "}
                               — {r.duration || 15} min
-                              <span 
+                              <span
                                 className="badge ms-2"
-                                style={{ 
+                                style={{
                                   backgroundColor: clinic.color,
                                   color: "white",
                                   fontSize: "0.7em"
@@ -1469,43 +1491,8 @@ const DoctorCalendar = () => {
                             </div>
                           </li>
                         );
-                      })
-                    : (availabilityWeekdayMap[editingTarget.key] || []).map(
-                        (r, idx) => {
-                          const clinic = clinics.find(c => c.id === r.clinicId) || selectedClinic;
-                          return (
-                            <li
-                              key={idx}
-                              className="list-group-item d-flex justify-content-between align-items-center"
-                            >
-                              <div>
-                                <span className="fw-bold">
-                                  {r.start} → {r.end}
-                                </span>{" "}
-                                — {r.duration || 15} min
-                                <span 
-                                  className="badge ms-2"
-                                  style={{ 
-                                    backgroundColor: clinic.color,
-                                    color: "white",
-                                    fontSize: "0.7em"
-                                  }}
-                                >
-                                  {clinic.name}
-                                </span>
-                              </div>
-                              <div>
-                                <button
-                                  className="btn btn-sm btn-danger me-2"
-                                  onClick={() => removeRange(idx)}
-                                >
-                                  Remove
-                                </button>
-                              </div>
-                            </li>
-                          );
-                        }
-                      )}
+                      }
+                    )}
 
                   {editingTarget.type === "date" &&
                     (!availabilityDateMap[editingTarget.key] ||
@@ -1524,12 +1511,11 @@ const DoctorCalendar = () => {
                   <div className="mb-3">
                     <div className="d-flex gap-2 flex-wrap">
                       <button
-                        className={`btn ${
-                          availabilityDateMap[editingTarget.key] &&
-                          availabilityDateMap[editingTarget.key].blocked
+                        className={`btn ${availabilityDateMap[editingTarget.key] &&
+                            availabilityDateMap[editingTarget.key].blocked
                             ? "btn-outline-success"
                             : "btn-outline-danger"
-                        }`}
+                          }`}
                         onClick={() => {
                           toggleBlockDate(
                             editingTarget.key,
@@ -1540,7 +1526,7 @@ const DoctorCalendar = () => {
                         }}
                       >
                         {availabilityDateMap[editingTarget.key] &&
-                        availabilityDateMap[editingTarget.key].blocked
+                          availabilityDateMap[editingTarget.key].blocked
                           ? "Unmark Unavailable"
                           : "Mark Date Unavailable"}
                       </button>
@@ -1655,8 +1641,8 @@ const DoctorCalendar = () => {
                 >
                   Cancel
                 </button>
-                <button 
-                  className="btn btn-success" 
+                <button
+                  className="btn btn-success"
                   onClick={saveAndClose}
                   style={{ backgroundColor: selectedClinic.color, borderColor: selectedClinic.color }}
                 >

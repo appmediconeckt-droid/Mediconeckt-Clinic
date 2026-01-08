@@ -231,10 +231,10 @@ header h1 {
 }
 
 .modal {
-  background: white;
+  /* background: white; */
   border-radius: 8px;
-  width: 90%;
-  max-width: 500px;
+  /* width: 90%; */
+  /* max-width: 500px; */
   animation: slideIn 0.3s;
   overflow: hidden;
 }

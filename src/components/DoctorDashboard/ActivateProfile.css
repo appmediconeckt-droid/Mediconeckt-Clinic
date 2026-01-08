@@ -14,7 +14,7 @@
 .doctor-profile-container {
   
   margin: 0 auto;
-  padding: 20px;
+  /* padding: 20px; */
   background-color: #fff;
   min-height: 100vh;
 }
@@ -545,11 +545,12 @@
 }
 
 .modal, .edit-modal {
-  background: white;
+  /* background: white; */
   border-radius: 15px;
-  max-width: 500px;
-  width: 100%;
+  /* max-width: 500px; */
+  /* width: 100%; */
   max-height: 90vh;
+
   overflow-y: auto;
   box-shadow: 0 10px 40px rgba(0, 0, 0, 0.2);
 }
