@@ -12,10 +12,12 @@ import {
   Row,
   Col,
   Table,
+  Dropdown,
 } from "react-bootstrap";
 import "./DoctorDashboard.css";
 import { jsPDF } from "jspdf";
 import "jspdf-autotable";
+import html2canvas from "html2canvas";
 
 const DEFAULT_BREAK_MIN = 30;
 const BREAK_OPTIONS_MIN = [5, 10, 15, 30, 45, 60];
@@ -34,6 +36,190 @@ const formatDuration = (ms) => {
   if (m > 0) return `${m}m ${pad(s)}s`;
   return `${s}s`;
 };
+
+// Enhanced Color Themes for PDF Generation (10+ themes)
+const COLOR_THEMES = [
+  {
+    id: 'professional-blue',
+    name: 'Professional Blue',
+    colors: {
+      primary: '#1e40af',
+      secondary: '#3b82f6',
+      accent: '#60a5fa',
+      success: '#10b981',
+      warning: '#f59e0b',
+      danger: '#dc2626',
+      info: '#0891b2',
+      text: '#1e293b',
+      light: '#f8fafc'
+    }
+  },
+  {
+    id: 'medical-green',
+    name: 'Medical Green',
+    colors: {
+      primary: '#059669',
+      secondary: '#10b981',
+      accent: '#34d399',
+      success: '#059669',
+      warning: '#d97706',
+      danger: '#dc2626',
+      info: '#0891b2',
+      text: '#064e3b',
+      light: '#f0fdf4'
+    }
+  },
+  {
+    id: 'royal-purple',
+    name: 'Royal Purple',
+    colors: {
+      primary: '#7c3aed',
+      secondary: '#8b5cf6',
+      accent: '#a78bfa',
+      success: '#10b981',
+      warning: '#f59e0b',
+      danger: '#dc2626',
+      info: '#0891b2',
+      text: '#4c1d95',
+      light: '#f5f3ff'
+    }
+  },
+  {
+    id: 'warm-orange',
+    name: 'Warm Orange',
+    colors: {
+      primary: '#ea580c',
+      secondary: '#f97316',
+      accent: '#fdba74',
+      success: '#16a34a',
+      warning: '#ca8a04',
+      danger: '#dc2626',
+      info: '#0284c7',
+      text: '#451a03',
+      light: '#fff7ed'
+    }
+  },
+  {
+    id: 'elegant-pink',
+    name: 'Elegant Pink',
+    colors: {
+      primary: '#be185d',
+      secondary: '#db2777',
+      accent: '#f472b6',
+      success: '#059669',
+      warning: '#d97706',
+      danger: '#be123c',
+      info: '#0d9488',
+      text: '#500724',
+      light: '#fdf2f8'
+    }
+  },
+  {
+    id: 'corporate-gray',
+    name: 'Corporate Gray',
+    colors: {
+      primary: '#4b5563',
+      secondary: '#6b7280',
+      accent: '#9ca3af',
+      success: '#10b981',
+      warning: '#f59e0b',
+      danger: '#ef4444',
+      info: '#06b6d4',
+      text: '#1f2937',
+      light: '#f9fafb'
+    }
+  },
+  {
+    id: 'ocean-teal',
+    name: 'Ocean Teal',
+    colors: {
+      primary: '#0d9488',
+      secondary: '#14b8a6',
+      accent: '#5eead4',
+      success: '#0d9488',
+      warning: '#eab308',
+      danger: '#ef4444',
+      info: '#0ea5e9',
+      text: '#134e4a',
+      light: '#f0fdfa'
+    }
+  },
+  {
+    id: 'golden-yellow',
+    name: 'Golden Yellow',
+    colors: {
+      primary: '#ca8a04',
+      secondary: '#eab308',
+      accent: '#fde047',
+      success: '#16a34a',
+      warning: '#ca8a04',
+      danger: '#dc2626',
+      info: '#0891b2',
+      text: '#451a03',
+      light: '#fefce8'
+    }
+  },
+  {
+    id: 'deep-red',
+    name: 'Deep Red',
+    colors: {
+      primary: '#991b1b',
+      secondary: '#dc2626',
+      accent: '#f87171',
+      success: '#059669',
+      warning: '#d97706',
+      danger: '#991b1b',
+      info: '#0891b2',
+      text: '#450a0a',
+      light: '#fef2f2'
+    }
+  },
+  {
+    id: 'vibrant-cyan',
+    name: 'Vibrant Cyan',
+    colors: {
+      primary: '#0891b2',
+      secondary: '#06b6d4',
+      accent: '#67e8f9',
+      success: '#10b981',
+      warning: '#f59e0b',
+      danger: '#ef4444',
+      info: '#0891b2',
+      text: '#164e63',
+      light: '#ecfeff'
+    }
+  },
+  {
+    id: 'forest-green',
+    name: 'Forest Green',
+    colors: {
+      primary: '#166534',
+      secondary: '#16a34a',
+      accent: '#4ade80',
+      success: '#166534',
+      warning: '#d97706',
+      danger: '#dc2626',
+      info: '#0d9488',
+      text: '#052e16',
+      light: '#f0fdf4'
+    }
+  },
+  {
+    id: 'midnight-blue',
+    name: 'Midnight Blue',
+    colors: {
+      primary: '#1e3a8a',
+      secondary: '#1d4ed8',
+      accent: '#60a5fa',
+      success: '#10b981',
+      warning: '#f59e0b',
+      danger: '#be123c',
+      info: '#0d9488',
+      text: '#0c1c36',
+      light: '#dbeafe'
+    }
+  }
+];
 
 const initialAppointments = [
   {
@@ -71,7 +257,7 @@ const initialAppointments = [
   },
 ];
 
-// Updated CompleteModal component with follow-up field and scrollbar
+// CompleteModal component
 const CompleteModal = ({ show, onHide, form, setForm, onSave, patientName }) => {
   const today = new Date();
   const minDate = today.toISOString().split('T')[0];
@@ -109,14 +295,14 @@ const CompleteModal = ({ show, onHide, form, setForm, onSave, patientName }) => 
   };
 
   return (
-    <Modal show={show} onHide={onHide} centered size="lg" className="complete-modal">
-      <Modal.Header closeButton className="complete-modal-header">
-        <Modal.Title className="complete-modal-title">Complete Appointment</Modal.Title>
+    <Modal show={show} onHide={onHide} centered size="lg" className="dd-complete-modal">
+      <Modal.Header closeButton className="dd-complete-modal-header">
+        <Modal.Title className="dd-complete-modal-title">Complete Appointment</Modal.Title>
       </Modal.Header>
-      <Modal.Body className="complete-modal-body" style={{ maxHeight: '60vh', overflowY: 'auto' }}>
-        <div className="patient-info-summary mb-3">
-          <h6 className="patient-summary-title">Completing appointment for:</h6>
-          <div className="patient-name-display">
+      <Modal.Body className="dd-complete-modal-body" style={{ maxHeight: '60vh', overflowY: 'auto' }}>
+        <div className="dd-patient-info-summary mb-3">
+          <h6 className="dd-patient-summary-title">Completing appointment for:</h6>
+          <div className="dd-patient-name-display">
             <i className="bi bi-person-circle me-2"></i>
             <span className="fs-6 fw-bold">{patientName}</span>
           </div>
@@ -126,7 +312,7 @@ const CompleteModal = ({ show, onHide, form, setForm, onSave, patientName }) => 
           <Row className="mb-2">
             <Col md={12}>
               <Form.Group>
-                <Form.Label className="form-label">
+                <Form.Label className="dd-form-label">
                   Diagnosis <span className="text-danger">*</span>
                 </Form.Label>
                 <Form.Control
@@ -135,10 +321,10 @@ const CompleteModal = ({ show, onHide, form, setForm, onSave, patientName }) => 
                   placeholder="Enter detailed diagnosis..."
                   value={form.diagnosis}
                   onChange={(e) => handleInputChange("diagnosis", e.target.value)}
-                  className="form-control-sm diagnosis-textarea"
+                  className="dd-form-control-sm dd-diagnosis-textarea"
                   required
                 />
-                <div className="form-text text-muted mt-1">
+                <div className="dd-form-text text-muted mt-1">
                   Include symptoms, observations, medical findings.
                 </div>
               </Form.Group>
@@ -148,7 +334,7 @@ const CompleteModal = ({ show, onHide, form, setForm, onSave, patientName }) => 
           <Row className="mb-2">
             <Col md={12}>
               <Form.Group>
-                <Form.Label className="form-label">
+                <Form.Label className="dd-form-label">
                   Prescribed Medicine <span className="text-danger">*</span>
                 </Form.Label>
                 <Form.Control
@@ -157,10 +343,10 @@ const CompleteModal = ({ show, onHide, form, setForm, onSave, patientName }) => 
                   placeholder="Enter prescribed medicines..."
                   value={form.medicine}
                   onChange={(e) => handleInputChange("medicine", e.target.value)}
-                  className="form-control-sm medicine-textarea"
+                  className="dd-form-control-sm dd-medicine-textarea"
                   required
                 />
-                <div className="form-text text-muted mt-1">
+                <div className="dd-form-text text-muted mt-1">
                   Medicine Name - Dosage - Frequency - Duration
                 </div>
               </Form.Group>
@@ -170,7 +356,7 @@ const CompleteModal = ({ show, onHide, form, setForm, onSave, patientName }) => 
           <Row className="mb-2">
             <Col md={12}>
               <Form.Group>
-                <Form.Label className="form-label">
+                <Form.Label className="dd-form-label">
                   Advice <span className="text-danger">*</span>
                 </Form.Label>
                 <Form.Control
@@ -179,10 +365,10 @@ const CompleteModal = ({ show, onHide, form, setForm, onSave, patientName }) => 
                   placeholder="Enter detailed advice..."
                   value={form.advice}
                   onChange={(e) => handleInputChange("advice", e.target.value)}
-                  className="form-control-sm advice-textarea"
+                  className="dd-form-control-sm dd-advice-textarea"
                   required
                 />
-                <div className="form-text text-muted mt-1">
+                <div className="dd-form-text text-muted mt-1">
                   Include lifestyle recommendations and instructions.
                 </div>
               </Form.Group>
@@ -191,7 +377,7 @@ const CompleteModal = ({ show, onHide, form, setForm, onSave, patientName }) => 
 
           <Row className="mb-2">
             <Col md={12}>
-              <div className="follow-up-section p-2 border rounded">
+              <div className="dd-follow-up-section p-2 border rounded">
                 <Form.Group className="mb-2">
                   <Form.Check
                     type="switch"
@@ -199,13 +385,13 @@ const CompleteModal = ({ show, onHide, form, setForm, onSave, patientName }) => 
                     label="Schedule Follow-up Appointment"
                     checked={form.followUpRequired || false}
                     onChange={handleFollowUpToggle}
-                    className="follow-up-switch"
+                    className="dd-follow-up-switch"
                   />
                 </Form.Group>
 
                 {form.followUpRequired && (
                   <Form.Group>
-                    <Form.Label className="form-label">
+                    <Form.Label className="dd-form-label">
                       Follow-up Date <span className="text-danger">*</span>
                     </Form.Label>
                     <div className="d-flex align-items-center gap-2">
@@ -214,7 +400,7 @@ const CompleteModal = ({ show, onHide, form, setForm, onSave, patientName }) => 
                         min={minDate}
                         value={form.followUpDate || defaultFollowUpDateStr}
                         onChange={(e) => handleInputChange("followUpDate", e.target.value)}
-                        className="form-control-sm follow-up-date-input"
+                        className="dd-form-control-sm dd-follow-up-date-input"
                         required={form.followUpRequired}
                       />
                       <div className="text-muted">
@@ -222,7 +408,7 @@ const CompleteModal = ({ show, onHide, form, setForm, onSave, patientName }) => 
                       </div>
                     </div>
                     {form.followUpDate && (
-                      <div className="mt-1 text-info follow-up-date-info">
+                      <div className="mt-1 text-info dd-follow-up-date-info">
                         <i className="bi bi-calendar-check me-1"></i>
                         Follow-up: {new Date(form.followUpDate).toLocaleDateString('en-US', { 
                           day: '2-digit',
@@ -239,9 +425,9 @@ const CompleteModal = ({ show, onHide, form, setForm, onSave, patientName }) => 
 
           <Row className="mb-2">
             <Col md={12}>
-              <div className="additional-notes-section p-2 border rounded">
+              <div className="dd-additional-notes-section p-2 border rounded">
                 <Form.Group>
-                  <Form.Label className="form-label">
+                  <Form.Label className="dd-form-label">
                     Additional Notes (Optional)
                   </Form.Label>
                   <Form.Control
@@ -250,7 +436,7 @@ const CompleteModal = ({ show, onHide, form, setForm, onSave, patientName }) => 
                     placeholder="Any additional observations, referrals..."
                     value={form.additionalNotes || ""}
                     onChange={(e) => handleInputChange("additionalNotes", e.target.value)}
-                    className="form-control-sm additional-notes-textarea"
+                    className="dd-form-control-sm dd-additional-notes-textarea"
                   />
                 </Form.Group>
               </div>
@@ -258,19 +444,19 @@ const CompleteModal = ({ show, onHide, form, setForm, onSave, patientName }) => 
           </Row>
         </Form>
       </Modal.Body>
-      <Modal.Footer className="complete-modal-footer">
+      <Modal.Footer className="dd-complete-modal-footer">
         <div className="d-flex justify-content-between w-100 align-items-center">
-          <div className="form-requirements">
+          <div className="dd-form-requirements">
             <small className="text-muted">
               <i className="bi bi-exclamation-circle me-1"></i>
               Fields marked with <span className="text-danger">*</span> are required
             </small>
           </div>
-          <div className="modal-actions">
+          <div className="dd-modal-actions">
             <Button
               variant="outline-secondary"
               onClick={onHide}
-              className="complete-cancel-btn me-2"
+              className="dd-complete-cancel-btn me-2"
               size="sm"
             >
               Cancel
@@ -278,7 +464,7 @@ const CompleteModal = ({ show, onHide, form, setForm, onSave, patientName }) => 
             <Button
               variant="success"
               onClick={handleSave}
-              className="complete-save-btn"
+              className="dd-complete-save-btn"
               size="sm"
               disabled={!form.diagnosis.trim() || !form.medicine.trim() || !form.advice.trim()}
             >
@@ -292,14 +478,231 @@ const CompleteModal = ({ show, onHide, form, setForm, onSave, patientName }) => 
   );
 };
 
-// Updated Summary Modal Component with both buttons
+// Edit Modal for Completed Appointments
+const EditCompletedModal = ({ show, onHide, appointment, onSave }) => {
+  const [form, setForm] = useState({
+    diagnosis: "",
+    medicine: "",
+    advice: "",
+    additionalNotes: "",
+    followUpRequired: false,
+    followUpDate: ""
+  });
+
+  useEffect(() => {
+    if (appointment) {
+      setForm({
+        diagnosis: appointment.diagnosis || "",
+        medicine: appointment.medicine || "",
+        advice: appointment.advice || "",
+        additionalNotes: appointment.additionalNotes || "",
+        followUpRequired: appointment.followUpRequired || false,
+        followUpDate: appointment.followUpDate || ""
+      });
+    }
+  }, [appointment]);
+
+  const handleInputChange = (field, value) => {
+    setForm(prev => ({ ...prev, [field]: value }));
+  };
+
+  const handleFollowUpToggle = (e) => {
+    const isChecked = e.target.checked;
+    const today = new Date();
+    const defaultDate = new Date(today);
+    defaultDate.setDate(today.getDate() + 7);
+    const defaultDateStr = defaultDate.toISOString().split('T')[0];
+    
+    setForm(prev => ({ 
+      ...prev, 
+      followUpRequired: isChecked,
+      followUpDate: isChecked ? prev.followUpDate || defaultDateStr : ""
+    }));
+  };
+
+  const handleSave = () => {
+    onSave(form);
+    onHide();
+  };
+
+  return (
+    <Modal show={show} onHide={onHide} centered size="lg" className="dd-edit-modal">
+      <Modal.Header closeButton className="dd-edit-modal-header">
+        <Modal.Title className="dd-edit-modal-title">
+          <i className="bi bi-pencil-square me-2"></i>
+          Edit Completed Appointment
+        </Modal.Title>
+      </Modal.Header>
+      <Modal.Body className="dd-edit-modal-body" style={{ maxHeight: '60vh', overflowY: 'auto' }}>
+        <div className="dd-patient-info-summary mb-3">
+          <h6 className="dd-patient-summary-title">Editing appointment for:</h6>
+          <div className="dd-patient-name-display">
+            <i className="bi bi-person-circle me-2"></i>
+            <span className="fs-6 fw-bold">{appointment?.name}</span>
+          </div>
+          <div className="dd-patient-details">
+            <small className="text-muted">
+              <i className="bi bi-calendar me-1"></i>
+              Completed on: {appointment?.endTime ? formatDateTime(appointment.endTime) : 'N/A'}
+            </small>
+          </div>
+        </div>
+
+        <Form>
+          <Row className="mb-2">
+            <Col md={12}>
+              <Form.Group>
+                <Form.Label className="dd-form-label">
+                  Diagnosis
+                </Form.Label>
+                <Form.Control
+                  as="textarea"
+                  rows={3}
+                  placeholder="Enter detailed diagnosis..."
+                  value={form.diagnosis}
+                  onChange={(e) => handleInputChange("diagnosis", e.target.value)}
+                  className="dd-form-control-sm dd-diagnosis-textarea"
+                />
+              </Form.Group>
+            </Col>
+          </Row>
+
+          <Row className="mb-2">
+            <Col md={12}>
+              <Form.Group>
+                <Form.Label className="dd-form-label">
+                  Prescribed Medicine
+                </Form.Label>
+                <Form.Control
+                  as="textarea"
+                  rows={3}
+                  placeholder="Enter prescribed medicines..."
+                  value={form.medicine}
+                  onChange={(e) => handleInputChange("medicine", e.target.value)}
+                  className="dd-form-control-sm dd-medicine-textarea"
+                />
+              </Form.Group>
+            </Col>
+          </Row>
+
+          <Row className="mb-2">
+            <Col md={12}>
+              <Form.Group>
+                <Form.Label className="dd-form-label">
+                  Advice
+                </Form.Label>
+                <Form.Control
+                  as="textarea"
+                  rows={3}
+                  placeholder="Enter detailed advice..."
+                  value={form.advice}
+                  onChange={(e) => handleInputChange("advice", e.target.value)}
+                  className="dd-form-control-sm dd-advice-textarea"
+                />
+              </Form.Group>
+            </Col>
+          </Row>
+
+          <Row className="mb-2">
+            <Col md={12}>
+              <div className="dd-follow-up-section p-2 border rounded">
+                <Form.Group className="mb-2">
+                  <Form.Check
+                    type="switch"
+                    id="edit-follow-up-switch"
+                    label="Schedule Follow-up Appointment"
+                    checked={form.followUpRequired || false}
+                    onChange={handleFollowUpToggle}
+                    className="dd-follow-up-switch"
+                  />
+                </Form.Group>
+
+                {form.followUpRequired && (
+                  <Form.Group>
+                    <Form.Label className="dd-form-label">
+                      Follow-up Date
+                    </Form.Label>
+                    <Form.Control
+                      type="date"
+                      value={form.followUpDate}
+                      onChange={(e) => handleInputChange("followUpDate", e.target.value)}
+                      className="dd-form-control-sm dd-follow-up-date-input"
+                    />
+                  </Form.Group>
+                )}
+              </div>
+            </Col>
+          </Row>
+
+          <Row className="mb-2">
+            <Col md={12}>
+              <div className="dd-additional-notes-section p-2 border rounded">
+                <Form.Group>
+                  <Form.Label className="dd-form-label">
+                    Additional Notes
+                  </Form.Label>
+                  <Form.Control
+                    as="textarea"
+                    rows={2}
+                    placeholder="Any additional observations..."
+                    value={form.additionalNotes}
+                    onChange={(e) => handleInputChange("additionalNotes", e.target.value)}
+                    className="dd-form-control-sm dd-additional-notes-textarea"
+                  />
+                </Form.Group>
+              </div>
+            </Col>
+          </Row>
+        </Form>
+      </Modal.Body>
+      <Modal.Footer className="dd-edit-modal-footer">
+        <Button
+          variant="outline-secondary"
+          onClick={onHide}
+          className="dd-edit-cancel-btn me-2"
+          size="sm"
+        >
+          Cancel
+        </Button>
+        <Button
+          variant="primary"
+          onClick={handleSave}
+          className="dd-edit-save-btn"
+          size="sm"
+        >
+          <i className="bi bi-save me-1"></i>
+          Save Changes
+        </Button>
+      </Modal.Footer>
+    </Modal>
+  );
+};
+
+// Enhanced Summary Modal Component with Custom Theme Support
 const SummaryModal = ({ show, onHide, appointmentData, onPrint, onCompleteWithoutPrint }) => {
+  const [selectedTheme, setSelectedTheme] = useState(COLOR_THEMES[0]);
+  const [customTheme, setCustomTheme] = useState({
+    primary: '#1e40af',
+    secondary: '#3b82f6',
+    accent: '#60a5fa',
+    success: '#10b981',
+    warning: '#f59e0b',
+    danger: '#dc2626',
+    info: '#0891b2',
+    text: '#1e293b',
+    light: '#f8fafc'
+  });
+  const [showCustomTheme, setShowCustomTheme] = useState(false);
+
   if (!appointmentData) return null;
 
   const doctorName = "Dr. Ramesh Kumar";
   const clinicName = "City Hospital & Medical Center";
   const clinicAddress = "Indore Saket Nagar, Madhya Pradesh 452001";
   const clinicContact = "+91 9876543210";
+  const clinicEmail = "info@cityhospital.com";
+  const clinicLicense = "MH-MED-2023-45678";
+  const clinicMotto = "Excellence in Healthcare Since 1995";
 
   const formatDate = (dateString) => {
     const date = new Date(dateString);
@@ -310,240 +713,412 @@ const SummaryModal = ({ show, onHide, appointmentData, onPrint, onCompleteWithou
     });
   };
 
+  const handleThemeChange = (theme) => {
+    setSelectedTheme(theme);
+    setShowCustomTheme(false);
+  };
+
+  const handleCustomThemeChange = (field, value) => {
+    setCustomTheme(prev => ({ ...prev, [field]: value }));
+  };
+
+  const applyCustomTheme = () => {
+    const customThemeObj = {
+      id: 'custom-theme',
+      name: 'Custom Theme',
+      colors: customTheme
+    };
+    setSelectedTheme(customThemeObj);
+    setShowCustomTheme(false);
+  };
+
+  const currentTheme = selectedTheme.id === 'custom-theme' ? selectedTheme : selectedTheme;
+
   return (
-    <Modal show={show} onHide={onHide} centered size="xl" className="summary-modal">
-      <Modal.Header closeButton className="summary-modal-header bg-primary text-white">
-        <Modal.Title className="summary-modal-title">
-          <i className="bi bi-file-text me-2"></i>
-          Appointment Summary
-        </Modal.Title>
-      </Modal.Header>
-      <Modal.Body className="summary-modal-body p-4" style={{ maxHeight: '60vh', overflowY: 'auto' }}>
-        {/* Clinic Header */}
-        <div className="clinic-header text-center mb-4">
-          <h4 className="clinic-name mb-1">{clinicName}</h4>
-          <p className="clinic-address mb-1">{clinicAddress}</p>
-          <p className="clinic-contact mb-3">Contact: {clinicContact}</p>
-          <div className="border-top border-bottom py-2">
-            <h5 className="document-title mb-0">PATIENT CONSULTATION SUMMARY</h5>
+    <Modal 
+      show={show} 
+      onHide={onHide} 
+      centered 
+      size="xl" 
+      className="dd-summary-modal"
+      style={{ zIndex: 1060 }}
+    >
+      <Modal.Header closeButton className="dd-summary-modal-header" style={{
+        background: `linear-gradient(135deg, ${currentTheme.colors.primary} 0%, ${currentTheme.colors.secondary} 100%)`
+      }}>
+        <div className="d-flex align-items-center w-100">
+          {/* Company Icon on Left Side */}
+          <div className="dd-company-icon-container me-3">
+            <div className="dd-company-icon" style={{
+              width: '40px',
+              height: '40px',
+              background: 'white',
+              borderRadius: '8px',
+              display: 'flex',
+              alignItems: 'center',
+              justifyContent: 'center',
+              boxShadow: '0 2px 8px rgba(0,0,0,0.2)'
+            }}>
+              <i className="bi bi-hospital" style={{
+                fontSize: '24px',
+                color: currentTheme.colors.primary
+              }}></i>
+            </div>
+          </div>
+          
+          <Modal.Title className="dd-summary-modal-title flex-grow-1">
+            <i className="bi bi-file-medical me-2"></i>
+            Consultation Summary
+          </Modal.Title>
+          
+          <div className="dd-color-theme-picker">
+            <Dropdown>
+              <Dropdown.Toggle 
+                variant="white" 
+                size="sm" 
+                id="theme-dropdown" 
+                className="dd-theme-dropdown-toggle"
+              >
+                <i className="bi bi-palette me-2"></i> 
+                Theme: {selectedTheme.name}
+              </Dropdown.Toggle>
+              <Dropdown.Menu className="dd-theme-dropdown-menu" style={{ maxHeight: '400px', overflowY: 'auto' }}>
+                <div className="p-3">
+                  <h6 className="mb-3 dd-theme-selector-title">Select Theme</h6>
+                  
+                  {/* Custom Theme Section */}
+                  <div className="mb-3">
+                    <Button
+                      variant="outline-secondary"
+                      size="sm"
+                      onClick={() => setShowCustomTheme(!showCustomTheme)}
+                      className="w-100 mb-2"
+                    >
+                      <i className="bi bi-sliders me-2"></i>
+                      {showCustomTheme ? 'Hide Custom Colors' : 'Custom Colors'}
+                    </Button>
+                    
+                    {showCustomTheme && (
+                      <div className="dd-custom-theme-editor border p-3 rounded">
+                        <h6 className="mb-2">Custom Theme Colors</h6>
+                        <div className="row g-2 mb-2">
+                          {Object.keys(customTheme).map(colorKey => (
+                            <div className="col-6" key={colorKey}>
+                              <Form.Group>
+                                <Form.Label className="small text-capitalize mb-1">
+                                  {colorKey.replace(/([A-Z])/g, ' $1')}
+                                </Form.Label>
+                                <div className="input-group input-group-sm">
+                                  <Form.Control
+                                    type="color"
+                                    value={customTheme[colorKey]}
+                                    onChange={(e) => handleCustomThemeChange(colorKey, e.target.value)}
+                                    className="p-0 border-0"
+                                  />
+                                  <Form.Control
+                                    type="text"
+                                    value={customTheme[colorKey]}
+                                    onChange={(e) => handleCustomThemeChange(colorKey, e.target.value)}
+                                    className="small"
+                                  />
+                                </div>
+                              </Form.Group>
+                            </div>
+                          ))}
+                        </div>
+                        <Button
+                          variant="primary"
+                          size="sm"
+                          onClick={applyCustomTheme}
+                          className="w-100"
+                        >
+                          Apply Custom Theme
+                        </Button>
+                      </div>
+                    )}
+                  </div>
+                  
+                  <div className="dd-theme-grid">
+                    {COLOR_THEMES.map(theme => (
+                      <div 
+                        key={theme.id}
+                        className={`dd-theme-option ${selectedTheme.id === theme.id ? 'dd-theme-active' : ''}`}
+                        onClick={() => handleThemeChange(theme)}
+                      >
+                        <div className="dd-theme-preview">
+                          <div className="dd-theme-primary" style={{ backgroundColor: theme.colors.primary }}></div>
+                          <div className="dd-theme-secondary" style={{ backgroundColor: theme.colors.secondary }}></div>
+                          <div className="dd-theme-accent" style={{ backgroundColor: theme.colors.accent }}></div>
+                        </div>
+                        <div className="dd-theme-name">{theme.name}</div>
+                      </div>
+                    ))}
+                  </div>
+                </div>
+              </Dropdown.Menu>
+            </Dropdown>
           </div>
         </div>
-
-        <div className="summary-content">
-          {/* Patient Information Section */}
-          <div className="patient-info-section mb-4">
-            <h6 className="section-title bg-light p-2">
-              <i className="bi bi-person-badge me-2"></i>
-              Patient Information
-            </h6>
-            <Row className="mb-2">
-              <Col md={6}>
-                <div className="info-item">
-                  <span className="info-label">Patient Name:</span>
-                  <span className="info-value">{appointmentData.name}</span>
-                </div>
-              </Col>
-              <Col md={3}>
-                <div className="info-item">
-                  <span className="info-label">Gender:</span>
-                  <span className="info-value">{appointmentData.gender}</span>
-                </div>
-              </Col>
-              <Col md={3}>
-                <div className="info-item">
-                  <span className="info-label">Age:</span>
-                  <span className="info-value">35 years</span>
-                </div>
-              </Col>
-            </Row>
-            <Row className="mb-2">
-              <Col md={6}>
-                <div className="info-item">
-                  <span className="info-label">Phone:</span>
-                  <span className="info-value">{appointmentData.phone}</span>
-                </div>
-              </Col>
-              <Col md={3}>
-                <div className="info-item">
-                  <span className="info-label">Blood Group:</span>
-                  <span className="info-value">{appointmentData.bloodGroup}</span>
-                </div>
-              </Col>
-              <Col md={3}>
-                <div className="info-item">
-                  <span className="info-label">Blood Pressure:</span>
-                  <span className="info-value">{appointmentData.bp}</span>
-                </div>
-              </Col>
-            </Row>
-            <Row>
-              <Col md={12}>
-                <div className="info-item">
-                  <span className="info-label">Presenting Issue:</span>
-                  <span className="info-value">{appointmentData.issue}</span>
-                </div>
-              </Col>
-            </Row>
+      </Modal.Header>
+      
+      <Modal.Body className="dd-summary-modal-body p-0" style={{ maxHeight: '60vh', overflowY: 'auto' }}>
+        <div id="printable-summary" className="dd-printable-summary">
+          {/* Clinic Header with Company Icon */}
+          <div className="dd-clinic-header text-center mb-4 p-4">
+            <div className="dd-clinic-icon mb-3">
+              <div style={{
+                width: '80px',
+                height: '80px',
+                background: `linear-gradient(135deg, ${currentTheme.colors.primary} 0%, ${currentTheme.colors.secondary} 100%)`,
+                borderRadius: '50%',
+                display: 'flex',
+                alignItems: 'center',
+                justifyContent: 'center',
+                margin: '0 auto',
+                boxShadow: '0 4px 12px rgba(0,0,0,0.15)'
+              }}>
+                <i className="bi bi-hospital" style={{
+                  fontSize: '40px',
+                  color: 'white'
+                }}></i>
+              </div>
+            </div>
+            
+            <h4 className="dd-clinic-name mb-1" style={{ color: currentTheme.colors.primary }}>
+              {clinicName}
+            </h4>
+            <p className="dd-clinic-address mb-1" style={{ color: currentTheme.colors.text }}>
+              <i className="bi bi-geo-alt me-1"></i>{clinicAddress}
+            </p>
+            <div className="dd-clinic-contacts">
+              <span className="dd-clinic-contact me-3" style={{ color: currentTheme.colors.text }}>
+                <i className="bi bi-telephone me-1"></i>{clinicContact}
+              </span>
+              <span className="dd-clinic-email" style={{ color: currentTheme.colors.text }}>
+                <i className="bi bi-envelope me-1"></i>{clinicEmail}
+              </span>
+            </div>
           </div>
 
-          {/* Consultation Details Section */}
-          <div className="consultation-details-section mb-4">
-            <h6 className="section-title bg-light p-2">
-              <i className="bi bi-calendar-check me-2"></i>
-              Consultation Details
-            </h6>
-            <Row className="mb-2">
-              <Col md={4}>
-                <div className="info-item">
-                  <span className="info-label">Consultation Date:</span>
-                  <span className="info-value">{formatDate(new Date())}</span>
-                </div>
-              </Col>
-              <Col md={4}>
-                <div className="info-item">
-                  <span className="info-label">Start Time:</span>
-                  <span className="info-value">{formatTimeOfDay(appointmentData.startTime)}</span>
-                </div>
-              </Col>
-              <Col md={4}>
-                <div className="info-item">
-                  <span className="info-label">End Time:</span>
-                  <span className="info-value">{formatTimeOfDay(appointmentData.endTime)}</span>
-                </div>
-              </Col>
-            </Row>
-            <Row className="mb-2">
-              <Col md={4}>
-                <div className="info-item">
-                  <span className="info-label">Duration:</span>
-                  <span className="info-value">{formatDuration(appointmentData.durationMs)}</span>
-                </div>
-              </Col>
-              <Col md={4}>
-                <div className="info-item">
-                  <span className="info-label">Doctor:</span>
-                  <span className="info-value">{doctorName}</span>
-                </div>
-              </Col>
-              <Col md={4}>
-                <div className="info-item">
-                  <span className="info-label">Appointment ID:</span>
-                  <span className="info-value">APPT-{appointmentData.id.toString().padStart(3, '0')}</span>
-                </div>
-              </Col>
-            </Row>
+          {/* Appointment ID Banner */}
+          <div className="dd-appointment-banner mb-4 p-3" style={{ 
+            background: `linear-gradient(135deg, ${currentTheme.colors.primary}15 0%, ${currentTheme.colors.secondary}15 100%)`,
+            border: `2px solid ${currentTheme.colors.primary}30`,
+            borderRadius: '12px'
+          }}>
+            <div className="d-flex justify-content-between align-items-center">
+              <div>
+                <h6 className="mb-1" style={{ color: currentTheme.colors.primary }}>
+                  <i className="bi bi-calendar-check me-2"></i>
+                  Appointment ID: APPT-{appointmentData.id.toString().padStart(3, '0')}
+                </h6>
+                <small style={{ color: currentTheme.colors.text }}>Consultation Date: {formatDate(new Date())}</small>
+              </div>
+              <div className="text-end">
+                <h6 className="mb-1" style={{ color: currentTheme.colors.primary }}>
+                  Status: <Badge style={{ backgroundColor: currentTheme.colors.success }}>COMPLETED</Badge>
+                </h6>
+              </div>
+            </div>
           </div>
 
-          {/* Medical Information Section */}
-          <div className="medical-info-section mb-4">
-            <h6 className="section-title bg-light p-2">
-              <i className="bi bi-clipboard-check me-2"></i>
-              Medical Information
-            </h6>
-            <Row className="mb-3">
-              <Col md={12}>
-                <div className="info-item mb-2">
-                  <span className="info-label">Diagnosis:</span>
-                  <div className="info-value border rounded p-2 bg-white">
-                    {appointmentData.diagnosis}
+          <div className="dd-summary-content p-4">
+            {/* Patient Information */}
+            <div className="dd-patient-info-section mb-4 p-4" style={{ 
+              background: `linear-gradient(135deg, ${currentTheme.colors.light} 0%, ${currentTheme.colors.light}80 100%)`,
+              borderRadius: '15px',
+              border: `1px solid ${currentTheme.colors.primary}20`
+            }}>
+              <h6 className="dd-section-title mb-3" style={{ color: currentTheme.colors.primary }}>
+                <i className="bi bi-person-badge me-2"></i>
+                Patient Information
+              </h6>
+              <Row className="mb-2">
+                <Col md={6}>
+                  <div className="dd-info-item mb-3">
+                    <span className="dd-info-label" style={{ color: currentTheme.colors.text, fontWeight: '600' }}>
+                      Patient Name:
+                    </span>
+                    <span className="dd-info-value" style={{ color: currentTheme.colors.primary, fontWeight: '700' }}>
+                      {appointmentData.name}
+                    </span>
                   </div>
-                </div>
-              </Col>
-            </Row>
-            <Row className="mb-3">
-              <Col md={12}>
-                <div className="info-item mb-2">
-                  <span className="info-label">Prescribed Medicine:</span>
-                  <div className="info-value border rounded p-2 bg-white">
-                    {appointmentData.medicine}
+                </Col>
+                <Col md={3}>
+                  <div className="dd-info-item mb-3">
+                    <span className="dd-info-label" style={{ color: currentTheme.colors.text, fontWeight: '600' }}>
+                      Gender:
+                    </span>
+                    <Badge style={{ backgroundColor: currentTheme.colors.accent }}>
+                      {appointmentData.gender}
+                    </Badge>
                   </div>
-                </div>
-              </Col>
-            </Row>
-            <Row className="mb-3">
-              <Col md={12}>
-                <div className="info-item mb-2">
-                  <span className="info-label">Medical Advice:</span>
-                  <div className="info-value border rounded p-2 bg-white">
-                    {appointmentData.advice}
-                  </div>
-                </div>
-              </Col>
-            </Row>
-            {appointmentData.additionalNotes && (
-              <Row>
-                <Col md={12}>
-                  <div className="info-item mb-2">
-                    <span className="info-label">Additional Notes:</span>
-                    <div className="info-value border rounded p-2 bg-white">
-                      {appointmentData.additionalNotes}
-                    </div>
+                </Col>
+                <Col md={3}>
+                  <div className="dd-info-item mb-3">
+                    <span className="dd-info-label" style={{ color: currentTheme.colors.text, fontWeight: '600' }}>
+                      Blood Group:
+                    </span>
+                    <Badge style={{ backgroundColor: currentTheme.colors.danger }}>
+                      {appointmentData.bloodGroup}
+                    </Badge>
                   </div>
                 </Col>
               </Row>
-            )}
-          </div>
-
-          {/* Follow-up Section */}
-          <div className="followup-section mb-4">
-            <h6 className="section-title bg-light p-2">
-              <i className="bi bi-arrow-clockwise me-2"></i>
-              Follow-up Information
-            </h6>
-            <Row>
-              <Col md={12}>
-                <div className="info-item">
-                  <span className="info-label">Follow-up Required:</span>
-                  <span className="info-value">
-                    {appointmentData.followUpRequired ? (
-                      <Badge bg="warning" className="ms-2">
-                        <i className="bi bi-calendar-check me-1"></i>
-                        Yes - {formatDate(appointmentData.followUpDate)}
-                      </Badge>
-                    ) : (
-                      <span className="text-muted ms-2">No follow-up required</span>
-                    )}
-                  </span>
-                </div>
-              </Col>
-            </Row>
-          </div>
-
-          {/* Doctor's Signature */}
-          <div className="signature-section mt-4 pt-3 border-top">
-            <Row>
-              <Col md={6}>
-                <div className="signature-box p-3">
-                  <div className="signature-line mb-1"></div>
-                  <p className="signature-label mb-0">Dr. Ramesh Kumar</p>
-                  <small className="text-muted">Consulting Physician</small>
-                </div>
-              </Col>
-              <Col md={6} className="text-md-end">
-                <div className="stamp-box p-3">
-                  <div className="stamp-circle d-inline-flex align-items-center justify-content-center">
-                    <span className="stamp-text">VERIFIED</span>
+              <Row>
+                <Col md={12}>
+                  <div className="dd-info-item">
+                    <span className="dd-info-label" style={{ color: currentTheme.colors.text, fontWeight: '600' }}>
+                      Presenting Issue:
+                    </span>
+                    <span className="dd-info-value" style={{ color: currentTheme.colors.danger, fontWeight: '700' }}>
+                      {appointmentData.issue}
+                    </span>
                   </div>
-                  <p className="stamp-label mb-0 mt-2">City Hospital & Medical Center</p>
+                </Col>
+              </Row>
+            </div>
+
+            {/* Medical Information */}
+            <div className="dd-medical-section mb-4">
+              <h6 className="dd-section-title mb-3" style={{ color: currentTheme.colors.primary }}>
+                <i className="bi bi-clipboard-check me-2"></i>
+                Medical Information
+              </h6>
+              
+              <div className="dd-medical-card p-4 mb-3" style={{ 
+                background: 'white',
+                borderRadius: '12px',
+                border: `1px solid ${currentTheme.colors.primary}`,
+                borderLeft: `5px solid ${currentTheme.colors.primary}`
+              }}>
+                <h6 className="dd-medical-title mb-3" style={{ color: currentTheme.colors.primary }}>
+                  Diagnosis
+                </h6>
+                <div className="dd-medical-content" style={{ color: currentTheme.colors.text }}>
+                  {appointmentData.diagnosis}
                 </div>
-              </Col>
-            </Row>
+              </div>
+
+              <div className="dd-medical-card p-4 mb-3" style={{ 
+                background: 'white',
+                borderRadius: '12px',
+                border: `1px solid ${currentTheme.colors.success}`,
+                borderLeft: `5px solid ${currentTheme.colors.success}`
+              }}>
+                <h6 className="dd-medical-title mb-3" style={{ color: currentTheme.colors.success }}>
+                  Prescribed Medicine
+                </h6>
+                <div className="dd-medical-content" style={{ color: currentTheme.colors.text }}>
+                  {appointmentData.medicine}
+                </div>
+              </div>
+
+              <div className="dd-medical-card p-4 mb-3" style={{ 
+                background: 'white',
+                borderRadius: '12px',
+                border: `1px solid ${currentTheme.colors.info}`,
+                borderLeft: `5px solid ${currentTheme.colors.info}`
+              }}>
+                <h6 className="dd-medical-title mb-3" style={{ color: currentTheme.colors.info }}>
+                  Medical Advice
+                </h6>
+                <div className="dd-medical-content" style={{ color: currentTheme.colors.text }}>
+                  {appointmentData.advice}
+                </div>
+              </div>
+
+              {appointmentData.additionalNotes && (
+                <div className="dd-medical-card p-4 mb-3" style={{ 
+                  background: 'white',
+                  borderRadius: '12px',
+                  border: `1px solid ${currentTheme.colors.warning}`,
+                  borderLeft: `5px solid ${currentTheme.colors.warning}`
+                }}>
+                  <h6 className="dd-medical-title mb-3" style={{ color: currentTheme.colors.warning }}>
+                    Additional Notes
+                  </h6>
+                  <div className="dd-medical-content" style={{ color: currentTheme.colors.text }}>
+                    {appointmentData.additionalNotes}
+                  </div>
+                </div>
+              )}
+            </div>
+
+            {/* Follow-up Information */}
+            <div className="dd-followup-section mb-4 p-4" style={{ 
+              background: `linear-gradient(135deg, ${currentTheme.colors.light}80 0%, ${currentTheme.colors.light}60 100%)`,
+              borderRadius: '15px'
+            }}>
+              <h6 className="dd-section-title mb-3" style={{ color: currentTheme.colors.secondary }}>
+                <i className="bi bi-arrow-clockwise me-2"></i>
+                Follow-up Information
+              </h6>
+              <div className="text-center">
+                {appointmentData.followUpRequired ? (
+                  <div className="dd-followup-scheduled">
+                    <h6 className="dd-followup-status mb-2" style={{ color: currentTheme.colors.warning }}>
+                      Follow-up Scheduled
+                    </h6>
+                    <div className="dd-followup-date" style={{ 
+                      color: currentTheme.colors.danger,
+                      fontWeight: '700',
+                      fontSize: '1.2rem'
+                    }}>
+                      {formatDate(appointmentData.followUpDate)}
+                    </div>
+                  </div>
+                ) : (
+                  <div className="dd-followup-none">
+                    <h6 className="dd-followup-status mb-2" style={{ color: currentTheme.colors.secondary }}>
+                      No Follow-up Required
+                    </h6>
+                  </div>
+                )}
+              </div>
+            </div>
+
+            {/* Doctor's Signature */}
+            <div className="dd-signature-section mt-4 pt-4 border-top">
+              <Row className="align-items-end">
+                <Col md={6}>
+                  <div className="dd-signature-box p-4" style={{ 
+                    background: `linear-gradient(135deg, ${currentTheme.colors.light} 0%, white 100%)`,
+                    borderRadius: '10px'
+                  }}>
+                    <div className="dd-signature-line mb-3" style={{ 
+                      borderBottom: `2px solid ${currentTheme.colors.text}`,
+                      width: '200px'
+                    }}></div>
+                    <p className="dd-signature-label mb-1" style={{ 
+                      color: currentTheme.colors.primary,
+                      fontWeight: '700'
+                    }}>
+                      Dr. Ramesh Kumar
+                    </p>
+                    <small className="dd-signature-title" style={{ color: currentTheme.colors.text }}>
+                      MBBS, MD (General Medicine)
+                    </small>
+                  </div>
+                </Col>
+              </Row>
+            </div>
           </div>
         </div>
       </Modal.Body>
-      <Modal.Footer className="summary-modal-footer">
+      <Modal.Footer className="dd-summary-modal-footer">
         <div className="d-flex justify-content-between w-100 align-items-center">
-          <div className="footer-notes">
+          <div className="dd-footer-notes">
             <small className="text-muted">
               <i className="bi bi-info-circle me-1"></i>
-              This is a digital consultation summary. Keep it for your records.
+              Digital consultation summary
             </small>
           </div>
-          <div className="footer-actions">
+          <div className="dd-footer-actions">
             <Button
               variant="outline-secondary"
               onClick={onHide}
-              className="me-2"
+              className="me-2 dd-close-btn"
               size="sm"
             >
               Close
@@ -551,16 +1126,16 @@ const SummaryModal = ({ show, onHide, appointmentData, onPrint, onCompleteWithou
             <Button
               variant="success"
               onClick={onCompleteWithoutPrint}
-              className="me-2 complete-btn"
+              className="me-2 dd-complete-btn"
               size="sm"
             >
               <i className="bi bi-check-circle me-1"></i>
-              Completed
+              Mark as Complete
             </Button>
             <Button
               variant="primary"
-              onClick={() => onPrint(appointmentData)}
-              className="print-btn"
+              onClick={() => onPrint(appointmentData, currentTheme)}
+              className="dd-print-btn"
               size="sm"
             >
               <i className="bi bi-printer me-1"></i>
@@ -589,6 +1164,8 @@ const DoctorDashboard = () => {
   const [selectedAppointment, setSelectedAppointment] = useState(null);
   const [showCompleteModal, setShowCompleteModal] = useState(false);
   const [showSummaryModal, setShowSummaryModal] = useState(false);
+  const [showEditModal, setShowEditModal] = useState(false);
+  const [editingAppointment, setEditingAppointment] = useState(null);
   const [lastCompletedAppointment, setLastCompletedAppointment] = useState(null);
   const [completeForm, setCompleteForm] = useState({
     diagnosis: "",
@@ -662,7 +1239,7 @@ const DoctorDashboard = () => {
     }
   };
 
-  // Break start - ALWAYS works regardless of active session
+  // Break start
   const handleBreak = () => {
     const minutes =
       Number(customBreakMin) > 0
@@ -833,122 +1410,83 @@ const DoctorDashboard = () => {
     setShowSummaryModal(true);
   };
 
-  // Complete without printing (for Completed button)
+  // Edit completed appointment
+  const handleEditCompleted = (appointment) => {
+    setEditingAppointment(appointment);
+    setShowEditModal(true);
+  };
+
+  // Save edited appointment
+  const saveEditedAppointment = (formData) => {
+    if (!editingAppointment) return;
+
+    setCompleted((prev) =>
+      prev.map((appt) =>
+        appt.id === editingAppointment.id
+          ? {
+              ...appt,
+              diagnosis: formData.diagnosis,
+              medicine: formData.medicine,
+              advice: formData.advice,
+              additionalNotes: formData.additionalNotes,
+              followUpRequired: formData.followUpRequired,
+              followUpDate: formData.followUpDate
+            }
+          : appt
+      )
+    );
+
+    setShowEditModal(false);
+    setEditingAppointment(null);
+  };
+
+  // Complete without printing
   const handleCompleteWithoutPrint = () => {
     setShowSummaryModal(false);
-    // The appointment is already in completed state from saveCompleteModal
   };
 
   // Print function
-  const handlePrintSummary = (appointmentData) => {
-    const doc = new jsPDF();
-    
-    // Add clinic header
-    doc.setFontSize(20);
-    doc.text("City Hospital & Medical Center", 105, 20, { align: 'center' });
-    doc.setFontSize(12);
-    doc.text("Indore Saket Nagar, Madhya Pradesh 452001", 105, 28, { align: 'center' });
-    doc.text("Contact: +91 9876543210", 105, 34, { align: 'center' });
-    
-    doc.setLineWidth(0.5);
-    doc.line(20, 40, 190, 40);
-    
-    doc.setFontSize(16);
-    doc.text("PATIENT CONSULTATION SUMMARY", 105, 48, { align: 'center' });
-    
-    doc.setFontSize(10);
-    doc.setLineWidth(0.2);
-    doc.line(20, 52, 190, 52);
-    
-    // Patient Information
-    doc.setFontSize(12);
-    doc.setFont(undefined, 'bold');
-    doc.text("PATIENT INFORMATION", 20, 62);
-    doc.setFont(undefined, 'normal');
-    
-    doc.text(`Patient Name: ${appointmentData.name}`, 20, 70);
-    doc.text(`Gender: ${appointmentData.gender}`, 20, 76);
-    doc.text(`Phone: ${appointmentData.phone}`, 100, 70);
-    doc.text(`Blood Group: ${appointmentData.bloodGroup}`, 100, 76);
-    doc.text(`Blood Pressure: ${appointmentData.bp}`, 140, 70);
-    doc.text(`Issue: ${appointmentData.issue}`, 20, 82);
-    
-    // Consultation Details
-    doc.setFont(undefined, 'bold');
-    doc.text("CONSULTATION DETAILS", 20, 92);
-    doc.setFont(undefined, 'normal');
-    
-    doc.text(`Consultation Date: ${new Date().toLocaleDateString()}`, 20, 100);
-    doc.text(`Start Time: ${formatTimeOfDay(appointmentData.startTime)}`, 20, 106);
-    doc.text(`End Time: ${formatTimeOfDay(appointmentData.endTime)}`, 100, 100);
-    doc.text(`Duration: ${formatDuration(appointmentData.durationMs)}`, 100, 106);
-    doc.text(`Doctor: Dr. Ramesh Kumar`, 20, 112);
-    doc.text(`Appointment ID: APPT-${appointmentData.id.toString().padStart(3, '0')}`, 100, 112);
-    
-    // Medical Information
-    doc.setFont(undefined, 'bold');
-    doc.text("MEDICAL INFORMATION", 20, 122);
-    doc.setFont(undefined, 'normal');
-    
-    doc.text(`Diagnosis:`, 20, 130);
-    const diagnosisLines = doc.splitTextToSize(appointmentData.diagnosis, 170);
-    doc.text(diagnosisLines, 25, 136);
-    
-    let yPos = 136 + (diagnosisLines.length * 5) + 10;
-    
-    doc.text(`Prescribed Medicine:`, 20, yPos);
-    const medicineLines = doc.splitTextToSize(appointmentData.medicine, 170);
-    doc.text(medicineLines, 25, yPos + 6);
-    
-    yPos = yPos + 6 + (medicineLines.length * 5) + 10;
-    
-    doc.text(`Medical Advice:`, 20, yPos);
-    const adviceLines = doc.splitTextToSize(appointmentData.advice, 170);
-    doc.text(adviceLines, 25, yPos + 6);
-    
-    yPos = yPos + 6 + (adviceLines.length * 5) + 10;
-    
-    if (appointmentData.additionalNotes) {
-      doc.text(`Additional Notes:`, 20, yPos);
-      const notesLines = doc.splitTextToSize(appointmentData.additionalNotes, 170);
-      doc.text(notesLines, 25, yPos + 6);
-      yPos = yPos + 6 + (notesLines.length * 5) + 10;
+  const handlePrintSummary = async (appointmentData, theme) => {
+    try {
+      const element = document.getElementById('printable-summary');
+      const canvas = await html2canvas(element, {
+        scale: 2,
+        useCORS: true,
+        logging: false,
+        backgroundColor: '#ffffff'
+      });
+
+      const imgData = canvas.toDataURL('image/png');
+      const pdf = new jsPDF('p', 'mm', 'a4');
+      const pdfWidth = pdf.internal.pageSize.getWidth();
+      const pdfHeight = pdf.internal.pageSize.getHeight();
+      const imgWidth = pdfWidth;
+      const imgHeight = (canvas.height * pdfWidth) / canvas.width;
+
+      let heightLeft = imgHeight;
+      let position = 0;
+
+      pdf.addImage(imgData, 'PNG', 0, position, imgWidth, imgHeight);
+      heightLeft -= pdfHeight;
+
+      while (heightLeft >= 0) {
+        position = heightLeft - imgHeight;
+        pdf.addPage();
+        pdf.addImage(imgData, 'PNG', 0, position, imgWidth, imgHeight);
+        heightLeft -= pdfHeight;
+      }
+
+      const fileName = `consultation_summary_${appointmentData.name.replace(/\s+/g, '_')}_${new Date().toISOString().split('T')[0]}.pdf`;
+      pdf.save(fileName);
+
+      setTimeout(() => {
+        setShowSummaryModal(false);
+      }, 1000);
+      
+    } catch (error) {
+      console.error('Error generating PDF:', error);
+      alert('Error generating PDF. Please try again.');
     }
-    
-    // Follow-up Information
-    doc.setFont(undefined, 'bold');
-    doc.text("FOLLOW-UP INFORMATION", 20, yPos);
-    doc.setFont(undefined, 'normal');
-    
-    if (appointmentData.followUpRequired && appointmentData.followUpDate) {
-      doc.text(`Follow-up Required: Yes`, 25, yPos + 8);
-      doc.text(`Follow-up Date: ${new Date(appointmentData.followUpDate).toLocaleDateString()}`, 25, yPos + 14);
-    } else {
-      doc.text(`Follow-up Required: No`, 25, yPos + 8);
-    }
-    
-    // Doctor's Signature
-    yPos += 30;
-    doc.setLineWidth(0.5);
-    doc.line(20, yPos, 80, yPos);
-    doc.text("Dr. Ramesh Kumar", 30, yPos + 8);
-    doc.text("Consulting Physician", 25, yPos + 14);
-    
-    doc.line(120, yPos, 180, yPos);
-    doc.text("City Hospital & Medical Center", 125, yPos + 8);
-    doc.text("Verified & Stamped", 135, yPos + 14);
-    
-    // Footer
-    doc.setFontSize(8);
-    doc.text("This is a digital consultation summary. Please keep it for your records.", 105, 280, { align: 'center' });
-    
-    // Save the PDF
-    doc.save(`appointment-summary-${appointmentData.name.replace(/\s+/g, '-')}-${new Date().getTime()}.pdf`);
-    
-    // Close the modal after printing
-    setTimeout(() => {
-      setShowSummaryModal(false);
-    }, 500);
   };
 
   const computeElapsedMs = () => {
@@ -989,40 +1527,48 @@ const DoctorDashboard = () => {
   };
 
   return (
-    <div className="doctor-dashboard-container p-3">
+    <div className="dd-main-container p-3">
       {/* HEADER */}
-      <div className="dashboard-header d-flex flex-column flex-md-row justify-content-between align-items-start align-items-md-center mb-3 gap-2">
-        <h2 className="dashboard-title">Doctor Dashboard</h2>
-        <div className="dashboard-time-info text-end">
-          <div className="location-label">Indore Saket Nager</div>
-          <div className="current-time-display">
+      <div className="header d-flex flex-column flex-md-row justify-content-between align-items-start align-items-md-center mb-3 gap-3">
+        <h2 className="dd-dashboard-title">Doctor Dashboard</h2>
+        <div className="dd-dashboard-time-info text-end">
+          <div className="dd-current-date-display">
+            {new Date(now).toLocaleDateString('en-US', {
+              weekday: 'long',
+              year: 'numeric',
+              month: 'long',
+              day: 'numeric'
+            })}
+          </div>
+          <div className="dd-current-time-display">
             {new Date(now).toLocaleTimeString()}
           </div>
         </div>
       </div>
 
       {/* BREAK CONTROLS */}
-      <div className="break-controls-card card shadow-sm mb-3">
+      <div className="dd-break-controls-card card shadow-sm mb-4">
         <div className="card-body p-3">
-          <h5 className="break-controls-title mb-2">Break Controls</h5>
+          <h5 className="dd-break-controls-title mb-3">Break Controls</h5>
           <div className="d-flex gap-2 align-items-center flex-wrap">
             <Form.Select
               size="sm"
               value={selectedBreakMin}
               onChange={(e) => setSelectedBreakMin(Number(e.target.value))}
-              className="break-duration-select"
-              style={{ width: "100px" }}
+              className="dd-break-duration-select"
+              style={{ width: "120px" }}
             >
               {BREAK_OPTIONS_MIN.map((m) => (
                 <option key={m} value={m}>
-                  {m} min
+                  {m} minutes
                 </option>
               ))}
             </Form.Select>
 
-            <InputGroup size="sm" className="custom-break-input-group" style={{ width: "130px" }}>
+            <InputGroup size="sm" className="dd-custom-break-input-group" style={{ width: "150px" }}>
               <FormControl
-                placeholder="Custom"
+                placeholder="Custom minutes"
+                style={{height:"45px", marginTop:"0px"}}
                 value={customBreakMin}
                 onChange={(e) =>
                   setCustomBreakMin(e.target.value.replace(/\D/g, ""))
@@ -1035,8 +1581,9 @@ const DoctorDashboard = () => {
               variant="info"
               size="sm"
               onClick={handleBreak}
-              className="take-break-btn"
+              className="dd-take-break-btn"
             >
+              <i className="bi bi-cup-hot me-1"></i>
               Take Break
             </Button>
             
@@ -1044,22 +1591,32 @@ const DoctorDashboard = () => {
               variant={
                 activeSession?.status === "paused" ? "success" : "warning"
               }
-              className="pause-resume-btn"
+              className="dd-pause-resume-btn"
               onClick={handlePause}
               size="sm"
               disabled={!activeSession?.appt || activeSession?.status === "break"}
             >
-              {activeSession?.status === "paused" ? "Resume" : "Pause"}
+              {activeSession?.status === "paused" ? (
+                <>
+                  <i className="bi bi-play-circle me-1"></i>
+                  Resume
+                </>
+              ) : (
+                <>
+                  <i className="bi bi-pause-circle me-1"></i>
+                  Pause
+                </>
+              )}
             </Button>
           </div>
 
           {activeSession?.status === "break" && (
-            <div className="break-timer-section mt-2">
-              <div className="break-remaining-label">
+            <div className="dd-break-timer-section mt-3 p-3 border rounded bg-light">
+              <div className="dd-break-remaining-label fw-bold mb-2">
                 {activeSession.appt ? `Break for ${activeSession.appt.name}` : "On Break"}
               </div>
-              <div className="d-flex gap-2 align-items-center">
-                <div className="break-time-remaining">
+              <div className="d-flex gap-3 align-items-center">
+                <div className="dd-break-time-remaining fw-bold text-primary fs-5">
                   {formatDuration(breakRemainingMs)}
                 </div>
                 <ProgressBar
@@ -1069,18 +1626,18 @@ const DoctorDashboard = () => {
                       (activeSession.breakDurationMs || 1)) *
                     100
                   }
-                  className="break-progress-bar"
-                  style={{ width: 120 }}
+                  className="dd-break-progress-bar flex-grow-1"
                 />
               </div>
 
               <Button
                 variant="outline-secondary"
                 size="sm"
-                className="mt-1 end-break-btn"
+                className="mt-2 dd-end-break-btn"
                 onClick={handleEndBreakAndResume}
               >
-                {activeSession.appt ? "End Break" : "End Break"}
+                <i className="bi bi-stop-circle me-1"></i>
+                End Break Early
               </Button>
             </div>
           )}
@@ -1088,71 +1645,77 @@ const DoctorDashboard = () => {
       </div>
 
       {/* ACTIVE SESSION CARD */}
-      <div
-        className={`active-session-card card mb-3 shadow-sm ${activeSession && activeSession.appt ? "active" : ""
-          }`}
-      >
-        <div className="card-body p-3">
-          {activeSession && activeSession.appt ? (
-            <div className="d-flex flex-column flex-md-row justify-content-between align-items-start">
-              <div className="d-flex gap-2 align-items-start mb-2 mb-md-0">
-                <div className="patient-avatar">
-                  <div className="patient-initials">
-                    {activeAppt.name
-                      .split(" ")
-                      .map((n) => n[0])
-                      .slice(0, 2)
-                      .join("")}
-                  </div>
+      {activeSession && activeSession.appt ? (
+        <div className={`dd-active-session-card card mb-4 shadow-sm dd-active`}>
+          <div className="card-body p-4">
+            <div className="d-flex flex-column flex-md-row justify-content-between align-items-start align-items-md-center">
+              <div className="d-flex gap-3 align-items-start mb-3 mb-md-0">
+                <div className="dd-patient-avatar bg-primary text-white rounded-circle d-flex align-items-center justify-content-center" 
+                     style={{ width: '60px', height: '60px', fontSize: '1.5rem' }}>
+                  {activeAppt.name
+                    .split(" ")
+                    .map((n) => n[0])
+                    .slice(0, 2)
+                    .join("")}
                 </div>
 
-                <div className="patient-details">
-                  <div className="patient-label">Now with</div>
-                  <h5 className="patient-name">
-                    {activeAppt.name}{" "}
-                    <small className="patient-gender">({activeAppt.gender})</small>
+                <div className="dd-patient-details">
+                  <div className="dd-patient-label text-muted mb-1">Currently with</div>
+                  <h5 className="dd-patient-name mb-1">
+                    {activeAppt.name}
+                    <small className="dd-patient-gender text-muted ms-2">({activeAppt.gender})</small>
                   </h5>
-                  <div className="patient-issue mb-1">{activeAppt.issue}</div>
+                  <div className="dd-patient-issue mb-2">
+                    <Badge bg="light" text="dark" className="border">
+                      <i className="bi bi-clipboard-plus me-1"></i>
+                      {activeAppt.issue}
+                    </Badge>
+                  </div>
 
-                  <div className="patient-vitals mb-1">
-                    <Badge bg="info" className="me-1 vital-badge">
+                  <div className="dd-patient-vitals d-flex gap-2 mb-2">
+                    <Badge bg="info" className="dd-vital-badge">
+                      <i className="bi bi-heart me-1"></i>
                       BP: {activeAppt.bp || 'N/A'}
                     </Badge>
-                    <Badge bg="info" className="vital-badge">
+                    <Badge bg="info" className="dd-vital-badge">
+                      <i className="bi bi-droplet me-1"></i>
                       BG: {activeAppt.bloodGroup || 'N/A'}
                     </Badge>
                   </div>
 
-                  <div className="d-flex gap-2 session-info">
+                  <div className="d-flex gap-4 dd-session-info">
                     <div>
-                      <div className="info-label">Started</div>
-                      <div className="info-value">
+                      <div className="dd-info-label text-muted small">Started</div>
+                      <div className="dd-info-value fw-bold">
                         {formatTimeOfDay(activeSession.startTime)}
                       </div>
                     </div>
 
                     <div>
-                      <div className="info-label">Elapsed</div>
-                      <div className="info-value">
+                      <div className="dd-info-label text-muted small">Elapsed</div>
+                      <div className="dd-info-value fw-bold text-success">
                         {formatDuration(elapsedMs)}
                       </div>
                     </div>
 
                     <div>
-                      <div className="info-label">Status</div>
+                      <div className="dd-info-label text-muted small">Status</div>
                       <div>
                         {activeSession.status === "started" && (
-                          <Badge bg="success" className="session-status">
-                            Active <Spinner animation="border" size="sm" />
+                          <Badge bg="success" className="dd-session-status">
+                            <Spinner animation="border" size="sm" className="me-1" />
+                            Active
                           </Badge>
                         )}
                         {activeSession.status === "paused" && (
-                          <Badge bg="warning" className="session-status">
+                          <Badge bg="warning" className="dd-session-status">
+                            <i className="bi bi-pause me-1"></i>
                             Paused
                           </Badge>
                         )}
                         {activeSession.status === "break" && (
-                          <Badge bg="info" className="session-status">
+                          <Badge bg="info" className="dd-session-status">
+                            <i className="bi bi-cup-hot me-1"></i>
                             On Break
                           </Badge>
                         )}
@@ -1162,99 +1725,148 @@ const DoctorDashboard = () => {
                 </div>
               </div>
 
-              <div className="session-controls ms-md-auto text-end">
-                <div className="">
+              <div className="dd-session-controls mt-3 mt-md-0">
+                <div className="d-flex gap-2">
                   <Button
                     variant="primary"
                     onClick={handleChecked}
                     size="sm"
-                    className="me-1 checked-btn mb-2"
+                    className="dd-checked-btn"
                     disabled={activeSession.status === "break"}
                   >
+                    <i className="bi bi-clipboard-check me-1"></i>
                     Checked
                   </Button>
                   <Button
                     variant="success"
                     onClick={handleCompleteNow}
                     size="sm"
-                    className="complete-now-btn"
+                    className="dd-complete-now-btn"
                     disabled={activeSession.status === "break"}
                   >
+                    <i className="bi bi-check-circle me-1"></i>
                     Complete
                   </Button>
                 </div>
               </div>
             </div>
-          ) : activeSession?.status === "break" ? (
-            <div className="no-patient-break text-center py-3">
-              <div className="break-message">Currently on break</div>
-              <h5 className="break-instruction">
+          </div>
+        </div>
+      ) : activeSession?.status === "break" ? (
+        <div className="dd-break-only-card card mb-4 shadow-sm">
+          <div className="card-body p-4 text-center">
+            <div className="dd-no-patient-break py-3">
+              <i className="bi bi-cup-hot fs-1 text-info mb-3"></i>
+              <div className="dd-break-message fs-5 fw-bold mb-2">Currently on break</div>
+              <h5 className="dd-break-instruction text-muted">
                 No active patient appointment
               </h5>
             </div>
-          ) : (
-            <div className="no-active-session text-center py-3">
-              <div className="inactive-message">No active appointment</div>
-              <h5 className="inactive-instruction">
-                Start from Today's Appointments
-              </h5>
-            </div>
-          )}
+          </div>
         </div>
-      </div>
+      ) : null}
 
       {/* TODAY'S APPOINTMENTS TABLE */}
-      <div className="appointments-table-card card shadow-sm mb-3">
-        <div className="card-body p-3">
-          <h5 className="table-heading">Today's Appointments</h5>
-          <div className="table-responsive mt-2">
-            <table className="table appointments-table align-middle mb-0">
-              <thead>
+      <div className="dd-appointments-table-card card shadow-sm mb-4">
+        <div className="card-body p-4">
+          <div className="d-flex justify-content-between align-items-center mb-3">
+            <h5 className="dd-table-heading mb-0">
+              <i className="bi bi-calendar-check me-2"></i>
+              Today's Appointments
+            </h5>
+            <Badge bg="secondary" className="dd-appointment-count">
+              {appointments.length} appointments
+            </Badge>
+          </div>
+          
+          <div className="table-responsive">
+            <table className="table dd-appointments-table align-middle mb-0">
+              <thead className="dd-table-header">
                 <tr>
-                  <th className="serial-col">#</th>
-                  <th className="patient-col">Patient</th>
-                  <th className="gender-col">Gender</th>
-                  <th className="issue-col">Issue</th>
-                  <th className="phone-col">Phone</th>
-                  <th className="bp-col">BP</th>
-                  <th className="blood-group-col">BG</th>
-                  <th className="scheduled-col">Time</th>
-                  <th className="status-col">Status</th>
-                  <th className="action-col">Action</th>
+                  <th className="dd-serial-col">S No.</th>
+                  <th className="dd-patient-col">Patient</th>
+                  <th className="dd-gender-col">Gender</th>
+                  <th className="dd-issue-col">Issue</th>
+                  <th className="dd-phone-col">Phone</th>
+                  <th className="dd-bp-col">BP</th>
+                  <th className="dd-blood-group-col">BG</th>
+                  <th className="dd-scheduled-col">Time</th>
+                  <th className="dd-status-col">Status</th>
+                  <th className="dd-action-col">Action</th>
                 </tr>
               </thead>
 
               <tbody>
                 {appointments.map((a, idx) => (
-                  <tr key={a.id}>
-                    <td className="serial-number">{idx + 1}</td>
-                    <td className="patient-name-cell">{a.name}</td>
-                    <td className="patient-gender-cell">{a.gender}</td>
-                    <td className="patient-issue-cell">{a.issue}</td>
-                    <td className="patient-phone-cell">{a.phone}</td>
-                    <td className="bp-cell">{a.bp || 'N/A'}</td>
-                    <td className="blood-group-cell">{a.bloodGroup || 'N/A'}</td>
-                    <td className="scheduled-time-cell">{a.scheduledTime}</td>
-                    <td className="status-cell">
+                  <tr key={a.id} className="dd-appointment-row">
+                    <td className="dd-serial-number text-center">
+                      <span className="dd-serial-badge">{idx + 1}</span>
+                    </td>
+                    <td className="dd-patient-name-cell">
+                      <div className="d-flex align-items-center">
+                        <div className="dd-patient-avatar-small bg-primary text-white rounded-circle d-flex align-items-center justify-content-center me-2" 
+                             style={{ width: '32px', height: '32px', fontSize: '0.8rem' }}>
+                          {a.name
+                            .split(" ")
+                            .map((n) => n[0])
+                            .slice(0, 2)
+                            .join("")}
+                        </div>
+                        <span className="dd-patient-name fw-bold">{a.name}</span>
+                      </div>
+                    </td>
+                    <td className="dd-patient-gender-cell">
+                      <Badge bg={a.gender === "Male" ? "primary" : "danger"} className="dd-gender-badge">
+                        {a.gender}
+                      </Badge>
+                    </td>
+                    <td className="dd-patient-issue-cell">
+                      <span className="dd-issue-text">{a.issue}</span>
+                    </td>
+                    <td className="dd-patient-phone-cell">
+                      <a href={`tel:${a.phone}`} className="dd-phone-link text-decoration-none">
+                        <i className="bi bi-telephone me-1"></i>
+                        {a.phone}
+                      </a>
+                    </td>
+                    <td className="dd-bp-cell">
+                      <Badge bg="info" className="dd-bp-badge">
+                        {a.bp || 'N/A'}
+                      </Badge>
+                    </td>
+                    <td className="dd-blood-group-cell">
+                      <Badge bg="danger" className="dd-blood-group-badge">
+                        {a.bloodGroup || 'N/A'}
+                      </Badge>
+                    </td>
+                    <td className="dd-scheduled-time-cell">
+                      <div className="dd-time-display">
+                        <i className="bi bi-clock me-1"></i>
+                        {a.scheduledTime}
+                      </div>
+                    </td>
+                    <td className="dd-status-cell">
                       <StatusBadge status={a.status} />
                     </td>
-                    <td className="action-cell">
+                    <td className="dd-action-cell">
                       {(!activeSession?.appt || activeSession?.appt?.id === a.id) &&
                         a.status === "pending" && (
                           <Button
                             variant="primary"
                             size="sm"
                             onClick={() => handleConsentClick(a)}
-                            className="consent-btn"
+                            className="dd-consent-btn"
                             disabled={activeSession?.status === "break"}
                           >
-                            Consent
+                            <i className="bi bi-person-check me-1"></i>
+                            Appointment
                           </Button>
                         )}
 
                       {activeSession?.appt?.id === a.id &&
                         a.status === "in-progress" && (
-                          <Badge bg="info" className="active-badge">
+                          <Badge bg="info" className="dd-active-badge">
+                            <Spinner animation="border" size="sm" className="me-1" />
                             Active
                           </Badge>
                         )}
@@ -1263,11 +1875,12 @@ const DoctorDashboard = () => {
                 ))}
 
                 {appointments.length === 0 && (
-                  <tr className="no-appointments-row">
-                    <td colSpan="10" className="text-center text-muted py-3">
-                      <div className="empty-state">
-                        <i className="bi bi-check-circle-fill me-1"></i>
-                        All appointments completed
+                  <tr className="dd-no-appointments-row">
+                    <td colSpan="10" className="text-center py-4">
+                      <div className="dd-empty-state">
+                        <i className="bi bi-check-circle-fill fs-1 text-success mb-3"></i>
+                        <h6 className="text-muted mb-0">All appointments completed</h6>
+                        <p className="text-muted small mt-1">No pending appointments for today</p>
                       </div>
                     </td>
                   </tr>
@@ -1279,69 +1892,121 @@ const DoctorDashboard = () => {
       </div>
 
       {/* COMPLETED APPOINTMENTS TABLE */}
-      <div className="completed-table-card card shadow-sm mb-4">
-        <div className="card-body p-3">
-          <h5 className="table-heading">Completed Appointments</h5>
-          <div className="table-responsive mt-2">
-            <table className="table completed-appointments-table mb-0">
-              <thead>
+      <div className="dd-completed-table-card card shadow-sm">
+        <div className="card-body p-4">
+          <div className="d-flex justify-content-between align-items-center mb-3">
+            <h5 className="dd-table-heading mb-0">
+              <i className="bi bi-check-circle me-2"></i>
+              Completed Appointments
+            </h5>
+            <Badge bg="success" className="dd-completed-count">
+              {completed.length} completed
+            </Badge>
+          </div>
+          
+          <div className="table-responsive">
+            <table className="table dd-completed-appointments-table align-middle mb-0">
+              <thead className="dd-table-header">
                 <tr>
-                  <th className="serial-col">#</th>
-                  <th className="patient-col">Patient</th>
-                  <th className="gender-col">Gender</th>
-                  <th className="issue-col">Issue</th>
-                  <th className="phone-col">Phone</th>
-                  <th className="bp-col">BP</th>
-                  <th className="blood-group-col">BG</th>
-                  <th className="start-col">Start</th>
-                  <th className="end-col">End</th>
-                  <th className="duration-col">Time</th>
-                  <th className="diagnosis-col">Diagnosis</th>
-                  <th className="medicine-col">Medicine</th>
-                  <th className="advice-col">Advice</th>
-                  <th className="followup-col">Follow-up</th>
+                  <th className="dd-serial-col">S No.</th>
+                  <th className="dd-patient-col">Patient</th>
+                  <th className="dd-gender-col">Gender</th>
+                  <th className="dd-issue-col">Issue</th>
+                  <th className="dd-phone-col">Phone</th>
+                  <th className="dd-duration-col">Duration</th>
+                  <th className="dd-diagnosis-col">Diagnosis</th>
+                  <th className="dd-medicine-col">Medicine</th>
+                  <th className="dd-advice-col">Advice</th>
+                  <th className="dd-followup-col">Follow-up</th>
+                  <th className="dd-edit-col">Edit</th>
                 </tr>
               </thead>
 
               <tbody>
                 {completed.map((c, i) => (
-                  <tr key={i}>
-                    <td className="serial-number">{i + 1}</td>
-                    <td className="patient-name-cell">{c.name}</td>
-                    <td className="patient-gender-cell">{c.gender}</td>
-                    <td className="patient-issue-cell">{c.issue}</td>
-                    <td className="patient-phone-cell">{c.phone}</td>
-                    <td className="bp-cell">{c.bp || 'N/A'}</td>
-                    <td className="blood-group-cell">{c.bloodGroup || 'N/A'}</td>
-                    <td className="start-time-cell">{formatDateTime(c.startTime)}</td>
-                    <td className="end-time-cell">{formatDateTime(c.endTime)}</td>
-                    <td className="duration-cell">{formatDuration(c.durationMs)}</td>
-                    <td className="diagnosis-cell">{c.diagnosis}</td>
-                    <td className="medicine-cell">{c.medicine}</td>
-                    <td className="advice-cell">{c.advice}</td>
-                    <td className="followup-cell">
+                  <tr key={c.id} className="dd-completed-row">
+                    <td className="dd-serial-number text-center">
+                      <span className="dd-serial-badge">{i + 1}</span>
+                    </td>
+                    <td className="dd-patient-name-cell">
+                      <div className="d-flex align-items-center">
+                        <div className="dd-patient-avatar-small bg-success text-white rounded-circle d-flex align-items-center justify-content-center me-2" 
+                             style={{ width: '32px', height: '32px', fontSize: '0.8rem' }}>
+                          {c.name
+                            .split(" ")
+                            .map((n) => n[0])
+                            .slice(0, 2)
+                            .join("")}
+                        </div>
+                        <div>
+                          <div className="dd-patient-name fw-bold">{c.name}</div>
+                          <small className="dd-completed-time text-muted">
+                            {formatTimeOfDay(c.endTime)}
+                          </small>
+                        </div>
+                      </div>
+                    </td>
+                    <td className="dd-patient-gender-cell">
+                      <Badge bg={c.gender === "Male" ? "primary" : "danger"} className="dd-gender-badge">
+                        {c.gender}
+                      </Badge>
+                    </td>
+                    <td className="dd-patient-issue-cell">
+                      <span className="dd-issue-text">{c.issue}</span>
+                    </td>
+                    <td className="dd-patient-phone-cell">
+                      <a href={`tel:${c.phone}`} className="dd-phone-link text-decoration-none">
+                        <i className="bi bi-telephone me-1"></i>
+                        {c.phone}
+                      </a>
+                    </td>
+                    <td className="dd-duration-cell">
+                      <Badge bg="info" className="dd-duration-badge">
+                        {formatDuration(c.durationMs)}
+                      </Badge>
+                    </td>
+                    <td className="dd-diagnosis-cell">
+                      <div className="dd-diagnosis-text">{c.diagnosis}</div>
+                    </td>
+                    <td className="dd-medicine-cell">
+                      <div className="dd-medicine-text">{c.medicine}</div>
+                    </td>
+                    <td className="dd-advice-cell">
+                      <div className="dd-advice-text">{c.advice}</div>
+                    </td>
+                    <td className="dd-followup-cell">
                       {c.followUpRequired && c.followUpDate ? (
-                        <Badge bg="warning" className="follow-up-badge">
+                        <Badge bg="warning" className="dd-follow-up-badge">
                           <i className="bi bi-calendar-check me-1"></i>
                           {new Date(c.followUpDate).toLocaleDateString('en-US', {
                             day: '2-digit',
-                            month: 'short',
-                            year: 'numeric'
+                            month: 'short'
                           })}
                         </Badge>
                       ) : (
-                        <span className="text-muted">No</span>
+                        <span className="text-muted dd-no-followup">No</span>
                       )}
+                    </td>
+                    <td className="dd-edit-cell">
+                      <Button
+                        variant="outline-primary"
+                        size="sm"
+                        onClick={() => handleEditCompleted(c)}
+                        className="dd-edit-btn"
+                      >
+                        <i className="bi bi-pencil"></i>
+                      </Button>
                     </td>
                   </tr>
                 ))}
 
                 {completed.length === 0 && (
-                  <tr className="no-completed-row">
-                    <td colSpan="14" className="text-center text-muted py-3">
-                      <div className="empty-state">
-                        <i className="bi bi-calendar-x me-1"></i>
-                        No completed appointments
+                  <tr className="dd-no-completed-row">
+                    <td colSpan="11" className="text-center py-4">
+                      <div className="dd-empty-state">
+                        <i className="bi bi-calendar-x fs-1 text-muted mb-3"></i>
+                        <h6 className="text-muted mb-0">No completed appointments</h6>
+                        <p className="text-muted small mt-1">Completed appointments will appear here</p>
                       </div>
                     </td>
                   </tr>
@@ -1357,56 +2022,59 @@ const DoctorDashboard = () => {
         show={showConsentModal}
         onHide={() => setShowConsentModal(false)}
         centered
-        className="consent-modal"
+        className="dd-consent-modal"
         size="lg"
       >
-        <Modal.Header closeButton className="consent-modal-header p-2">
-          <Modal.Title className="consent-modal-title">Patient Consent Form</Modal.Title>
+        <Modal.Header closeButton className="dd-consent-modal-header p-3">
+          <Modal.Title className="dd-consent-modal-title">
+            <i className="bi bi-person-check me-2"></i>
+            Patient Consent Form
+          </Modal.Title>
         </Modal.Header>
-        <Modal.Body className="consent-modal-body p-3" style={{ maxHeight: '50vh', overflowY: 'auto' }}>
-          <div className="patient-summary mb-3">
-            <h6 className="patient-summary-title">Patient Information</h6>
-            <div className="patient-details-grid">
-              <div className="patient-detail">
-                <span className="detail-label">Name:</span>
-                <span className="detail-value">{selectedAppointment?.name}</span>
+        <Modal.Body className="dd-consent-modal-body p-4" style={{ maxHeight: '50vh', overflowY: 'auto' }}>
+          <div className="dd-patient-summary mb-4">
+            <h6 className="dd-patient-summary-title mb-3">Patient Information</h6>
+            <div className="dd-patient-details-grid">
+              <div className="dd-patient-detail">
+                <span className="dd-detail-label">Name:</span>
+                <span className="dd-detail-value fw-bold">{selectedAppointment?.name}</span>
               </div>
-              <div className="patient-detail">
-                <span className="detail-label">Gender:</span>
-                <span className="detail-value">{selectedAppointment?.gender}</span>
+              <div className="dd-patient-detail">
+                <span className="dd-detail-label">Gender:</span>
+                <span className="dd-detail-value">{selectedAppointment?.gender}</span>
               </div>
-              <div className="patient-detail">
-                <span className="detail-label">Issue:</span>
-                <span className="detail-value">{selectedAppointment?.issue}</span>
+              <div className="dd-patient-detail">
+                <span className="dd-detail-label">Issue:</span>
+                <span className="dd-detail-value">{selectedAppointment?.issue}</span>
               </div>
-              <div className="patient-detail">
-                <span className="detail-label">Scheduled:</span>
-                <span className="detail-value">{selectedAppointment?.scheduledTime}</span>
+              <div className="dd-patient-detail">
+                <span className="dd-detail-label">Scheduled:</span>
+                <span className="dd-detail-value">{selectedAppointment?.scheduledTime}</span>
               </div>
-              <div className="patient-detail">
-                <span className="detail-label">Phone:</span>
-                <span className="detail-value">{selectedAppointment?.phone}</span>
-              </div>
-            </div>
-          </div>
-
-          <div className="patient-vitals-section mb-3">
-            <h6 className="patient-summary-title">Patient Vitals (Pre-recorded)</h6>
-            <div className="vitals-display">
-              <div className="vital-item">
-                <span className="vital-label">Blood Pressure:</span>
-                <span className="vital-value">{selectedAppointment?.bp || 'Not recorded'}</span>
-              </div>
-              <div className="vital-item">
-                <span className="vital-label">Blood Group:</span>
-                <span className="vital-value">{selectedAppointment?.bloodGroup || 'Not recorded'}</span>
+              <div className="dd-patient-detail">
+                <span className="dd-detail-label">Phone:</span>
+                <span className="dd-detail-value">{selectedAppointment?.phone}</span>
               </div>
             </div>
           </div>
 
-          <div className="consent-agreement">
-            <h6 className="patient-summary-title">Consent Agreement</h6>
-            <div className="consent-text">
+          <div className="dd-patient-vitals-section mb-4">
+            <h6 className="dd-patient-summary-title mb-3">Patient Vitals</h6>
+            <div className="dd-vitals-display">
+              <div className="dd-vital-item">
+                <span className="dd-vital-label">Blood Pressure:</span>
+                <span className="dd-vital-value fw-bold">{selectedAppointment?.bp || 'Not recorded'}</span>
+              </div>
+              <div className="dd-vital-item">
+                <span className="dd-vital-label">Blood Group:</span>
+                <span className="dd-vital-value fw-bold">{selectedAppointment?.bloodGroup || 'Not recorded'}</span>
+              </div>
+            </div>
+          </div>
+
+          <div className="dd-consent-agreement">
+            <h6 className="dd-patient-summary-title mb-3">Consent Agreement</h6>
+            <div className="dd-consent-text">
               <p>I confirm that I have reviewed the patient's information and vitals.</p>
               <p>I understand that starting will begin tracking consultation time.</p>
               <p>I acknowledge my responsibility for providing appropriate medical care.</p>
@@ -1415,11 +2083,11 @@ const DoctorDashboard = () => {
             </div>
           </div>
         </Modal.Body>
-        <Modal.Footer className="consent-modal-footer p-2">
+        <Modal.Footer className="dd-consent-modal-footer p-3">
           <Button
             variant="outline-secondary"
             onClick={() => setShowConsentModal(false)}
-            className="consent-cancel-btn"
+            className="dd-consent-cancel-btn"
             size="sm"
           >
             Cancel
@@ -1427,9 +2095,10 @@ const DoctorDashboard = () => {
           <Button
             variant="primary"
             onClick={handleStartFromConsent}
-            className="consent-start-btn"
+            className="dd-consent-start-btn"
             size="sm"
           >
+            <i className="bi bi-play-circle me-1"></i>
             Start Appointment
           </Button>
         </Modal.Footer>
@@ -1443,6 +2112,14 @@ const DoctorDashboard = () => {
         setForm={setCompleteForm}
         onSave={saveCompleteModal}
         patientName={activeAppt?.name}
+      />
+
+      {/* EDIT MODAL */}
+      <EditCompletedModal
+        show={showEditModal}
+        onHide={() => setShowEditModal(false)}
+        appointment={editingAppointment}
+        onSave={saveEditedAppointment}
       />
 
       {/* SUMMARY MODAL */}

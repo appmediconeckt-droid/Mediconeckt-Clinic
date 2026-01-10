@@ -291,7 +291,7 @@ export default function DoctorLandingPage() {
                   <h5 className="doctor-tool-name">{tool.name}</h5>
                   <p className="doctor-tool-desc">{tool.description}</p>
                   <div className="doctor-tool-actions">
-                    <button className="btn btn-sm doctor-tool-btn">
+                    <button className="btn btn-sm doctor-tool-btn mb-3">
                       Try Demo
                     </button>
                     <button className="btn btn-sm doctor-tool-btn-outline">

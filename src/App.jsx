@@ -48,6 +48,7 @@ import EntCareClinic from "./authtication/Ent-Specialist";
 import PhysiotherapyClinic from "./authtication/Physiotherapist";
 import GeneralPhysicianClinic from "./authtication/General-Physician";
 import FollowUp from "./components/DoctorDashboard/FollowUp";
+import PatientDetailsPage from "./components/DoctorDashboard/PatientDetailsPage";
 // import PatientDashboard from "./components/PatientDashboard/PatientDashboard";
 
 function App() {
@@ -153,7 +154,9 @@ function App() {
               <Route path="/walkinappointment" element={<WalkInAppointment />} />
               <Route path="/patient-sms" element={<PatientList />} />
               <Route path="/patient-chat/:patientId" element={<DoctorChat />} />
-              <Route path="/followup" element={<FollowUp />} />
+              <Route path="/followup" element={<FollowUp />} /> 
+              <Route path="/patient-details" element={<PatientDetailsPage />} />
+
 
 
               {/* Patient Dashboard */}

@@ -270,7 +270,9 @@ const Navbar = ({ toggleSidebar }) => {
             <div className="nav-main-icon d-flex align-items-center">
               {/* Emergency Icon - Only for doctor role */}
               {userRole === "doctor" && (
-                <div className="emergency-container position-relative">
+                
+                <div className="emergency-container position-relative d-flex">
+                  {/* <div className="dc-location-label mt-1" style={{marginRight:"20px"}}>Indore Saket Nagar</div> */}
                   <a 
                     className={`emergency-icon ${isEmergencyActive ? 'active' : ''}`} 
                     href="#" 
