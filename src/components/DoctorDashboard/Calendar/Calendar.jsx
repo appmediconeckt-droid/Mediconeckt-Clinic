@@ -3,6 +3,7 @@ import React, { useEffect, useState } from "react";
 import "bootstrap/dist/css/bootstrap.min.css";
 import "./DoctorCalendar.css";
 
+
 const days = ["Sun", "Mon", "Tue", "Wed", "Thu", "Fri", "Sat"];
 const formatDateKey = (y, m, d) => `${y}-${m + 1}-${d}`;
 const STORAGE_KEY = "doctor_calendar_state_v1";
@@ -1600,7 +1601,7 @@ const DoctorCalendar = () => {
                       }
                     />
                   </div>
-                  <div className="col-md-1">
+                  <div className="">
                     <button
                       className="btn btn-primary w-100"
                       onClick={saveRange}

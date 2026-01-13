@@ -1,5 +1,5 @@
 import React, { useState, useRef } from "react";
-import { patientData } from "./data";
+import { patientData } from "../../BookAppointment/data";
 import "./ProfileTab.css";
 
 export default function ProfileTab() {

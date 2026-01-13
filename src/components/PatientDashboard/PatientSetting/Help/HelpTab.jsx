@@ -1,5 +1,5 @@
 import React from "react";
-import { helpData } from "./data";
+import { helpData } from "../../BookAppointment/data";
 
 export default function HelpTab() {
   return (

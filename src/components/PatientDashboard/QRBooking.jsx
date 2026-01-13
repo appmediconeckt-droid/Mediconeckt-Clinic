@@ -1,6 +1,6 @@
 import React, { useState, useEffect } from 'react';
-import './AppointmentBookingModal.css';
-import { patientData } from "./data";
+import '../PatientDashboard/BookAppointment/AppointmentBookingModal.css';
+import { patientData } from "./BookAppointment/data";
 
 const AppointmentBooking = ({ userData }) => {
   const [selectedDate, setSelectedDate] = useState('');

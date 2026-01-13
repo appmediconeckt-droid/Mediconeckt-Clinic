@@ -2,10 +2,10 @@
 import React, { useState } from "react";
 import "./Setting.css";
 import { Link, useNavigate } from "react-router-dom";
-import ProfessionalProfileTable from "./DoctorProfile";
-import ClinicSettings from "./ClinicUpload";
-import ProfileCard from "./profileQR";
-import PaymentSettings from "./PaymentSettings";
+import ProfessionalProfileTable from "./Profile/DoctorProfile";
+import ClinicSettings from "./ClinicSetting/ClinicUpload";
+import ProfileCard from "./SettingProfileQR/profileQR";
+import PaymentSettings from "./PaymentSetting/PaymentSettings";
 
 export default function SettingsPage() {
   const [active, setActive] = useState("clinic");
@@ -40,7 +40,7 @@ export default function SettingsPage() {
               <h2 className="mb-3">Settings</h2>
             </div>
 
-            {/* <MenuItem id="profile" icon="👤" label="Profile" /> */}
+            <MenuItem id="profile" icon="👤" label="Profile" />
             {/* <MenuItem id="account" icon="🔒" label="Account" /> */}
             <MenuItem id="clinic" icon="🏥" label="Clinic" />
             <MenuItem
@@ -86,7 +86,7 @@ export default function SettingsPage() {
         {/* Content */}
         <div className="all-tab">
           <div className="form-box">
-            {/* {active === "profile" && <ProfessionalProfileTable />} */}
+            {active === "profile" && <ProfessionalProfileTable />}
             {active === "account" && <div>Account</div>}
             {active === "clinic" && <ClinicSettings />}
             {active === "payment" && <PaymentSettings />}

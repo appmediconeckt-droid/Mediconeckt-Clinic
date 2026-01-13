@@ -2,11 +2,11 @@ import React, { useState } from "react";
 import "./PatientSettingsPage.css";
 import { useNavigate } from "react-router-dom";
 import PatientSidebar from "./PatientSidebar";
-import ProfileTab from "./ProfileTab";
-import AppointmentsTab from "./AppointmentsTab";
-import MedicalRecordsTab from "./MedicalRecordsTab";
-import HelpTab from "./HelpTab";
-import PrivacyTab from "./PrivacyTab";
+import ProfileTab from "./Profie/ProfileTab";
+import AppointmentsTab from "./MyAppointment/AppointmentsTab";
+import MedicalRecordsTab from "./MedicalRecord/MedicalRecordsTab";
+import HelpTab from "./Help/HelpTab";
+import PrivacyTab from "./Privacy/PrivacyTab";
 import Modals from "./Modals";
 
 

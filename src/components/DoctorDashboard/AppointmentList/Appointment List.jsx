@@ -118,22 +118,21 @@ export default function AppointmentList() {
     <div className="p-4">
       <div className="header d-flex flex-column flex-md-row justify-content-between align-items-start align-items-md-center mb-3 gap-3">
         <h2 className="mb-3">
-        Appointment List
-      </h2>
+          Appointment List
+        </h2>
       </div>
-      
+
 
       <table className="table table-hover shadow-sm" style={{ background: "#ffe6e6", borderRadius: "10px" }}>
-        <thead className="text-white" style={{ background: "#ff7b7b" }}>
+        <thead className="" style={{ background: "#ff7b7b" }}>
           <tr>
-            <th>Patient</th>
-            
-            <th>Clinic Name</th>
-            <th>Phone</th>
-            <th>Date</th>
-            <th>Time</th>
-            <th>Type</th>
-            <th>Status</th>
+            <th style={{color:"white"}}>Patient</th>
+            <th style={{color:"white"}}>Clinic Name</th>
+            <th style={{color:"white"}}>Phone</th>
+            <th style={{color:"white"}}>Date</th>
+            <th style={{color:"white"}}>Time</th>
+            <th style={{color:"white"}}>Type</th>
+            <th style={{color:"white"}}>Status</th>
           </tr>
         </thead>
 
@@ -145,7 +144,7 @@ export default function AppointmentList() {
               style={{ cursor: "pointer", transition: "0.3s" }}
             >
               <td>{a.patientName}</td>
-             
+
               <td>{a.clinicName}</td>
               <td>{a.phone}</td>
               <td>{a.date}</td>
@@ -159,10 +158,10 @@ export default function AppointmentList() {
                       a.status === "Confirmed"
                         ? "#28a745"
                         : a.status === "Pending"
-                        ? "#ffc107"
-                        : a.status === "Completed"
-                        ? "#17a2b8"
-                        : "#dc3545",
+                          ? "#ffc107"
+                          : a.status === "Completed"
+                            ? "#17a2b8"
+                            : "#dc3545",
                     fontSize: "14px",
                   }}
                 >

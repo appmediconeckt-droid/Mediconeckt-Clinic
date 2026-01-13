@@ -1,5 +1,5 @@
 import React, { useState } from "react";
-import { appointments } from "./data";
+import { appointments } from "../../BookAppointment/data";
 import { Link } from "react-router-dom";
 
 export default function AppointmentsTab() {

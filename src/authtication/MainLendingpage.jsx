@@ -2,7 +2,7 @@ import React, { useState, useEffect, useCallback } from "react";
 import { motion } from "framer-motion";
 import "bootstrap/dist/css/bootstrap.min.css";
 import { useNavigate } from "react-router-dom";
-
+import logo from '../image/Mediconect-Logo-4.png'; // Adjust path
 export default function LandingPage() {
   const [activeDropdown, setActiveDropdown] = useState(null);
   const [userRole, setUserRole] = useState(null);
@@ -112,9 +112,19 @@ export default function LandingPage() {
             initial={{ opacity: 0, x: -20 }}
             animate={{ opacity: 1, x: 0 }}
             transition={{ duration: 0.5 }}
-            className="navbar-brand fs-2 fw-bold text-primary mb-0"
+            className="navbar-brand fs-2 fw-bold text-primary mb-0 d-flex align-items-center"
           >
-            <i className="fas fa-hospital me-2"></i>Hospital Portal
+            <motion.img
+              src={logo} // imported variable use करें
+              alt="Hospital Logo"
+              width={200}
+              height={32}
+              className="me-2"
+              initial={{ opacity: 0, scale: 0.8 }}
+              animate={{ opacity: 1, scale: 1 }}
+              transition={{ delay: 0.2, duration: 0.3 }}
+            />
+            
           </motion.h1>
 
           {/* Role Indicator */}
@@ -539,9 +549,16 @@ export default function LandingPage() {
               viewport={{ once: true }}
               className="col-md-4"
             >
-              <h3 className="h2 fw-semibold mb-3">
-                <i className="fas fa-hospital me-2"></i>Hospital Portal
-              </h3>
+              <motion.img
+              src={logo} // imported variable use करें
+              alt="Hospital Logo"
+              width={200}
+              height={32}
+              className="me-2"
+              initial={{ opacity: 0, scale: 0.8 }}
+              animate={{ opacity: 1, scale: 1 }}
+              transition={{ delay: 0.2, duration: 0.3 }}
+            />
               <p className="fs-5">Your trusted healthcare partner.</p>
               <div className="social-icons mt-4">
                 {["facebook", "twitter", "instagram", "linkedin"].map(

@@ -18,6 +18,8 @@ import "./DoctorDashboard.css";
 import { jsPDF } from "jspdf";
 import "jspdf-autotable";
 import html2canvas from "html2canvas";
+import { motion } from "framer-motion";
+import logo from '../../../image/Mediconect-Logo-4.png';
 
 const DEFAULT_BREAK_MIN = 30;
 const BREAK_OPTIONS_MIN = [5, 10, 15, 30, 45, 60];
@@ -261,6 +263,8 @@ const initialAppointments = [
 const CompleteModal = ({ show, onHide, form, setForm, onSave, patientName }) => {
   const today = new Date();
   const minDate = today.toISOString().split('T')[0];
+  
+
   
   const defaultFollowUpDate = new Date(today);
   defaultFollowUpDate.setDate(today.getDate() + 7);
@@ -866,22 +870,16 @@ const SummaryModal = ({ show, onHide, appointmentData, onPrint, onCompleteWithou
           {/* Clinic Header with Company Icon */}
           <div className="dd-clinic-header text-center mb-4 p-4">
             <div className="dd-clinic-icon mb-3">
-              <div style={{
-                width: '80px',
-                height: '80px',
-                background: `linear-gradient(135deg, ${currentTheme.colors.primary} 0%, ${currentTheme.colors.secondary} 100%)`,
-                borderRadius: '50%',
-                display: 'flex',
-                alignItems: 'center',
-                justifyContent: 'center',
-                margin: '0 auto',
-                boxShadow: '0 4px 12px rgba(0,0,0,0.15)'
-              }}>
-                <i className="bi bi-hospital" style={{
-                  fontSize: '40px',
-                  color: 'white'
-                }}></i>
-              </div>
+               <motion.img
+              src={logo} // imported variable use करें
+              alt="Hospital Logo"
+              width={220}
+              height={35}
+              className="me-2"
+              initial={{ opacity: 0, scale: 0.8 }}
+              animate={{ opacity: 1, scale: 1 }}
+              transition={{ delay: 0.2, duration: 0.3 }}
+            />
             </div>
             
             <h4 className="dd-clinic-name mb-1" style={{ color: currentTheme.colors.primary }}>
@@ -1583,7 +1581,7 @@ const DoctorDashboard = () => {
               onClick={handleBreak}
               className="dd-take-break-btn"
             >
-              <i className="bi bi-cup-hot me-1"></i>
+              <i className="bi bi-cup-hot me-1" style={{color:"white"}}></i>
               Take Break
             </Button>
             
@@ -1598,12 +1596,12 @@ const DoctorDashboard = () => {
             >
               {activeSession?.status === "paused" ? (
                 <>
-                  <i className="bi bi-play-circle me-1"></i>
+                  <i className="bi bi-play-circle me-1" style={{color:"white"}}></i>
                   Resume
                 </>
               ) : (
                 <>
-                  <i className="bi bi-pause-circle me-1"></i>
+                  <i className="bi bi-pause-circle me-1" style={{color:"white"}}></i>
                   Pause
                 </>
               )}
@@ -1859,7 +1857,7 @@ const DoctorDashboard = () => {
                             disabled={activeSession?.status === "break"}
                           >
                             <i className="bi bi-person-check me-1"></i>
-                            Appointment
+                           Consultation
                           </Button>
                         )}
 
@@ -2028,7 +2026,7 @@ const DoctorDashboard = () => {
         <Modal.Header closeButton className="dd-consent-modal-header p-3">
           <Modal.Title className="dd-consent-modal-title">
             <i className="bi bi-person-check me-2"></i>
-            Patient Consent Form
+            Patient  Form
           </Modal.Title>
         </Modal.Header>
         <Modal.Body className="dd-consent-modal-body p-4" style={{ maxHeight: '50vh', overflowY: 'auto' }}>
@@ -2073,7 +2071,7 @@ const DoctorDashboard = () => {
           </div>
 
           <div className="dd-consent-agreement">
-            <h6 className="dd-patient-summary-title mb-3">Consent Agreement</h6>
+            <h6 className="dd-patient-summary-title mb-3">Agreement</h6>
             <div className="dd-consent-text">
               <p>I confirm that I have reviewed the patient's information and vitals.</p>
               <p>I understand that starting will begin tracking consultation time.</p>
@@ -2099,7 +2097,7 @@ const DoctorDashboard = () => {
             size="sm"
           >
             <i className="bi bi-play-circle me-1"></i>
-            Start Appointment
+            Start Consultation
           </Button>
         </Modal.Footer>
       </Modal>

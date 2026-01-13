@@ -2,84 +2,86 @@ import React, { useState } from "react";
 import "bootstrap/dist/css/bootstrap.min.css";
 import "./doctorLandingPage.css";
 import { Link } from "react-router-dom";
+import { motion } from "framer-motion";
+import logo from '../image/Mediconect-Logo-4.png';
 
 export default function PatientLandingPage() {
     const [activeSection, setActiveSection] = useState("home");
 
-   const specialities = [
-    { 
-      name: "Cardiologist", 
-      img: "https://img.icons8.com/color/96/heart-with-pulse.png", 
-      desc: "Heart care experts",
-      link: "/cardiologist" 
-    },
-    { 
-      name: "Dentist", 
-      img: "https://img.icons8.com/color/96/tooth.png", 
-      desc: "Dental treatments",
-      link: "/dentist" 
-    },
-    { 
-      name: "Neurologist", 
-      img: "https://img.icons8.com/color/96/brain.png", 
-      desc: "Brain & nerves",
-      link: "/neurologist" 
-    },
-    { 
-      name: "Orthopedic", 
-      img: "https://cdn-icons-png.flaticon.com/512/2966/2966486.png", 
-      desc: "Bones & joints",
-      link: "/orthopedic" 
-    },
-    { 
-      name: "Eye Specialist", 
-      img: "https://img.icons8.com/color/96/visible.png", 
-      desc: "Eye care",
-      link: "/eye-specialist" 
-    },
-    { 
-      name: "Skin Specialist", 
-      img: "https://cdn-icons-png.flaticon.com/512/3774/3774299.png", 
-      desc: "Skin treatments",
-      link: "/skin-specialist" 
-    },
-    { 
-      name: "Pediatrician", 
-      img: "https://img.icons8.com/color/96/baby-feet.png", 
-      desc: "Child healthcare",
-      link: "/pediatrician" 
-    },
-    { 
-      name: "Gynecologist", 
-      img: "https://cdn-icons-png.flaticon.com/512/3774/3774296.png", 
-      desc: "Women's health",
-      link: "/gynecologist" 
-    },
-    { 
-      name: "Psychiatrist", 
-      img: "https://img.icons8.com/color/96/mental-health.png", 
-      desc: "Mental health",
-      link: "/psychiatrist" 
-    },
-    { 
-      name: "ENT Specialist", 
-      img: "https://cdn-icons-png.flaticon.com/512/3774/3774301.png", 
-      desc: "Ear, Nose, Throat",
-      link: "/ent-specialist" 
-    },
-    { 
-      name: "Physiotherapist", 
-      img: "https://cdn-icons-png.flaticon.com/512/3774/3774314.png", 
-      desc: "Physical therapy",
-      link: "/physiotherapist" 
-    },
-    { 
-      name: "General Physician", 
-      img: "https://cdn-icons-png.flaticon.com/512/3774/3774294.png", 
-      desc: "Primary care",
-      link: "/general-physician" 
-    },
-  ];
+    const specialities = [
+        {
+            name: "Cardiologist",
+            img: "https://img.icons8.com/color/96/heart-with-pulse.png",
+            desc: "Heart care experts",
+            link: "/cardiologist"
+        },
+        {
+            name: "Dentist",
+            img: "https://img.icons8.com/color/96/tooth.png",
+            desc: "Dental treatments",
+            link: "/dentist"
+        },
+        {
+            name: "Neurologist",
+            img: "https://img.icons8.com/color/96/brain.png",
+            desc: "Brain & nerves",
+            link: "/neurologist"
+        },
+        {
+            name: "Orthopedic",
+            img: "https://cdn-icons-png.flaticon.com/512/2966/2966486.png",
+            desc: "Bones & joints",
+            link: "/orthopedic"
+        },
+        {
+            name: "Eye Specialist",
+            img: "https://img.icons8.com/color/96/visible.png",
+            desc: "Eye care",
+            link: "/eye-specialist"
+        },
+        {
+            name: "Skin Specialist",
+            img: "https://cdn-icons-png.flaticon.com/512/3774/3774299.png",
+            desc: "Skin treatments",
+            link: "/skin-specialist"
+        },
+        {
+            name: "Pediatrician",
+            img: "https://img.icons8.com/color/96/baby-feet.png",
+            desc: "Child healthcare",
+            link: "/pediatrician"
+        },
+        {
+            name: "Gynecologist",
+            img: "https://cdn-icons-png.flaticon.com/512/3774/3774296.png",
+            desc: "Women's health",
+            link: "/gynecologist"
+        },
+        {
+            name: "Psychiatrist",
+            img: "https://img.icons8.com/color/96/mental-health.png",
+            desc: "Mental health",
+            link: "/psychiatrist"
+        },
+        {
+            name: "ENT Specialist",
+            img: "https://cdn-icons-png.flaticon.com/512/3774/3774301.png",
+            desc: "Ear, Nose, Throat",
+            link: "/ent-specialist"
+        },
+        {
+            name: "Physiotherapist",
+            img: "https://cdn-icons-png.flaticon.com/512/3774/3774314.png",
+            desc: "Physical therapy",
+            link: "/physiotherapist"
+        },
+        {
+            name: "General Physician",
+            img: "https://cdn-icons-png.flaticon.com/512/3774/3774294.png",
+            desc: "Primary care",
+            link: "/general-physician"
+        },
+    ];
 
     const services = [
         { title: "Book Appointment", desc: "Instant doctor appointment", icon: "📅", link: "/appointment" },
@@ -123,7 +125,16 @@ export default function PatientLandingPage() {
             <nav className="navbar navbar-expand-lg bg-white shadow-sm fixed-top">
                 <div className="container">
                     <Link className="navbar-brand fw-bold text-primary fs-3" to="/">
-                        <span className="brand-icon">🩺</span> PatientCare
+                        <motion.img
+                            src={logo} // imported variable use करें
+                            alt="Hospital Logo"
+                            width={220}
+                            height={35}
+                            className="me-2"
+                            initial={{ opacity: 0, scale: 0.8 }}
+                            animate={{ opacity: 1, scale: 1 }}
+                            transition={{ delay: 0.2, duration: 0.3 }}
+                        />
                     </Link>
 
                     <button className="navbar-toggler" type="button" data-bs-toggle="collapse" data-bs-target="#navbarNav">
@@ -258,7 +269,7 @@ export default function PatientLandingPage() {
                                     src="https://images.unsplash.com/photo-1629909613654-28e377c37b09?w=600&auto=format&fit=crop&q=60&ixlib=rb-4.1.0&ixid=M3wxMjA3fDB8MHxzZWFyY2h8M3x8Y2xpbmljfGVufDB8fDB8fHww"
                                     alt="Doctor Consultation"
                                     className="img-fluid rounded shadow"
-                                    style={{ width: '700px', height: '500px', objectFit: 'cover',  }}
+                                    style={{ width: '700px', height: '500px', objectFit: 'cover', }}
                                 />
                             </div>
                         </div>
@@ -311,25 +322,25 @@ export default function PatientLandingPage() {
                         <p className="section-subtitle">Choose from 50+ medical specialities</p>
                     </div>
 
-                   <div className="row">
-                            {specialities.map((item, index) => (
-                              <div className="col-6 col-md-4 col-lg-2 mb-4" key={index}>
-                                <Link to={item.link} style={{textDecoration:"none"}}>
-                                  <div className="card speciality-card text-center p-3 shadow-sm border-0 h-100">
-                                    <img
-                                      src={item.img}
-                                      alt={item.name}
-                                      className="img-fluid mx-auto"
-                                      width="70"
-                                      height="70"
-                                    />
-                                    <h6 className="mt-3 mb-2 fw-bold">{item.name}</h6>
-                                    <small className="text-muted">{item.desc}</small>
-                                  </div>
+                    <div className="row">
+                        {specialities.map((item, index) => (
+                            <div className="col-6 col-md-4 col-lg-2 mb-4" key={index}>
+                                <Link to={item.link} style={{ textDecoration: "none" }}>
+                                    <div className="card speciality-card text-center p-3 shadow-sm border-0 h-100">
+                                        <img
+                                            src={item.img}
+                                            alt={item.name}
+                                            className="img-fluid mx-auto"
+                                            width="70"
+                                            height="70"
+                                        />
+                                        <h6 className="mt-3 mb-2 fw-bold">{item.name}</h6>
+                                        <small className="text-muted">{item.desc}</small>
+                                    </div>
                                 </Link>
-                              </div>
-                            ))}
-                          </div>
+                            </div>
+                        ))}
+                    </div>
 
                     <div className="text-center mt-4">
                         <Link to="/all-specialities">
@@ -489,9 +500,16 @@ export default function PatientLandingPage() {
                 <div className="p-4 pt-5 pb-4">
                     <div className="row">
                         <div className="col-lg-3 mb-4">
-                            <h4 className="footer-brand mb-3">
-                                <span className="brand-icon">🩺</span> PatientCare
-                            </h4>
+                            <motion.img
+                                src={logo} // imported variable use करें
+                                alt="Hospital Logo"
+                                width={220}
+                                height={35}
+                                className="me-2 mb-3"
+                                initial={{ opacity: 0, scale: 0.8 }}
+                                animate={{ opacity: 1, scale: 1 }}
+                                transition={{ delay: 0.2, duration: 0.3 }}
+                            />
                             <p className="footer-about">
                                 Your trusted digital healthcare partner providing quality medical services with care and compassion.
                             </p>
@@ -509,7 +527,7 @@ export default function PatientLandingPage() {
                                 <li><a href="#home">Home</a></li>
                                 <li><a href="#specialities">Specialities</a></li>
                                 <li><a href="#services">Services</a></li>
-                               
+
                             </ul>
                         </div>
 

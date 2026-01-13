@@ -1,5 +1,7 @@
 import React, { useState, useEffect, useRef } from "react";
 import { Link, useNavigate } from "react-router-dom";
+import { motion } from "framer-motion";
+import logo from '../image/Mediconect-Logo-4.png';
 
 const Navbar = ({ toggleSidebar }) => {
   const [showAvatarModal, setShowAvatarModal] = useState(false);
@@ -251,20 +253,17 @@ const Navbar = ({ toggleSidebar }) => {
       >
         <div className="nav-conte">
           <div className="nav-content">
-            <div className="nav-bran d-flex align-items-center">
-              <a 
-                className="nav-brand" 
-                href="#" 
-                style={{ 
-                  textDecoration: "none", 
-                  marginBottom: "20px",
-                  color: themeColors.brandColor,
-                  fontWeight: "bold",
-                  fontSize: "24px"
-                }}
-              >
-                Mediconeckt
-              </a>
+            <div className="nav-bran d-flex  mb-4 " >
+              <motion.img
+              src={logo} // imported variable use करें
+              alt="Hospital Logo"
+              width={220}
+              height={35}
+              className="me-2"
+              initial={{ opacity: 0, scale: 0.8 }}
+              animate={{ opacity: 1, scale: 1 }}
+              transition={{ delay: 0.2, duration: 0.3 }}
+            />
             </div>
 
             <div className="nav-main-icon d-flex align-items-center">

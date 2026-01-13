@@ -1,5 +1,5 @@
 import React from "react";
-import { medicalReports } from "./data";
+import { medicalReports } from "../../BookAppointment/data";
 
 export default function MedicalRecordsTab() {
   return (
