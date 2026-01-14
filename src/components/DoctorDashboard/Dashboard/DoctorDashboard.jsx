@@ -770,8 +770,8 @@ const SummaryModal = ({ show, onHide, appointmentData, onPrint, onCompleteWithou
             </div>
           </div>
           
-          <Modal.Title className="dd-summary-modal-title flex-grow-1">
-            <i className="bi bi-file-medical me-2"></i>
+          <Modal.Title className="dd-summary-modal-title flex-grow-1 mt-3">
+            {/* <i className="bi bi-file-medical me-2"></i> */}
             Consultation Summary
           </Modal.Title>
           

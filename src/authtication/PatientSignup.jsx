@@ -2,6 +2,8 @@ import React, { useState, useEffect, useRef } from 'react';
 import { useNavigate, Link } from 'react-router-dom';
 import { FaHeartbeat, FaUser, FaVenusMars, FaCalendarAlt, FaMapMarkerAlt, FaTint, FaRulerVertical, FaAllergies, FaStethoscope, FaPills, FaPhone, FaEnvelope, FaLock, FaCheckCircle, FaArrowLeft, FaArrowRight, FaMobileAlt, FaShieldAlt, FaCheck, FaArrowLeft as FaLeftArrow, FaHospital, FaUserMd, FaStar } from 'react-icons/fa';
 import './PatientSignup.css';
+import { motion } from "framer-motion";
+import logo from '../image/Mediconect Logo-2.png';
 
 const MedicalPatientSignup = () => {
   // Step state
@@ -260,10 +262,19 @@ const MedicalPatientSignup = () => {
       <div className="medi-signup-right-side">
         <div className="medi-right-logo-container">
           <div className="medi-right-logo-wrapper">
-            <FaUserMd className="medi-right-logo-icon" />
+             <motion.img
+              src={logo} // imported variable use करें
+              alt="Hospital Logo"
+              width={500}
+              height={200}
+              className="me-2"
+              initial={{ opacity: 0, scale: 0.8 }}
+              animate={{ opacity: 1, scale: 1 }}
+              transition={{ delay: 0.2, duration: 0.3 }}
+            />
           </div>
-          <h1 className="medi-right-logo-text">MediConnect+</h1>
-          <p className="medi-right-tagline">Healthcare Redefined</p>
+          {/* <h1 className="medi-right-logo-text">MediConeckt+</h1>
+          <p className="medi-right-tagline text-black">Healthcare Redefined</p> */}
         </div>
       </div>
 

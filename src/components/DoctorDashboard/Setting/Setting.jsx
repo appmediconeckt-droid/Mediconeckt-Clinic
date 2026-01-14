@@ -8,7 +8,7 @@ import ProfileCard from "./SettingProfileQR/profileQR";
 import PaymentSettings from "./PaymentSetting/PaymentSettings";
 
 export default function SettingsPage() {
-  const [active, setActive] = useState("clinic");
+  const [active, setActive] = useState("profile");
   const [showChangePassword, setShowChangePassword] = useState(false);
   const [showLogoutConfirm, setShowLogoutConfirm] = useState(false);
 

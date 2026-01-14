@@ -1,7 +1,9 @@
 import { useState, useEffect } from "react";
 import { Link, useNavigate } from "react-router-dom";
-import { FaEye, FaEyeSlash, FaUserMd, FaStethoscope, FaPhone, FaEnvelope, FaLock, FaUser } from "react-icons/fa";
+import { FaEye, FaEyeSlash, FaUserMd, FaStethoscope, FaPhone, FaEnvelope, FaLock, FaUser,FaArrowLeft as FaLeftArrow} from "react-icons/fa";
 import "./Signup.css";
+import { motion } from "framer-motion";
+import logo from '../image/Mediconect Logo-2.png';
 
 export default function Signup() {
   const navigate = useNavigate();
@@ -69,13 +71,13 @@ export default function Signup() {
       alert("Password & Confirm Password do not match!");
       return;
     }
-    
+
     // Check if all required fields are filled
     if (!form.fullname || !form.email || !form.phone || !form.password) {
       alert("Please fill all required fields!");
       return;
     }
-    
+
     setModalOpen(true);
     setTimeLeft(300); // reset timer on open
     setVerificationStep(1);
@@ -114,32 +116,40 @@ export default function Signup() {
   return (
     <div className="medi-signup-container">
       {/* Left Side - Complete Signup Form */}
-     
+
 
       {/* Right Side - Only Logo */}
       <div className="medi-signup-right-side">
         <div className="medi-right-logo-container">
           <div className="medi-right-logo-wrapper">
-            <FaUserMd className="medi-right-logo-icon" />
+            <motion.img
+              src={logo} // imported variable use करें
+              alt="Hospital Logo"
+              width={500}
+              height={200}
+              className="me-2"
+              initial={{ opacity: 0, scale: 0.8 }}
+              animate={{ opacity: 1, scale: 1 }}
+              transition={{ delay: 0.2, duration: 0.3 }}
+            />
           </div>
-          <h1 className="medi-right-logo-text">MediConnect+</h1>
-          <p className="medi-right-tagline">Healthcare Redefined</p>
+          {/* <h1 className="medi-right-logo-text">MediConeckt+</h1>
+          <p className="medi-right-tagline text-black">Healthcare Redefined</p> */}
         </div>
       </div>
- <div className="medi-signup-left-side">
+      <div className="medi-signup-left-side">
         <div className="medi-signup-form-wrapper">
           {/* Back Button */}
-          <Link to="/" className="medi-back-link">
-          <button className="btn btn-primary  medi-back-button" style={{color:"white", background:"black"}}>
-            
-              ← Back to Home
-           
-          </button>
-           </Link>
+          <div className="med-back-button">
+            <Link to="/" className="med-back-link">
+              <FaLeftArrow className="med-back-icon" />
+              Back to Home
+            </Link>
+          </div>
           {/* Logo */}
           <div className="medi-signup-logo">
             <FaUserMd className="medi-signup-logo-icon" />
-            <h1 className="medi-signup-logo-text">MediConnect+</h1>
+
           </div>
 
           {/* Form Header */}
@@ -370,7 +380,7 @@ export default function Signup() {
                   <small className="medi-otp-hint">Check your inbox for the verification code</small>
                 </div>
 
-                <button 
+                <button
                   className="medi-verify-button medi-email-verify"
                   onClick={handleEmailVerification}
                 >
@@ -401,8 +411,8 @@ export default function Signup() {
                     <span className="medi-timer-text">OTP Expires in: </span>
                     <span className="medi-timer-countdown">{formatTime()}</span>
                   </div>
-                  
-                  <button 
+
+                  <button
                     className="medi-resend-button"
                     onClick={handleResendOtp}
                     disabled={timeLeft > 240}
@@ -411,7 +421,7 @@ export default function Signup() {
                   </button>
                 </div>
 
-                <button 
+                <button
                   className="medi-verify-button medi-phone-verify"
                   onClick={handlePhoneVerification}
                 >

@@ -2,7 +2,10 @@ import React, { useState, useEffect, useCallback } from "react";
 import { motion } from "framer-motion";
 import "bootstrap/dist/css/bootstrap.min.css";
 import { useNavigate } from "react-router-dom";
-import logo from '../image/Mediconect-Logo-4.png'; // Adjust path
+import logo from '../image/Mediconect-Logo-4.png';
+import backgroundImage from '../image/Background-Image-05-07-24-scaled.jpg';
+import logo2 from '../image/Mediconect Logo-3.png';
+
 export default function LandingPage() {
   const [activeDropdown, setActiveDropdown] = useState(null);
   const [userRole, setUserRole] = useState(null);
@@ -115,38 +118,16 @@ export default function LandingPage() {
             className="navbar-brand fs-2 fw-bold text-primary mb-0 d-flex align-items-center"
           >
             <motion.img
-              src={logo} // imported variable use करें
+              src={logo}
               alt="Hospital Logo"
-              width={200}
-              height={32}
+              width={250}
+              height={50}
               className="me-2"
               initial={{ opacity: 0, scale: 0.8 }}
               animate={{ opacity: 1, scale: 1 }}
               transition={{ delay: 0.2, duration: 0.3 }}
             />
-            
           </motion.h1>
-
-          {/* Role Indicator */}
-          {/* {userRole && (
-            <motion.div
-              initial={{ opacity: 0, scale: 0.8 }}
-              animate={{ opacity: 1, scale: 1 }}
-              className="mx-3"
-            >
-              <span className="badge bg-success fs-6">
-                <i className="fas fa-user-circle me-1"></i>
-                {userRole.toUpperCase()}
-                <button
-                  onClick={clearRole}
-                  className="btn btn-sm btn-link text-light p-0 ms-2"
-                  title="Clear role"
-                >
-                  <i className="fas fa-times"></i>
-                </button>
-              </span>
-            </motion.div>
-          )} */}
 
           <button
             className="navbar-toggler"
@@ -197,7 +178,7 @@ export default function LandingPage() {
                           paddingLeft: "25px",
                         }}
                       >
-                        <i className="fas fa-arrow-right me-2 text-primary"></i>
+                        
                         {item.name}
                       </motion.a>
                     ))}
@@ -259,32 +240,72 @@ export default function LandingPage() {
         </div>
       </nav>
 
-      {/* HERO SECTION */}
-      <section
-        className="hero-section min-vh-100 d-flex align-items-center pt-5 mt-5"
+      {/* HERO SECTION WITH BACKGROUND IMAGE */}
+      <section 
+        className="hero-section d-flex align-items-center justify-content-center position-relative"
         style={{
-          background: "linear-gradient(135deg, #667eea 0%, #764ba2 100%)",
+          height: '100vh',
+          minHeight: '600px',
+          marginTop: '0px',
         }}
       >
-        <div className="container pt-5 mt-5">
+        {/* Background Image with Overlay */}
+        <div 
+          className="position-absolute w-100 h-100"
+          style={{
+            backgroundImage: `url('${backgroundImage}')`,
+            backgroundSize: 'cover',
+            backgroundPosition: 'center',
+            backgroundRepeat: 'no-repeat',
+          }}
+        />
+        
+        {/* Dark Overlay for better text visibility */}
+        <div 
+          className="position-absolute w-100 h-100"
+         
+        />
+        
+        <div className="container position-relative z-1">
           <motion.div
             initial="hidden"
             animate="visible"
             variants={staggerContainer}
-            className="text-center text-white pt-5"
+            className="text-center"
           >
             {/* Role Selection Prompt */}
             {!userRole ? (
               <>
-                <motion.h1 variants={fadeInUp} className="display-3 fw-bold mb-4">
-                  Welcome to Hospital Portal
+                <motion.h1 
+                  variants={fadeInUp} 
+                  className="display-3 fw-bold mb-4 text-white"
+                >
+                  Welcome to <span className="text-primary">Mediconeckt</span>
                 </motion.h1>
-                <motion.p variants={fadeInUp} className="lead fs-4 mb-5 opacity-90">
-                  Please select your role to continue:
+                
+                {/* <motion.p 
+                  variants={fadeInUp} 
+                  className="lead fs-3 mb-5 text-white fw-medium"
+                >
+                  Your Trusted Healthcare Partner
+                </motion.p> */}
+                
+                <motion.p 
+                  variants={fadeInUp} 
+                  className="lead fs-4 mb-5 text-light"
+                  style={{ 
+                    backgroundColor: 'rgba(0, 0, 0, 0.6)',
+                    display: 'inline-block',
+                    padding: '1rem 2rem',
+                    borderRadius: '50px'
+                  }}
+                >
+                  Please select your role to continue
                 </motion.p>
-                <motion.div variants={fadeInUp} className="d-flex justify-content-center gap-4 flex-wrap">
+                
+                <motion.div variants={fadeInUp} className="d-flex justify-content-center gap-4 flex-wrap mt-5">
                   <motion.button
-                    whileHover={{ scale: 1.05 }}
+                    whileHover={{ scale: 1.05, boxShadow: "0 10px 20px rgba(0,0,0,0.3)" }}
                     whileTap={{ scale: 0.95 }}
                     className="btn btn-light btn-lg px-5 py-3 rounded-pill fw-semibold text-primary shadow-lg"
                     onClick={() => handleRoleSelect("doctor")}
@@ -295,9 +316,9 @@ export default function LandingPage() {
                     {isNavigating && <i className="fas fa-spinner fa-spin ms-2"></i>}
                   </motion.button>
                   <motion.button
-                    whileHover={{ scale: 1.05 }}
+                    whileHover={{ scale: 1.05, boxShadow: "0 10px 20px rgba(0,0,0,0.3)" }}
                     whileTap={{ scale: 0.95 }}
-                    className="btn btn-outline-light btn-lg px-5 py-3 rounded-pill fw-semibold shadow-lg"
+                    className="btn btn-primary btn-lg px-5 py-3 rounded-pill fw-semibold shadow-lg"
                     onClick={() => handleRoleSelect("patient")}
                     disabled={isNavigating}
                   >
@@ -309,16 +330,22 @@ export default function LandingPage() {
               </>
             ) : (
               <>
-                <motion.h1 variants={fadeInUp} className="display-3 fw-bold mb-4">
-                  Welcome, {userRole.charAt(0).toUpperCase() + userRole.slice(1)}!
+                <motion.h1 
+                  variants={fadeInUp} 
+                  className="display-3 fw-bold mb-4 text-white"
+                >
+                  Welcome, <span className="text-warning">{userRole.charAt(0).toUpperCase() + userRole.slice(1)}!</span>
                 </motion.h1>
-                <motion.p variants={fadeInUp} className="lead fs-4 mb-5 opacity-90">
+                <motion.p 
+                  variants={fadeInUp} 
+                  className="lead fs-3 mb-5 text-white fw-medium"
+                >
                   {userRole === "doctor"
                     ? "Manage your appointments and patient records efficiently."
                     : "Book appointments, view reports, and manage your health."}
                 </motion.p>
                 <motion.button
-                  whileHover={{ scale: 1.05 }}
+                  whileHover={{ scale: 1.05, boxShadow: "0 10px 20px rgba(0,0,0,0.3)" }}
                   whileTap={{ scale: 0.95 }}
                   variants={scaleIn}
                   className="btn btn-light btn-lg px-5 py-3 rounded-pill fw-semibold text-primary shadow-lg"
@@ -336,17 +363,26 @@ export default function LandingPage() {
             )}
           </motion.div>
         </div>
+        
+        {/* Scroll indicator */}
+        <motion.div 
+          className="position-absolute bottom-0 start-50 translate-middle-x mb-4 z-1"
+          animate={{ y: [0, 10, 0] }}
+          transition={{ duration: 2, repeat: Infinity }}
+        >
+          <i className="fas fa-chevron-down text-white fa-2x"></i>
+        </motion.div>
       </section>
 
       {/* FEATURES SECTION */}
-      <section className="py-5 bg-light">
+      <section className="py-5 bg-light" id="features">
         <div className="container py-5">
           <motion.h2
             initial={{ opacity: 0, y: 30 }}
             whileInView={{ opacity: 1, y: 0 }}
             transition={{ duration: 0.6 }}
             viewport={{ once: true }}
-            className="text-center display-5 fw-bold mb-5"
+            className="text-center display-5 fw-bold mb-5 text-primary"
           >
             Our Features
           </motion.h2>
@@ -426,7 +462,7 @@ export default function LandingPage() {
       </section>
 
       {/* WHY CHOOSE US SECTION */}
-      <section className="py-5 bg-white">
+      <section className="py-5 bg-white" id="why-us">
         <div className="container py-5">
           <div className="row align-items-center g-5">
             <motion.div
@@ -436,17 +472,19 @@ export default function LandingPage() {
               viewport={{ once: true }}
               className="col-lg-6"
             >
-              <h2 className="display-5 fw-bold mb-4">Why Choose Us?</h2>
-              <p className="lead mb-4">
+              <h2 className="display-5 fw-bold mb-4 text-primary">Why Choose Mediconect?</h2>
+              <p className="lead mb-4 fs-5">
                 We provide seamless healthcare services with modern technology
                 to make your experience smooth and fast.
               </p>
               <ul className="list-unstyled">
                 {[
                   "24/7 doctor availability",
-                  "Secure patient data",
+                  "Secure patient data with encryption",
                   "Easy communication between doctor & patient",
                   "Fast appointment system with QR code",
+                  "Multi-specialty hospital network",
+                  "Insurance & billing support"
                 ].map((item, index) => (
                   <motion.li
                     key={index}
@@ -539,8 +577,8 @@ export default function LandingPage() {
       </section>
 
       {/* FOOTER */}
-      <footer className="bg-dark text-white py-5">
-        <div className="p-4 py-5">
+      <footer className="bg-dark text-white py-5" id="contact">
+        <div className="p-4">
           <div className="row g-4">
             <motion.div
               initial={{ opacity: 0, y: 20 }}
@@ -549,30 +587,22 @@ export default function LandingPage() {
               viewport={{ once: true }}
               className="col-md-4"
             >
-              <motion.img
-              src={logo} // imported variable use करें
-              alt="Hospital Logo"
-              width={200}
-              height={32}
-              className="me-2"
-              initial={{ opacity: 0, scale: 0.8 }}
-              animate={{ opacity: 1, scale: 1 }}
-              transition={{ delay: 0.2, duration: 0.3 }}
-            />
-              <p className="fs-5">Your trusted healthcare partner.</p>
-              <div className="social-icons mt-4">
-                {["facebook", "twitter", "instagram", "linkedin"].map(
-                  (social, index) => (
-                    <motion.a
-                      key={social}
-                      href="#"
-                      whileHover={{ scale: 1.2, y: -5 }}
-                      className="text-white me-3 fs-4"
-                    >
-                      <i className={`fab fa-${social}`}></i>
-                    </motion.a>
-                  )
-                )}
+              <div className="text-center text-md-start">
+                <motion.img
+                  src={logo2}
+                  alt="Hospital Logo"
+                  width={120}
+                  height={120}
+                  className="mb-3"
+                  initial={{ opacity: 0, scale: 0.8 }}
+                  animate={{ opacity: 1, scale: 1 }}
+                  transition={{ delay: 0.2, duration: 0.3 }}
+                />
+                <h3 className="h4 fw-bold text-white mb-3">Mediconeckt</h3>
+                <p className="fs-5 text-white-50">Your trusted healthcare partner.</p>
+                <p className="text-white-50">
+                  Bridging the gap between patients and healthcare providers through technology.
+                </p>
               </div>
             </motion.div>
 
@@ -585,7 +615,7 @@ export default function LandingPage() {
             >
               <h4 className="h4 fw-semibold mb-3">Quick Links</h4>
               <ul className="list-unstyled">
-                {["Home", "Doctors", "Services", "Contact"].map(
+                {["Home", "Doctors", "Services", "About", "Contact"].map(
                   (link, index) => (
                     <motion.li
                       key={link}
@@ -593,7 +623,7 @@ export default function LandingPage() {
                       className="mb-2"
                     >
                       <a
-                        href="#"
+                        href={`#${link.toLowerCase()}`}
                         className="text-decoration-none text-white-50 fs-5 hover-text-primary"
                       >
                         {link}
@@ -613,17 +643,17 @@ export default function LandingPage() {
             >
               <h4 className="h4 fw-semibold mb-3">Contact Us</h4>
               <ul className="list-unstyled fs-5">
-                <li className="mb-3 d-flex align-items-center">
-                  <i className="fas fa-envelope me-3"></i>
-                  <span>support@hospital.com</span>
+                <li className="mb-3 d-flex align-items-start">
+                  <i className="fas fa-envelope me-3 mt-1"></i>
+                  <span>support@mediconect.com</span>
                 </li>
                 <li className="mb-3 d-flex align-items-center">
                   <i className="fas fa-phone me-3"></i>
                   <span>+91 9876543210</span>
                 </li>
-                <li className="d-flex align-items-center">
-                  <i className="fas fa-map-marker-alt me-3"></i>
-                  <span>123 Health Street, Medical City</span>
+                <li className="d-flex align-items-start">
+                  <i className="fas fa-map-marker-alt me-3 mt-1"></i>
+                  <span>123 Health Street, Medical City, India</span>
                 </li>
               </ul>
             </motion.div>
@@ -637,21 +667,38 @@ export default function LandingPage() {
             >
               <h4 className="h4 fw-semibold mb-3">Newsletter</h4>
               <p className="text-white-50 mb-3">
-                Subscribe to get updates on health tips.
+                Subscribe to get updates on health tips and new features.
               </p>
-              <div className="input-group">
+              <div className="input-group mb-3">
                 <input
                   type="email"
                   className="form-control"
                   placeholder="Your email"
+                  aria-label="Your email"
                 />
                 <motion.button
                   whileHover={{ scale: 1.05 }}
                   whileTap={{ scale: 0.95 }}
                   className="btn btn-primary"
+                  type="button"
                 >
                   <i className="fas fa-paper-plane"></i>
                 </motion.button>
+              </div>
+              <div className="social-icons mt-4">
+                <p className="mb-2">Follow us:</p>
+                {["facebook", "twitter", "instagram", "linkedin", "youtube"].map(
+                  (social, index) => (
+                    <motion.a
+                      key={social}
+                      href="#"
+                      whileHover={{ scale: 1.2, y: -5 }}
+                      className="text-white me-3 fs-5"
+                    >
+                      <i className={`fab fa-${social}`}></i>
+                    </motion.a>
+                  )
+                )}
               </div>
             </motion.div>
           </div>
@@ -664,7 +711,9 @@ export default function LandingPage() {
             className="text-center mt-5 pt-4 border-top border-secondary"
           >
             <p className="mb-0 text-white-50">
-              © 2025 Hospital Portal. All Rights Reserved.
+              © {new Date().getFullYear()} Mediconect. All Rights Reserved. | 
+              <a href="#" className="text-white-50 ms-2 text-decoration-none">Privacy Policy</a> | 
+              <a href="#" className="text-white-50 ms-2 text-decoration-none">Terms of Service</a>
             </p>
           </motion.div>
         </div>
@@ -697,18 +746,18 @@ export default function LandingPage() {
           initial={{ opacity: 0, y: 20 }}
           animate={{ opacity: 1, y: 0 }}
           className="position-fixed bottom-0 end-0 m-3 p-3 bg-success text-white rounded-3 shadow-lg"
-          style={{ zIndex: 1050, maxWidth: "300px" }}
+          
         >
           <div className="d-flex align-items-center">
-            <i className="fas fa-info-circle me-2"></i>
-            <span>
-              <strong>{userRole.toUpperCase()}</strong>
+            <i className="fas fa-user-circle me-2"></i>
+            <span className="me-3">
+              <strong>{userRole.charAt(0).toUpperCase() + userRole.slice(1)} Mode</strong>
             </span>
             <button
               onClick={clearRole}
-              className="btn btn-sm btn-light ms-3"
+              className="btn btn-sm btn-light"
             >
-              Change
+              Change Role
             </button>
           </div>
         </motion.div>
@@ -720,26 +769,15 @@ export default function LandingPage() {
           overflow: hidden;
         }
 
-        .hero-section::before {
-          content: "";
-          position: absolute;
-          width: 200%;
-          height: 200%;
-          background: radial-gradient(
-            circle,
-            rgba(255, 255, 255, 0.1) 1px,
-            transparent 1px
-          );
-          background-size: 50px 50px;
-          animation: float 20s linear infinite;
-        }
-
         .hover-card {
           transition: all 0.3s ease;
+          border: 1px solid rgba(0,0,0,0.1);
         }
 
         .hover-card:hover {
           background: linear-gradient(135deg, #f5f7fa 0%, #c3cfe2 100%);
+          transform: translateY(-5px);
+          box-shadow: 0 15px 30px rgba(0,0,0,0.1) !important;
         }
 
         .hover-text-primary:hover {
@@ -777,13 +815,12 @@ export default function LandingPage() {
           border-bottom: none;
         }
 
-        @keyframes float {
-          0% {
-            transform: translate(0, 0) rotate(0deg);
-          }
-          100% {
-            transform: translate(-50px, -50px) rotate(360deg);
-          }
+        .social-icons a {
+          transition: color 0.3s ease;
+        }
+
+        .social-icons a:hover {
+          color: #0d6efd !important;
         }
 
         @keyframes fadeIn {
@@ -794,6 +831,22 @@ export default function LandingPage() {
           to {
             opacity: 1;
             transform: translateY(0);
+          }
+        }
+
+        /* Responsive adjustments */
+        @media (max-width: 768px) {
+          .hero-section h1 {
+            font-size: 2.5rem !important;
+          }
+          
+          .hero-section p {
+            font-size: 1.1rem !important;
+          }
+          
+          .btn-lg {
+            padding: 0.8rem 1.5rem !important;
+            font-size: 1rem !important;
           }
         }
       `}</style>

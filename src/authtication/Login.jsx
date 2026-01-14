@@ -1,12 +1,21 @@
 import { useState, useEffect } from "react";
 import { useNavigate, Link } from "react-router-dom";
-import { FaEye, FaEyeSlash, FaCheckCircle, FaExclamationCircle, FaInfoCircle, FaHeartbeat, FaUser, FaKey } from "react-icons/fa";
+import { FaEye, FaEyeSlash, FaCheckCircle, FaExclamationCircle, FaInfoCircle, FaUser, FaKey } from "react-icons/fa";
 import "./Login.css";
+import { motion } from "framer-motion";
+import logo from '../image/Mediconect Logo-2.png';
 
 export default function Login() {
   const rolePaths = {
     doctor: "/doctordashboard",
     patient: "/appointmentbooking",
+  };
+
+  // Role-based signup paths
+  const signupPaths = {
+    doctor: "/signup", // Doctor signup route
+    patient: "/patientsignup", // Patient signup route
+    default: "/signup" // Default signup route
   };
 
   const [form, setForm] = useState({ identifier: "", password: "" });
@@ -52,7 +61,7 @@ export default function Login() {
 
   const handleLogin = (e) => {
     e.preventDefault();
-    
+
     // Basic validation
     if (!form.identifier.trim() || !form.password.trim()) {
       showNotification("error", "Please enter both email/phone and password");
@@ -61,7 +70,7 @@ export default function Login() {
 
     // Get role from localStorage
     const role = localStorage.getItem("userRole");
-    
+
     if (!role) {
       showNotification("error", "Please select a role first from the landing page");
       return;
@@ -73,13 +82,13 @@ export default function Login() {
       if (rememberMe) {
         localStorage.setItem("rememberedUser", form.identifier);
       }
-      
+
       localStorage.setItem("isLoggedIn", "true");
       localStorage.setItem("userEmail", form.identifier);
-      
+
       // Show success notification
-      showNotification("success", `Login successful!`);
-      
+      showNotification("success", `Login successful as ${role}!`);
+
       // Navigate to appropriate dashboard after 1.5 seconds
       setTimeout(() => {
         navigate(rolePaths[role]);
@@ -92,22 +101,30 @@ export default function Login() {
   const handleQuickLogin = (role, identifier, password) => {
     localStorage.setItem("userRole", role);
     setUserRole(role);
-    
+
     setForm({
       identifier: identifier,
       password: password
     });
-    
+
     showNotification("success", `Logging in as ${role}...`);
-    
+
     setTimeout(() => {
       navigate(rolePaths[role]);
     }, 1500);
   };
 
+  // Get appropriate signup route based on current role
+  const getSignupRoute = () => {
+    if (userRole && signupPaths[userRole]) {
+      return signupPaths[userRole];
+    }
+    return signupPaths.default;
+  };
+
   // Get notification icon based on type
   const getNotificationIcon = () => {
-    switch(notification.type) {
+    switch (notification.type) {
       case "success":
         return <FaCheckCircle className="medi-notification-icon" />;
       case "error":
@@ -121,7 +138,7 @@ export default function Login() {
 
   // Get notification title based on type
   const getNotificationTitle = () => {
-    switch(notification.type) {
+    switch (notification.type) {
       case "success":
         return "Success!";
       case "error":
@@ -135,51 +152,29 @@ export default function Login() {
 
   return (
     <div className="medi-login-container">
-      {/* Left Side - Login Form */}
-    
-
       {/* Right Side - Logo Only */}
       <div className="medi-login-right-side">
         <div className="medi-right-logo-container">
           <div className="medi-right-logo-wrapper">
-            <FaHeartbeat className="medi-right-logo-icon" />
-          </div>
-          <h1 className="medi-right-logo-text">MediConnect+</h1>
-          <p className="medi-right-tagline">Secure Healthcare Access</p>
-          
-          {/* Security Features */}
-          <div className="medi-security-features">
-            <div className="medi-security-item">
-              <div className="medi-security-icon">🔒</div>
-              <div className="medi-security-text">
-                <strong>Bank-Level Security</strong>
-                <small>256-bit encryption</small>
-              </div>
-            </div>
-            <div className="medi-security-item">
-              <div className="medi-security-icon">⚡</div>
-              <div className="medi-security-text">
-                <strong>Instant Access</strong>
-                <small>Real-time dashboard</small>
-              </div>
-            </div>
-            <div className="medi-security-item">
-              <div className="medi-security-icon">🛡️</div>
-              <div className="medi-security-text">
-                <strong>HIPAA Compliant</strong>
-                <small>Patient data protected</small>
-              </div>
-            </div>
+            <motion.img
+              src={logo}
+              alt="Hospital Logo"
+              width={500}
+              height={200}
+              className="me-2"
+              initial={{ opacity: 0, scale: 0.8 }}
+              animate={{ opacity: 1, scale: 1 }}
+              transition={{ delay: 0.2, duration: 0.3 }}
+            />
           </div>
         </div>
       </div>
-  <div className="medi-login-left-side">
+      
+      {/* Left Side - Login Form */}
+      <div className="medi-login-left-side">
         <div className="medi-login-form-wrapper">
-          {/* Back Button */}
-         
-
           {/* Form Header */}
-          <div className="medi-login-header">
+          <div className="medi-login-header mt-5">
             <h2>Welcome Back</h2>
             <p className="medi-login-subtitle">Sign in to continue to your account</p>
           </div>
@@ -231,8 +226,8 @@ export default function Login() {
             {/* Remember Me & Forgot Password */}
             <div className="medi-login-options">
               <label className="medi-remember-label">
-                <input 
-                  type="checkbox" 
+                <input
+                  type="checkbox"
                   checked={rememberMe}
                   onChange={(e) => setRememberMe(e.target.checked)}
                 />
@@ -268,17 +263,17 @@ export default function Login() {
               SIGN IN {userRole && <span className="medi-role-highlight">AS {userRole.toUpperCase()}</span>}
             </button>
 
-            {/* Signup Link */}
+            {/* Signup Link with Role-based Routing */}
             <div className="medi-signup-prompt">
               <p>
                 Don't have an account?{' '}
-                <Link to="/signup" className="medi-signup-link">
-                  Sign up now
+                <Link to={getSignupRoute()} className="medi-signup-link">
+                  Sign up
                 </Link>
               </p>
             </div>
 
-            {/* Demo Login Buttons (Optional) */}
+            {/* Demo Login Buttons */}
             {/* <div className="medi-demo-login">
               <p className="medi-demo-title">Quick Demo Login:</p>
               <div className="medi-demo-buttons">
@@ -301,16 +296,17 @@ export default function Login() {
           </form>
         </div>
       </div>
+
       {/* Notification Popup */}
       {notification.show && (
-        <div 
+        <div
           className="medi-notification-popup"
           style={{
-            background: notification.type === "success" 
-              ? "linear-gradient(135deg, #28a745 0%, #20c997 100%)" 
+            background: notification.type === "success"
+              ? "linear-gradient(135deg, #28a745 0%, #20c997 100%)"
               : notification.type === "error"
-              ? "linear-gradient(135deg, #dc3545 0%, #c82333 100%)"
-              : "linear-gradient(135deg, #17a2b8 0%, #138496 100%)"
+                ? "linear-gradient(135deg, #dc3545 0%, #c82333 100%)"
+                : "linear-gradient(135deg, #17a2b8 0%, #138496 100%)"
           }}
         >
           <div className="medi-notification-content">
@@ -323,11 +319,11 @@ export default function Login() {
                 <small>{new Date().toLocaleTimeString([], { hour: '2-digit', minute: '2-digit' })}</small>
               </div>
             </div>
-            
+
             <div className="medi-notification-body">
               <p>{notification.message}</p>
             </div>
-            
+
             {notification.type === "success" && (
               <div className="medi-notification-progress">
                 <div className="medi-progress-bar"></div>

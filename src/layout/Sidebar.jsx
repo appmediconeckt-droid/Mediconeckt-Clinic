@@ -59,7 +59,7 @@ const Sidebar = ({ menuItemClick }) => {
     { path: "/qrcode", icon: "fa-qrcode", text: "QR Code" },
     { path: "/clinicpage", icon: "fa-hospital", text: "Clinic Page" },
     { path: "/doctor-notifications", icon: "fa-bell", text: "Notification" },
-    { path: "/doctorprofile", icon: "fa-user-check", text: "Profile" },
+    // { path: "/doctorprofile", icon: "fa-user-check", text: "Profile" },
     { path: "/setting", icon: "fa-gear", text: "Setting" },
   ];
 
@@ -73,6 +73,8 @@ const Sidebar = ({ menuItemClick }) => {
     { path: "/patient-notifications", icon: "fa-bell", text: "Notifications" },
     { path: "/patient-settings", icon: "fa-gear", text: "Settings" },
   ];
+
+
 
   const renderMenuItems = (items) => {
     return items.map((item, index) => (
@@ -105,6 +107,8 @@ const Sidebar = ({ menuItemClick }) => {
         <ul className="menu">
           {userRole === "doctor"
             ? renderMenuItems(doctorMenuItems)
+            : userRole === "admin"
+            ? renderMenuItems(adminMenuItems)
             : renderMenuItems(patientMenuItems)
           }
 

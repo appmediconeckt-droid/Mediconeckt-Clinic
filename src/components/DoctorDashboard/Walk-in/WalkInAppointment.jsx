@@ -117,7 +117,7 @@ export default function WalkInAppointment() {
         <div className="walkin-modal-overlay">
           <div className="walkin-modal">
             <div className="walkin-modal-header">
-              <h3>➕ New Walk-in Appointment</h3>
+              <h3> New Walk-in Appointment</h3>
               <button className="walkin-modal-close" onClick={closeModal}>
                 &times;
               </button>
@@ -209,7 +209,7 @@ export default function WalkInAppointment() {
 
       <div className="walkin-header-section">
         <div className="header d-flex flex-column flex-md-row justify-content-between align-items-start align-items-md-center mb-3 gap-3">
-          <h2 className="walkin-title">🏥 Walk-in Appointment</h2>
+          <h2 className="walkin-title"> Walk-in Appointment</h2>
         </div>
        
         <div className="walkin-stats-container">
@@ -232,7 +232,7 @@ export default function WalkInAppointment() {
         {/* ADD BUTTON SECTION */}
         <div className="walkin-add-section">
           <div className="walkin-card">
-            <h2 className="walkin-section-title">➕ Add New Appointment</h2>
+            <h2 className="walkin-section-title"> Add New Appointment</h2>
             <p className="walkin-section-description">
               Click the button below to create a new walk-in appointment
             </p>
@@ -246,7 +246,7 @@ export default function WalkInAppointment() {
         <div className="walkin-table-section">
           <div className="walkin-card">
             <h2 className="walkin-section-title mb-3">
-              📋 Appointments List ({appointments.length})
+              Appointments List ({appointments.length})
             </h2>
             
             {appointments.length === 0 ? (

@@ -1,6 +1,8 @@
 import React, { useState } from 'react';
 import './Walkin.css';
 import { useNavigate } from 'react-router-dom';
+import { motion } from "framer-motion";
+import logo from '../image/Mediconect Logo-2.png';
 
 function Walkin() {
   const [activeCard, setActiveCard] = useState(null);
@@ -45,18 +47,19 @@ function Walkin() {
   return (
     <div className="Walkin">
       <div className="">
-        <header>
-          <div className="logo">
-            <i className="fas fa-heartbeat"></i>
-          </div>
-          <h1>HealthCare Portal</h1>
-          <p className="subtitle">Choose an option below to access healthcare services</p>
-          <footer className=''>
-            <p>© {new Date().getFullYear()} MediCare Solutions. All rights reserved.</p>
-            <p className="emergency-contact">
-              <i className="fas fa-phone-alt"></i> Emergency: <strong>1-800-MED-HELP</strong>
-            </p>
-          </footer>
+        <header style={{justifyContent:"center", textAlign:"center"}}>
+         
+          <motion.img
+              src={logo} // imported variable use करें
+              alt="Hospital Logo"
+              width={300}
+              height={180}
+              className="me-2"
+              initial={{ opacity: 0, scale: 0.8 }}
+              animate={{ opacity: 1, scale: 1 }}
+              transition={{ delay: 0.2, duration: 0.3 }}
+            />
+        
         </header>
 
         <div className="cards" style={{ gap: "5px" }}>

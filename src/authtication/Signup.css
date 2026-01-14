@@ -342,7 +342,7 @@
 /* Right Side - Logo Only */
 .medi-signup-right-side {
   flex: 1;
-  background: linear-gradient(135deg, #1a2980 0%, #26d0ce 100%);
+ background: linear-gradient(135deg, #fafbff 0%, #26d0ce 100%);
   display: flex;
   align-items: center;
   justify-content: center;
@@ -369,17 +369,17 @@
 }
 
 .medi-right-logo-wrapper {
-  width: 120px;
+  width: 280px;
   height: 120px;
-  background: rgba(255, 255, 255, 0.1);
+  /* background: rgba(255, 255, 255, 0.1); */
   border-radius: 30px;
   display: flex;
   align-items: center;
   justify-content: center;
   margin: 0 auto 2rem;
-  backdrop-filter: blur(10px);
-  border: 1px solid rgba(255, 255, 255, 0.2);
-  box-shadow: 0 20px 40px rgba(0, 0, 0, 0.2);
+  /* backdrop-filter: blur(10px); */
+  /* border: 1px solid rgba(255, 255, 255, 0.2);
+  box-shadow: 0 20px 40px rgba(0, 0, 0, 0.2); */
 }
 
 .medi-right-logo-icon {

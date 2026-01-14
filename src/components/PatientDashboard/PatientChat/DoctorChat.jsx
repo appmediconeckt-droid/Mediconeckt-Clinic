@@ -410,7 +410,7 @@ const DoctorChat = () => {
                                 disabled={!isVideoActive}
                                 title={appointmentType === 'video' ? 'Start Video Call' : appointmentType === 'voice' ? 'Voice Only Appointment' : 'In-Clinic Appointment'}
                             >
-                                <i className="fas fa-video"></i>
+                                <i className="fas fa-video mt-2"></i>
                                 <span className="btn-label">Video</span>
                             </button>
                             
@@ -421,7 +421,7 @@ const DoctorChat = () => {
                                 disabled={!isVoiceActive}
                                 title={appointmentType === 'voice' ? 'Start Voice Call' : appointmentType === 'video' ? 'Video Appointment' : 'In-Clinic Appointment'}
                             >
-                                <i className="fas fa-phone"></i>
+                                <i className="fas fa-phone mt-2"></i>
                                 <span className="btn-label">Voice</span>
                             </button>
                             
@@ -432,7 +432,7 @@ const DoctorChat = () => {
                                 disabled={appointmentType !== 'in_clinic'}
                                 title={appointmentType === 'in_clinic' ? 'View In-Clinic Details' : 'Not an In-Clinic Appointment'}
                             >
-                                <i className="fas fa-hospital"></i>
+                                <i className="fas fa-hospital mt-2"></i>
                                 <span className="btn-label">Clinic</span>
                             </button>
                         </div>

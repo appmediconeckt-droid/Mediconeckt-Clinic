@@ -154,7 +154,7 @@ function App() {
               <Route path="/walkinappointment" element={<WalkInAppointment />} />
               <Route path="/patient-sms" element={<PatientList />} />
               <Route path="/patient-chat/:patientId" element={<DoctorChat />} />
-              <Route path="/followup" element={<FollowUp />} /> 
+              <Route path="/followup" element={<FollowUp />} />
               <Route path="/patient-details" element={<PatientDetailsPage />} />
 
 
@@ -168,7 +168,8 @@ function App() {
               <Route path="/doctor-sms" element={<PatientSms />} />
               <Route path="/doctor-chat/:doctorId" element={<DoctorChatPanel />} />
 
-
+              {/* Hospital Dashboard */}
+              <Route path="/hospital-dashboard/*" element={<HospitalRoutes />} />
             </Routes>
           </div>
         </div>

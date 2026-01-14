@@ -339,7 +339,7 @@
 .card-body i {
   width: 25px;
   margin-right: 12px;
-  color: #6bc48a;
+  /* color: #6bc48a; */
   font-size: 1.1rem;
   min-width: 25px;
 }

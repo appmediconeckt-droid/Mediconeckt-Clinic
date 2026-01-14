@@ -4,6 +4,7 @@ import "./doctorLandingPage.css";
 import { Link } from "react-router-dom";
 import { motion } from "framer-motion";
 import logo from '../image/Mediconect-Logo-4.png';
+import logo2 from '../image/Mediconect Logo-3.png';
 
 export default function PatientLandingPage() {
     const [activeSection, setActiveSection] = useState("home");
@@ -499,13 +500,14 @@ export default function PatientLandingPage() {
             <footer className="footer-section">
                 <div className="p-4 pt-5 pb-4">
                     <div className="row">
-                        <div className="col-lg-3 mb-4">
+                        <div className="col-lg-3 mb-4" style={{ textAlign: "center" }}>
                             <motion.img
-                                src={logo} // imported variable use करें
+                                src={logo2} // imported variable use करें
                                 alt="Hospital Logo"
-                                width={220}
-                                height={35}
-                                className="me-2 mb-3"
+                                width={100}
+                                height={100}
+                                className="me-2"
+                               
                                 initial={{ opacity: 0, scale: 0.8 }}
                                 animate={{ opacity: 1, scale: 1 }}
                                 transition={{ delay: 0.2, duration: 0.3 }}
