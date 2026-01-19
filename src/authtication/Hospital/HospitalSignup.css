@@ -1,0 +1,1084 @@
+/* Main Container */
+.hosp-signup-container {
+  display: flex;
+  height: 100vh;
+  font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+  overflow: hidden;
+  background: #f8fafc;
+}
+
+/* Left Side - Form Side (50% width) */
+.hosp-signup-left-side {
+  flex: 1;
+  width: 50%;
+  background: #ffffff;
+  display: flex;
+  justify-content: center;
+  align-items: flex-start;
+  padding: 2rem 0;
+  overflow-y: auto;
+  box-shadow: 5px 0 20px rgba(0, 0, 0, 0.05);
+  min-height: 100vh;
+}
+
+.hosp-signup-form-wrapper {
+  width: 100%;
+  max-width: 700px;
+  padding: 0 2rem;
+  margin: 0 auto;
+}
+
+/* Back Button */
+.hosp-back-button {
+  margin-bottom: 2rem;
+  padding-top: 1rem;
+}
+
+.hosp-back-link {
+  display: inline-flex;
+  align-items: center;
+  gap: 0.5rem;
+  color: #64748b;
+  text-decoration: none;
+  font-size: 0.9rem;
+  font-weight: 500;
+  transition: color 0.3s ease;
+  padding: 0.5rem 1rem;
+  border-radius: 8px;
+  background: #f1f5f9;
+}
+
+.hosp-back-link:hover {
+  color: #2563eb;
+  background: #e0f2fe;
+}
+
+.hosp-back-icon {
+  font-size: 0.9rem;
+}
+
+/* Logo Section */
+.hosp-signup-logo {
+  display: flex;
+  align-items: center;
+  gap: 1rem;
+  justify-content: center;
+  margin-bottom: 2.5rem;
+  padding-bottom: 1.5rem;
+  border-bottom: 2px solid #e2e8f0;
+}
+
+.hosp-signup-logo-icon {
+  font-size: 2.8rem;
+  color: #000000;
+  background: linear-gradient(135deg, #3b82f6 0%, #1d4ed8 100%);
+  padding: 0.8rem;
+  border-radius: 12px;
+  box-shadow: 0 4px 12px rgba(37, 99, 235, 0.2);
+}
+
+.hosp-signup-logo-text {
+  font-size: 2.2rem;
+  font-weight: 800;
+  background: linear-gradient(135deg, #1e3a8a 0%, #3b82f6 100%);
+  -webkit-background-clip: text;
+  -webkit-text-fill-color: transparent;
+  margin: 0;
+  letter-spacing: -0.5px;
+}
+
+/* Form Header */
+.hosp-form-header-section {
+  text-align: center;
+  margin-bottom: 3rem;
+  padding-top: 1rem;
+}
+
+.hosp-form-header-section h2 {
+  font-size: 2.4rem;
+  color: #1e293b;
+  margin-bottom: 0.8rem;
+  font-weight: 700;
+  letter-spacing: -0.5px;
+}
+
+.hosp-form-subtitle {
+  color: #64748b;
+  font-size: 1.1rem;
+  margin: 0;
+  font-weight: 400;
+}
+
+/* Form Layout */
+.hosp-signup-form {
+  width: 100%;
+}
+
+.hosp-form-row {
+  display: grid;
+  grid-template-columns: 1fr 1fr;
+  gap: 1.8rem;
+  margin-bottom: 1.8rem;
+}
+
+/* Form Elements */
+.hosp-form-group {
+  margin-bottom: 1.8rem;
+}
+
+.hosp-form-label {
+  display: flex;
+  align-items: center;
+  gap: 0.6rem;
+  color: #334155;
+  font-size: 0.95rem;
+  font-weight: 600;
+  margin-bottom: 0.6rem;
+  letter-spacing: -0.2px;
+}
+
+.hosp-input-icon {
+  color: #2563eb;
+  font-size: 1rem;
+  min-width: 20px;
+}
+
+.hosp-form-input {
+  width: 100%;
+  padding: 1rem 1.2rem;
+  border: 2px solid #e2e8f0;
+  border-radius: 12px;
+  font-size: 1rem;
+  color: #334155;
+  transition: all 0.3s cubic-bezier(0.4, 0, 0.2, 1);
+  background: #f8fafc;
+  font-weight: 500;
+}
+
+.hosp-form-input:focus {
+  outline: none;
+  border-color: #2563eb;
+  background: white;
+  box-shadow: 0 0 0 4px rgba(37, 99, 235, 0.1);
+  transform: translateY(-1px);
+}
+
+.hosp-form-input::placeholder {
+  color: #94a3b8;
+  font-weight: 400;
+}
+
+/* Custom Select */
+.hosp-custom-select {
+  position: relative;
+}
+
+.hosp-select-input {
+  width: 100%;
+  padding: 1rem 1.2rem;
+  border: 2px solid #e2e8f0;
+  border-radius: 12px;
+  font-size: 1rem;
+  color: #334155;
+  background: #f8fafc;
+  appearance: none;
+  cursor: pointer;
+  transition: all 0.3s cubic-bezier(0.4, 0, 0.2, 1);
+  font-weight: 500;
+}
+
+.hosp-select-input:focus {
+  outline: none;
+  border-color: #2563eb;
+  background: white;
+  box-shadow: 0 0 0 4px rgba(37, 99, 235, 0.1);
+  transform: translateY(-1px);
+}
+
+.hosp-select-arrow {
+  position: absolute;
+  right: 1.2rem;
+  top: 50%;
+  transform: translateY(-50%);
+  color: #64748b;
+  font-size: 0.8rem;
+  pointer-events: none;
+  transition: transform 0.3s ease;
+}
+
+.hosp-select-input:focus + .hosp-select-arrow {
+  transform: translateY(-50%) rotate(180deg);
+}
+
+/* Role Selected Display */
+.hosp-role-selected {
+  display: flex;
+  align-items: center;
+  gap: 0.5rem;
+  margin-top: 0.5rem;
+  padding: 0.5rem 0.8rem;
+  background: #e0f2fe;
+  border-radius: 8px;
+  color: #0369a1;
+  font-weight: 500;
+  font-size: 0.9rem;
+}
+
+.hosp-role-selected svg {
+  font-size: 1.1rem;
+}
+
+/* Password Input */
+.hosp-password-input-wrapper {
+  position: relative;
+}
+
+.hosp-password-toggle {
+  position: absolute;
+  right: 1.2rem;
+  top: 50%;
+  transform: translateY(-50%);
+  color: #64748b;
+  cursor: pointer;
+  font-size: 1.2rem;
+  transition: all 0.3s ease;
+  background: white;
+  padding: 0.3rem;
+  border-radius: 4px;
+}
+
+.hosp-password-toggle:hover {
+  color: #2563eb;
+  background: #f1f5f9;
+}
+
+/* Password Requirements */
+.hosp-password-requirements {
+  background: linear-gradient(135deg, #f8fafc 0%, #f1f5f9 100%);
+  padding: 1.8rem;
+  border-radius: 12px;
+  margin: 2.5rem 0;
+  border: 1px solid #e2e8f0;
+}
+
+.hosp-requirements-title {
+  font-size: 0.95rem;
+  color: #475569;
+  font-weight: 600;
+  margin-bottom: 1.2rem;
+  display: flex;
+  align-items: center;
+  gap: 0.5rem;
+}
+
+.hosp-requirements-title::before {
+  content: '🔐';
+  font-size: 1rem;
+}
+
+.hosp-requirements-grid {
+  display: grid;
+  grid-template-columns: repeat(2, 1fr);
+  gap: 1rem;
+}
+
+.hosp-requirement-item {
+  display: flex;
+  align-items: center;
+  gap: 0.8rem;
+  font-size: 0.9rem;
+  padding: 0.6rem 0.8rem;
+  border-radius: 8px;
+  background: white;
+  border: 1px solid #e2e8f0;
+}
+
+.hosp-requirement-check {
+  width: 22px;
+  height: 22px;
+  border-radius: 50%;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  font-size: 0.8rem;
+  color: white;
+  background: #cbd5e1;
+  font-weight: bold;
+  transition: all 0.3s ease;
+}
+
+.hosp-requirement-item.valid .hosp-requirement-check {
+  background: linear-gradient(135deg, #10b981 0%, #059669 100%);
+  box-shadow: 0 2px 6px rgba(16, 185, 129, 0.3);
+}
+
+.hosp-requirement-text {
+  color: #64748b;
+  font-weight: 500;
+}
+
+.hosp-requirement-item.valid .hosp-requirement-text {
+  color: #059669;
+  font-weight: 600;
+}
+
+/* Terms Section */
+.hosp-terms-section {
+  margin: 2.5rem 0;
+  padding: 1.5rem;
+  background: #f8fafc;
+  border-radius: 12px;
+  border: 1px solid #e2e8f0;
+}
+
+.hosp-terms-checkbox {
+  display: flex;
+  align-items: flex-start;
+  gap: 1rem;
+  color: #475569;
+  font-size: 0.95rem;
+  cursor: pointer;
+  line-height: 1.5;
+}
+
+.hosp-terms-checkbox input {
+  margin-top: 0.3rem;
+  flex-shrink: 0;
+  width: 20px;
+  height: 20px;
+  cursor: pointer;
+  border-radius: 4px;
+  border: 2px solid #cbd5e1;
+}
+
+.hosp-terms-checkbox input:checked {
+  background-color: #2563eb;
+  border-color: #2563eb;
+}
+
+.hosp-terms-text {
+  line-height: 1.5;
+}
+
+.hosp-terms-link {
+  color: #2563eb;
+  text-decoration: none;
+  font-weight: 600;
+  position: relative;
+  transition: all 0.3s ease;
+}
+
+.hosp-terms-link:hover {
+  color: #1d4ed8;
+  text-decoration: underline;
+}
+
+/* Signup Button */
+.hosp-signup-button {
+  width: 100%;
+  padding: 1.2rem;
+  background: linear-gradient(135deg, #2563eb 0%, #1d4ed8 100%);
+  color: white;
+  border: none;
+  border-radius: 12px;
+  font-size: 1.1rem;
+  font-weight: 700;
+  cursor: pointer;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  gap: 0.8rem;
+  transition: all 0.3s cubic-bezier(0.4, 0, 0.2, 1);
+  box-shadow: 0 6px 20px rgba(37, 99, 235, 0.3);
+  margin: 2.5rem 0;
+  letter-spacing: 0.5px;
+  position: relative;
+  overflow: hidden;
+}
+
+.hosp-signup-button::before {
+  content: '';
+  position: absolute;
+  top: 0;
+  left: -100%;
+  width: 100%;
+  height: 100%;
+  background: linear-gradient(90deg, transparent, rgba(255, 255, 255, 0.2), transparent);
+  transition: left 0.7s ease;
+}
+
+.hosp-signup-button:hover::before {
+  left: 100%;
+}
+
+.hosp-signup-button:hover {
+  transform: translateY(-3px);
+  box-shadow: 0 10px 25px rgba(37, 99, 235, 0.4);
+}
+
+.hosp-signup-button:active {
+  transform: translateY(0);
+}
+
+.hosp-button-text {
+  font-size: 1.1rem;
+  font-weight: 700;
+  letter-spacing: 0.5px;
+}
+
+/* Login Link */
+.hosp-login-link {
+  text-align: center;
+  margin-top: 2rem;
+  font-size: 1rem;
+  color: #64748b;
+  padding: 1.2rem;
+  background: #f8fafc;
+  border-radius: 12px;
+  border: 1px solid #e2e8f0;
+}
+
+.hosp-login-text {
+  color: #2563eb;
+  text-decoration: none;
+  font-weight: 700;
+  transition: all 0.3s ease;
+  position: relative;
+  padding-bottom: 2px;
+}
+
+.hosp-login-text:hover {
+  color: #1d4ed8;
+}
+
+.hosp-login-text::after {
+  content: '';
+  position: absolute;
+  bottom: 0;
+  left: 0;
+  width: 0;
+  height: 2px;
+  background: #2563eb;
+  transition: width 0.3s ease;
+}
+
+.hosp-login-text:hover::after {
+  width: 100%;
+}
+
+/* Right Side - Banner Section (50% width) */
+.hosp-signup-right-side {
+  flex: 1;
+  width: 50%;
+  background: linear-gradient(135deg, #1e3a8a 0%, #2563eb 100%);
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  padding: 2rem;
+  position: relative;
+  overflow: hidden;
+  min-height: 100vh;
+}
+
+.hosp-right-content {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+  text-align: center;
+  width: 100%;
+  max-width: 600px;
+  z-index: 1;
+  padding: 2rem 0;
+}
+
+.hosp-signup-right-side::before {
+  content: '';
+  position: absolute;
+  top: 0;
+  left: 0;
+  right: 0;
+  bottom: 0;
+  background: 
+    radial-gradient(circle at 20% 80%, rgba(255, 255, 255, 0.1) 0%, transparent 50%),
+    radial-gradient(circle at 80% 20%, rgba(255, 255, 255, 0.05) 0%, transparent 50%);
+  pointer-events: none;
+}
+
+.hosp-right-logo-container {
+  margin-bottom: 2.5rem;
+}
+
+.hosp-right-logo-wrapper {
+  width: 350px;
+  height: 150px;
+  border-radius: 20px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  margin: 0 auto;
+  padding: 1rem;
+  background: rgba(255, 255, 255, 0.1);
+  backdrop-filter: blur(10px);
+  border: 1px solid rgba(255, 255, 255, 0.2);
+  box-shadow: 0 20px 40px rgba(0, 0, 0, 0.2);
+}
+
+.hosp-right-text-container {
+  margin-bottom: 3rem;
+}
+
+.hosp-right-title {
+  font-size: 2.8rem;
+  font-weight: 800;
+  color: white;
+  margin-bottom: 1.5rem;
+  letter-spacing: -0.5px;
+  text-shadow: 0 2px 10px rgba(0, 0, 0, 0.2);
+  line-height: 1.2;
+}
+
+.hosp-right-tagline {
+  font-size: 1.3rem;
+  color: rgba(255, 255, 255, 0.9);
+  font-weight: 400;
+  line-height: 1.6;
+  max-width: 500px;
+  margin: 0 auto;
+}
+
+.hosp-features-list {
+  display: flex;
+  flex-direction: column;
+  gap: 1.2rem;
+  width: 100%;
+  max-width: 500px;
+  text-align: left;
+}
+
+.hosp-feature-item {
+  display: flex;
+  align-items: center;
+  gap: 1rem;
+  color: white;
+  font-size: 1.1rem;
+  font-weight: 500;
+  padding: 1rem 1.5rem;
+  background: rgba(255, 255, 255, 0.1);
+  border-radius: 12px;
+  backdrop-filter: blur(5px);
+  border: 1px solid rgba(255, 255, 255, 0.15);
+  transition: all 0.3s ease;
+}
+
+.hosp-feature-item:hover {
+  background: rgba(255, 255, 255, 0.15);
+  transform: translateX(5px);
+}
+
+.hosp-feature-icon {
+  font-size: 1.3rem;
+  min-width: 30px;
+  color: #93c5fd;
+}
+
+/* OTP Modal Styles */
+.hosp-otp-modal-overlay {
+  position: fixed;
+  top: 0;
+  left: 0;
+  right: 0;
+  bottom: 0;
+  background: rgba(0, 0, 0, 0.8);
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  z-index: 10000;
+  backdrop-filter: blur(8px);
+  animation: hosp-modal-fade-in 0.4s ease;
+}
+
+.hosp-otp-modal {
+  background: linear-gradient(135deg, #ffffff 0%, #f8fafc 100%);
+  border-radius: 20px;
+  padding: 2.5rem;
+  width: 90%;
+  max-width: 500px;
+  box-shadow: 0 30px 60px rgba(0, 0, 0, 0.3);
+  animation: hosp-modal-slide-up 0.5s cubic-bezier(0.4, 0, 0.2, 1);
+  border: 1px solid #e2e8f0;
+}
+
+.hosp-otp-header {
+  text-align: center;
+  margin-bottom: 2.5rem;
+}
+
+.hosp-otp-header h3 {
+  color: #1e293b;
+  font-size: 1.8rem;
+  margin-bottom: 0.8rem;
+  font-weight: 700;
+  letter-spacing: -0.5px;
+}
+
+.hosp-otp-subtitle {
+  color: #64748b;
+  font-size: 1rem;
+  line-height: 1.5;
+}
+
+/* Verification Steps */
+.hosp-verification-steps {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  margin-bottom: 2.5rem;
+  gap: 1rem;
+}
+
+.hosp-step {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  gap: 0.8rem;
+  position: relative;
+}
+
+.hosp-step-number {
+  width: 40px;
+  height: 40px;
+  border-radius: 50%;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  font-weight: 700;
+  font-size: 1.1rem;
+  background: #e2e8f0;
+  color: #64748b;
+  transition: all 0.4s cubic-bezier(0.4, 0, 0.2, 1);
+  position: relative;
+  z-index: 1;
+}
+
+.hosp-step.active .hosp-step-number {
+  background: linear-gradient(135deg, #2563eb 0%, #1d4ed8 100%);
+  color: white;
+  box-shadow: 0 6px 15px rgba(37, 99, 235, 0.3);
+  transform: scale(1.1);
+}
+
+.hosp-step-text {
+  font-size: 0.9rem;
+  color: #94a3b8;
+  font-weight: 600;
+  text-align: center;
+  min-width: 120px;
+}
+
+.hosp-step.active .hosp-step-text {
+  color: #2563eb;
+  font-weight: 700;
+}
+
+.hosp-step-connector {
+  width: 80px;
+  height: 3px;
+  background: #e2e8f0;
+  margin: 0 0.5rem;
+  position: relative;
+  overflow: hidden;
+}
+
+.hosp-step.active + .hosp-step-connector {
+  background: linear-gradient(to right, #2563eb, #e2e8f0);
+}
+
+/* OTP Input Groups */
+.hosp-verification-step {
+  margin-bottom: 2rem;
+}
+
+.hosp-otp-input-group {
+  margin-bottom: 2rem;
+}
+
+.hosp-otp-label {
+  display: flex;
+  align-items: center;
+  gap: 0.8rem;
+  color: #334155;
+  font-size: 1rem;
+  font-weight: 600;
+  margin-bottom: 1rem;
+  padding: 0.8rem;
+  background: #f1f5f9;
+  border-radius: 10px;
+}
+
+.hosp-otp-icon {
+  color: #2563eb;
+  font-size: 1.2rem;
+}
+
+.hosp-otp-input {
+  width: 100%;
+  padding: 1.2rem;
+  border: 2px solid #e2e8f0;
+  border-radius: 12px;
+  font-size: 1.3rem;
+  font-weight: 700;
+  text-align: center;
+  letter-spacing: 4px;
+  color: #1e293b;
+  transition: all 0.3s ease;
+  background: white;
+}
+
+.hosp-otp-input:focus {
+  outline: none;
+  border-color: #2563eb;
+  box-shadow: 0 0 0 4px rgba(37, 99, 235, 0.15);
+}
+
+.hosp-otp-hint {
+  display: block;
+  color: #64748b;
+  font-size: 0.9rem;
+  margin-top: 0.8rem;
+  text-align: center;
+  padding: 0.5rem;
+  background: #f8fafc;
+  border-radius: 6px;
+}
+
+/* Timer Section */
+.hosp-timer-section {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  margin-bottom: 2rem;
+  padding: 1.2rem;
+  background: linear-gradient(135deg, #f1f5f9 0%, #e2e8f0 100%);
+  border-radius: 12px;
+  border: 1px solid #cbd5e1;
+}
+
+.hosp-timer-display {
+  display: flex;
+  align-items: center;
+  gap: 0.8rem;
+  font-weight: 600;
+}
+
+.hosp-timer-icon {
+  font-size: 1.2rem;
+  animation: hosp-pulse 2s infinite;
+}
+
+@keyframes hosp-pulse {
+  0%, 100% { opacity: 1; }
+  50% { opacity: 0.5; }
+}
+
+.hosp-timer-text {
+  color: #475569;
+  font-size: 0.95rem;
+}
+
+.hosp-timer-countdown {
+  color: #dc2626;
+  font-weight: 700;
+  font-size: 1.1rem;
+  font-family: 'Courier New', monospace;
+  padding: 0.3rem 0.8rem;
+  background: white;
+  border-radius: 6px;
+  border: 1px solid #fca5a5;
+}
+
+.hosp-resend-button {
+  background: linear-gradient(135deg, #3b82f6 0%, #2563eb 100%);
+  border: none;
+  color: white;
+  padding: 0.7rem 1.5rem;
+  border-radius: 10px;
+  font-size: 0.9rem;
+  font-weight: 600;
+  cursor: pointer;
+  transition: all 0.3s ease;
+  box-shadow: 0 4px 12px rgba(37, 99, 235, 0.3);
+}
+
+.hosp-resend-button:hover:not(:disabled) {
+  transform: translateY(-2px);
+  box-shadow: 0 6px 15px rgba(37, 99, 235, 0.4);
+}
+
+.hosp-resend-button:disabled {
+  opacity: 0.5;
+  cursor: not-allowed;
+  transform: none !important;
+}
+
+/* Verify Buttons */
+.hosp-verify-button {
+  width: 100%;
+  padding: 1.2rem;
+  border: none;
+  border-radius: 12px;
+  font-size: 1.1rem;
+  font-weight: 700;
+  cursor: pointer;
+  transition: all 0.3s cubic-bezier(0.4, 0, 0.2, 1);
+  margin-bottom: 1.2rem;
+  letter-spacing: 0.5px;
+  position: relative;
+  overflow: hidden;
+}
+
+.hosp-verify-button::after {
+  content: '';
+  position: absolute;
+  top: 50%;
+  left: 50%;
+  width: 0;
+  height: 0;
+  border-radius: 50%;
+  background: rgba(255, 255, 255, 0.3);
+  transform: translate(-50%, -50%);
+  transition: width 0.6s, height 0.6s;
+}
+
+.hosp-verify-button:hover::after {
+  width: 300px;
+  height: 300px;
+}
+
+.hosp-email-verify {
+  background: linear-gradient(135deg, #2563eb 0%, #1d4ed8 100%);
+  color: white;
+}
+
+.hosp-phone-verify {
+  background: linear-gradient(135deg, #059669 0%, #047857 100%);
+  color: white;
+}
+
+.hosp-verify-button:hover {
+  transform: translateY(-3px);
+  box-shadow: 0 8px 25px rgba(37, 99, 235, 0.4);
+}
+
+/* Cancel Button */
+.hosp-cancel-button {
+  width: 100%;
+  padding: 1rem;
+  background: transparent;
+  border: 2px solid #e2e8f0;
+  color: #64748b;
+  border-radius: 12px;
+  font-size: 1rem;
+  font-weight: 600;
+  cursor: pointer;
+  transition: all 0.3s ease;
+}
+
+.hosp-cancel-button:hover {
+  background: #f1f5f9;
+  border-color: #cbd5e1;
+  color: #475569;
+}
+
+/* Animations */
+@keyframes hosp-modal-fade-in {
+  from {
+    opacity: 0;
+    backdrop-filter: blur(0);
+  }
+  to {
+    opacity: 1;
+    backdrop-filter: blur(8px);
+  }
+}
+
+@keyframes hosp-modal-slide-up {
+  from {
+    transform: translateY(30px) scale(0.95);
+    opacity: 0;
+  }
+  to {
+    transform: translateY(0) scale(1);
+    opacity: 1;
+  }
+}
+
+/* Responsive Design */
+@media (max-width: 1200px) {
+  .hosp-signup-container {
+    flex-direction: column;
+    height: auto;
+    min-height: 100vh;
+  }
+  
+  .hosp-signup-left-side,
+  .hosp-signup-right-side {
+    width: 100%;
+    flex: none;
+    min-height: auto;
+  }
+  
+  .hosp-signup-left-side {
+    order: 2;
+    padding: 2rem 1rem;
+  }
+  
+  .hosp-signup-right-side {
+    order: 1;
+    padding: 2rem;
+    min-height: 500px;
+  }
+  
+  .hosp-form-row {
+    grid-template-columns: 1fr;
+    gap: 1.2rem;
+  }
+  
+  .hosp-requirements-grid {
+    grid-template-columns: 1fr;
+  }
+  
+  .hosp-right-logo-wrapper {
+    width: 250px;
+    height: 120px;
+    margin-bottom: 1.5rem;
+  }
+  
+  .hosp-right-title {
+    font-size: 2.2rem;
+  }
+  
+  .hosp-right-tagline {
+    font-size: 1.1rem;
+  }
+  
+  .hosp-feature-item {
+    font-size: 1rem;
+  }
+}
+
+@media (max-width: 768px) {
+  .hosp-signup-form-wrapper {
+    padding: 0 1.5rem;
+  }
+  
+  .hosp-form-header-section h2 {
+    font-size: 2rem;
+  }
+  
+  .hosp-signup-logo {
+    flex-direction: column;
+    gap: 0.8rem;
+    text-align: center;
+  }
+  
+  .hosp-signup-logo-text {
+    font-size: 1.8rem;
+  }
+  
+  .hosp-otp-modal {
+    padding: 1.8rem;
+    margin: 1rem;
+  }
+  
+  .hosp-verification-steps {
+    flex-direction: column;
+    gap: 2rem;
+  }
+  
+  .hosp-step-connector {
+    width: 3px;
+    height: 40px;
+  }
+  
+  .hosp-timer-section {
+    flex-direction: column;
+    gap: 1.2rem;
+    text-align: center;
+  }
+  
+  .hosp-right-title {
+    font-size: 1.8rem;
+  }
+  
+  .hosp-right-logo-wrapper {
+    width: 200px;
+    height: 100px;
+  }
+  
+  .hosp-right-tagline {
+    font-size: 1rem;
+  }
+  
+  .hosp-features-list {
+    margin-top: 2rem;
+  }
+}
+
+@media (max-width: 480px) {
+  .hosp-signup-logo-icon {
+    font-size: 2.2rem;
+    padding: 0.6rem;
+  }
+  
+  .hosp-signup-logo-text {
+    font-size: 1.6rem;
+  }
+  
+  .hosp-form-header-section h2 {
+    font-size: 1.7rem;
+  }
+  
+  .hosp-form-input,
+  .hosp-select-input {
+    padding: 0.9rem 1rem;
+  }
+  
+  .hosp-signup-button,
+  .hosp-verify-button {
+    padding: 1rem;
+    font-size: 1rem;
+  }
+  
+  .hosp-right-logo-wrapper {
+    width: 180px;
+    height: 80px;
+  }
+  
+  .hosp-right-title {
+    font-size: 1.5rem;
+  }
+  
+  .hosp-right-tagline {
+    font-size: 0.9rem;
+  }
+}
+
+/* Scrollbar Styling */
+.hosp-signup-left-side::-webkit-scrollbar {
+  width: 8px;
+}
+
+.hosp-signup-left-side::-webkit-scrollbar-track {
+  background: #f1f5f9;
+  border-radius: 4px;
+}
+
+.hosp-signup-left-side::-webkit-scrollbar-thumb {
+  background: linear-gradient(135deg, #2563eb 0%, #1d4ed8 100%);
+  border-radius: 4px;
+}
+
+.hosp-signup-left-side::-webkit-scrollbar-thumb:hover {
+  background: linear-gradient(135deg, #1d4ed8 0%, #1e40af 100%);
+}

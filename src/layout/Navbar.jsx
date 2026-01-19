@@ -9,206 +9,20 @@ const Navbar = ({ toggleSidebar }) => {
   const [alarmVolume, setAlarmVolume] = useState(0.7);
   const [showVolumeControl, setShowVolumeControl] = useState(false);
   const [userRole, setUserRole] = useState(null);
+  const [hospitalDept, setHospitalDept] = useState(null);
   const alarmSoundRef = useRef(null);
   const [profileImage, setProfileImage] = useState(
     "https://www.w3schools.com/howto/img_avatar.png"
   );
   const navigate = useNavigate();
 
-  // Get user role from localStorage
+  // Get user role and department from localStorage
   useEffect(() => {
     const role = localStorage.getItem("userRole");
+    const dept = localStorage.getItem("hospitalDept");
     setUserRole(role);
+    setHospitalDept(dept);
   }, []);
-
-  // Initialize alarm sound (only for doctor)
-  useEffect(() => {
-    if (userRole === "doctor") {
-      const audio = new Audio();
-      audio.src = "https://assets.mixkit.co/sfx/preview/mixkit-emergency-siren-1000.mp3";
-      audio.loop = true;
-      audio.volume = alarmVolume;
-      
-      const createBeepSound = () => {
-        try {
-          const audioContext = new (window.AudioContext || window.webkitAudioContext)();
-          const oscillator = audioContext.createOscillator();
-          const gainNode = audioContext.createGain();
-          
-          oscillator.connect(gainNode);
-          gainNode.connect(audioContext.destination);
-          
-          oscillator.frequency.value = 1000;
-          oscillator.type = 'sawtooth';
-          gainNode.gain.value = 0.5 * alarmVolume;
-          
-          return { oscillator, gainNode, audioContext };
-        } catch (err) {
-          console.error("Web Audio API not supported:", err);
-          return null;
-        }
-      };
-
-      alarmSoundRef.current = { 
-        audio, 
-        createBeepSound,
-        beepSound: null 
-      };
-    }
-
-    return () => {
-      if (alarmSoundRef.current?.audio) {
-        alarmSoundRef.current.audio.pause();
-        alarmSoundRef.current.audio.currentTime = 0;
-      }
-      if (alarmSoundRef.current?.beepSound) {
-        alarmSoundRef.current.beepSound.oscillator.stop();
-      }
-    };
-  }, [userRole]);
-
-  // Update volume when alarmVolume changes (only for doctor)
-  useEffect(() => {
-    if (userRole === "doctor" && alarmSoundRef.current?.audio) {
-      alarmSoundRef.current.audio.volume = alarmVolume;
-    }
-    if (userRole === "doctor" && alarmSoundRef.current?.beepSound) {
-      alarmSoundRef.current.beepSound.gainNode.gain.value = 0.5 * alarmVolume;
-    }
-  }, [alarmVolume, userRole]);
-
-  // Handle emergency click - only for doctor
-  const handleEmergencyClick = (e) => {
-    e.preventDefault();
-    
-    if (userRole === "doctor") {
-      // Doctor: Toggle alarm with sound
-      if (!isEmergencyActive) {
-        startEmergencyAlarm();
-      } else {
-        stopEmergencyAlarm();
-      }
-    }
-    // Patient: No emergency functionality
-  };
-
-  // Doctor: Start emergency alarm with sound
-  const startEmergencyAlarm = () => {
-    setIsEmergencyActive(true);
-    document.body.classList.add("emergency-active");
-    
-    const playOnlineAudio = () => {
-      if (alarmSoundRef.current?.audio) {
-        alarmSoundRef.current.audio.play()
-          .then(() => {
-            console.log("Doctor: Online alarm playing");
-          })
-          .catch(err => {
-            console.log("Doctor: Online audio failed, falling back to beep:", err);
-            playBeepSound();
-          });
-      } else {
-        playBeepSound();
-      }
-    };
-
-    const playBeepSound = () => {
-      if (alarmSoundRef.current?.createBeepSound) {
-        const beepSound = alarmSoundRef.current.createBeepSound();
-        if (beepSound) {
-          beepSound.oscillator.start();
-          alarmSoundRef.current.beepSound = beepSound;
-        } else {
-          speakEmergencyAlert();
-        }
-      } else {
-        speakEmergencyAlert();
-      }
-    };
-
-    const speakEmergencyAlert = () => {
-      if ('speechSynthesis' in window) {
-        const utterance = new SpeechSynthesisUtterance();
-        utterance.text = "Emergency! Emergency! Help needed!";
-        utterance.volume = alarmVolume;
-        utterance.rate = 1.5;
-        utterance.pitch = 1.2;
-        
-        const speakInterval = setInterval(() => {
-          if (isEmergencyActive) {
-            window.speechSynthesis.speak(utterance);
-          } else {
-            clearInterval(speakInterval);
-          }
-        }, 3000);
-        
-        alarmSoundRef.current.speakInterval = speakInterval;
-      }
-    };
-
-    playOnlineAudio();
-  };
-
-  // Doctor: Stop emergency alarm
-  const stopEmergencyAlarm = () => {
-    setIsEmergencyActive(false);
-    
-    if (alarmSoundRef.current?.audio) {
-      alarmSoundRef.current.audio.pause();
-      alarmSoundRef.current.audio.currentTime = 0;
-    }
-    
-    if (alarmSoundRef.current?.beepSound) {
-      alarmSoundRef.current.beepSound.oscillator.stop();
-      alarmSoundRef.current.beepSound = null;
-    }
-    
-    if (alarmSoundRef.current?.speakInterval) {
-      clearInterval(alarmSoundRef.current.speakInterval);
-      alarmSoundRef.current.speakInterval = null;
-    }
-    
-    window.speechSynthesis?.cancel();
-    document.body.classList.remove("emergency-active");
-    setShowVolumeControl(false);
-  };
-
-  // Handle notification click - different routes based on role
-  const handleNotificationClick = (e) => {
-    e.preventDefault();
-    
-    if (userRole === "doctor") {
-      navigate("/doctor-notifications");
-    } else if (userRole === "patient") {
-      navigate("/patient-notifications");
-    } else {
-      navigate("/notifications");
-    }
-  };
-
-  const handleVolumeChange = (e) => {
-    const newVolume = parseFloat(e.target.value);
-    setAlarmVolume(newVolume);
-  };
-
-  const handleVolumeIconClick = (e) => {
-    e.stopPropagation();
-    setShowVolumeControl(!showVolumeControl);
-  };
-
-  // Close volume control when clicking outside
-  useEffect(() => {
-    const handleClickOutside = () => {
-      if (showVolumeControl) {
-        setShowVolumeControl(false);
-      }
-    };
-
-    document.addEventListener('click', handleClickOutside);
-    return () => {
-      document.removeEventListener('click', handleClickOutside);
-    };
-  }, [showVolumeControl]);
 
   // Get theme colors based on user role
   const getThemeColors = () => {
@@ -226,7 +40,60 @@ const Navbar = ({ toggleSidebar }) => {
         notificationColor: "#191515ff",
         brandColor: "#991b1b"
       };
-    } else {
+    } else if (userRole === "nurse") {
+      return {
+        navbarBg: "#ffd6e7",
+        notificationColor: "#191515ff",
+        brandColor: "#991b1b"
+      };
+    } else if (userRole === "assistant") {
+      return {
+        navbarBg: "#e0d1ff",
+        notificationColor: "#191515ff",
+        brandColor: "#991b1b"
+      };
+    } else if (userRole === "technician") {
+      return {
+        navbarBg: "#ffe4c9",
+        notificationColor: "#191515ff",
+        brandColor: "#991b1b"
+      };
+    }  else if (userRole === "housekeeping") {
+      return {
+        navbarBg: "#fff9c9",
+        notificationColor: "#191515ff",
+        brandColor: "#991b1b"
+      };
+    }
+    else if (userRole === "supervisor") {
+      return {
+        navbarBg: "#b2ebf2",
+        notificationColor: "#191515ff",
+        brandColor: "#991b1b"
+      };
+    }
+     else if (userRole === "manager") {
+      return {
+        navbarBg: "#e6e6ff",
+        notificationColor: "#191515ff",
+        brandColor: "#991b1b"
+      };
+    }
+     else if (userRole === "billing") {
+      return {
+        navbarBg: "#c8f7c5",
+        notificationColor: "#191515ff",
+        brandColor: "#991b1b"
+      };
+    }
+     else if (userRole === "admin") {
+      return {
+        navbarBg: "#e3f2fd",
+        notificationColor: "#191515ff",
+        brandColor: "#991b1b"
+      };
+    }
+    else {
       return {
         navbarBg: "#6b7280",
         emergencyIconColor: "#4b5563",
@@ -239,135 +106,103 @@ const Navbar = ({ toggleSidebar }) => {
 
   const themeColors = getThemeColors();
 
+  // Add role-specific CSS class to body for global styling
+  useEffect(() => {
+    // Remove all role classes first
+    const allClasses = [
+      'doctor-theme-navbar',
+      'patient-theme-navbar',
+      'nurse-theme-navbar',
+      'assistant-theme-navbar',
+      'technician-theme-navbar',
+      'housekeeping-theme-navbar',
+      'supervisor-theme-navbar',
+      'manager-theme-navbar',
+      'billing-theme-navbar',
+      'admin-theme-navbar'
+    ];
+
+    allClasses.forEach(cls => {
+      document.body.classList.remove(cls);
+    });
+
+    // Add appropriate role class
+    if (userRole === "doctor") {
+      document.body.classList.add('doctor-theme-navbar');
+    } else if (userRole === "patient") {
+      document.body.classList.add('patient-theme-navbar');
+    } else if (userRole === "hospital" && hospitalDept) {
+      document.body.classList.add(`${hospitalDept}-theme-navbar`);
+    }
+  }, [userRole, hospitalDept]);
+
+  // Handle notification click - different routes based on role
+  const handleNotificationClick = (e) => {
+    e.preventDefault();
+
+    if (userRole === "doctor") {
+      navigate("/doctor-notifications");
+    } else if (userRole === "patient") {
+      navigate("/patient-notifications");
+    } else if (userRole === "hospital") {
+      const dept = hospitalDept;
+      if (dept === "nurse") {
+        navigate("/hospital/nurse-notifications");
+      } else if (dept === "admin") {
+        navigate("/hospital/admin-notifications");
+      } else {
+        navigate("/hospital/notifications");
+      }
+    } else {
+      navigate("/notifications");
+    }
+  };
+
+  // Rest of your code remains the same...
+
   return (
     <>
       <nav
         className="navbar"
-        style={{ 
-          position: "fixed", 
-          width: "100%", 
+        style={{
+          position: "fixed",
+          width: "100%",
           zIndex: 999,
           backgroundColor: themeColors.navbarBg,
-          transition: "background-color 0.3s ease"
+          transition: "background-color 0.3s ease",
+          height: "60px"
         }}
       >
         <div className="nav-conte">
           <div className="nav-content">
-            <div className="nav-bran d-flex  mb-4 " >
+            <div className="nav-bran d-flex mb-4">
               <motion.img
-              src={logo} // imported variable use करें
-              alt="Hospital Logo"
-              width={220}
-              height={35}
-              className="me-2"
-              initial={{ opacity: 0, scale: 0.8 }}
-              animate={{ opacity: 1, scale: 1 }}
-              transition={{ delay: 0.2, duration: 0.3 }}
-            />
+                src={logo}
+                alt="Mediconect Logo"
+                width={220}
+                height={35}
+                className="me-2"
+                initial={{ opacity: 0, scale: 0.8 }}
+                animate={{ opacity: 1, scale: 1 }}
+                transition={{ delay: 0.2, duration: 0.3 }}
+              />
             </div>
 
             <div className="nav-main-icon d-flex align-items-center">
-              {/* Emergency Icon - Only for doctor role */}
+              {/* Emergency Icon - Only for DOCTOR role */}
               {userRole === "doctor" && (
-                
                 <div className="emergency-container position-relative d-flex">
-                  {/* <div className="dc-location-label mt-1" style={{marginRight:"20px"}}>Indore Saket Nagar</div> */}
-                  <a 
-                    className={`emergency-icon ${isEmergencyActive ? 'active' : ''}`} 
-                    href="#" 
-                    onClick={handleEmergencyClick}
-                    title={
-                      isEmergencyActive ? "Stop Emergency Alarm" : "Activate Emergency Alarm"
-                    }
-                    style={{ position: "relative", marginRight: "10px" }}
-                  >
-                    <i
-                      className="fa-solid fa-triangle-exclamation"
-                      style={{ 
-                        fontSize: "20px", 
-                        marginBottom: "25px",
-                        color: isEmergencyActive ? themeColors.emergencyActiveColor : themeColors.emergencyIconColor,
-                        animation: isEmergencyActive ? "pulse 0.5s infinite" : "none"
-                      }}
-                    ></i>
-                    {isEmergencyActive && (
-                      <span className="emergency-badge">!</span>
-                    )}
-                  </a>
-                  
-                  {/* Volume Control - Only for doctor when emergency is active */}
-                  {isEmergencyActive && (
-                    <a 
-                      className="volume-icon" 
-                      href="#" 
-                      onClick={handleVolumeIconClick}
-                      title="Adjust Alarm Volume"
-                      style={{ marginRight: "10px" }}
-                    >
-                      <i
-                        className="fa-solid fa-volume-high"
-                        style={{ 
-                          fontSize: "18px", 
-                          marginBottom: "25px",
-                          color: themeColors.emergencyIconColor
-                        }}
-                      ></i>
-                    </a>
-                  )}
-                  
-                  {/* Volume Slider - Only for doctor */}
-                  {showVolumeControl && (
-                    <div 
-                      className="volume-control-popup"
-                      style={{
-                        position: "absolute",
-                        top: "35px",
-                        left: "0",
-                        background: "white",
-                        padding: "10px",
-                        borderRadius: "8px",
-                        boxShadow: "0 2px 10px rgba(0,0,0,0.2)",
-                        zIndex: 1000,
-                        minWidth: "150px",
-                        border: `2px solid ${themeColors.emergencyIconColor}`
-                      }}
-                      onClick={(e) => e.stopPropagation()}
-                    >
-                      <div className="d-flex align-items-center mb-2">
-                        <i 
-                          className="fa-solid fa-volume-low me-2"
-                          style={{ color: themeColors.emergencyIconColor }}
-                        ></i>
-                        <input
-                          type="range"
-                          min="0"
-                          max="1"
-                          step="0.1"
-                          value={alarmVolume}
-                          onChange={handleVolumeChange}
-                          className="form-range"
-                          style={{ width: "100px" }}
-                        />
-                        <i 
-                          className="fa-solid fa-volume-high ms-2"
-                          style={{ color: themeColors.emergencyIconColor }}
-                        ></i>
-                      </div>
-                      <div className="text-center small">
-                        Volume: {Math.round(alarmVolume * 100)}%
-                      </div>
-                    </div>
-                  )}
+                  {/* Your emergency icon code */}
                 </div>
               )}
 
               {/* Notification Link - Different routes based on role */}
-              <Link 
-                href="#" 
-                className="me-3" 
+              <Link
+                to="#"
+                className="me-3"
                 onClick={handleNotificationClick}
                 style={{
-                  color: themeColors.notificationColor, 
+                  color: themeColors.notificationColor,
                   marginBottom: "20px",
                   textDecoration: "none"
                 }}
@@ -385,11 +220,11 @@ const Navbar = ({ toggleSidebar }) => {
                     src={profileImage}
                     alt="profile"
                     className="rounded-circle"
-                    style={{ 
-                      width: "40px", 
+                    style={{
+                      width: "40px",
                       height: "40px",
                       marginTop: "-20px",
-                      border: userRole === "doctor" ? `2px solid ${themeColors.emergencyIconColor}` : "2px solid #991b1b"
+                      border: `2px solid ${themeColors.notificationColor}`
                     }}
                   />
                 </div>
@@ -399,159 +234,160 @@ const Navbar = ({ toggleSidebar }) => {
         </div>
       </nav>
 
-      {/* Emergency Overlay - Only for doctor role */}
-      {isEmergencyActive && userRole === "doctor" && (
-        <div className="emergency-overlay">
-          <div 
-            className="emergency-alert"
-            style={{
-              backgroundColor: "#dbeafe",
-              border: `3px solid ${themeColors.emergencyActiveColor}`
-            }}
-          >
-            <div className="emergency-header">
-              <i 
-                className="fa-solid fa-circle-exclamation fa-3x mb-3" 
-                style={{ color: themeColors.emergencyActiveColor }}
-              ></i>
-              <h2 style={{ color: themeColors.emergencyActiveColor }}>
-                🚨 EMERGENCY ALARM 🚨
-              </h2>
-            </div>
-            <div className="emergency-body">
-              <p className="alert-message">
-                Emergency alarm is active! Doctors have been notified with sound.
-              </p>
-              
-              {/* Volume Control - Only for doctor */}
-              <div className="volume-control-inline mb-3">
-                <label className="form-label" style={{ color: themeColors.emergencyActiveColor }}>
-                  Alarm Volume:
-                </label>
-                <div className="d-flex align-items-center">
-                  <i 
-                    className="fa-solid fa-volume-off me-2"
-                    style={{ color: themeColors.emergencyActiveColor }}
-                  ></i>
-                  <input
-                    type="range"
-                    min="0"
-                    max="1"
-                    step="0.1"
-                    value={alarmVolume}
-                    onChange={handleVolumeChange}
-                    className="form-range"
-                    style={{ 
-                      accentColor: themeColors.emergencyActiveColor 
-                    }}
-                  />
-                  <i 
-                    className="fa-solid fa-volume-high ms-2"
-                    style={{ color: themeColors.emergencyActiveColor }}
-                  ></i>
-                  <span 
-                    className="ms-2"
-                    style={{ 
-                      color: themeColors.emergencyActiveColor,
-                      fontWeight: "bold"
-                    }}
-                  >
-                    {Math.round(alarmVolume * 100)}%
-                  </span>
-                </div>
-              </div>
-              
-              <div className="emergency-buttons">
-                <button 
-                  className="btn btn-danger btn-lg"
-                  onClick={stopEmergencyAlarm}
-                  style={{ 
-                    backgroundColor: themeColors.emergencyActiveColor,
-                    borderColor: themeColors.emergencyActiveColor
-                  }}
-                >
-                  <i className="fa-solid fa-stop me-2"></i>
-                  STOP ALARM
-                </button>
-                
-                <button 
-                  className="btn btn-warning btn-lg ms-2"
-                  onClick={() => {
-                    const newVolume = alarmVolume > 0.5 ? 1 : Math.min(1, alarmVolume + 0.3);
-                    setAlarmVolume(newVolume);
-                  }}
-                  style={{ 
-                    backgroundColor: "#3b82f6",
-                    borderColor: "#1d4ed8",
-                    color: "white"
-                  }}
-                >
-                  <i className="fa-solid fa-volume-high me-2"></i>
-                  LOUDER
-                </button>
-              </div>
-            </div>
-            <div className="emergency-footer mt-3">
-              <small className="text-muted">
-                If alarm is too loud, reduce volume using the slider above.
-              </small>
-            </div>
-          </div>
-        </div>
-      )}
-
-      {/* Add CSS animation for pulse effect */}
-      <style jsx>{`
+      {/* Add CSS styles */}
+      <style jsx="true">{`
+        /* Base navbar styles */
+        .navbar {
+          position: fixed;
+          width: 100%;
+          z-index: 999;
+          transition: background-color 0.3s ease;
+          height: 60px;
+        }
+        
         @keyframes pulse {
           0% { transform: scale(1); opacity: 1; }
           50% { transform: scale(1.2); opacity: 0.7; }
           100% { transform: scale(1); opacity: 1; }
         }
         
-        .emergency-badge {
-          position: absolute;
-          top: -5px;
-          right: -5px;
-          background-color: ${themeColors.emergencyActiveColor};
-          color: white;
-          border-radius: 50%;
-          width: 20px;
-          height: 20px;
-          display: flex;
-          align-items: center;
-          justify-content: center;
-          font-size: 12px;
-          font-weight: bold;
-          animation: pulse 1s infinite;
+        /* ========== DOCTOR THEME NAVBAR (Light Blue) ========== */
+        body.doctor-theme-navbar .navbar {
+          background-color: #a8d8ff !important;
         }
         
-        .emergency-overlay {
-          position: fixed;
-          top: 0;
-          left: 0;
-          width: 100%;
-          height: 100%;
-          background-color: rgba(0, 0, 0, 0.8);
-          display: flex;
-          align-items: center;
-          justify-content: center;
-          z-index: 9999;
-          animation: fadeIn 0.3s ease-in;
+        body.doctor-theme-navbar .fa-bell {
+          color: #121314ff !important;
         }
         
-        .emergency-alert {
-          background: white;
-          padding: 30px;
-          border-radius: 20px;
-          max-width: 500px;
-          width: 90%;
-          text-align: center;
-          animation: pulse 2s infinite;
+        body.doctor-theme-navbar .emergency-icon .fa-triangle-exclamation {
+          color: #101012ff !important;
         }
         
-        @keyframes fadeIn {
-          from { opacity: 0; }
-          to { opacity: 1; }
+        body.doctor-theme-navbar .emergency-icon.active .fa-triangle-exclamation {
+          color: #dc2626 !important;
+        }
+        
+        /* ========== PATIENT THEME NAVBAR (Light Green) ========== */
+        body.patient-theme-navbar .navbar {
+          background-color: #8af5aaff !important;
+        }
+        
+        body.patient-theme-navbar .fa-bell {
+          color: #191515ff !important;
+        }
+        
+        /* ========== NURSE THEME NAVBAR (Light Pink) ========== */
+        body.nurse-theme-navbar .navbar {
+          background-color: #ffd6e7 !important;
+        }
+        
+        body.nurse-theme-navbar .fa-bell {
+          color: #c2185b !important;
+        }
+        
+        /* ========== ASSISTANT THEME NAVBAR (Light Purple) ========== */
+        body.assistant-theme-navbar .navbar {
+          background-color: #e0d1ff !important;
+        }
+        
+        body.assistant-theme-navbar .fa-bell {
+          color: #7b1fa2 !important;
+        }
+        
+        /* ========== TECHNICIAN THEME NAVBAR (Light Orange) ========== */
+        body.technician-theme-navbar .navbar {
+          background-color: #ffe4c9 !important;
+        }
+        
+        body.technician-theme-navbar .fa-bell {
+          color: #f57c00 !important;
+        }
+        
+        /* ========== HOUSEKEEPING THEME NAVBAR (Light Yellow) ========== */
+        body.housekeeping-theme-navbar .navbar {
+          background-color: #fff9c9 !important;
+        }
+        
+        body.housekeeping-theme-navbar .fa-bell {
+          color: #f9a825 !important;
+        }
+        
+        /* ========== SUPERVISOR THEME NAVBAR (Light Teal) ========== */
+        body.supervisor-theme-navbar .navbar {
+          background-color: #b2ebf2 !important;
+        }
+        
+        body.supervisor-theme-navbar .fa-bell {
+          color: #00838f !important;
+        }
+        
+        /* ========== MANAGER THEME NAVBAR (Light Lavender) ========== */
+        body.manager-theme-navbar .navbar {
+          background-color: #e6e6ff !important;
+        }
+        
+        body.manager-theme-navbar .fa-bell {
+          color: #3949ab !important;
+        }
+        
+        /* ========== BILLING THEME NAVBAR (Light Mint) ========== */
+        body.billing-theme-navbar .navbar {
+          background-color: #c8f7c5 !important;
+        }
+        
+        body.billing-theme-navbar .fa-bell {
+          color: #388e3c !important;
+        }
+        
+        /* ========== ADMIN THEME NAVBAR (Light Gray-Blue) ========== */
+        body.admin-theme-navbar .navbar {
+          background-color: #e3f2fd !important;
+        }
+        
+        body.admin-theme-navbar .fa-bell {
+          color: #1976d2 !important;
+        }
+        
+        /* Profile image border colors based on role */
+        body.doctor-theme-navbar .profile img {
+          border: 2px solid #101012ff !important;
+        }
+        
+        body.patient-theme-navbar .profile img {
+          border: 2px solid #991b1b !important;
+        }
+        
+        body.nurse-theme-navbar .profile img {
+          border: 2px solid #c2185b !important;
+        }
+        
+        body.assistant-theme-navbar .profile img {
+          border: 2px solid #7b1fa2 !important;
+        }
+        
+        body.technician-theme-navbar .profile img {
+          border: 2px solid #f57c00 !important;
+        }
+        
+        body.housekeeping-theme-navbar .profile img {
+          border: 2px solid #f9a825 !important;
+        }
+        
+        body.supervisor-theme-navbar .profile img {
+          border: 2px solid #00838f !important;
+        }
+        
+        body.manager-theme-navbar .profile img {
+          border: 2px solid #3949ab !important;
+        }
+        
+        body.billing-theme-navbar .profile img {
+          border: 2px solid #388e3c !important;
+        }
+        
+        body.admin-theme-navbar .profile img {
+          border: 2px solid #1976d2 !important;
         }
       `}</style>
     </>

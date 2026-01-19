@@ -3,22 +3,13 @@ import { motion } from "framer-motion";
 import "bootstrap/dist/css/bootstrap.min.css";
 import { useNavigate } from "react-router-dom";
 import logo from '../image/Mediconect-Logo-4.png';
-import backgroundImage from '../image/Background-Image-05-07-24-scaled.jpg';
 import logo2 from '../image/Mediconect Logo-3.png';
+import logo3 from '../image/Maillanding.jpg';
 
 export default function LandingPage() {
   const [activeDropdown, setActiveDropdown] = useState(null);
-  const [userRole, setUserRole] = useState(null);
   const [isNavigating, setIsNavigating] = useState(false);
   const navigate = useNavigate();
-
-  // Load role from localStorage on component mount
-  useEffect(() => {
-    const savedRole = localStorage.getItem("userRole");
-    if (savedRole) {
-      setUserRole(savedRole);
-    }
-  }, []);
 
   const fadeInUp = {
     hidden: { opacity: 0, y: 60 },
@@ -56,43 +47,24 @@ export default function LandingPage() {
     setActiveDropdown(null);
   }, []);
 
-  const handleRoleSelect = useCallback(
-    (role) => {
-      setIsNavigating(true);
-      localStorage.setItem("userRole", role);
-      setUserRole(role);
-      setActiveDropdown(null);
-
-      // Simulate navigation delay
-      setTimeout(() => {
-        if (role === "doctor") {
-          navigate("/signup");
-        } else if (role === "patient") {
-          navigate("/patient");
-        }
-        setIsNavigating(false);
-      }, 0);
-    },
-    [navigate]
-  );
-
-  const clearRole = useCallback(() => {
-    localStorage.removeItem("userRole");
-    setUserRole(null);
-  }, []);
-
-  const handleGoToDashboard = useCallback(() => {
+  const handleNavigation = useCallback((path) => {
     setIsNavigating(true);
-    // Simulate navigation delay
     setTimeout(() => {
-      if (userRole === "doctor") {
-        navigate("/signup");
-      } else {
-        navigate("/patient");
-      }
+      navigate(path);
       setIsNavigating(false);
     }, 0);
-  }, [userRole, navigate]);
+  }, [navigate]);
+
+  const handleRoleSignup = useCallback((role, path) => {
+    setIsNavigating(true);
+    // रोल को localStorage या state management में save करें
+    localStorage.setItem('signupRole', role);
+    // या query parameter के साथ navigate करें
+    setTimeout(() => {
+      navigate(`${path}?role=${role.toLowerCase()}`);
+      setIsNavigating(false);
+    }, 0);
+  }, [navigate]);
 
   const dropdowns = {
     services: [
@@ -100,9 +72,9 @@ export default function LandingPage() {
       { name: "Doctors", href: "#" },
       { name: "Labs", href: "#" },
     ],
-    signup: [
-      { name: "Doctor", role: "doctor" },
-      { name: "Patient", role: "patient" },
+    auth: [
+      { name: "Doctor", role: "doctor", path: "/signup" },
+      { name: "Patient", role: "patient", path: "/patient" },
     ],
   };
 
@@ -178,7 +150,6 @@ export default function LandingPage() {
                           paddingLeft: "25px",
                         }}
                       >
-                        
                         {item.name}
                       </motion.a>
                     ))}
@@ -186,21 +157,21 @@ export default function LandingPage() {
                 )}
               </li>
 
-              {/* Signup Dropdown - Hover Version */}
+              {/* Create Account Dropdown - Hover Version */}
               <li
                 className="nav-item mx-2 position-relative"
-                onMouseEnter={() => handleMouseEnter("signup")}
+                onMouseEnter={() => handleMouseEnter("auth")}
                 onMouseLeave={handleMouseLeave}
               >
                 <a
                   className="nav-link fs-5 fw-medium dropdown-toggle-hover"
                   href="#"
                   role="button"
-                  aria-expanded={activeDropdown === "signup"}
+                  aria-expanded={activeDropdown === "auth"}
                 >
-                  Signup / Login
+                  Create Account
                 </a>
-                {activeDropdown === "signup" && (
+                {activeDropdown === "auth" && (
                   <motion.div
                     initial={{ opacity: 0, y: 10 }}
                     animate={{ opacity: 1, y: 0 }}
@@ -208,32 +179,48 @@ export default function LandingPage() {
                     className="dropdown-menu show position-absolute mt-0 shadow-lg border-0 rounded-3"
                     style={{ minWidth: "200px", zIndex: 1000 }}
                   >
-                    {dropdowns.signup.map((item, index) => (
+                    {dropdowns.auth.map((item, index) => (
                       <motion.button
                         key={index}
                         initial={{ opacity: 0, x: -10 }}
                         animate={{ opacity: 1, x: 0 }}
                         transition={{ delay: index * 0.05 }}
                         className="dropdown-item py-3 px-4 fs-6 text-start w-100 border-0 bg-transparent"
-                        onClick={() => handleRoleSelect(item.role)}
+                        onClick={() => handleRoleSignup(item.role, item.path)}
                         disabled={isNavigating}
                         whileHover={{
                           backgroundColor: "#f8f9fa",
                           paddingLeft: "25px",
                         }}
                       >
-                        <i className="fas fa-user-plus me-2 text-primary"></i>
-                        {item.name}
-                        {isNavigating && item.role === userRole && (
-                          <i className="fas fa-spinner fa-spin ms-2 text-primary"></i>
+                        {item.role === "doctor" ? (
+                          <i className="fas fa-user-md me-2 text-primary"></i>
+                        ) : (
+                          <i className="fas fa-user-injured me-2 text-primary"></i>
                         )}
-                        {!isNavigating && userRole === item.role && (
-                          <i className="fas fa-check text-success ms-2"></i>
+                        {item.name}
+                        {isNavigating && (
+                          <i className="fas fa-spinner fa-spin ms-2 text-primary"></i>
                         )}
                       </motion.button>
                     ))}
                   </motion.div>
                 )}
+              </li>
+
+              {/* Login Button (Direct without dropdown) */}
+              <li className="nav-item mx-2">
+                <motion.button
+                  whileHover={{ scale: 1.05 }}
+                  whileTap={{ scale: 0.95 }}
+                  className="btn btn-primary btn-lg px-4 py-2 rounded-pill fw-semibold"
+                  onClick={() => handleNavigation("/login")}
+                  disabled={isNavigating}
+                >
+                  <i className="fas fa-sign-in-alt me-2"></i>
+                  Login
+                  {isNavigating && <i className="fas fa-spinner fa-spin ms-2"></i>}
+                </motion.button>
               </li>
             </ul>
           </div>
@@ -249,21 +236,24 @@ export default function LandingPage() {
           marginTop: '0px',
         }}
       >
-        {/* Background Image with Overlay */}
+        {/* Background Image with Overlay - HD QUALITY */}
         <div 
-          className="position-absolute w-100 h-100"
+          className="position-absolute w-100 h-100 mt-5 "
           style={{
-            backgroundImage: `url('${backgroundImage}')`,
+            backgroundImage: `url(${logo3})`,
             backgroundSize: 'cover',
             backgroundPosition: 'center',
             backgroundRepeat: 'no-repeat',
+            backgroundAttachment: 'fixed',
           }}
         />
         
         {/* Dark Overlay for better text visibility */}
         <div 
           className="position-absolute w-100 h-100"
-         
+          style={{
+            backgroundColor: 'rgba(0, 0, 0, 0.6)',
+          }}
         />
         
         <div className="container position-relative z-1">
@@ -273,94 +263,81 @@ export default function LandingPage() {
             variants={staggerContainer}
             className="text-center"
           >
-            {/* Role Selection Prompt */}
-            {!userRole ? (
-              <>
-                <motion.h1 
-                  variants={fadeInUp} 
-                  className="display-3 fw-bold mb-4 text-white"
-                >
-                  Welcome to <span className="text-primary">Mediconeckt</span>
-                </motion.h1>
-                
-                {/* <motion.p 
-                  variants={fadeInUp} 
-                  className="lead fs-3 mb-5 text-white fw-medium"
-                >
-                  Your Trusted Healthcare Partner
-                </motion.p> */}
-                
-                <motion.p 
-                  variants={fadeInUp} 
-                  className="lead fs-4 mb-5 text-light"
-                  style={{ 
-                    backgroundColor: 'rgba(0, 0, 0, 0.6)',
-                    display: 'inline-block',
-                    padding: '1rem 2rem',
-                    borderRadius: '50px'
-                  }}
-                >
-                  Please select your role to continue
-                </motion.p>
-                
-                <motion.div variants={fadeInUp} className="d-flex justify-content-center gap-4 flex-wrap mt-5">
-                  <motion.button
-                    whileHover={{ scale: 1.05, boxShadow: "0 10px 20px rgba(0,0,0,0.3)" }}
-                    whileTap={{ scale: 0.95 }}
-                    className="btn btn-light btn-lg px-5 py-3 rounded-pill fw-semibold text-primary shadow-lg"
-                    onClick={() => handleRoleSelect("doctor")}
-                    disabled={isNavigating}
-                  >
-                    <i className="fas fa-user-md me-2"></i>
-                    {isNavigating ? "Redirecting..." : "Continue as Doctor"}
-                    {isNavigating && <i className="fas fa-spinner fa-spin ms-2"></i>}
-                  </motion.button>
-                  <motion.button
-                    whileHover={{ scale: 1.05, boxShadow: "0 10px 20px rgba(0,0,0,0.3)" }}
-                    whileTap={{ scale: 0.95 }}
-                    className="btn btn-primary btn-lg px-5 py-3 rounded-pill fw-semibold shadow-lg"
-                    onClick={() => handleRoleSelect("patient")}
-                    disabled={isNavigating}
-                  >
-                    <i className="fas fa-user me-2"></i>
-                    {isNavigating ? "Redirecting..." : "Continue as Patient"}
-                    {isNavigating && <i className="fas fa-spinner fa-spin ms-2"></i>}
-                  </motion.button>
-                </motion.div>
-              </>
-            ) : (
-              <>
-                <motion.h1 
-                  variants={fadeInUp} 
-                  className="display-3 fw-bold mb-4 text-white"
-                >
-                  Welcome, <span className="text-warning">{userRole.charAt(0).toUpperCase() + userRole.slice(1)}!</span>
-                </motion.h1>
-                <motion.p 
-                  variants={fadeInUp} 
-                  className="lead fs-3 mb-5 text-white fw-medium"
-                >
-                  {userRole === "doctor"
-                    ? "Manage your appointments and patient records efficiently."
-                    : "Book appointments, view reports, and manage your health."}
-                </motion.p>
+            <motion.h1 
+              variants={fadeInUp} 
+              className="display-3 fw-bold mb-4 text-white"
+            >
+              Welcome to <span className="text-primary">Mediconeckt</span>
+            </motion.h1>
+            
+            <motion.p 
+              variants={fadeInUp} 
+              className="lead fs-4 mb-5 text-light"
+              style={{ 
+                backgroundColor: 'rgba(0, 0, 0, 0.6)',
+                display: 'inline-block',
+                padding: '1rem 2rem',
+                borderRadius: '50px'
+              }}
+            >
+              Your Trusted Healthcare Partner
+            </motion.p>
+            
+            {/* <motion.div variants={fadeInUp} className="d-flex justify-content-center gap-4 flex-wrap mt-5">
+             
+              <div className="position-relative">
                 <motion.button
                   whileHover={{ scale: 1.05, boxShadow: "0 10px 20px rgba(0,0,0,0.3)" }}
                   whileTap={{ scale: 0.95 }}
-                  variants={scaleIn}
-                  className="btn btn-light btn-lg px-5 py-3 rounded-pill fw-semibold text-primary shadow-lg"
-                  onClick={handleGoToDashboard}
+                  className="btn btn-light btn-lg px-5 py-3 rounded-pill fw-semibold text-primary shadow-lg dropdown-toggle"
+                  type="button"
+                  data-bs-toggle="dropdown"
+                  aria-expanded="false"
                   disabled={isNavigating}
                 >
-                  {isNavigating ? "Redirecting..." : "Go to Dashboard"}
-                  {isNavigating ? (
-                    <i className="fas fa-spinner fa-spin ms-2"></i>
-                  ) : (
-                    <i className="fas fa-arrow-right ms-2"></i>
-                  )}
+                  <i className="fas fa-user-plus me-2"></i>
+                  {isNavigating ? "Redirecting..." : "Create Account"}
+                  {isNavigating && <i className="fas fa-spinner fa-spin ms-2"></i>}
                 </motion.button>
-              </>
-            )}
+                <ul className="dropdown-menu shadow-lg border-0 rounded-3">
+                  {dropdowns.auth.map((item, index) => (
+                    <li key={index}>
+                      <button
+                        className="dropdown-item py-3 px-4 fs-6 text-start"
+                        onClick={() => handleRoleSignup(item.role, item.path)}
+                        disabled={isNavigating}
+                      >
+                        {item.role === "doctor" ? (
+                          <i className="fas fa-user-md me-2 text-primary"></i>
+                        ) : (
+                          <i className="fas fa-user-injured me-2 text-primary"></i>
+                        )}
+                        {item.name}
+                      </button>
+                    </li>
+                  ))}
+                </ul>
+              </div>
+              
+              <motion.button
+                whileHover={{ scale: 1.05, boxShadow: "0 10px 20px rgba(0,0,0,0.3)" }}
+                whileTap={{ scale: 0.95 }}
+                className="btn btn-primary btn-lg px-5 py-3 rounded-pill fw-semibold shadow-lg"
+                onClick={() => handleNavigation("/login")}
+                disabled={isNavigating}
+              >
+                <i className="fas fa-sign-in-alt me-2"></i>
+                {isNavigating ? "Redirecting..." : "Login"}
+                {isNavigating && <i className="fas fa-spinner fa-spin ms-2"></i>}
+              </motion.button>
+            </motion.div> */}
+            
+            <motion.p 
+              variants={fadeInUp} 
+              className="mt-5 text-light fs-5"
+            >
+              Select your role during login to access personalized features
+            </motion.p>
           </motion.div>
         </div>
         
@@ -399,7 +376,7 @@ export default function LandingPage() {
               <div className="card border-0 shadow-lg h-100 rounded-4 p-4 text-center hover-card">
                 <div className="card-body">
                   <div className="feature-icon mb-4">
-                    <i className="fas fa-calendar-check fa-3x text-primary"></i>
+                    <i className="fas fa-calendar-check fa-3x text-primary" style={{fontSize:"80px"}}></i>
                   </div>
                   <h3 className="card-title h3 fw-semibold mb-3">
                     Online Appointments
@@ -423,7 +400,7 @@ export default function LandingPage() {
               <div className="card border-0 shadow-lg h-100 rounded-4 p-4 text-center hover-card">
                 <div className="card-body">
                   <div className="feature-icon mb-4">
-                    <i className="fas fa-file-medical fa-3x text-primary"></i>
+                    <i className="fas fa-file-medical fa-3x text-primary" style={{fontSize:"80px"}}></i>
                   </div>
                   <h3 className="card-title h3 fw-semibold mb-3">
                     Digital Medical Records
@@ -446,7 +423,7 @@ export default function LandingPage() {
               <div className="card border-0 shadow-lg h-100 rounded-4 p-4 text-center hover-card">
                 <div className="card-body">
                   <div className="feature-icon mb-4">
-                    <i className="fas fa-qrcode fa-3x text-primary"></i>
+                    <i className="fas fa-qrcode fa-3x text-primary" style={{fontSize:"80px"}}></i>
                   </div>
                   <h3 className="card-title h3 fw-semibold mb-3">
                     QR Based Check-in
@@ -740,29 +717,6 @@ export default function LandingPage() {
         </motion.div>
       )}
 
-      {/* Demo Info Alert */}
-      {userRole && !isNavigating && (
-        <motion.div
-          initial={{ opacity: 0, y: 20 }}
-          animate={{ opacity: 1, y: 0 }}
-          className="position-fixed bottom-0 end-0 m-3 p-3 bg-success text-white rounded-3 shadow-lg"
-          
-        >
-          <div className="d-flex align-items-center">
-            <i className="fas fa-user-circle me-2"></i>
-            <span className="me-3">
-              <strong>{userRole.charAt(0).toUpperCase() + userRole.slice(1)} Mode</strong>
-            </span>
-            <button
-              onClick={clearRole}
-              className="btn btn-sm btn-light"
-            >
-              Change Role
-            </button>
-          </div>
-        </motion.div>
-      )}
-
       <style>{`
         .hero-section {
           position: relative;
@@ -847,6 +801,17 @@ export default function LandingPage() {
           .btn-lg {
             padding: 0.8rem 1.5rem !important;
             font-size: 1rem !important;
+          }
+          
+          /* Fix background on mobile */
+          .hero-section .position-absolute {
+            background-attachment: scroll !important;
+          }
+          
+          /* Navbar buttons on mobile */
+          .navbar-nav .btn {
+            margin-top: 10px;
+            width: 100%;
           }
         }
       `}</style>

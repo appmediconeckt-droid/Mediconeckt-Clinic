@@ -49,6 +49,16 @@ import PhysiotherapyClinic from "./authtication/Physiotherapist";
 import GeneralPhysicianClinic from "./authtication/General-Physician";
 import FollowUp from "./components/DoctorDashboard/Follow-Up/FollowUp";
 import PatientDetailsPage from "./components/DoctorDashboard/PatientAppointmentDetails/PatientDetailsPage";
+import HospitalSignup from "./authtication/Hospital/HospitalSignup";
+import NurseDashboard from "./components/Nurse/NurseDashboard/NurseDashboard";
+import NursePatientList from "./components/Nurse/PatientList/NursePatientList";
+import VitalSigns from "./components/Nurse/VitalSigns/VitalSigns";
+import NurseMedicationPage from "./components/Nurse/Medication/NurseMedicationPage";
+import NurseShiftManagement from "./components/Nurse/Shift & Duty Management/NurseShiftManagement";
+import NurseEmergencyMenu from "./components/Nurse/Emergency/NurseEmergencyMenu";
+import NurseNotifications from "./components/Nurse/NurseNotifications/NurseNotifications";
+import AdminDashboard from "./components/Admin/AdminDashboard/AdminDashboard";
+import SystemSettings from "./components/Admin/SystemSettings/SystemSettings";
 // import PatientDashboard from "./components/PatientDashboard/PatientDashboard";
 
 function App() {
@@ -88,6 +98,7 @@ function App() {
     location.pathname === "/ent-specialist" ||
     location.pathname === "/physiotherapist" ||
     location.pathname === "/general-physician" ||
+    location.pathname === "/hospital-signup" ||
     location.pathname.startsWith("/doctor-details/");
 
   return (
@@ -122,6 +133,7 @@ function App() {
           <Route path="/ent-specialist" element={<EntCareClinic />} />
           <Route path="/physiotherapist" element={<PhysiotherapyClinic />} />
           <Route path="/general-physician" element={<GeneralPhysicianClinic />} />
+          <Route path="/hospital-signup" element={<HospitalSignup />} />
 
           {/* Doctor Details */}
 
@@ -141,6 +153,13 @@ function App() {
               }`}
           >
             <Routes>
+
+              {/* Admin-Dashboard */}
+              <Route path="/hospital/admin-dashboard" element={<AdminDashboard />} />
+               <Route path="/hospital/system-settings" element={<SystemSettings />} />
+
+
+
               {/* Doctor Dashboard */}
               <Route path="/doctordashboard" element={<DoctorDashboard />} />
               <Route path="/doctorcalendar" element={<DoctorCalendar />} />
@@ -169,7 +188,14 @@ function App() {
               <Route path="/doctor-chat/:doctorId" element={<DoctorChatPanel />} />
 
               {/* Hospital Dashboard */}
-              <Route path="/hospital-dashboard/*" element={<HospitalRoutes />} />
+             {/* Nurse-Dashboard */}
+              <Route path="/hospital/nurse-dashboard" element={<NurseDashboard />} />
+               <Route path="/hospital/patient-list" element={<NursePatientList/>} />
+               <Route path="/hospital/vital-signs" element={<VitalSigns/>} />
+                <Route path="/hospital/medication" element={<NurseMedicationPage/>} />
+                <Route path="/hospital/shift-report" element={<NurseShiftManagement/>} />
+                 <Route path="/hospital/emergency-cases" element={<NurseEmergencyMenu/>} />
+                 <Route path="/hospital/nurse-notifications" element={<NurseNotifications/>} />
             </Routes>
           </div>
         </div>
