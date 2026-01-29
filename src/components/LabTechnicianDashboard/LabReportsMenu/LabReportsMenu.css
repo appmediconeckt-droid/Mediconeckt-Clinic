@@ -1,0 +1,1297 @@
+/* Lab Reports Menu Styles with Technician Theme */
+
+/* Technician Theme Base */
+.lab-reports-container.technician-theme {
+  background: linear-gradient(135deg, #fff5e6 0%, #ffe4c9 100%) !important;
+  font-family: 'Inter', -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, Oxygen, Ubuntu, sans-serif;
+  max-width: 1440px;
+  margin: 0 auto;
+  padding: 24px;
+  min-height: 100vh;
+  color: #1a1a1a;
+}
+
+/* Header Styles with Technician Theme */
+.lab-reports__header.technician-header {
+  background: linear-gradient(135deg, #ff9500 0%, #ff7300 100%) !important;
+  color: #000000 !important;
+  padding: 32px 40px;
+  border-radius: 20px;
+  margin-bottom: 30px;
+  box-shadow: 0 10px 30px rgba(255, 149, 0, 0.2);
+  display: flex;
+  justify-content: space-between;
+  align-items: flex-start;
+  border-left: 6px solid #ffcc33;
+}
+
+.lab-reports__header-content.technician-header-content {
+  flex: 1;
+}
+
+.lab-reports__title.technician-title {
+  margin: 0;
+  font-size: 2.8rem;
+  font-weight: 800;
+  letter-spacing: -0.5px;
+  background: linear-gradient(135deg, #000000 0%, #333333 100%);
+  -webkit-background-clip: text;
+  -webkit-text-fill-color: transparent;
+  background-clip: text;
+  text-shadow: 0 2px 4px rgba(255, 255, 255, 0.3);
+}
+
+.lab-reports__subtitle.technician-subtitle {
+  margin: 12px 0 0;
+  font-size: 1.2rem;
+  color: #333333 !important;
+  font-weight: 500;
+  opacity: 0.9;
+}
+
+.lab-reports__header-actions.technician-header-actions {
+  display: flex;
+  gap: 16px;
+}
+
+.lab-reports__header-btn.technician-header-btn {
+  padding: 14px 28px;
+  border: none;
+  border-radius: 12px;
+  font-size: 1rem;
+  font-weight: 600;
+  cursor: pointer;
+  transition: all 0.3s ease;
+  display: flex;
+  align-items: center;
+  gap: 10px;
+}
+
+.lab-reports__header-btn--export.technician-header-btn--export {
+  background: linear-gradient(135deg, #ff7300 0%, #cc6600 100%) !important;
+  color: white !important;
+  border: 2px solid #ffcc33;
+}
+
+.lab-reports__header-btn--print.technician-header-btn--print {
+  background: rgba(0, 0, 0, 0.1) !important;
+  color: #000000 !important;
+  border: 2px solid rgba(0, 0, 0, 0.2);
+}
+
+.lab-reports__header-btn.technician-header-btn:hover {
+  transform: translateY(-3px);
+  box-shadow: 0 8px 20px rgba(255, 149, 0, 0.4);
+}
+
+/* Dashboard Stats with Technician Theme */
+.lab-reports__dashboard.technician-dashboard {
+  background: white !important;
+  border-radius: 20px;
+  padding: 32px;
+  margin-bottom: 30px;
+  box-shadow: 0 8px 25px rgba(255, 149, 0, 0.15);
+  border: 2px solid #ffcc99;
+}
+
+.lab-reports__stats-grid.technician-stats-grid {
+  display: grid;
+  grid-template-columns: repeat(auto-fit, minmax(240px, 1fr));
+  gap: 24px;
+  margin-bottom: 40px;
+}
+
+.lab-reports__stat-card.technician-stat-card {
+  display: flex;
+  align-items: center;
+  padding: 28px;
+  border-radius: 16px;
+  transition: all 0.3s ease;
+  cursor: pointer;
+  border: 2px solid transparent;
+}
+
+.lab-reports__stat-card.technician-stat-card:hover {
+  transform: translateY(-8px);
+  box-shadow: 0 15px 30px rgba(255, 149, 0, 0.2);
+  border-color: #ff9500;
+}
+
+.lab-reports__stat-card--total.technician-stat-card--total {
+  background: linear-gradient(135deg, #ff9500 0%, #ff7300 100%) !important;
+}
+
+.lab-reports__stat-card--verified.technician-stat-card--verified {
+  background: linear-gradient(135deg, #ffa726 0%, #ff9800 100%) !important;
+}
+
+.lab-reports__stat-card--pending.technician-stat-card--pending {
+  background: linear-gradient(135deg, #ffb74d 0%, #ffa726 100%) !important;
+}
+
+.lab-reports__stat-card--types.technician-stat-card--types {
+  background: linear-gradient(135deg, #ffcc80 0%, #ffb74d 100%) !important;
+}
+
+.lab-reports__stat-icon.technician-stat-icon {
+  font-size: 3rem;
+  margin-right: 24px;
+  opacity: 0.9;
+  color: white;
+}
+
+.lab-reports__stat-info.technician-stat-info {
+  color: white;
+}
+
+.lab-reports__stat-info.technician-stat-info h3 {
+  margin: 0 0 8px;
+  font-size: 1.1rem;
+  font-weight: 600;
+  opacity: 0.9;
+}
+
+.lab-reports__stat-number.technician-stat-number {
+  margin: 0;
+  font-size: 2.8rem;
+  font-weight: 800;
+  line-height: 1;
+}
+
+/* Controls Section with Technician Theme */
+.lab-reports__controls-section.technician-controls-section {
+  display: flex;
+  flex-direction: column;
+  gap: 30px;
+  border-top: 2px solid #ffcc99;
+  padding-top: 30px;
+}
+
+.lab-reports__search-filters.technician-search-filters {
+  display: grid;
+  grid-template-columns: repeat(auto-fit, minmax(250px, 1fr));
+  gap: 24px;
+  align-items: end;
+}
+
+.lab-reports__search-box.technician-search-box {
+  position: relative;
+  grid-column: 1 / -1;
+}
+
+.lab-reports__search-input.technician-search-input {
+  width: 100%;
+  padding: 18px 24px 18px 56px;
+  border: 2px solid #ffcc99;
+  border-radius: 16px;
+  font-size: 1.1rem;
+  transition: all 0.3s ease;
+  background: white;
+  color: #333;
+}
+
+.lab-reports__search-input.technician-search-input:focus {
+  border-color: #ff9500;
+  outline: none;
+  box-shadow: 0 0 0 4px rgba(255, 149, 0, 0.2);
+}
+
+.lab-reports__search-icon.technician-search-icon {
+  position: absolute;
+  left: 24px;
+  top: 50%;
+  transform: translateY(-50%);
+  font-size: 1.2rem;
+  color: #ff9500;
+}
+
+.lab-reports__filter-group.technician-filter-group {
+  display: flex;
+  flex-direction: column;
+  gap: 10px;
+}
+
+.lab-reports__filter-label.technician-filter-label {
+  font-weight: 600;
+  color: #ff7300 !important;
+  font-size: 0.95rem;
+}
+
+.lab-reports__filter-select.technician-filter-select {
+  padding: 16px 20px;
+  border: 2px solid #ffcc99;
+  border-radius: 12px;
+  font-size: 1rem;
+  background: white;
+  cursor: pointer;
+  transition: all 0.3s ease;
+  color: #333;
+}
+
+.lab-reports__filter-select.technician-filter-select:focus {
+  border-color: #ff9500;
+  outline: none;
+  box-shadow: 0 0 0 3px rgba(255, 149, 0, 0.2);
+}
+
+.lab-reports__date-range.technician-date-range {
+  display: flex;
+  align-items: center;
+  gap: 12px;
+}
+
+.lab-reports__date-input.technician-date-input {
+  flex: 1;
+  padding: 16px 20px;
+  border: 2px solid #ffcc99;
+  border-radius: 12px;
+  font-size: 1rem;
+  transition: all 0.3s ease;
+  background: white;
+  color: #333;
+}
+
+.lab-reports__date-input.technician-date-input:focus {
+  border-color: #ff9500;
+  outline: none;
+  box-shadow: 0 0 0 3px rgba(255, 149, 0, 0.2);
+}
+
+.lab-reports__date-separator.technician-date-separator {
+  color: #ff9500;
+  font-weight: 600;
+}
+
+.lab-reports__action-buttons.technician-action-buttons {
+  display: flex;
+  gap: 16px;
+  justify-content: flex-end;
+}
+
+.lab-reports__action-btn.technician-action-btn {
+  display: flex;
+  align-items: center;
+  gap: 12px;
+  padding: 18px 32px;
+  border: none;
+  border-radius: 14px;
+  font-size: 1.1rem;
+  font-weight: 600;
+  cursor: pointer;
+  transition: all 0.3s ease;
+  border: 2px solid transparent;
+}
+
+.lab-reports__action-btn--primary.technician-action-btn--primary {
+  background: linear-gradient(135deg, #ff9500 0%, #ff7300 100%) !important;
+  color: white !important;
+}
+
+.lab-reports__action-btn--secondary.technician-action-btn--secondary {
+  background: #333333 !important;
+  color: white !important;
+}
+
+.lab-reports__action-btn--tertiary.technician-action-btn--tertiary {
+  background: #fff9f0 !important;
+  color: #333333 !important;
+  border: 2px solid #ffcc99;
+}
+
+.lab-reports__action-btn.technician-action-btn:hover {
+  transform: translateY(-3px);
+  box-shadow: 0 10px 25px rgba(255, 149, 0, 0.2);
+}
+
+.lab-reports__btn-icon.technician-btn-icon {
+  font-size: 1.4rem;
+}
+
+/* Main Content with Technician Theme */
+.lab-reports__main-content.technician-main-content {
+  background: white !important;
+  border-radius: 20px;
+  padding: 32px;
+  margin-bottom: 30px;
+  box-shadow: 0 8px 25px rgba(255, 149, 0, 0.15);
+  border: 2px solid #ffcc99;
+}
+
+.lab-reports__loading-state.technician-loading-state {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+  padding: 80px 20px;
+}
+
+.lab-reports__loading-spinner.technician-loading-spinner {
+  width: 60px;
+  height: 60px;
+  border: 5px solid #ffebcc;
+  border-top: 5px solid #ff9500;
+  border-radius: 50%;
+  animation: lab-reports__spin 1s linear infinite;
+  margin-bottom: 24px;
+}
+
+@keyframes lab-reports__spin {
+  0% { transform: rotate(0deg); }
+  100% { transform: rotate(360deg); }
+}
+
+.lab-reports__loading-text.technician-loading-text {
+  font-size: 1.2rem;
+  color: #ff9500;
+  font-weight: 500;
+}
+
+.lab-reports__results-header.technician-results-header {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  margin-bottom: 32px;
+  padding-bottom: 20px;
+  border-bottom: 2px solid #ffebcc;
+}
+
+.lab-reports__results-title.technician-results-title {
+  margin: 0;
+  font-size: 1.8rem;
+  font-weight: 700;
+  color: #333333;
+}
+
+.lab-reports__results-count.technician-results-count {
+  color: #ff9500 !important;
+  font-weight: 800;
+}
+
+.lab-reports__view-options.technician-view-options {
+  display: flex;
+  gap: 12px;
+}
+
+.lab-reports__view-btn.technician-view-btn {
+  display: flex;
+  align-items: center;
+  gap: 10px;
+  padding: 14px 24px;
+  background: #fff9f0;
+  border: 2px solid #ffcc99;
+  border-radius: 12px;
+  font-size: 1rem;
+  font-weight: 600;
+  color: #333333;
+  cursor: pointer;
+  transition: all 0.3s ease;
+}
+
+.lab-reports__view-btn--active.technician-view-btn--active {
+  background: #ff9500 !important;
+  color: white !important;
+  border-color: #ff9500;
+}
+
+.lab-reports__view-icon.technician-view-icon {
+  font-size: 1.2rem;
+}
+
+/* Empty State with Technician Theme */
+.lab-reports__empty-state.technician-empty-state {
+  text-align: center;
+  padding: 80px 20px;
+}
+
+.lab-reports__empty-icon.technician-empty-icon {
+  font-size: 4rem;
+  margin-bottom: 24px;
+  color: #ffcc99;
+  opacity: 0.5;
+}
+
+.lab-reports__empty-title.technician-empty-title {
+  font-size: 1.8rem;
+  color: #333333;
+  margin-bottom: 12px;
+}
+
+.lab-reports__empty-text.technician-empty-text {
+  font-size: 1.1rem;
+  color: #666666;
+  max-width: 500px;
+  margin: 0 auto;
+}
+
+/* Reports Grid with Technician Theme */
+.lab-reports__reports-grid.technician-reports-grid {
+  display: grid;
+  grid-template-columns: repeat(auto-fill, minmax(380px, 1fr));
+  gap: 28px;
+}
+
+.lab-reports__report-card.technician-report-card {
+  background: white;
+  border: 2px solid #ffcc99;
+  border-radius: 18px;
+  padding: 28px;
+  transition: all 0.3s ease;
+  position: relative;
+  overflow: hidden;
+}
+
+.lab-reports__report-card.technician-report-card:hover {
+  border-color: #ff9500;
+  transform: translateY(-8px);
+  box-shadow: 0 20px 40px rgba(255, 149, 0, 0.15);
+}
+
+.lab-reports__report-card.technician-report-card::before {
+  content: '';
+  position: absolute;
+  top: 0;
+  left: 0;
+  right: 0;
+  height: 6px;
+  background: linear-gradient(135deg, #ff9500 0%, #ff7300 100%);
+}
+
+.lab-reports__report-header.technician-report-header {
+  display: flex;
+  justify-content: space-between;
+  align-items: flex-start;
+  margin-bottom: 20px;
+}
+
+.lab-reports__report-id.technician-report-id {
+  font-family: 'Roboto Mono', monospace;
+  font-size: 1.1rem;
+  font-weight: 700;
+  color: #ff9500 !important;
+  background: #fff9f0;
+  padding: 8px 16px;
+  border-radius: 10px;
+  border: 1px solid #ffcc99;
+}
+
+.lab-reports__report-status.technician-report-status {
+  display: flex;
+  gap: 10px;
+}
+
+/* Badge Styles with Technician Theme */
+.lab-reports__status-badge.technician-status-badge,
+.lab-reports__priority-badge.technician-priority-badge {
+  padding: 8px 16px;
+  border-radius: 20px;
+  font-size: 0.85rem;
+  font-weight: 700;
+  text-transform: uppercase;
+  letter-spacing: 0.5px;
+  border: 1px solid transparent;
+}
+
+.lab-reports__status-badge--verified.technician-status-badge--verified {
+  background: #e6ffe6 !important;
+  color: #33cc33 !important;
+  border-color: #33cc33;
+}
+
+.lab-reports__status-badge--pending.technician-status-badge--pending {
+  background: #fff0cc !important;
+  color: #ff9900 !important;
+  border-color: #ff9900;
+}
+
+.lab-reports__status-badge--draft.technician-status-badge--draft {
+  background: #f0f3f8 !important;
+  color: #666666 !important;
+  border-color: #cccccc;
+}
+
+.lab-reports__status-badge--cancelled.technician-status-badge--cancelled {
+  background: #ffe6e6 !important;
+  color: #ff3333 !important;
+  border-color: #ff3333;
+}
+
+.lab-reports__priority-badge--urgent.technician-priority-badge--urgent {
+  background: #ffe6e6 !important;
+  color: #ff3333 !important;
+  border-color: #ff3333;
+}
+
+.lab-reports__priority-badge--routine.technician-priority-badge--routine {
+  background: #e6ffe6 !important;
+  color: #33cc33 !important;
+  border-color: #33cc33;
+}
+
+.lab-reports__priority-badge--stat.technician-priority-badge--stat {
+  background: #e8f4fc !important;
+  color: #3399ff !important;
+  border-color: #3399ff;
+}
+
+/* Patient Info with Technician Theme */
+.lab-reports__patient-info.technician-patient-info {
+  margin-bottom: 20px;
+}
+
+.lab-reports__patient-name.technician-patient-name {
+  margin: 0 0 8px;
+  font-size: 1.5rem;
+  font-weight: 700;
+  color: #333333;
+}
+
+.lab-reports__patient-details.technician-patient-details {
+  display: flex;
+  gap: 20px;
+  color: #666666;
+  font-size: 0.95rem;
+}
+
+.lab-reports__patient-id.technician-patient-id {
+  color: #ff9500;
+  font-weight: 600;
+}
+
+/* Test Info with Technician Theme */
+.lab-reports__test-info.technician-test-info {
+  margin-bottom: 20px;
+}
+
+.lab-reports__test-type.technician-test-type {
+  margin: 0 0 8px;
+  font-size: 1.3rem;
+  font-weight: 600;
+  color: #333333;
+}
+
+.lab-reports__test-details.technician-test-details {
+  display: flex;
+  gap: 20px;
+  color: #666666;
+  font-size: 0.95rem;
+}
+
+.lab-reports__test-category.technician-test-category {
+  background: #e8f4fc;
+  color: #3399ff;
+  padding: 6px 12px;
+  border-radius: 8px;
+  font-weight: 600;
+}
+
+.lab-reports__lab-location.technician-lab-location {
+  font-style: italic;
+  color: #ff9500;
+}
+
+/* Dates Section with Technician Theme */
+.lab-reports__dates-section.technician-dates-section {
+  display: grid;
+  grid-template-columns: 1fr 1fr;
+  gap: 16px;
+  margin-bottom: 20px;
+  padding: 20px;
+  background: #fff9f0;
+  border-radius: 12px;
+  border: 1px solid #ffebcc;
+}
+
+.lab-reports__date-item.technician-date-item {
+  display: flex;
+  flex-direction: column;
+  gap: 6px;
+}
+
+.lab-reports__date-label.technician-date-label {
+  font-size: 0.9rem;
+  color: #ff9500;
+  font-weight: 600;
+}
+
+.lab-reports__date-value.technician-date-value {
+  font-size: 1.1rem;
+  font-weight: 600;
+  color: #333333;
+}
+
+/* Parameters Preview with Technician Theme */
+.lab-reports__parameters-preview.technician-parameters-preview {
+  margin-bottom: 20px;
+  padding: 20px;
+  background: #fff9f0;
+  border-radius: 12px;
+  border: 1px solid #ffebcc;
+}
+
+.lab-reports__parameter-item.technician-parameter-item {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  margin-bottom: 12px;
+}
+
+.lab-reports__parameter-item.technician-parameter-item:last-child {
+  margin-bottom: 0;
+}
+
+.lab-reports__parameter-name.technician-parameter-name {
+  font-weight: 500;
+  color: #333333;
+}
+
+.lab-reports__parameter-value.technician-parameter-value {
+  font-weight: 600;
+  padding: 4px 12px;
+  border-radius: 8px;
+  border: 1px solid transparent;
+}
+
+.lab-reports__parameter-flag--high.technician-parameter-flag--high {
+  background: #ffe6e6 !important;
+  color: #ff3333 !important;
+  border-color: #ff3333;
+}
+
+.lab-reports__parameter-flag--low.technician-parameter-flag--low {
+  background: #e8f4fc !important;
+  color: #3399ff !important;
+  border-color: #3399ff;
+}
+
+.lab-reports__parameter-flag--normal.technician-parameter-flag--normal {
+  background: #e6ffe6 !important;
+  color: #33cc33 !important;
+  border-color: #33cc33;
+}
+
+.lab-reports__parameter-flag--abnormal.technician-parameter-flag--abnormal {
+  background: #fff0cc !important;
+  color: #ff9900 !important;
+  border-color: #ff9900;
+}
+
+.lab-reports__parameter-flag--critical.technician-parameter-flag--critical {
+  background: #f5e6e8 !important;
+  color: #cc3333 !important;
+  border-color: #cc3333;
+}
+
+.lab-reports__parameter-flag--info.technician-parameter-flag--info {
+  background: #f0f3f8 !important;
+  color: #666666 !important;
+  border-color: #cccccc;
+}
+
+.lab-reports__more-params.technician-more-params {
+  text-align: center;
+  padding: 10px;
+  color: #ff9500;
+  font-size: 0.9rem;
+  background: rgba(255, 255, 255, 0.7);
+  border-radius: 8px;
+  margin-top: 10px;
+  font-weight: 600;
+}
+
+/* Attachments Section with Technician Theme */
+.lab-reports__attachments-section.technician-attachments-section {
+  margin-bottom: 20px;
+}
+
+.lab-reports__attachments-list.technician-attachments-list {
+  display: flex;
+  align-items: center;
+  gap: 12px;
+  padding: 14px;
+  background: #e8f4fc;
+  border-radius: 12px;
+  border: 2px dashed #3399ff;
+}
+
+.lab-reports__attachments-icon.technician-attachments-icon {
+  font-size: 1.2rem;
+  color: #3399ff;
+}
+
+.lab-reports__attachments-count.technician-attachments-count {
+  font-weight: 600;
+  color: #333333;
+}
+
+.lab-reports__no-attachments.technician-no-attachments {
+  padding: 14px;
+  background: #fff9f0;
+  border-radius: 12px;
+  text-align: center;
+  color: #ff9500;
+  font-style: italic;
+}
+
+/* Report Footer with Technician Theme */
+.lab-reports__report-footer.technician-report-footer {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  padding-top: 20px;
+  border-top: 2px solid #ffebcc;
+}
+
+.lab-reports__technician-info.technician-technician-info {
+  display: flex;
+  flex-direction: column;
+  gap: 4px;
+}
+
+.lab-reports__technician-label.technician-technician-label {
+  font-size: 0.85rem;
+  color: #ff9500;
+  font-weight: 600;
+}
+
+.lab-reports__technician-name.technician-technician-name {
+  font-weight: 600;
+  color: #333333;
+}
+
+.lab-reports__action-buttons-sm.technician-action-buttons-sm {
+  display: flex;
+  gap: 12px;
+}
+
+.lab-reports__action-btn-sm.technician-action-btn-sm {
+  padding: 10px 20px;
+  border: none;
+  border-radius: 10px;
+  font-size: 0.9rem;
+  font-weight: 600;
+  cursor: pointer;
+  transition: all 0.3s ease;
+  border: 2px solid transparent;
+}
+
+.lab-reports__action-btn-sm--view.technician-action-btn-sm--view {
+  background: #ff9500 !important;
+  color: white !important;
+}
+
+.lab-reports__status-select-sm.technician-status-select-sm {
+  padding: 10px 16px;
+  border: 2px solid #ffcc99;
+  border-radius: 10px;
+  background: white;
+  font-size: 0.9rem;
+  cursor: pointer;
+  min-width: 120px;
+  color: #333333;
+}
+
+.lab-reports__status-select-sm.technician-status-select-sm:focus {
+  border-color: #ff9500;
+  outline: none;
+}
+
+/* Modal Styles with Technician Theme */
+.lab-reports__modal-overlay.technician-modal-overlay {
+  position: fixed;
+  top: 0;
+  left: 0;
+  right: 0;
+  bottom: 0;
+  background: rgba(0, 0, 0, 0.7);
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  z-index: 1000;
+  padding: 20px;
+}
+
+.lab-reports__modal.technician-modal {
+  background: white;
+  border-radius: 24px;
+  width: 100%;
+  max-width: 900px;
+  max-height: 90vh;
+  overflow-y: auto;
+  box-shadow: 0 25px 50px rgba(255, 149, 0, 0.3);
+  animation: lab-reports__modal-appear 0.3s ease;
+  border: 3px solid #ff9500;
+}
+
+@keyframes lab-reports__modal-appear {
+  from {
+    opacity: 0;
+    transform: translateY(30px);
+  }
+  to {
+    opacity: 1;
+    transform: translateY(0);
+  }
+}
+
+.lab-reports__modal-header.technician-modal-header {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  padding: 32px 40px;
+  border-bottom: 2px solid #ffebcc;
+  background: #fff9f0;
+}
+
+.lab-reports__modal-title.technician-modal-title {
+  margin: 0;
+  font-size: 2rem;
+  font-weight: 700;
+  color: #333333;
+}
+
+.lab-reports__modal-close.technician-modal-close {
+  background: none;
+  border: none;
+  font-size: 2.5rem;
+  color: #ff9500;
+  cursor: pointer;
+  transition: color 0.3s ease;
+  padding: 0;
+  width: 40px;
+  height: 40px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+}
+
+.lab-reports__modal-close.technician-modal-close:hover {
+  color: #ff3333;
+}
+
+.lab-reports__modal-content.technician-modal-content {
+  padding: 40px;
+  background: white;
+}
+
+.lab-reports__modal-section.technician-modal-section {
+  margin-bottom: 32px;
+  padding: 24px;
+  background: #fff9f0;
+  border-radius: 16px;
+  border: 1px solid #ffebcc;
+}
+
+.lab-reports__modal-section.technician-modal-section:last-child {
+  margin-bottom: 0;
+}
+
+.lab-reports__modal-section-title.technician-modal-section-title {
+  margin: 0 0 20px;
+  font-size: 1.4rem;
+  font-weight: 700;
+  color: #333333;
+  padding-bottom: 12px;
+  border-bottom: 2px solid #ffebcc;
+  color: #ff9500;
+}
+
+.lab-reports__modal-patient-info.technician-modal-patient-info,
+.lab-reports__modal-test-info.technician-modal-test-info {
+  display: grid;
+  grid-template-columns: repeat(auto-fit, minmax(200px, 1fr));
+  gap: 20px;
+}
+
+.lab-reports__modal-patient-detail.technician-modal-patient-detail,
+.lab-reports__modal-test-detail.technician-modal-test-detail {
+  display: flex;
+  flex-direction: column;
+  gap: 6px;
+}
+
+.lab-reports__modal-detail-label.technician-modal-detail-label {
+  font-size: 0.9rem;
+  color: #ff9500;
+  font-weight: 600;
+}
+
+.lab-reports__modal-detail-value.technician-modal-detail-value {
+  font-size: 1.1rem;
+  font-weight: 600;
+  color: #333333;
+}
+
+/* Modal Table with Technician Theme */
+.lab-reports__modal-table.technician-modal-table {
+  width: 100%;
+  border-collapse: collapse;
+  background: white;
+  border-radius: 12px;
+  overflow: hidden;
+  box-shadow: 0 4px 12px rgba(255, 149, 0, 0.1);
+  border: 1px solid #ffebcc;
+}
+
+.lab-reports__modal-table.technician-modal-table thead {
+  background: #fff9f0;
+}
+
+.lab-reports__modal-table.technician-modal-table th {
+  padding: 18px 16px;
+  text-align: left;
+  font-weight: 600;
+  color: #333333;
+  border-bottom: 2px solid #ffebcc;
+}
+
+.lab-reports__modal-table.technician-modal-table td {
+  padding: 16px;
+  border-bottom: 1px solid #ffebcc;
+}
+
+.lab-reports__modal-table.technician-modal-table tr:last-child td {
+  border-bottom: none;
+}
+
+.lab-reports__modal-param-value.technician-modal-param-value {
+  font-weight: 600;
+}
+
+.lab-reports__modal-flag.technician-modal-flag {
+  padding: 6px 12px;
+  border-radius: 8px;
+  font-size: 0.85rem;
+  font-weight: 600;
+  text-transform: uppercase;
+  border: 1px solid transparent;
+}
+
+/* Modal Findings with Technician Theme */
+.lab-reports__modal-findings.technician-modal-findings {
+  display: grid;
+  gap: 24px;
+}
+
+.lab-reports__modal-findings-item.technician-modal-findings-item h4 {
+  margin: 0 0 12px;
+  font-size: 1.1rem;
+  color: #333333;
+  color: #ff9500;
+}
+
+.lab-reports__modal-findings-item.technician-modal-findings-item p {
+  margin: 0;
+  line-height: 1.6;
+  color: #444;
+  padding: 16px;
+  background: white;
+  border-radius: 10px;
+  border-left: 4px solid #ff9500;
+  border: 1px solid #ffebcc;
+}
+
+/* Modal Attachments with Technician Theme */
+.lab-reports__modal-attachments.technician-modal-attachments {
+  display: flex;
+  flex-direction: column;
+  gap: 12px;
+}
+
+.lab-reports__modal-attachment.technician-modal-attachment {
+  display: flex;
+  align-items: center;
+  gap: 16px;
+  padding: 16px;
+  background: white;
+  border-radius: 10px;
+  border: 2px solid #ffebcc;
+  transition: all 0.3s ease;
+}
+
+.lab-reports__modal-attachment.technician-modal-attachment:hover {
+  border-color: #ff9500;
+  background: #fff9f0;
+}
+
+.lab-reports__modal-attachment-icon.technician-modal-attachment-icon {
+  font-size: 1.2rem;
+  color: #ff9500;
+}
+
+.lab-reports__modal-attachment-name.technician-modal-attachment-name {
+  flex: 1;
+  font-weight: 500;
+  color: #333333;
+}
+
+.lab-reports__modal-attachment-btn.technician-modal-attachment-btn {
+  padding: 8px 20px;
+  background: #ff9500;
+  color: white;
+  border: none;
+  border-radius: 8px;
+  font-weight: 600;
+  cursor: pointer;
+  transition: all 0.3s ease;
+  border: 2px solid transparent;
+}
+
+.lab-reports__modal-attachment-btn.technician-modal-attachment-btn:hover {
+  background: #ff7300;
+  transform: translateY(-2px);
+  border-color: #ffcc33;
+}
+
+.lab-reports__modal-no-attachments.technician-modal-no-attachments {
+  padding: 32px;
+  text-align: center;
+  color: #ff9500;
+  font-style: italic;
+  background: #fff9f0;
+  border-radius: 10px;
+  border: 1px dashed #ffcc99;
+}
+
+/* Modal Footer with Technician Theme */
+.lab-reports__modal-footer.technician-modal-footer {
+  display: flex;
+  justify-content: flex-end;
+  gap: 16px;
+  padding: 32px 40px;
+  border-top: 2px solid #ffebcc;
+  background: #fff9f0;
+}
+
+.lab-reports__modal-btn.technician-modal-btn {
+  padding: 16px 32px;
+  border: none;
+  border-radius: 12px;
+  font-size: 1rem;
+  font-weight: 600;
+  cursor: pointer;
+  transition: all 0.3s ease;
+  border: 2px solid transparent;
+}
+
+.lab-reports__modal-btn--secondary.technician-modal-btn--secondary {
+  background: #fff9f0;
+  color: #333333;
+  border: 2px solid #ffcc99;
+}
+
+.lab-reports__modal-btn--primary.technician-modal-btn--primary {
+  background: #3399ff;
+  color: white;
+}
+
+.lab-reports__modal-btn--success.technician-modal-btn--success {
+  background: #ff9500;
+  color: white;
+}
+
+.lab-reports__modal-btn.technician-modal-btn:hover {
+  transform: translateY(-2px);
+  box-shadow: 0 8px 20px rgba(255, 149, 0, 0.2);
+}
+
+/* Footer with Technician Theme */
+.lab-reports__footer.technician-footer {
+  text-align: center;
+  padding: 32px;
+  color: #333333;
+  font-size: 0.95rem;
+  background: #fff9f0;
+  border-radius: 20px;
+  border: 2px solid #ffcc99;
+}
+
+.lab-reports__footer-content.technician-footer-content {
+  max-width: 600px;
+  margin: 0 auto;
+}
+
+.lab-reports__footer-text.technician-footer-text {
+  margin: 0 0 12px;
+  font-weight: 600;
+  color: #333333;
+}
+
+.lab-reports__footer-copyright.technician-footer-copyright {
+  margin: 0;
+  color: #666666;
+  opacity: 0.8;
+}
+
+/* Responsive Design */
+@media (max-width: 1200px) {
+  .lab-reports__reports-grid.technician-reports-grid {
+    grid-template-columns: repeat(auto-fill, minmax(350px, 1fr));
+  }
+}
+
+@media (max-width: 992px) {
+  .lab-reports__header.technician-header {
+    flex-direction: column;
+    gap: 24px;
+  }
+  
+  .lab-reports__header-actions.technician-header-actions {
+    width: 100%;
+    justify-content: center;
+  }
+  
+  .lab-reports__search-filters.technician-search-filters {
+    grid-template-columns: 1fr;
+  }
+  
+  .lab-reports__action-buttons.technician-action-buttons {
+    justify-content: center;
+  }
+  
+  .lab-reports__modal-footer.technician-modal-footer {
+    flex-direction: column;
+  }
+  
+  .lab-reports__modal-btn.technician-modal-btn {
+    width: 100%;
+  }
+}
+
+@media (max-width: 768px) {
+  .lab-reports-container.technician-theme {
+    padding: 16px;
+  }
+  
+  .lab-reports__title.technician-title {
+    font-size: 2.2rem;
+  }
+  
+  .lab-reports__stats-grid.technician-stats-grid {
+    grid-template-columns: 1fr;
+  }
+  
+  .lab-reports__reports-grid.technician-reports-grid {
+    grid-template-columns: 1fr;
+  }
+  
+  .lab-reports__modal-content.technician-modal-content {
+    padding: 24px;
+  }
+  
+  .lab-reports__report-footer.technician-report-footer {
+    flex-direction: column;
+    gap: 16px;
+    align-items: stretch;
+  }
+  
+  .lab-reports__action-buttons-sm.technician-action-buttons-sm {
+    flex-direction: column;
+  }
+}
+
+@media (max-width: 480px) {
+  .lab-reports__header.technician-header {
+    padding: 24px;
+  }
+  
+  .lab-reports__title.technician-title {
+    font-size: 1.8rem;
+  }
+  
+  .lab-reports__dashboard.technician-dashboard,
+  .lab-reports__main-content.technician-main-content {
+    padding: 24px;
+  }
+  
+  .lab-reports__dates-section.technician-dates-section {
+    grid-template-columns: 1fr;
+  }
+  
+  .lab-reports__action-buttons.technician-action-buttons {
+    flex-direction: column;
+  }
+  
+  .lab-reports__action-btn.technician-action-btn {
+    width: 100%;
+    justify-content: center;
+  }
+}
+
+/* Button Active States */
+.lab-reports__header-btn.technician-header-btn:active,
+.lab-reports__action-btn.technician-action-btn:active,
+.lab-reports__action-btn-sm.technician-action-btn-sm:active,
+.lab-reports__modal-btn.technician-modal-btn:active,
+.lab-reports__modal-attachment-btn.technician-modal-attachment-btn:active {
+  transform: translateY(1px);
+}
+
+/* Scrollbar Styling for Technician Theme */
+.technician-modal::-webkit-scrollbar {
+  width: 10px;
+}
+
+.technician-modal::-webkit-scrollbar-track {
+  background: #fff9f0;
+  border-radius: 5px;
+}
+
+.technician-modal::-webkit-scrollbar-thumb {
+  background: #ff9500;
+  border-radius: 5px;
+}
+
+.technician-modal::-webkit-scrollbar-thumb:hover {
+  background: #ff7300;
+}
+
+/* Selection Color */
+.technician-theme ::selection {
+  background-color: rgba(255, 149, 0, 0.3);
+  color: #000000;
+}
+
+/* Focus States */
+.technician-search-input:focus,
+.technician-filter-select:focus,
+.technician-date-input:focus,
+.technician-status-select-sm:focus,
+.technician-modal-close:focus,
+.technician-modal-btn:focus {
+  outline: 2px solid #ff9500;
+  outline-offset: 2px;
+}
+
+/* Hover Effects Enhancement */
+.technician-report-card:hover::before {
+  height: 8px;
+  transition: height 0.3s ease;
+}
+
+.technician-stat-card:hover .technician-stat-icon {
+  transform: scale(1.1);
+  transition: transform 0.3s ease;
+}
+
+/* Print Styles for Technician Theme */
+@media print {
+  .technician-header-actions,
+  .technician-action-buttons,
+  .technician-action-buttons-sm,
+  .technician-status-select-sm,
+  .technician-modal-close,
+  .technician-modal-footer {
+    display: none !important;
+  }
+  
+  .technician-dashboard,
+  .technician-main-content {
+    box-shadow: none !important;
+    border: 1px solid #ccc !important;
+  }
+  
+  .technician-header {
+    background: #ff9500 !important;
+    -webkit-print-color-adjust: exact;
+  }
+}

@@ -15,7 +15,8 @@ import {
   FaFileInvoiceDollar,
   FaUserMd,
   FaUserInjured,
-  FaCaretDown
+  FaCaretDown,
+  FaUserShield // Added for Super Admin
 } from "react-icons/fa";
 import "./Login.css";
 import { motion } from "framer-motion";
@@ -25,7 +26,7 @@ export default function Login() {
   const navigate = useNavigate();
   const location = useLocation();
 
-  // Define role-specific paths
+  // Define role-specific paths - ADDED SUPER ADMIN
   const rolePaths = {
     doctor: "/doctordashboard",
     patient: "/appointmentbooking",
@@ -36,12 +37,14 @@ export default function Login() {
     supervisor: "/hospital/supervisor-dashboard",
     manager: "/hospital/manager-dashboard",
     billing: "/hospital/billing-dashboard",
-    admin: "/hospital/admin-dashboard"
+    admin: "/hospital/admin-dashboard",
+    superadmin: "/superadmin/dashboard" // Added Super Admin path
   };
 
-  // Define hospital departments as individual roles
+  // Define hospital departments as individual roles - ADDED SUPER ADMIN
   const userRoles = [
     { value: "", label: "Select Role", icon: <FaCaretDown />, description: "Choose your role" },
+    { value: "superadmin", label: "Super Administrator", icon: <FaUserShield />, description: "Full system control and management" },
     { value: "patient", label: "Patient", icon: <FaUserInjured />, description: "Book appointments and manage health" },
     { value: "doctor", label: "Doctor", icon: <FaUserMd />, description: "Manage appointments and patient records" },
     { value: "nurse", label: "Nurse", icon: <FaUserNurse />, description: "Patient care and medical assistance" },
@@ -80,7 +83,7 @@ export default function Login() {
     const loginSavedRole = localStorage.getItem("userRole");
     
     // Priority: URL param > signupRole from localStorage > saved login role
-    if (urlRole && (urlRole === "doctor" || urlRole === "patient")) {
+    if (urlRole && (urlRole === "doctor" || urlRole === "patient" || urlRole === "superadmin")) {
       setRoleFromSignup(urlRole);
       setUserRole(urlRole);
       localStorage.setItem("userRole", urlRole);
@@ -91,7 +94,7 @@ export default function Login() {
       setTimeout(() => {
         showNotification("success", `Role auto-selected from signup: ${urlRole.charAt(0).toUpperCase() + urlRole.slice(1)}`);
       }, 500);
-    } else if (savedRole && (savedRole === "doctor" || savedRole === "patient")) {
+    } else if (savedRole && (savedRole === "doctor" || savedRole === "patient" || savedRole === "superadmin")) {
       setRoleFromSignup(savedRole);
       setUserRole(savedRole);
       localStorage.setItem("userRole", savedRole);
@@ -149,6 +152,7 @@ export default function Login() {
   const getSignupRoute = () => {
     if (userRole === "patient") return "/patientsignup";
     if (userRole === "doctor") return "/signup";
+    if (userRole === "superadmin") return "/superadmin/signup";
     return "#";
   };
 
@@ -185,15 +189,7 @@ export default function Login() {
             animate={{ opacity: 1, y: 0 }}
             className="med-role-indicator"
           >
-            {/* <div className="med-role-indicator-content">
-              <div className="med-role-indicator-icon">
-                {roleFromSignup === "doctor" ? <FaUserMd /> : <FaUserInjured />}
-              </div>
-              <div className="med-role-indicator-text">
-                <span className="med-role-indicator-title">Continuing as {roleFromSignup.charAt(0).toUpperCase() + roleFromSignup.slice(1)}</span>
-                <span className="med-role-indicator-subtitle">Please login with your credentials</span>
-              </div>
-            </div> */}
+            {/* Role indicator content (commented out as in original) */}
           </motion.div>
         )}
       </div>
@@ -263,11 +259,6 @@ export default function Login() {
                             {getSelectedRoleDetails().description}
                           </span>
                         )}
-                        {/* {roleFromSignup && (
-                          <span className="med-role-from-signup-badge">
-                            Auto-selected from signup
-                          </span>
-                        )} */}
                       </div>
                     </div>
                     <FaCaretDown className={`med-dropdown-arrow ${isRoleDropdownOpen ? 'med-arrow-rotate' : ''}`} />
@@ -279,7 +270,7 @@ export default function Login() {
                         <button
                           key={role.value}
                           type="button"
-                          className={`med-role-dropdown-item ${userRole === role.value ? 'med-role-item-active' : ''} ${roleFromSignup && role.value === roleFromSignup ? 'med-role-from-signup-item' : ''}`}
+                          className={`med-role-dropdown-item ${userRole === role.value ? 'med-role-item-active' : ''} ${roleFromSignup && role.value === roleFromSignup ? 'med-role-from-signup-item' : ''} ${role.value === 'superadmin' ? 'med-superadmin-item' : ''}`}
                           onClick={() => handleRoleSelect(role.value)}
                         >
                           <span className="med-role-item-icon">{role.icon}</span>
@@ -289,12 +280,12 @@ export default function Login() {
                               <span className="med-role-item-desc">{role.description}</span>
                             )}
                           </div>
-                          {/* {userRole === role.value && (
+                          {userRole === role.value && (
                             <FaCheckCircle className="med-role-item-check" />
-                          )} */}
-                          {/* {roleFromSignup && role.value === roleFromSignup && (
-                            <span className="med-role-signup-indicator">From Signup</span>
-                          )} */}
+                          )}
+                          {role.value === 'superadmin' && (
+                            <span className="med-superadmin-badge">Top Level</span>
+                          )}
                         </button>
                       ))}
                     </div>
@@ -314,7 +305,7 @@ export default function Login() {
                   onChange={(e) =>
                     setForm({ ...form, identifier: e.target.value })
                   }
-                  placeholder={roleFromSignup === "doctor" ? "Enter doctor email" : roleFromSignup === "patient" ? "Enter patient email or phone" : "Enter email or phone number"}
+                  placeholder={roleFromSignup === "doctor" ? "Enter doctor email" : roleFromSignup === "patient" ? "Enter patient email or phone" : roleFromSignup === "superadmin" ? "Enter super admin email" : "Enter email or phone number"}
                 />
               </div>
 
@@ -345,15 +336,15 @@ export default function Login() {
               {/* LOGIN BUTTON */}
               <button 
                 type="submit" 
-                className={`med-login-button ${userRole ? 'med-login-has-role' : ''} ${roleFromSignup ? 'med-login-from-signup' : ''}`}
+                className={`med-login-button ${userRole ? 'med-login-has-role' : ''} ${roleFromSignup ? 'med-login-from-signup' : ''} ${userRole === 'superadmin' ? 'med-superadmin-button' : ''}`}
               >
                 {userRole 
                   ? `SIGN IN AS ${getDisplayRole().toUpperCase()}` 
                   : 'SIGN IN'}
               </button>
 
-              {/* SIGNUP PROMPT (Only for Doctor & Patient) */}
-              {(userRole === "patient" || userRole === "doctor") && (
+              {/* SIGNUP PROMPT (Only for Doctor, Patient & Super Admin) */}
+              {(userRole === "patient" || userRole === "doctor" || userRole === "superadmin") && (
                 <div className="med-signup-container">
                   <span className="med-signup-text">
                     {roleFromSignup === userRole 

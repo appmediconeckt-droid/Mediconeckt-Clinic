@@ -59,6 +59,51 @@ import NurseEmergencyMenu from "./components/Nurse/Emergency/NurseEmergencyMenu"
 import NurseNotifications from "./components/Nurse/NurseNotifications/NurseNotifications";
 import AdminDashboard from "./components/Admin/AdminDashboard/AdminDashboard";
 import SystemSettings from "./components/Admin/SystemSettings/SystemSettings";
+import UserManagement from "./components/Admin/UserManagement/UserManagement";
+import MedicalAssistantDashboard from "./components/MedicalAssistant/MedicalAssistantDashboard/MedicalAssistantDashboard";
+import ManagerDashboard from "./components/DepartmentManager/Dashboard/ManagerDashboard";
+import ManagerReports from "./components/DepartmentManager/ManagerReports/ManagerReports";
+import SuperAdminDashboard from "./components/SuperAdminDashboard/SuperAdminDashboard/SuperAdminDashboard";
+import SuperAdminHospitals from "./components/SuperAdminDashboard/SuperAdminHospitals/SuperAdminHospitals";
+import SuperAdminUsers from "./components/SuperAdminDashboard/SuperAdminUsers/SuperAdminUsers";
+import SuperAdminRoles from "./components/SuperAdminDashboard/SuperAdminRolesManagement/SuperAdminRoles";
+import DoctorUserManagement from "./components/DoctorDashboard/DoctorUserManagement/DoctorUserManagement";
+import SuperAdminAnalyticsMenu from "./components/SuperAdminDashboard/SuperAdminAnalyticsMenu/SuperAdminAnalyticsMenu";
+import SuperAdminAuditLogs from "./components/SuperAdminDashboard/SuperAdminAuditLogs/SuperAdminAuditLogs";
+import SuperAdminSystemHealth from "./components/SuperAdminDashboard/SuperAdminSystemHealth/SuperAdminSystemHealth";
+import SuperAdminBackupRestore from "./components/SuperAdminDashboard/SuperAdminBackupRestore/SuperAdminBackupRestore";
+import SuperAdminSystemSettings from "./components/SuperAdminDashboard/SuperAdminSystemSettings/SuperAdminSystemSettings";
+import SuperAdminNotifications from "./components/SuperAdminDashboard/SuperAdminNotifications/SuperAdminNotifications";
+import HospitalConfigMenu from "./components/Admin/hospital-config/HospitalConfigMenu";
+import AdminAuditLogs from "./components/Admin/AdminAuditLogs/AuditLogs";
+import AdminBackupRestore from "./components/Admin/BackupRestore/AdminBackupRestore";
+import AssistantScheduleRooms from "./components/MedicalAssistant/Schedule & Rooms/AssistantScheduleRooms";
+import AssistantPatientsTeam from "./components/MedicalAssistant/AssistantPatientsTeam/AssistantPatientsTeam";
+import AssistantEquipmentInventory from "./components/MedicalAssistant/AssistantEquipmentInventory/AssistantEquipmentInventory";
+import AssistantLogsReports from "./components/MedicalAssistant/AssistantLogsReports/AssistantLogsReports";
+import Chatbot from "./components/PatientDashboard/ChatBot/Chatbot";
+import LabTechnicianDashboard from "./components/LabTechnicianDashboard/LabTechnicianDashboard/LabTechnicianDashboard";
+import TestRequestsMenu from "./components/LabTechnicianDashboard/TestRequestsMenu/TestRequestsMenu";
+import LabReportsMenu from "./components/LabTechnicianDashboard/LabReportsMenu/LabReportsMenu";
+import SpecimenMenu from "./components/LabTechnicianDashboard/SpecimenMenu/SpecimenMenu";
+import MaintenanceMenu from "./components/LabTechnicianDashboard/MaintenanceMenu/MaintenanceMenu";
+import InventoryMenu from "./components/LabTechnicianDashboard/InventoryMenu/InventoryMenu";
+import HousekeepingDashboard from "./components/HousekeepingDashboard/Dashboard/HousekeepingDashboard";
+import CleaningSchedule from "./components/HousekeepingDashboard/CleaningSchedule/CleaningSchedule";
+import RoomStatus from "./components/HousekeepingDashboard/RoomStatus/RoomStatus";
+import SuppliesManagement from "./components/HousekeepingDashboard/Supplies/SuppliesManagement";
+import MaintenanceManagement from "./components/HousekeepingDashboard/MaintenanceManagement/MaintenanceManagement";
+import HousekeepingApp from "./components/HousekeepingDashboard/HousekeepingApp/HousekeepingApp";
+import SupervisorDashboard from "./components/SupervisorDashboard/SupervisorDashboard/SupervisorDashboard";
+import StaffManagement from "./components/SupervisorDashboard/StaffManagement/StaffManagement";
+import ShiftManagement from "./components/SupervisorDashboard/ShiftManagement/ShiftManagement";
+import PerformanceManagement from "./components/SupervisorDashboard/PerformanceManagement/PerformanceManagement";
+import IncidentsManagement from "./components/SupervisorDashboard/IncidentsManagement/IncidentsManagement";
+import AllocationManagement from "./components/SupervisorDashboard/AllocationManagement/AllocationManagement";
+import ManagerBudget from "./components/DepartmentManager/ManagerBudget/ManagerBudget";
+import StaffPerformance from "./components/DepartmentManager/StaffPerformance/StaffPerformance";
+import ManagerPolicies from "./components/DepartmentManager/ManagerPolicies/ManagerPolicies";
+import ManagerMeetings from "./components/DepartmentManager/ManagerMeetings/ManagerMeetings";
 // import PatientDashboard from "./components/PatientDashboard/PatientDashboard";
 
 function App() {
@@ -153,10 +198,50 @@ function App() {
               }`}
           >
             <Routes>
+              {/* Super-Admin-Dashboard */}
+              <Route path="/superadmin/dashboard" element={<SuperAdminDashboard />} />
+              <Route path="/superadmin/hospitals" element={<SuperAdminHospitals />} />
+              <Route path="/superadmin/users" element={<SuperAdminUsers />} />
+              <Route path="/superadmin/roles" element={<SuperAdminRoles />} />
+              <Route path="/superadmin/analytics" element={<SuperAdminAnalyticsMenu />} />
+              <Route path="/superadmin/audit-logs" element={<SuperAdminAuditLogs />} />
+              <Route path="/superadmin/system-health" element={<SuperAdminSystemHealth />} />
+              <Route path="/superadmin/backup" element={<SuperAdminBackupRestore />} />
+              <Route path="/superadmin/settings" element={<SuperAdminSystemSettings />} />
+              <Route path="/superadmin/notifications" element={<SuperAdminNotifications />} />
+
+
+
+
 
               {/* Admin-Dashboard */}
               <Route path="/hospital/admin-dashboard" element={<AdminDashboard />} />
-               <Route path="/hospital/system-settings" element={<SystemSettings />} />
+              <Route path="/hospital/system-settings" element={<SystemSettings />} />
+              <Route path="/hospital/user-management" element={<UserManagement />} />
+              <Route path="/hospital/hospital-config" element={<HospitalConfigMenu />} />
+              <Route path="/hospital/audit-logs" element={<AdminAuditLogs />} />
+              <Route path="/hospital/backup" element={<AdminBackupRestore />} />
+
+
+
+              {/* DepartmentManager */}
+              <Route path="/hospital/manager-dashboard" element={<ManagerDashboard />} />
+              <Route path="/hospital/department-reports" element={<ManagerReports />} />
+              <Route path="/hospital/budget" element={<ManagerBudget />} />
+              <Route path="/hospital/staff-performance" element={<StaffPerformance />} />
+              <Route path="/hospital/policy" element={<ManagerPolicies />} />
+              <Route path="/hospital/meetings" element={<ManagerMeetings />} />
+
+
+
+
+              {/* Medical-Assistant-Dashboard */}
+              <Route path="/hospital/assistant-dashboard" element={<MedicalAssistantDashboard />} />
+              <Route path="/hospital/assistant-schedule-rooms" element={<AssistantScheduleRooms />} />
+               <Route path="/hospital/assistant-patients-team" element={<AssistantPatientsTeam />} />
+               <Route path="/hospital/assistant-inventory" element={<AssistantEquipmentInventory />} />
+               <Route path="/hospital/assistant-logs-reports" element={<AssistantLogsReports />} />
+
 
 
 
@@ -175,6 +260,7 @@ function App() {
               <Route path="/patient-chat/:patientId" element={<DoctorChat />} />
               <Route path="/followup" element={<FollowUp />} />
               <Route path="/patient-details" element={<PatientDetailsPage />} />
+              <Route path="/doctor-user-management" element={<DoctorUserManagement />} />
 
 
 
@@ -186,16 +272,47 @@ function App() {
               <Route path="/patient-settings" element={<PatientSettingsPage />} />
               <Route path="/doctor-sms" element={<PatientSms />} />
               <Route path="/doctor-chat/:doctorId" element={<DoctorChatPanel />} />
+              <Route path="/chatbot" element={<Chatbot />} />
 
-              {/* Hospital Dashboard */}
-             {/* Nurse-Dashboard */}
+         
+              {/* Nurse-Dashboard */}
               <Route path="/hospital/nurse-dashboard" element={<NurseDashboard />} />
-               <Route path="/hospital/patient-list" element={<NursePatientList/>} />
-               <Route path="/hospital/vital-signs" element={<VitalSigns/>} />
-                <Route path="/hospital/medication" element={<NurseMedicationPage/>} />
-                <Route path="/hospital/shift-report" element={<NurseShiftManagement/>} />
-                 <Route path="/hospital/emergency-cases" element={<NurseEmergencyMenu/>} />
-                 <Route path="/hospital/nurse-notifications" element={<NurseNotifications/>} />
+              <Route path="/hospital/patient-list" element={<NursePatientList />} />
+              <Route path="/hospital/vital-signs" element={<VitalSigns />} />
+              <Route path="/hospital/medication" element={<NurseMedicationPage />} />
+              <Route path="/hospital/shift-report" element={<NurseShiftManagement />} />
+              <Route path="/hospital/emergency-cases" element={<NurseEmergencyMenu />} />
+              <Route path="/hospital/nurse-notifications" element={<NurseNotifications />} />
+
+              {/* Lab-Technician-Dashboard */}
+              <Route path="/hospital/lab-dashboard" element={<LabTechnicianDashboard />} />
+              <Route path="/hospital/test-requests" element={<TestRequestsMenu />} />
+              <Route path="/hospital/lab-reports" element={<LabReportsMenu />} />
+              <Route path="/hospital/specimen" element={<SpecimenMenu />} />
+               <Route path="/hospital/equipment-maintenance" element={<MaintenanceMenu />} />
+                <Route path="/hospital/lab-inventory" element={<InventoryMenu />} />
+
+
+
+
+                {/* Housekeeping--Dashboard */}
+              <Route path="/hospital/housekeeping-dashboard" element={<HousekeepingDashboard />} />
+              <Route path="/hospital/cleaning-schedule" element={<CleaningSchedule />} />
+              <Route path="/hospital/room-status" element={<RoomStatus />} />
+              <Route path="/hospital/supplies-inventory" element={<SuppliesManagement />} />
+              <Route path="/hospital/maintenance-requests" element={<MaintenanceManagement />} />
+              <Route path="/hospital/housekeeping-report" element={<HousekeepingApp />} />
+
+
+
+
+              {/* Supervisor-Dashboard */}
+              <Route path="/hospital/supervisor-dashboard" element={<SupervisorDashboard />} />
+              <Route path="/hospital/staff-management" element={<StaffManagement />} />
+              <Route path="/hospital/shift-management" element={<ShiftManagement />} />
+              <Route path="/hospital/performance" element={<PerformanceManagement />} />
+               <Route path="/hospital/incident-reports" element={<IncidentsManagement />} />
+               <Route path="/hospital/resource-allocation" element={<AllocationManagement />} />
             </Routes>
           </div>
         </div>

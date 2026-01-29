@@ -580,3 +580,173 @@ body.sidebar-collapsed .right-side-content {
 .menu {
   scroll-behavior: smooth;
 }
+
+
+/* ========== SUPER ADMIN THEME (Premium Gold Theme) ========== */
+.sidebar-container.superadmin-theme {
+  background: linear-gradient(135deg, #fff9c2 0%, #ffec8b 100%); /* Gold gradient */
+  border-right: 3px solid #ffd700;
+  box-shadow: 0 0 20px rgba(255, 215, 0, 0.3);
+}
+
+.sidebar-container.superadmin-theme .menu-link {
+  color: #000000;
+  font-weight: 600;
+}
+
+.sidebar-container.superadmin-theme .menu-link:hover {
+  background: #fcdf50;
+  border-radius: 12px;
+  box-shadow: 0 4px 12px rgba(255, 215, 0, 0.2);
+  transform: translateY(-2px);
+  transition: all 0.3s ease;
+}
+
+.sidebar-container.superadmin-theme .menu-item.active .menu-link {
+  background: #ffe252;
+  color: #000000;
+  border-radius: 12px;
+  box-shadow: 0 4px 15px rgba(255, 215, 0, 0.4);
+  position: relative;
+  overflow: hidden;
+}
+
+/* .sidebar-container.superadmin-theme .menu-item.active .menu-link::before {
+  content: '';
+  position: absolute;
+  top: 0;
+  left: 0;
+  width: 4px;
+  height: 100%;
+  background: #000000;
+} */
+
+.sidebar-container.superadmin-theme .menu-item.active .fa-solid {
+  color: #000000;
+  text-shadow: 0 0 5px rgba(255, 255, 255, 0.5);
+}
+
+.sidebar-container.superadmin-theme .menu-link .fa-solid {
+  color: #000000;
+}
+
+.sidebar-container.superadmin-theme .menu-link:hover .fa-solid {
+  transform: scale(1.1);
+  transition: transform 0.3s ease;
+}
+
+/* Super Admin Special Styling for Logout */
+.sidebar-container.superadmin-theme .logout-item .menu-link {
+  background: linear-gradient(135deg, rgba(139, 0, 0, 0.1) 0%, rgba(178, 34, 34, 0.1) 100%);
+  border: 1px solid rgba(178, 34, 34, 0.3);
+}
+
+.sidebar-container.superadmin-theme .logout-item .menu-link:hover {
+  background: linear-gradient(135deg, rgba(178, 34, 34, 0.2) 0%, rgba(139, 0, 0, 0.2) 100%);
+  color: #b22222;
+}
+
+/* Super Admin Menu Text Special Styling */
+.sidebar-container.superadmin-theme .menu-text {
+  color: #000000;
+  font-weight: 600;
+  text-shadow: 0 1px 2px rgba(255, 255, 255, 0.5);
+}
+
+/* Super Admin Active State Enhancement */
+.sidebar-container.superadmin-theme .menu-item.active .menu-text {
+  color: #000000;
+  font-weight: 700;
+  text-shadow: 0 0 10px rgba(255, 215, 0, 0.7);
+}
+
+/* Super Admin Submenu Styling */
+.sidebar-container.superadmin-theme .submenu.expanded {
+  background: linear-gradient(135deg, rgba(255, 215, 0, 0.2) 0%, rgba(184, 134, 11, 0.1) 100%);
+  border-left: 2px solid #ffd700;
+}
+
+.sidebar-container.superadmin-theme .submenu-item {
+  color: #8b6914;
+  font-weight: 500;
+}
+
+.sidebar-container.superadmin-theme .submenu-item:hover {
+  background: linear-gradient(135deg, rgba(255, 215, 0, 0.4) 0%, rgba(184, 134, 11, 0.2) 100%);
+}
+
+.sidebar-container.superadmin-theme .submenu-item.active {
+  background: linear-gradient(135deg, #ffd700 0%, #b8860b 100%);
+  color: #000000;
+}
+
+/* Super Admin Footer Styling */
+.sidebar-container.superadmin-theme .sidebar-footer {
+  color: #000000;
+  border-top: 2px solid rgba(255, 215, 0, 0.5);
+  background: linear-gradient(135deg, rgba(255, 215, 0, 0.3) 0%, rgba(184, 134, 11, 0.2) 100%);
+}
+
+.sidebar-container.superadmin-theme .user-avatar {
+  background: linear-gradient(135deg, #ffd700 0%, #b8860b 100%);
+  color: #000000;
+  border: 2px solid #000000;
+}
+
+.sidebar-container.superadmin-theme .user-name {
+  color: #000000;
+  font-weight: 700;
+}
+
+.sidebar-container.superadmin-theme .user-department {
+  color: #8b6914;
+  font-weight: 600;
+}
+
+/* Super Admin Scrollbar Styling */
+.sidebar-container.superadmin-theme::-webkit-scrollbar-thumb {
+  background: linear-gradient(135deg, #f6e379 0%, #fccb50 100%);
+  border-radius: 10px;
+}
+
+.sidebar-container.superadmin-theme::-webkit-scrollbar-track {
+  background: rgba(245, 212, 24, 0.1);
+}
+
+/* Super Admin Hover Expand Animation */
+.sidebar-container.superadmin-theme.hover-expanded {
+  box-shadow: 0 0 30px rgba(184, 161, 32, 0.4);
+  transition: box-shadow 0.3s ease;
+}
+
+/* Super Admin Collapsed State */
+.sidebar-container.superadmin-theme.collapsed {
+  background: linear-gradient(135deg, #fff9c2 0%, #ffec8b 100%);
+}
+
+.sidebar-container.superadmin-theme.collapsed .menu-link:hover {
+  background: rgba(255, 215, 0, 0.8);
+}
+
+/* Super Admin Special Menu Item Animation */
+.sidebar-container.superadmin-theme .menu-item {
+  transition: all 0.3s ease;
+}
+
+.sidebar-container.superadmin-theme .menu-item:hover {
+  transform: translateX(5px);
+}
+
+/* Super Admin Crown Icon Animation */
+.sidebar-container.superadmin-theme .fa-crown {
+  animation: crownGlow 2s infinite alternate;
+}
+
+@keyframes crownGlow {
+  0% {
+    filter: drop-shadow(0 0 2px rgba(255, 215, 0, 0.5));
+  }
+  100% {
+    filter: drop-shadow(0 0 8px rgba(255, 215, 0, 0.8));
+  }
+}

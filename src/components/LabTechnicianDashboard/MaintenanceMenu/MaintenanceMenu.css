@@ -1,0 +1,1608 @@
+/* Maintenance Menu Styles with Technician Theme */
+
+/* Technician Theme Base */
+.tech-maint-container {
+  background: linear-gradient(135deg, #fff5e6 0%, #ffe4c9 100%) !important;
+  font-family: 'Inter', -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, Oxygen, Ubuntu, sans-serif;
+  max-width: 1440px;
+  margin: 0 auto;
+  padding: 24px;
+  min-height: 100vh;
+  color: #1a1a1a;
+}
+
+/* Header Styles with Technician Theme */
+.tech-maint-header {
+  background: linear-gradient(135deg, #ff9500 0%, #ff7300 100%) !important;
+  color: #000000 !important;
+  padding: 32px 40px;
+  border-radius: 20px;
+  margin-bottom: 30px;
+  box-shadow: 0 10px 30px rgba(255, 149, 0, 0.2);
+  display: flex;
+  justify-content: space-between;
+  align-items: flex-start;
+  border-left: 6px solid #ffcc33;
+}
+
+.tech-maint-header-content {
+  flex: 1;
+}
+
+.tech-maint-title {
+  margin: 0;
+  font-size: 2.8rem;
+  font-weight: 800;
+  letter-spacing: -0.5px;
+  background: linear-gradient(135deg, #000000 0%, #333333 100%);
+  -webkit-background-clip: text;
+  -webkit-text-fill-color: transparent;
+  background-clip: text;
+  text-shadow: 0 2px 4px rgba(255, 255, 255, 0.3);
+}
+
+.tech-maint-subtitle {
+  margin: 12px 0 0;
+  font-size: 1.2rem;
+  color: #333333 !important;
+  font-weight: 500;
+  opacity: 0.9;
+}
+
+.tech-maint-header-actions {
+  display: flex;
+  gap: 16px;
+}
+
+.tech-maint-header-btn {
+  padding: 12px 24px; /* Medium button size */
+  border: none;
+  border-radius: 12px;
+  font-size: 1rem;
+  font-weight: 600;
+  cursor: pointer;
+  transition: all 0.3s ease;
+  display: flex;
+  align-items: center;
+  gap: 8px;
+}
+
+.tech-maint-header-btn-schedule {
+  background: linear-gradient(135deg, #ff7300 0%, #cc6600 100%) !important;
+  color: white !important;
+  border: 2px solid #ffcc33;
+}
+
+.tech-maint-header-btn-report {
+  background: rgba(0, 0, 0, 0.1) !important;
+  color: #000000 !important;
+  border: 2px solid rgba(0, 0, 0, 0.2);
+}
+
+.tech-maint-header-btn:hover {
+  transform: translateY(-3px);
+  box-shadow: 0 8px 20px rgba(255, 149, 0, 0.4);
+}
+
+/* Dashboard Stats with Technician Theme */
+.tech-maint-dashboard {
+  background: white !important;
+  border-radius: 20px;
+  padding: 32px;
+  margin-bottom: 30px;
+  box-shadow: 0 8px 25px rgba(255, 149, 0, 0.15);
+  border: 2px solid #ffcc99;
+}
+
+.tech-maint-stats-grid {
+  display: grid;
+  grid-template-columns: repeat(auto-fit, minmax(240px, 1fr));
+  gap: 24px;
+  margin-bottom: 40px;
+}
+
+.tech-maint-stat-card {
+  display: flex;
+  align-items: center;
+  padding: 28px;
+  border-radius: 16px;
+  transition: all 0.3s ease;
+  cursor: pointer;
+  border: 2px solid transparent;
+}
+
+.tech-maint-stat-card:hover {
+  transform: translateY(-8px);
+  box-shadow: 0 15px 30px rgba(255, 149, 0, 0.2);
+  border-color: #ff9500;
+}
+
+.tech-maint-stat-card-total {
+  background: linear-gradient(135deg, #ff9500 0%, #ff7300 100%) !important;
+}
+
+.tech-maint-stat-card-pending {
+  background: linear-gradient(135deg, #ffa726 0%, #ff9800 100%) !important;
+}
+
+.tech-maint-stat-card-progress {
+  background: linear-gradient(135deg, #ffb74d 0%, #ffa726 100%) !important;
+}
+
+.tech-maint-stat-card-urgent {
+  background: linear-gradient(135deg, #ffcc80 0%, #ffb74d 100%) !important;
+}
+
+.tech-maint-stat-icon {
+  font-size: 3rem;
+  margin-right: 24px;
+  opacity: 0.9;
+  color: white;
+}
+
+.tech-maint-stat-info {
+  color: white;
+}
+
+.tech-maint-stat-info h3 {
+  margin: 0 0 8px;
+  font-size: 1.1rem;
+  font-weight: 600;
+  opacity: 0.9;
+}
+
+.tech-maint-stat-number {
+  margin: 0;
+  font-size: 2.8rem;
+  font-weight: 800;
+  line-height: 1;
+}
+
+/* Controls Section with Technician Theme */
+.tech-maint-controls-section {
+  display: flex;
+  flex-direction: column;
+  gap: 30px;
+  border-top: 2px solid #ffcc99;
+  padding-top: 30px;
+}
+
+.tech-maint-search-filters {
+  display: grid;
+  grid-template-columns: repeat(auto-fit, minmax(220px, 1fr));
+  gap: 20px;
+  align-items: end;
+}
+
+.tech-maint-search-box {
+  position: relative;
+  grid-column: 1 / -1;
+}
+
+.tech-maint-search-input {
+  width: 100%;
+  padding: 14px 20px 14px 48px;
+  border: 2px solid #ffcc99;
+  border-radius: 12px;
+  font-size: 1rem;
+  transition: all 0.3s ease;
+  background: white;
+  color: #333;
+}
+
+.tech-maint-search-input:focus {
+  border-color: #ff9500;
+  outline: none;
+  box-shadow: 0 0 0 3px rgba(255, 149, 0, 0.2);
+}
+
+.tech-maint-search-icon {
+  position: absolute;
+  left: 20px;
+  top: 50%;
+  transform: translateY(-50%);
+  font-size: 1.2rem;
+  color: #ff9500;
+}
+
+.tech-maint-filter-group {
+  display: flex;
+  flex-direction: column;
+  gap: 8px;
+}
+
+.tech-maint-filter-label {
+  font-weight: 600;
+  color: #ff7300 !important;
+  font-size: 0.9rem;
+}
+
+.tech-maint-filter-select,
+.tech-maint-date-input {
+  padding: 12px 16px;
+  border: 2px solid #ffcc99;
+  border-radius: 10px;
+  font-size: 0.95rem;
+  background: white;
+  cursor: pointer;
+  transition: all 0.3s ease;
+  color: #333;
+}
+
+.tech-maint-filter-select:focus,
+.tech-maint-date-input:focus {
+  border-color: #ff9500;
+  outline: none;
+  box-shadow: 0 0 0 3px rgba(255, 149, 0, 0.2);
+}
+
+.tech-maint-action-buttons {
+  display: flex;
+  gap: 16px;
+  justify-content: flex-end;
+}
+
+.tech-maint-action-btn {
+  display: flex;
+  align-items: center;
+  gap: 10px;
+  padding: 14px 28px; /* Medium button size */
+  border: none;
+  border-radius: 12px;
+  font-size: 1rem;
+  font-weight: 600;
+  cursor: pointer;
+  transition: all 0.3s ease;
+  border: 2px solid transparent;
+}
+
+.tech-maint-action-btn-primary {
+  background: linear-gradient(135deg, #ff9500 0%, #ff7300 100%) !important;
+  color: white !important;
+}
+
+.tech-maint-action-btn-secondary {
+  background: #333333 !important;
+  color: white !important;
+}
+
+.tech-maint-action-btn-tertiary {
+  background: #fff9f0 !important;
+  color: #333333 !important;
+  border: 2px solid #ffcc99;
+}
+
+.tech-maint-action-btn:hover {
+  transform: translateY(-3px);
+  box-shadow: 0 8px 20px rgba(255, 149, 0, 0.2);
+}
+
+.tech-maint-btn-icon {
+  font-size: 1.2rem;
+}
+
+/* Main Content with Technician Theme */
+.tech-maint-main-content {
+  background: white !important;
+  border-radius: 20px;
+  padding: 32px;
+  margin-bottom: 30px;
+  box-shadow: 0 8px 25px rgba(255, 149, 0, 0.15);
+  border: 2px solid #ffcc99;
+}
+
+.tech-maint-loading-state {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+  padding: 80px 20px;
+}
+
+.tech-maint-loading-spinner {
+  width: 60px;
+  height: 60px;
+  border: 5px solid #ffebcc;
+  border-top: 5px solid #ff9500;
+  border-radius: 50%;
+  animation: maint-spin 1s linear infinite;
+  margin-bottom: 24px;
+}
+
+@keyframes maint-spin {
+  0% { transform: rotate(0deg); }
+  100% { transform: rotate(360deg); }
+}
+
+.tech-maint-loading-text {
+  font-size: 1.2rem;
+  color: #ff9500;
+  font-weight: 500;
+}
+
+.tech-maint-results-header {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  margin-bottom: 32px;
+  padding-bottom: 20px;
+  border-bottom: 2px solid #ffebcc;
+}
+
+.tech-maint-results-title {
+  margin: 0;
+  font-size: 1.8rem;
+  font-weight: 700;
+  color: #333333;
+}
+
+.tech-maint-results-count {
+  color: #ff9500 !important;
+  font-weight: 800;
+}
+
+.tech-maint-view-options {
+  display: flex;
+  gap: 12px;
+}
+
+.tech-maint-view-btn {
+  display: flex;
+  align-items: center;
+  gap: 8px;
+  padding: 12px 20px; /* Medium button size */
+  background: #fff9f0;
+  border: 2px solid #ffcc99;
+  border-radius: 10px;
+  font-size: 0.95rem;
+  font-weight: 600;
+  color: #333333;
+  cursor: pointer;
+  transition: all 0.3s ease;
+}
+
+.tech-maint-view-btn-active {
+  background: #ff9500 !important;
+  color: white !important;
+  border-color: #ff9500;
+}
+
+.tech-maint-view-icon {
+  font-size: 1.1rem;
+}
+
+/* Empty State with Technician Theme */
+.tech-maint-empty-state {
+  text-align: center;
+  padding: 80px 20px;
+}
+
+.tech-maint-empty-icon {
+  font-size: 4rem;
+  margin-bottom: 24px;
+  color: #ffcc99;
+  opacity: 0.5;
+}
+
+.tech-maint-empty-title {
+  font-size: 1.8rem;
+  color: #333333;
+  margin-bottom: 12px;
+}
+
+.tech-maint-empty-text {
+  font-size: 1.1rem;
+  color: #666666;
+  max-width: 500px;
+  margin: 0 auto;
+}
+
+/* Maintenance Tasks Grid with Technician Theme */
+.tech-maint-tasks-grid {
+  display: grid;
+  grid-template-columns: repeat(auto-fill, minmax(380px, 1fr));
+  gap: 28px;
+}
+
+.tech-maint-task-card {
+  background: white;
+  border: 2px solid #ffcc99;
+  border-radius: 18px;
+  padding: 24px;
+  transition: all 0.3s ease;
+  position: relative;
+  overflow: hidden;
+}
+
+.tech-maint-task-card:hover {
+  border-color: #ff9500;
+  transform: translateY(-8px);
+  box-shadow: 0 20px 40px rgba(255, 149, 0, 0.15);
+}
+
+.tech-maint-task-card::before {
+  content: '';
+  position: absolute;
+  top: 0;
+  left: 0;
+  right: 0;
+  height: 6px;
+  background: linear-gradient(135deg, #ff9500 0%, #ff7300 100%);
+}
+
+/* Card Header */
+.tech-maint-task-card-header {
+  display: flex;
+  justify-content: space-between;
+  align-items: flex-start;
+  margin-bottom: 20px;
+}
+
+.tech-maint-task-card-id {
+  display: flex;
+  flex-direction: column;
+  gap: 6px;
+}
+
+.tech-maint-task-id {
+  font-family: 'Roboto Mono', monospace;
+  font-size: 1.1rem;
+  font-weight: 700;
+  color: #ff9500 !important;
+  background: #fff9f0;
+  padding: 8px 16px;
+  border-radius: 10px;
+  border: 1px solid #ffcc99;
+}
+
+.tech-maint-equipment-id {
+  font-family: 'Roboto Mono', monospace;
+  font-size: 0.9rem;
+  color: #666666;
+  background: #f8f9fa;
+  padding: 6px 12px;
+  border-radius: 8px;
+  border: 1px dashed #cccccc;
+}
+
+.tech-maint-task-card-status {
+  display: flex;
+  flex-direction: column;
+  gap: 8px;
+  align-items: flex-end;
+}
+
+/* Badge Styles */
+.tech-maint-status-badge,
+.tech-maint-priority-badge {
+  padding: 8px 16px;
+  border-radius: 20px;
+  font-size: 0.85rem;
+  font-weight: 700;
+  text-transform: uppercase;
+  letter-spacing: 0.5px;
+  border: 1px solid transparent;
+}
+
+.tech-maint-status-badge--pending {
+  background: #fff0cc !important;
+  color: #ff9900 !important;
+  border-color: #ff9900;
+}
+
+.tech-maint-status-badge--in-progress {
+  background: #e8f4fc !important;
+  color: #3399ff !important;
+  border-color: #3399ff;
+}
+
+.tech-maint-status-badge--completed {
+  background: #e6ffe6 !important;
+  color: #33cc33 !important;
+  border-color: #33cc33;
+}
+
+.tech-maint-status-badge--cancelled {
+  background: #ffe6e6 !important;
+  color: #ff3333 !important;
+  border-color: #ff3333;
+}
+
+.tech-maint-priority-badge--urgent {
+  background: #ffcccc !important;
+  color: #cc0000 !important;
+  border-color: #cc0000;
+}
+
+.tech-maint-priority-badge--high {
+  background: #ffe6e6 !important;
+  color: #ff3333 !important;
+  border-color: #ff3333;
+}
+
+.tech-maint-priority-badge--medium {
+  background: #fff0cc !important;
+  color: #ff9900 !important;
+  border-color: #ff9900;
+}
+
+.tech-maint-priority-badge--low {
+  background: #e6ffe6 !important;
+  color: #33cc33 !important;
+  border-color: #33cc33;
+}
+
+/* Equipment Info */
+.tech-maint-equipment-info {
+  margin-bottom: 16px;
+  padding-bottom: 16px;
+  border-bottom: 2px solid #ffebcc;
+}
+
+.tech-maint-equipment-name {
+  margin: 0 0 8px;
+  font-size: 1.4rem;
+  font-weight: 700;
+  color: #333333;
+}
+
+.tech-maint-equipment-details {
+  display: flex;
+  gap: 20px;
+  color: #666666;
+  font-size: 0.9rem;
+}
+
+.tech-maint-equipment-category {
+  color: #ff9500;
+  font-weight: 600;
+  padding: 4px 10px;
+  background: #fff9f0;
+  border-radius: 6px;
+  border: 1px solid #ffcc99;
+}
+
+/* Task Description */
+.tech-maint-task-description {
+  margin-bottom: 16px;
+  padding: 12px;
+  background: #fff9f0;
+  border-radius: 10px;
+  border: 1px solid #ffebcc;
+  font-size: 0.95rem;
+  line-height: 1.5;
+  color: #555555;
+}
+
+/* Assignment Info */
+.tech-maint-assignment-info {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  margin-bottom: 16px;
+  padding: 12px;
+  background: #fff9f0;
+  border-radius: 10px;
+  border: 1px solid #ffebcc;
+}
+
+.tech-maint-assigned-to,
+.tech-maint-assigned-by {
+  display: flex;
+  flex-direction: column;
+  gap: 4px;
+}
+
+.tech-maint-assigned-label,
+.tech-maint-assignedby-label {
+  font-size: 0.85rem;
+  color: #ff9500;
+  font-weight: 600;
+}
+
+.tech-maint-assigned-value,
+.tech-maint-assignedby-value {
+  font-size: 1rem;
+  font-weight: 600;
+  color: #333333;
+}
+
+/* Dates Section */
+.tech-maint-dates-section {
+  display: grid;
+  grid-template-columns: repeat(auto-fit, minmax(120px, 1fr));
+  gap: 12px;
+  margin-bottom: 16px;
+  padding: 12px;
+  background: #fff9f0;
+  border-radius: 10px;
+  border: 1px solid #ffebcc;
+}
+
+.tech-maint-date-item {
+  display: flex;
+  flex-direction: column;
+  gap: 4px;
+}
+
+.tech-maint-date-label {
+  font-size: 0.85rem;
+  color: #ff9500;
+  font-weight: 600;
+}
+
+.tech-maint-date-value {
+  font-size: 0.95rem;
+  font-weight: 600;
+  color: #333333;
+}
+
+/* Time & Cost Section */
+.tech-maint-time-cost-section {
+  display: grid;
+  grid-template-columns: repeat(auto-fit, minmax(140px, 1fr));
+  gap: 12px;
+  margin-bottom: 16px;
+  padding: 12px;
+  background: #fff9f0;
+  border-radius: 10px;
+  border: 1px solid #ffebcc;
+}
+
+.tech-maint-time-estimate,
+.tech-maint-cost-estimate,
+.tech-maint-actual-time,
+.tech-maint-actual-cost {
+  display: flex;
+  flex-direction: column;
+  gap: 4px;
+}
+
+.tech-maint-time-label,
+.tech-maint-cost-label,
+.tech-maint-actual-label {
+  font-size: 0.85rem;
+  color: #ff9500;
+  font-weight: 600;
+}
+
+.tech-maint-time-value,
+.tech-maint-cost-value,
+.tech-maint-actual-value {
+  font-size: 0.95rem;
+  font-weight: 600;
+  color: #333333;
+}
+
+/* Checklist Preview */
+.tech-maint-checklist-preview {
+  margin-bottom: 16px;
+  padding: 12px;
+  background: #fff9f0;
+  border-radius: 10px;
+  border: 1px solid #ffebcc;
+}
+
+.tech-maint-checklist-title {
+  margin: 0 0 12px;
+  font-size: 1rem;
+  color: #333333;
+  font-weight: 600;
+  color: #ff9500;
+}
+
+.tech-maint-checklist-items-preview {
+  display: flex;
+  flex-direction: column;
+  gap: 8px;
+}
+
+.tech-maint-checklist-item-preview {
+  display: flex;
+  align-items: center;
+  gap: 10px;
+  padding: 6px 12px;
+  background: white;
+  border-radius: 6px;
+  border: 1px solid #ffcc99;
+}
+
+.tech-maint-checklist-icon {
+  color: #33cc33;
+  font-weight: bold;
+  font-size: 1.1rem;
+}
+
+.tech-maint-checklist-text {
+  font-size: 0.9rem;
+  color: #555555;
+}
+
+.tech-maint-checklist-more {
+  text-align: center;
+  padding: 8px;
+  color: #ff9500;
+  font-size: 0.85rem;
+  background: rgba(255, 255, 255, 0.7);
+  border-radius: 6px;
+  margin-top: 4px;
+  font-weight: 600;
+}
+
+/* Spare Parts Preview */
+.tech-maint-spareparts-preview {
+  margin-bottom: 16px;
+  padding: 12px;
+  background: #fff9f0;
+  border-radius: 10px;
+  border: 1px solid #ffebcc;
+}
+
+.tech-maint-spareparts-title {
+  margin: 0 0 12px;
+  font-size: 1rem;
+  color: #333333;
+  font-weight: 600;
+  color: #ff9500;
+}
+
+.tech-maint-spareparts-tags {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 8px;
+}
+
+.tech-maint-sparepart-tag {
+  background: #e8f4fc;
+  color: #3399ff;
+  padding: 6px 12px;
+  border-radius: 8px;
+  font-size: 0.85rem;
+  font-weight: 600;
+  border: 1px solid #3399ff;
+}
+
+/* Card Footer */
+.tech-maint-task-card-footer {
+  display: flex;
+  justify-content: space-between;
+  align-items: flex-start;
+  padding-top: 20px;
+  border-top: 2px solid #ffebcc;
+}
+
+.tech-maint-task-notes {
+  flex: 1;
+  display: flex;
+  flex-direction: column;
+  gap: 4px;
+}
+
+.tech-maint-notes-label {
+  font-size: 0.85rem;
+  color: #ff9500;
+  font-weight: 600;
+}
+
+.tech-maint-notes-value {
+  font-size: 0.9rem;
+  color: #666666;
+  font-style: italic;
+}
+
+.tech-maint-task-card-actions {
+  display: flex;
+  gap: 10px;
+}
+
+/* Small Action Buttons - Medium Size */
+.tech-maint-action-btn-sm {
+  padding: 10px 20px; /* Medium button size */
+  border: none;
+  border-radius: 10px;
+  font-size: 0.9rem;
+  font-weight: 600;
+  cursor: pointer;
+  transition: all 0.3s ease;
+  border: 2px solid transparent;
+}
+
+.tech-maint-action-btn-view {
+  background: #ff9500 !important;
+  color: white !important;
+}
+
+.tech-maint-action-btn-print {
+  background: #3399ff !important;
+  color: white !important;
+}
+
+.tech-maint-action-btn-sm:hover {
+  transform: translateY(-2px);
+  box-shadow: 0 4px 12px rgba(255, 149, 0, 0.2);
+}
+
+.tech-maint-status-select-sm {
+  padding: 10px 16px; /* Medium button size */
+  border: 2px solid #ffcc99;
+  border-radius: 10px;
+  background: white;
+  font-size: 0.9rem;
+  cursor: pointer;
+  min-width: 140px;
+  color: #333333;
+}
+
+.tech-maint-status-select-sm:focus {
+  border-color: #ff9500;
+  outline: none;
+}
+
+/* Modal Styles */
+.tech-maint-modal-overlay {
+  position: fixed;
+  top: 0;
+  left: 0;
+  right: 0;
+  bottom: 0;
+  background: rgba(0, 0, 0, 0.7);
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  z-index: 1000;
+  padding: 20px;
+}
+
+.tech-maint-newtask-modal,
+.tech-maint-task-modal {
+  background: white;
+  border-radius: 24px;
+  width: 100%;
+  max-width: 900px;
+  max-height: 90vh;
+  overflow-y: auto;
+  box-shadow: 0 25px 50px rgba(255, 149, 0, 0.3);
+  animation: maint-modal-appear 0.3s ease;
+  border: 3px solid #ff9500;
+}
+
+@keyframes maint-modal-appear {
+  from {
+    opacity: 0;
+    transform: translateY(30px);
+  }
+  to {
+    opacity: 1;
+    transform: translateY(0);
+  }
+}
+
+.tech-maint-newtask-modal-header,
+.tech-maint-task-modal-header {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  padding: 28px 32px; /* Adjusted padding */
+  border-bottom: 2px solid #ffebcc;
+  background: #fff9f0;
+}
+
+.tech-maint-newtask-modal-title,
+.tech-maint-task-modal-title {
+  margin: 0;
+  font-size: 2rem;
+  font-weight: 700;
+  color: #333333;
+}
+
+.tech-maint-newtask-modal-close,
+.tech-maint-task-modal-close {
+  background: none;
+  border: none;
+  font-size: 2.5rem;
+  color: #ff9500;
+  cursor: pointer;
+  transition: color 0.3s ease;
+  padding: 0;
+  width: 40px;
+  height: 40px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+}
+
+.tech-maint-newtask-modal-close:hover,
+.tech-maint-task-modal-close:hover {
+  color: #ff3333;
+}
+
+/* New Task Form */
+.tech-maint-newtask-form {
+  padding: 32px;
+}
+
+.tech-maint-newtask-form-grid {
+  display: grid;
+  grid-template-columns: repeat(2, 1fr);
+  gap: 20px;
+  margin-bottom: 24px;
+}
+
+.tech-maint-form-group {
+  display: flex;
+  flex-direction: column;
+  gap: 8px;
+}
+
+.tech-maint-form-label {
+  font-weight: 600;
+  color: #ff9500 !important;
+  font-size: 0.9rem;
+}
+
+.tech-maint-form-input,
+.tech-maint-form-select,
+.tech-maint-form-textarea {
+  padding: 12px 16px; /* Medium input size */
+  border: 2px solid #ffcc99;
+  border-radius: 10px;
+  font-size: 0.95rem;
+  background: white;
+  transition: all 0.3s ease;
+  color: #333333;
+}
+
+.tech-maint-form-input:focus,
+.tech-maint-form-select:focus,
+.tech-maint-form-textarea:focus {
+  border-color: #ff9500;
+  outline: none;
+  box-shadow: 0 0 0 3px rgba(255, 149, 0, 0.2);
+}
+
+.tech-maint-form-textarea {
+  resize: vertical;
+  min-height: 80px;
+}
+
+.tech-maint-form-group-header {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  margin-bottom: 12px;
+}
+
+.tech-maint-form-add-btn {
+  padding: 8px 16px; /* Medium button size */
+  background: #ff9500;
+  color: white;
+  border: none;
+  border-radius: 8px;
+  font-size: 0.9rem;
+  font-weight: 600;
+  cursor: pointer;
+  transition: all 0.3s ease;
+}
+
+.tech-maint-form-add-btn:hover {
+  background: #ff7300;
+  transform: translateY(-2px);
+}
+
+/* Checklist Items */
+.tech-maint-checklist-items,
+.tech-maint-spareparts-items {
+  display: flex;
+  flex-direction: column;
+  gap: 10px;
+  padding: 16px;
+  background: #fff9f0;
+  border-radius: 12px;
+  border: 1px solid #ffebcc;
+}
+
+.tech-maint-checklist-item,
+.tech-maint-sparepart-item {
+  display: flex;
+  gap: 10px;
+  align-items: center;
+}
+
+.tech-maint-checklist-input,
+.tech-maint-sparepart-input {
+  flex: 1;
+  padding: 10px 14px; /* Medium input size */
+  border: 2px solid #ffcc99;
+  border-radius: 8px;
+  font-size: 0.9rem;
+  background: white;
+  color: #333333;
+}
+
+.tech-maint-checklist-remove,
+.tech-maint-sparepart-remove {
+  padding: 10px 16px; /* Medium button size */
+  background: #ffe6e6;
+  color: #ff3333;
+  border: 2px solid #ff3333;
+  border-radius: 8px;
+  font-size: 1.2rem;
+  font-weight: bold;
+  cursor: pointer;
+  transition: all 0.3s ease;
+}
+
+.tech-maint-checklist-remove:hover,
+.tech-maint-sparepart-remove:hover {
+  background: #ffcccc;
+  transform: scale(1.1);
+}
+
+/* Form Actions */
+.tech-maint-form-actions {
+  display: flex;
+  justify-content: flex-end;
+  gap: 16px;
+  padding-top: 28px;
+  border-top: 2px solid #ffebcc;
+}
+
+.tech-maint-form-btn {
+  padding: 14px 28px; /* Medium button size */
+  border: none;
+  border-radius: 12px;
+  font-size: 1rem;
+  font-weight: 600;
+  cursor: pointer;
+  transition: all 0.3s ease;
+  border: 2px solid transparent;
+}
+
+.tech-maint-form-btn-cancel {
+  background: #fff9f0;
+  color: #333333;
+  border: 2px solid #ffcc99;
+}
+
+.tech-maint-form-btn-submit {
+  background: #ff9500;
+  color: white;
+}
+
+.tech-maint-form-btn:hover {
+  transform: translateY(-2px);
+  box-shadow: 0 8px 20px rgba(255, 149, 0, 0.2);
+}
+
+/* Task Modal Content */
+.tech-maint-task-modal-content {
+  padding: 32px;
+  background: white;
+}
+
+.tech-maint-modal-section {
+  margin-bottom: 28px;
+  padding: 20px;
+  background: #fff9f0;
+  border-radius: 16px;
+  border: 1px solid #ffebcc;
+}
+
+.tech-maint-modal-section:last-child {
+  margin-bottom: 0;
+}
+
+.tech-maint-modal-section-title {
+  margin: 0 0 16px;
+  font-size: 1.4rem;
+  font-weight: 700;
+  color: #333333;
+  padding-bottom: 12px;
+  border-bottom: 2px solid #ffebcc;
+  color: #ff9500;
+}
+
+/* Modal Grids */
+.tech-maint-modal-task-grid,
+.tech-maint-modal-equipment-grid,
+.tech-maint-modal-assignment-grid,
+.tech-maint-modal-timeline-grid,
+.tech-maint-modal-cost-grid {
+  display: grid;
+  grid-template-columns: repeat(2, 1fr);
+  gap: 20px;
+}
+
+.tech-maint-modal-task-item,
+.tech-maint-modal-equipment-item,
+.tech-maint-modal-assignment-item,
+.tech-maint-modal-timeline-item,
+.tech-maint-modal-cost-item {
+  display: flex;
+  flex-direction: column;
+  gap: 6px;
+}
+
+.tech-maint-modal-task-label,
+.tech-maint-modal-equipment-label,
+.tech-maint-modal-assignment-label,
+.tech-maint-modal-timeline-label,
+.tech-maint-modal-cost-label {
+  font-size: 0.9rem;
+  color: #ff9500;
+  font-weight: 600;
+}
+
+.tech-maint-modal-task-value,
+.tech-maint-modal-equipment-value,
+.tech-maint-modal-assignment-value,
+.tech-maint-modal-timeline-value,
+.tech-maint-modal-cost-value {
+  font-size: 1.1rem;
+  font-weight: 600;
+  color: #333333;
+}
+
+/* Description */
+.tech-maint-modal-description {
+  padding: 16px;
+  background: white;
+  border-radius: 12px;
+  border: 1px solid #ffebcc;
+  font-size: 1rem;
+  line-height: 1.6;
+  color: #555555;
+}
+
+/* Checklist in Modal */
+.tech-maint-modal-checklist {
+  display: flex;
+  flex-direction: column;
+  gap: 12px;
+  padding: 16px;
+  background: white;
+  border-radius: 12px;
+  border: 1px solid #ffebcc;
+}
+
+.tech-maint-modal-checklist-item {
+  display: flex;
+  align-items: center;
+  gap: 12px;
+  padding: 12px;
+  background: #fff9f0;
+  border-radius: 8px;
+  border: 1px solid #ffcc99;
+}
+
+.tech-maint-modal-checklist-icon {
+  color: #33cc33;
+  font-weight: bold;
+  font-size: 1.2rem;
+}
+
+.tech-maint-modal-checklist-text {
+  font-size: 0.95rem;
+  color: #555555;
+  flex: 1;
+}
+
+/* Spare Parts in Modal */
+.tech-maint-modal-spareparts {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 12px;
+  padding: 16px;
+  background: white;
+  border-radius: 12px;
+  border: 1px solid #ffebcc;
+}
+
+.tech-maint-modal-sparepart-tag {
+  background: #e8f4fc;
+  color: #3399ff;
+  padding: 10px 16px;
+  border-radius: 8px;
+  font-size: 0.9rem;
+  font-weight: 600;
+  border: 1px solid #3399ff;
+}
+
+/* Safety & Notes */
+.tech-maint-modal-safety,
+.tech-maint-modal-notes {
+  padding: 16px;
+  background: white;
+  border-radius: 12px;
+  border: 1px solid #ffebcc;
+  font-size: 1rem;
+  line-height: 1.6;
+  color: #555555;
+}
+
+/* History */
+.tech-maint-modal-history {
+  display: flex;
+  flex-direction: column;
+  gap: 12px;
+  padding: 16px;
+  background: white;
+  border-radius: 12px;
+  border: 1px solid #ffebcc;
+}
+
+.tech-maint-modal-history-item {
+  display: grid;
+  grid-template-columns: 100px 1fr 120px 2fr;
+  gap: 16px;
+  padding: 12px;
+  background: #fff9f0;
+  border-radius: 8px;
+  border: 1px solid #ffcc99;
+  align-items: center;
+}
+
+.tech-maint-modal-history-date {
+  font-weight: 600;
+  color: #ff9500;
+  font-size: 0.9rem;
+}
+
+.tech-maint-modal-history-action {
+  font-weight: 600;
+  color: #333333;
+}
+
+.tech-maint-modal-history-technician {
+  font-weight: 600;
+  color: #3399ff;
+}
+
+.tech-maint-modal-history-notes {
+  color: #666666;
+  font-size: 0.9rem;
+}
+
+/* Attachments */
+.tech-maint-modal-attachments {
+  display: flex;
+  flex-direction: column;
+  gap: 12px;
+}
+
+.tech-maint-modal-attachment-item {
+  display: flex;
+  align-items: center;
+  gap: 16px;
+  padding: 16px;
+  background: white;
+  border-radius: 10px;
+  border: 2px solid #ffebcc;
+  transition: all 0.3s ease;
+}
+
+.tech-maint-modal-attachment-item:hover {
+  border-color: #ff9500;
+  background: #fff9f0;
+}
+
+.tech-maint-modal-attachment-icon {
+  font-size: 1.2rem;
+  color: #ff9500;
+}
+
+.tech-maint-modal-attachment-name {
+  flex: 1;
+  font-weight: 500;
+  color: #333333;
+}
+
+.tech-maint-modal-attachment-btn {
+  padding: 10px 20px; /* Medium button size */
+  background: #ff9500;
+  color: white;
+  border: none;
+  border-radius: 8px;
+  font-weight: 600;
+  cursor: pointer;
+  transition: all 0.3s ease;
+  border: 2px solid transparent;
+}
+
+.tech-maint-modal-attachment-btn:hover {
+  background: #ff7300;
+  transform: translateY(-2px);
+  border-color: #ffcc33;
+}
+
+/* Modal Footer */
+.tech-maint-task-modal-footer {
+  display: flex;
+  justify-content: flex-end;
+  gap: 16px;
+  padding: 28px 32px;
+  border-top: 2px solid #ffebcc;
+  background: #fff9f0;
+}
+
+.tech-maint-modal-btn {
+  padding: 14px 28px; /* Medium button size */
+  border: none;
+  border-radius: 12px;
+  font-size: 1rem;
+  font-weight: 600;
+  cursor: pointer;
+  transition: all 0.3s ease;
+  border: 2px solid transparent;
+}
+
+.tech-maint-modal-btn-secondary {
+  background: #fff9f0;
+  color: #333333;
+  border: 2px solid #ffcc99;
+}
+
+.tech-maint-modal-btn-primary {
+  background: #ff9500;
+  color: white;
+}
+
+.tech-maint-modal-status-select {
+  padding: 14px 28px; /* Medium button size */
+  border: 2px solid #ffcc99;
+  border-radius: 12px;
+  background: white;
+  font-size: 1rem;
+  cursor: pointer;
+  color: #333333;
+  min-width: 160px;
+}
+
+.tech-maint-modal-status-select:focus {
+  border-color: #ff9500;
+  outline: none;
+  box-shadow: 0 0 0 3px rgba(255, 149, 0, 0.2);
+}
+
+.tech-maint-modal-btn:hover {
+  transform: translateY(-2px);
+  box-shadow: 0 8px 20px rgba(255, 149, 0, 0.2);
+}
+
+/* Footer with Technician Theme */
+.tech-maint-footer {
+  text-align: center;
+  padding: 32px;
+  color: #333333;
+  font-size: 0.95rem;
+  background: #fff9f0;
+  border-radius: 20px;
+  border: 2px solid #ffcc99;
+}
+
+.tech-maint-footer-content {
+  max-width: 600px;
+  margin: 0 auto;
+}
+
+.tech-maint-footer-text {
+  margin: 0 0 12px;
+  font-weight: 600;
+  color: #333333;
+}
+
+.tech-maint-footer-copyright {
+  margin: 0;
+  color: #666666;
+  opacity: 0.8;
+}
+
+/* Responsive Design */
+@media (max-width: 1200px) {
+  .tech-maint-tasks-grid {
+    grid-template-columns: repeat(auto-fill, minmax(350px, 1fr));
+  }
+  
+  .tech-maint-newtask-form-grid {
+    grid-template-columns: 1fr;
+  }
+}
+
+@media (max-width: 992px) {
+  .tech-maint-header {
+    flex-direction: column;
+    gap: 24px;
+  }
+  
+  .tech-maint-header-actions {
+    width: 100%;
+    justify-content: center;
+  }
+  
+  .tech-maint-search-filters {
+    grid-template-columns: 1fr;
+  }
+  
+  .tech-maint-action-buttons {
+    justify-content: center;
+  }
+  
+  .tech-maint-task-modal-footer,
+  .tech-maint-form-actions {
+    flex-direction: column;
+  }
+  
+  .tech-maint-modal-btn,
+  .tech-maint-form-btn {
+    width: 100%;
+  }
+}
+
+@media (max-width: 768px) {
+  .tech-maint-container {
+    padding: 16px;
+  }
+  
+  .tech-maint-title {
+    font-size: 2.2rem;
+  }
+  
+  .tech-maint-stats-grid {
+    grid-template-columns: 1fr;
+  }
+  
+  .tech-maint-tasks-grid {
+    grid-template-columns: 1fr;
+  }
+  
+  .tech-maint-task-modal-content,
+  .tech-maint-newtask-form {
+    padding: 24px;
+  }
+  
+  .tech-maint-task-card-footer {
+    flex-direction: column;
+    gap: 16px;
+    align-items: stretch;
+  }
+  
+  .tech-maint-task-card-actions {
+    flex-direction: column;
+  }
+  
+  .tech-maint-modal-task-grid,
+  .tech-maint-modal-equipment-grid,
+  .tech-maint-modal-assignment-grid,
+  .tech-maint-modal-timeline-grid,
+  .tech-maint-modal-cost-grid {
+    grid-template-columns: 1fr;
+  }
+  
+  .tech-maint-modal-history-item {
+    grid-template-columns: 1fr;
+    gap: 8px;
+  }
+}
+
+@media (max-width: 480px) {
+  .tech-maint-header {
+    padding: 24px;
+  }
+  
+  .tech-maint-title {
+    font-size: 1.8rem;
+  }
+  
+  .tech-maint-dashboard,
+  .tech-maint-main-content {
+    padding: 24px;
+  }
+  
+  .tech-maint-dates-section,
+  .tech-maint-time-cost-section {
+    grid-template-columns: 1fr;
+  }
+  
+  .tech-maint-action-buttons {
+    flex-direction: column;
+  }
+  
+  .tech-maint-action-btn {
+    width: 100%;
+    justify-content: center;
+  }
+  
+  .tech-maint-assignment-info {
+    flex-direction: column;
+    gap: 12px;
+    align-items: flex-start;
+  }
+}
+
+/* Button Active States */
+.tech-maint-header-btn:active,
+.tech-maint-action-btn:active,
+.tech-maint-action-btn-sm:active,
+.tech-maint-modal-btn:active,
+.tech-maint-form-btn:active,
+.tech-maint-modal-attachment-btn:active,
+.tech-maint-form-add-btn:active {
+  transform: translateY(1px);
+}
+
+/* Scrollbar Styling */
+.tech-maint-newtask-modal::-webkit-scrollbar,
+.tech-maint-task-modal::-webkit-scrollbar {
+  width: 10px;
+}
+
+.tech-maint-newtask-modal::-webkit-scrollbar-track,
+.tech-maint-task-modal::-webkit-scrollbar-track {
+  background: #fff9f0;
+  border-radius: 5px;
+}
+
+.tech-maint-newtask-modal::-webkit-scrollbar-thumb,
+.tech-maint-task-modal::-webkit-scrollbar-thumb {
+  background: #ff9500;
+  border-radius: 5px;
+}
+
+.tech-maint-newtask-modal::-webkit-scrollbar-thumb:hover,
+.tech-maint-task-modal::-webkit-scrollbar-thumb:hover {
+  background: #ff7300;
+}
+
+/* Selection Color */
+.tech-maint-container ::selection {
+  background-color: rgba(255, 149, 0, 0.3);
+  color: #000000;
+}
+
+/* Focus States */
+.tech-maint-search-input:focus,
+.tech-maint-filter-select:focus,
+.tech-maint-date-input:focus,
+.tech-maint-status-select-sm:focus,
+.tech-maint-form-input:focus,
+.tech-maint-form-select:focus,
+.tech-maint-form-textarea:focus,
+.tech-maint-modal-status-select:focus {
+  outline: 2px solid #ff9500;
+  outline-offset: 2px;
+}
+
+/* Hover Effects Enhancement */
+.tech-maint-task-card:hover::before {
+  height: 8px;
+  transition: height 0.3s ease;
+}
+
+.tech-maint-stat-card:hover .tech-maint-stat-icon {
+  transform: scale(1.1);
+  transition: transform 0.3s ease;
+}
+
+/* Print Styles */
+@media print {
+  .tech-maint-header-actions,
+  .tech-maint-action-buttons,
+  .tech-maint-task-card-actions,
+  .tech-maint-view-options,
+  .tech-maint-task-modal-footer,
+  .tech-maint-task-modal-close,
+  .tech-maint-form-actions {
+    display: none !important;
+  }
+  
+  .tech-maint-dashboard,
+  .tech-maint-main-content {
+    box-shadow: none !important;
+    border: 1px solid #ccc !important;
+  }
+  
+  .tech-maint-header {
+    background: #ff9500 !important;
+    -webkit-print-color-adjust: exact;
+  }
+}

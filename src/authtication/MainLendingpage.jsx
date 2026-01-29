@@ -213,7 +213,7 @@ export default function LandingPage() {
                 <motion.button
                   whileHover={{ scale: 1.05 }}
                   whileTap={{ scale: 0.95 }}
-                  className="btn btn-primary btn-lg px-4 py-2 rounded-pill fw-semibold"
+                  className="btn-login btn-lg px-4 py-2 rounded-pill fw-semibold"
                   onClick={() => handleNavigation("/login")}
                   disabled={isNavigating}
                 >
@@ -722,6 +722,12 @@ export default function LandingPage() {
           position: relative;
           overflow: hidden;
         }
+             .btn-login{
+            
+              background-color: #0d6efd;
+              color: white;
+              border: none;
+            }
 
         .hover-card {
           transition: all 0.3s ease;
@@ -813,6 +819,7 @@ export default function LandingPage() {
             margin-top: 10px;
             width: 100%;
           }
+         
         }
       `}</style>
     </div>

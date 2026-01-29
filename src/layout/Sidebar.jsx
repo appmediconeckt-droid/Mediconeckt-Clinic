@@ -62,6 +62,7 @@ const Sidebar = ({ menuItemClick }) => {
     { path: "/followup", icon: "fa-history", text: "Follow Up" },
     { path: "/patient-sms", icon: "fa-message", text: "Patient SMS" },
     { path: "/qrcode", icon: "fa-qrcode", text: "QR Code" },
+    { path: "/doctor-user-management", icon: "fa-user-shield", text: "User Management" },
     { path: "/clinicpage", icon: "fa-hospital", text: "Clinic Page" },
     { path: "/doctor-notifications", icon: "fa-bell", text: "Notification" },
     { path: "/setting", icon: "fa-gear", text: "Setting" },
@@ -72,8 +73,24 @@ const Sidebar = ({ menuItemClick }) => {
     { path: "/patientdashboard", icon: "fa-gauge-high", text: "Dashboard" },
     { path: "/patientappointment", icon: "fa-calendar-days", text: "My Appointments" },
     { path: "/doctor-sms", icon: "fa-message", text: "Doctor SMS" },
+    { path: "/chatbot", icon: "fa-robot", text: "Chat Bot" },
     { path: "/patient-notifications", icon: "fa-bell", text: "Notifications" },
     { path: "/patient-settings", icon: "fa-gear", text: "Settings" },
+  ];
+
+  // SUPER ADMIN MENU ITEMS
+  const superAdminMenuItems = [
+    { path: "/superadmin/dashboard", icon: "fa-gauge-high", text: "Dashboard" },
+    { path: "/superadmin/hospitals", icon: "fa-hospital", text: "Hospitals" },
+    { path: "/superadmin/users", icon: "fa-users", text: "User Management" },
+    { path: "/superadmin/roles", icon: "fa-user-shield", text: "Role Management" },
+    { path: "/superadmin/analytics", icon: "fa-chart-line", text: "Analytics" },
+    { path: "/superadmin/audit-logs", icon: "fa-clipboard-list", text: "Audit Logs" },
+    { path: "/superadmin/system-health", icon: "fa-heart-pulse", text: "System Health" },
+    { path: "/superadmin/backup", icon: "fa-database", text: "Backup & Restore" },
+    { path: "/superadmin/settings", icon: "fa-cogs", text: "System Settings" },
+    // { path: "/superadmin/api-management", icon: "fa-code", text: "API Management" },
+    { path: "/superadmin/notifications", icon: "fa-bell", text: "Notifications" },
   ];
 
   // Hospital Department Menu Items
@@ -84,18 +101,16 @@ const Sidebar = ({ menuItemClick }) => {
       { path: "/hospital/vital-signs", icon: "fa-heart-pulse", text: "Vital Signs" },
       { path: "/hospital/medication", icon: "fa-pills", text: "Medication" },
       { path: "/hospital/shift-report", icon: "fa-clipboard-list", text: "Shift Report" },
-      // { path: "/hospital/nurse-schedule", icon: "fa-calendar-check", text: "Schedule" },
       { path: "/hospital/emergency-cases", icon: "fa-truck-medical", text: "Emergency" },
       { path: "/hospital/nurse-notifications", icon: "fa-bell", text: "Notifications" },
     ],
 
     assistant: [
       { path: "/hospital/assistant-dashboard", icon: "fa-gauge-high", text: "Dashboard" },
-      { path: "/hospital/room-assignment", icon: "fa-door-open", text: "Room Assignment" },
-      { path: "/hospital/equipment", icon: "fa-stethoscope", text: "Equipment" },
-      { path: "/hospital/assistant-schedule", icon: "fa-calendar-alt", text: "Schedule" },
-      { path: "/hospital/patient-prep", icon: "fa-user-check", text: "Patient Prep" },
-      { path: "/hospital/supplies", icon: "fa-box", text: "Supplies" },
+      { path: "/hospital/assistant-schedule-rooms", icon: "fa-calendar-alt", text: "Schedule & Rooms" },
+      { path: "/hospital/assistant-patients-team", icon: "fa-user-nurse", text: "Patients & Team" },
+      { path: "/hospital/assistant-inventory", icon: "fa-kit-medical", text: "Equipment & Inventory" },
+      { path: "/hospital/assistant-logs-reports", icon: "fa-file-waveform", text: "Logs & Reports" }
     ],
 
     technician: [
@@ -179,13 +194,15 @@ const Sidebar = ({ menuItemClick }) => {
       return renderMenuItems(doctorMenuItems);
     } else if (userRole === "patient") {
       return renderMenuItems(patientMenuItems);
+    } else if (userRole === "superadmin") {
+      return renderMenuItems(superAdminMenuItems);
     } else if (hospitalMenuItems[userRole]) {
       return renderMenuItems(hospitalMenuItems[userRole]);
     }
     return <li className="menu-item"><div className="menu-link">No menu items available</div></li>;
   };
 
-  // Get theme class based on role
+  // Get theme class based on role - ADDED SUPER ADMIN
   const getThemeClass = () => {
     const themeMap = {
       doctor: "doctor-theme",
@@ -197,12 +214,13 @@ const Sidebar = ({ menuItemClick }) => {
       supervisor: "supervisor-theme",
       manager: "manager-theme",
       billing: "billing-theme",
-      admin: "admin-theme"
+      admin: "admin-theme",
+      superadmin: "superadmin-theme" // Added Super Admin theme
     };
     return themeMap[userRole] || "";
   };
 
-  // Get department name for display
+  // Get department name for display - ADDED SUPER ADMIN
   const getDepartmentName = () => {
     const deptNames = {
       nurse: "Nurse",
@@ -212,12 +230,13 @@ const Sidebar = ({ menuItemClick }) => {
       supervisor: "Supervisor",
       manager: "Department Manager",
       billing: "Billing Staff",
-      admin: "Administrator"
+      admin: "Administrator",
+      superadmin: "Super Administrator" // Added Super Admin
     };
     return deptNames[userRole] || "Hospital Staff";
   };
 
-  // Get department icon
+  // Get department icon - ADDED SUPER ADMIN
   const getDepartmentIcon = () => {
     const deptIcons = {
       doctor: "fa-user-doctor",
@@ -229,7 +248,8 @@ const Sidebar = ({ menuItemClick }) => {
       supervisor: "fa-user-tie",
       manager: "fa-user-cog",
       billing: "fa-file-invoice-dollar",
-      admin: "fa-user-shield"
+      admin: "fa-user-shield",
+      superadmin: "fa-crown" // Added crown icon for Super Admin
     };
     return deptIcons[userRole] || "fa-user";
   };
@@ -241,7 +261,7 @@ const Sidebar = ({ menuItemClick }) => {
       onMouseLeave={() => setHoverExpand(false)}
     >
       <div className="sidebar">
-        
+
         <ul className="menu">
           {getMenuItems()}
 
@@ -264,10 +284,11 @@ const Sidebar = ({ menuItemClick }) => {
                 <i className={`fa-solid ${getDepartmentIcon()}`}></i>
               </div>
               <div className="user-details">
-                
+                <p className="user-name">{userName || "User"}</p>
                 <p className="user-department">
                   {userRole === "doctor" ? "Doctor" : 
                    userRole === "patient" ? "Patient" : 
+                   userRole === "superadmin" ? "Super Administrator" :
                    getDepartmentName()}
                 </p>
               </div>

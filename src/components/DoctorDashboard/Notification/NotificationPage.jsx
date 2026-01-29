@@ -54,7 +54,7 @@ export default function NotificationPage() {
   }, []);
 
   return (
-    <div className="notification p-4">
+    <div className="doctor-notification p-4">
       <div className="header d-flex flex-column flex-md-row justify-content-between align-items-start align-items-md-center mb-3 gap-3">
         <h2 className="">Notifications</h2>
       </div>
@@ -75,12 +75,12 @@ export default function NotificationPage() {
 
 function NotificationCard({ type, message, time, colorClass }) {
   return (
-    <div className={`notification-card ${colorClass}`}>
+    <div className={`doctor-notification-card ${colorClass}`}>
       <div className="notification-info">
         <h4>{type}</h4>
         <p>{message}</p>
       </div>
-      <span className="notification-time">{time}</span>
+      <span className="doctor-notification-time">{time}</span>
     </div>
   );
 }

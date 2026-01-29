@@ -1,0 +1,1318 @@
+/* ========== SUPER ADMIN SYSTEM HEALTH ========== */
+
+/* Main Container */
+.superadmin-system-health-container {
+  min-height: 100vh;
+  background: linear-gradient(135deg, #f8f9fa 0%, #e9ecef 100%);
+  padding: 30px;
+  font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+}
+
+/* Header Styles */
+.superadmin-health-header {
+  display: flex;
+  justify-content: space-between;
+  align-items: flex-start;
+  margin-bottom: 30px;
+  padding: 25px;
+  background: linear-gradient(135deg, #ffffff 0%, #fff9e6 100%);
+  border-radius: 16px;
+  box-shadow: 0 8px 32px rgba(255, 215, 0, 0.15);
+  border: 2px solid #FFEC8B;
+}
+
+.superadmin-health-header-main {
+  flex: 1;
+}
+
+.superadmin-health-title {
+  font-size: 32px;
+  font-weight: 900;
+  color: #000;
+  margin: 0 0 10px 0;
+  display: flex;
+  align-items: center;
+  gap: 15px;
+}
+
+.superadmin-health-crown {
+  color: #FFD700;
+  font-size: 28px;
+  text-shadow: 0 0 10px rgba(255, 215, 0, 0.5);
+  animation: superadmin-health-crown-spin 4s linear infinite;
+}
+
+@keyframes superadmin-health-crown-spin {
+  0% { transform: rotate(0deg); }
+  25% { transform: rotate(5deg); }
+  75% { transform: rotate(-5deg); }
+  100% { transform: rotate(0deg); }
+}
+
+.superadmin-health-subtitle {
+  font-size: 16px;
+  color: #666;
+  margin: 0;
+  max-width: 600px;
+  font-weight: 500;
+}
+
+/* Controls */
+.superadmin-health-controls {
+  display: flex;
+  gap: 15px;
+  align-items: center;
+}
+
+.superadmin-health-auto-refresh {
+  display: flex;
+  align-items: center;
+  gap: 10px;
+}
+
+.superadmin-health-toggle {
+  position: relative;
+  display: flex;
+  align-items: center;
+  gap: 8px;
+  cursor: pointer;
+}
+
+.superadmin-health-toggle input {
+  opacity: 0;
+  width: 0;
+  height: 0;
+}
+
+.superadmin-health-toggle-slider {
+  position: relative;
+  display: inline-block;
+  width: 50px;
+  height: 24px;
+  background-color: #ccc;
+  border-radius: 24px;
+  transition: .4s;
+}
+
+.superadmin-health-toggle-slider:before {
+  position: absolute;
+  content: "";
+  height: 18px;
+  width: 18px;
+  left: 3px;
+  bottom: 3px;
+  background-color: white;
+  border-radius: 50%;
+  transition: .4s;
+}
+
+.superadmin-health-toggle input:checked + .superadmin-health-toggle-slider {
+  background: linear-gradient(135deg, #FFD700 0%, #B8860B 100%);
+}
+
+.superadmin-health-toggle input:checked + .superadmin-health-toggle-slider:before {
+  transform: translateX(26px);
+}
+
+.superadmin-health-toggle-label {
+  font-size: 14px;
+  font-weight: 600;
+  color: #666;
+}
+
+/* Action Buttons */
+.superadmin-health-refresh-btn,
+.superadmin-health-report-btn {
+  padding: 12px 24px;
+  border: none;
+  border-radius: 10px;
+  font-size: 14px;
+  font-weight: 700;
+  cursor: pointer;
+  display: flex;
+  align-items: center;
+  gap: 10px;
+  transition: all 0.3s ease;
+}
+
+.superadmin-health-refresh-btn {
+  background: linear-gradient(135deg, #6C5CE7 0%, #5B4FCF 100%);
+  color: white;
+}
+
+.superadmin-health-refresh-btn:hover:not(:disabled) {
+  transform: translateY(-2px);
+  box-shadow: 0 6px 20px rgba(108, 92, 231, 0.3);
+}
+
+.superadmin-health-refresh-btn:disabled {
+  opacity: 0.7;
+  cursor: not-allowed;
+}
+
+.superadmin-health-report-btn {
+  background: linear-gradient(135deg, #00B894 0%, #00A085 100%);
+  color: white;
+}
+
+.superadmin-health-report-btn:hover {
+  transform: translateY(-2px);
+  box-shadow: 0 6px 20px rgba(0, 184, 148, 0.3);
+}
+
+/* Overview Section */
+.superadmin-health-overview {
+  display: grid;
+  grid-template-columns: 1fr 2fr;
+  gap: 30px;
+  margin-bottom: 30px;
+}
+
+/* Health Status Card */
+.superadmin-health-status-card {
+  background: white;
+  padding: 25px;
+  border-radius: 16px;
+  box-shadow: 0 4px 20px rgba(0, 0, 0, 0.08);
+  border: 2px solid #FFEC8B;
+}
+
+.superadmin-health-status-header {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  margin-bottom: 25px;
+}
+
+.superadmin-health-status-title {
+  font-size: 20px;
+  font-weight: 700;
+  color: #000;
+  margin: 0;
+  display: flex;
+  align-items: center;
+  gap: 10px;
+}
+
+.superadmin-health-uptime {
+  font-size: 14px;
+  font-weight: 600;
+  color: #666;
+  display: flex;
+  align-items: center;
+  gap: 8px;
+}
+
+.superadmin-health-status-main {
+  display: flex;
+  align-items: center;
+  justify-content: space-around;
+  margin-bottom: 25px;
+}
+
+/* Health Score Circle */
+.superadmin-health-score {
+  text-align: center;
+}
+
+.superadmin-health-score-circle {
+  width: 140px;
+  height: 140px;
+  border-radius: 50%;
+  background: #f8f9fa;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  margin: 0 auto 15px;
+  position: relative;
+  overflow: hidden;
+}
+
+.superadmin-health-score-fill {
+  width: 120px;
+  height: 120px;
+  border-radius: 50%;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  position: relative;
+  z-index: 2;
+}
+
+.superadmin-health-score-value {
+  font-size: 36px;
+  font-weight: 900;
+  color: white;
+  text-shadow: 0 2px 4px rgba(0, 0, 0, 0.2);
+}
+
+.superadmin-health-score-percent {
+  font-size: 20px;
+  font-weight: 700;
+}
+
+.superadmin-health-score-label {
+  font-size: 16px;
+  font-weight: 700;
+  color: #333;
+}
+
+/* Status Indicators */
+.superadmin-health-status-indicators {
+  display: flex;
+  flex-direction: column;
+  gap: 15px;
+}
+
+.superadmin-health-indicator {
+  display: flex;
+  align-items: center;
+  gap: 12px;
+}
+
+.superadmin-health-indicator-dot {
+  width: 12px;
+  height: 12px;
+  border-radius: 50%;
+}
+
+.superadmin-health-indicator-text {
+  font-size: 14px;
+  font-weight: 600;
+  color: #333;
+  min-width: 70px;
+}
+
+.superadmin-health-indicator-count {
+  font-size: 18px;
+  font-weight: 900;
+  color: #000;
+  background: #FFF9C4;
+  padding: 4px 12px;
+  border-radius: 20px;
+  min-width: 40px;
+  text-align: center;
+}
+
+.superadmin-health-last-updated {
+  font-size: 13px;
+  color: #666;
+  display: flex;
+  align-items: center;
+  gap: 8px;
+  justify-content: center;
+  padding-top: 15px;
+  border-top: 1px solid #f0f0f0;
+}
+
+/* Quick Metrics */
+.superadmin-health-quick-metrics {
+  display: grid;
+  grid-template-columns: repeat(3, 1fr);
+  gap: 15px;
+}
+
+.superadmin-health-metric-card {
+  background: white;
+  padding: 20px;
+  border-radius: 12px;
+  box-shadow: 0 4px 15px rgba(0, 0, 0, 0.05);
+  border: 2px solid #FFEC8B;
+  transition: all 0.3s ease;
+}
+
+.superadmin-health-metric-card:hover {
+  transform: translateY(-3px);
+  box-shadow: 0 6px 20px rgba(255, 215, 0, 0.15);
+}
+
+.superadmin-health-metric-header {
+  display: flex;
+  align-items: center;
+  gap: 12px;
+  margin-bottom: 15px;
+}
+
+.superadmin-health-metric-icon {
+  width: 40px;
+  height: 40px;
+  border-radius: 10px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  color: white;
+  font-size: 16px;
+}
+
+.superadmin-health-metric-title {
+  font-size: 14px;
+  font-weight: 600;
+  color: #666;
+  text-transform: uppercase;
+  letter-spacing: 0.5px;
+}
+
+.superadmin-health-metric-value {
+  font-size: 28px;
+  font-weight: 900;
+  color: #000;
+  line-height: 1;
+}
+
+.superadmin-health-metric-unit {
+  font-size: 16px;
+  font-weight: 700;
+  color: #666;
+  margin-left: 4px;
+}
+
+/* Navigation Tabs */
+.superadmin-health-tabs {
+  display: flex;
+  gap: 10px;
+  margin-bottom: 30px;
+  padding: 15px;
+  background: white;
+  border-radius: 16px;
+  box-shadow: 0 4px 20px rgba(0, 0, 0, 0.08);
+  overflow-x: auto;
+}
+
+.superadmin-health-tab {
+  flex: 1;
+  min-width: 120px;
+  padding: 15px 20px;
+  border: none;
+  background: transparent;
+  border-radius: 12px;
+  font-size: 14px;
+  font-weight: 700;
+  color: #666;
+  cursor: pointer;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  gap: 10px;
+  transition: all 0.3s ease;
+  white-space: nowrap;
+}
+
+.superadmin-health-tab:hover {
+  background: #FFF9C4;
+  color: #000;
+  transform: translateY(-2px);
+}
+
+.superadmin-health-tab-active {
+  background: linear-gradient(135deg, #FFD700 0%, #B8860B 100%);
+  color: #000;
+  box-shadow: 0 4px 15px rgba(255, 215, 0, 0.4);
+}
+
+/* Main Content Layout */
+.superadmin-health-content {
+  display: grid;
+  grid-template-columns: 2fr 1fr;
+  gap: 30px;
+  margin-bottom: 30px;
+}
+
+/* Section Titles */
+.superadmin-health-section-title {
+  font-size: 18px;
+  font-weight: 700;
+  color: #000;
+  margin: 0 0 20px 0;
+  display: flex;
+  align-items: center;
+  gap: 10px;
+}
+
+/* Servers Grid */
+.superadmin-health-servers-grid {
+  background: white;
+  padding: 25px;
+  border-radius: 16px;
+  box-shadow: 0 4px 20px rgba(0, 0, 0, 0.08);
+  border: 2px solid #FFEC8B;
+  margin-bottom: 30px;
+}
+
+.superadmin-health-servers-list {
+  display: grid;
+  grid-template-columns: repeat(2, 1fr);
+  gap: 15px;
+}
+
+/* Server Card */
+.superadmin-health-server-card {
+  background: #FFFDF0;
+  padding: 20px;
+  border-radius: 12px;
+  border: 2px solid #FFEC8B;
+  cursor: pointer;
+  transition: all 0.3s ease;
+  position: relative;
+  overflow: hidden;
+}
+
+.superadmin-health-server-card:hover {
+  transform: translateY(-3px);
+  box-shadow: 0 6px 20px rgba(255, 215, 0, 0.15);
+  border-color: #FFD700;
+}
+
+.superadmin-health-server-selected {
+  background: linear-gradient(135deg, rgba(255, 215, 0, 0.1) 0%, rgba(184, 134, 11, 0.05) 100%);
+  border-color: #FFD700;
+  box-shadow: 0 4px 15px rgba(255, 215, 0, 0.3);
+}
+
+.superadmin-health-server-header {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  margin-bottom: 15px;
+}
+
+.superadmin-health-server-name {
+  font-size: 16px;
+  font-weight: 700;
+  color: #000;
+  display: flex;
+  align-items: center;
+  gap: 10px;
+}
+
+.superadmin-health-server-name i {
+  color: #B8860B;
+}
+
+.superadmin-health-server-status {
+  display: flex;
+  align-items: center;
+  gap: 8px;
+}
+
+.superadmin-health-status-badge {
+  padding: 6px 12px;
+  border-radius: 20px;
+  font-size: 12px;
+  font-weight: 700;
+  text-transform: uppercase;
+  color: white;
+  min-width: 70px;
+  text-align: center;
+}
+
+/* Server Metrics */
+.superadmin-health-server-metrics {
+  display: flex;
+  flex-direction: column;
+  gap: 12px;
+  margin-bottom: 15px;
+}
+
+.superadmin-health-server-metric {
+  display: flex;
+  align-items: center;
+  gap: 12px;
+}
+
+.superadmin-health-server-metric-label {
+  font-size: 12px;
+  font-weight: 600;
+  color: #666;
+  min-width: 40px;
+}
+
+.superadmin-health-server-metric-bar {
+  flex: 1;
+  height: 8px;
+  background: #f0f0f0;
+  border-radius: 4px;
+  overflow: hidden;
+}
+
+.superadmin-health-server-metric-fill {
+  height: 100%;
+  border-radius: 4px;
+  transition: width 0.3s ease;
+}
+
+.superadmin-health-server-metric-value {
+  font-size: 12px;
+  font-weight: 700;
+  color: #333;
+  min-width: 40px;
+  text-align: right;
+}
+
+/* Server Info */
+.superadmin-health-server-info {
+  display: flex;
+  justify-content: space-between;
+  padding-top: 15px;
+  border-top: 1px solid #FFEC8B;
+}
+
+.superadmin-health-server-info-item {
+  display: flex;
+  align-items: center;
+  gap: 6px;
+  font-size: 12px;
+  color: #666;
+}
+
+.superadmin-health-server-info-item i {
+  color: #B8860B;
+}
+
+/* Alerts Section */
+.superadmin-health-alerts {
+  background: white;
+  padding: 25px;
+  border-radius: 16px;
+  box-shadow: 0 4px 20px rgba(0, 0, 0, 0.08);
+  border: 2px solid #FFEC8B;
+}
+
+.superadmin-health-alerts-header {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  margin-bottom: 20px;
+}
+
+.superadmin-health-alert-badge {
+  background: #D63031;
+  color: white;
+  padding: 4px 10px;
+  border-radius: 20px;
+  font-size: 12px;
+  font-weight: 900;
+  margin-left: 10px;
+}
+
+.superadmin-health-alerts-clear {
+  padding: 8px 16px;
+  border: none;
+  border-radius: 8px;
+  font-size: 13px;
+  font-weight: 600;
+  cursor: pointer;
+  display: flex;
+  align-items: center;
+  gap: 8px;
+  background: #FFF9C4;
+  color: #B8860B;
+  border: 1px solid #FFEC8B;
+  transition: all 0.3s ease;
+}
+
+.superadmin-health-alerts-clear:hover {
+  background: #FFEC8B;
+}
+
+/* Alerts List */
+.superadmin-health-alerts-list {
+  display: flex;
+  flex-direction: column;
+  gap: 12px;
+  max-height: 400px;
+  overflow-y: auto;
+}
+
+.superadmin-health-alert-item {
+  display: flex;
+  align-items: flex-start;
+  gap: 15px;
+  padding: 15px;
+  border-radius: 10px;
+  background: #FFFDF0;
+  border-left: 4px solid #FFD700;
+  transition: all 0.3s ease;
+}
+
+.superadmin-health-alert-item[data-severity="critical"] {
+  border-left-color: #D63031;
+  background: #FFE6E6;
+}
+
+.superadmin-health-alert-item[data-severity="warning"] {
+  border-left-color: #FDCB6E;
+  background: #FFF9E6;
+}
+
+.superadmin-health-alert-item[data-severity="info"] {
+  border-left-color: #0984E3;
+  background: #E6F7FF;
+}
+
+.superadmin-health-alert-acknowledged {
+  opacity: 0.7;
+}
+
+.superadmin-health-alert-icon {
+  font-size: 18px;
+  color: #B8860B;
+  margin-top: 2px;
+}
+
+.superadmin-health-alert-item[data-severity="critical"] .superadmin-health-alert-icon {
+  color: #D63031;
+}
+
+.superadmin-health-alert-item[data-severity="warning"] .superadmin-health-alert-icon {
+  color: #FDCB6E;
+}
+
+.superadmin-health-alert-item[data-severity="info"] .superadmin-health-alert-icon {
+  color: #0984E3;
+}
+
+.superadmin-health-alert-content {
+  flex: 1;
+}
+
+.superadmin-health-alert-title {
+  font-size: 14px;
+  font-weight: 700;
+  color: #000;
+  margin-bottom: 5px;
+}
+
+.superadmin-health-alert-message {
+  font-size: 13px;
+  color: #666;
+  margin-bottom: 8px;
+  line-height: 1.4;
+}
+
+.superadmin-health-alert-meta {
+  display: flex;
+  gap: 15px;
+  font-size: 12px;
+  color: #666;
+}
+
+.superadmin-health-alert-server,
+.superadmin-health-alert-time {
+  display: flex;
+  align-items: center;
+  gap: 5px;
+}
+
+.superadmin-health-alert-acknowledge {
+  padding: 6px 12px;
+  border: none;
+  border-radius: 6px;
+  font-size: 12px;
+  font-weight: 600;
+  cursor: pointer;
+  background: #00B894;
+  color: white;
+  display: flex;
+  align-items: center;
+  gap: 5px;
+  transition: all 0.3s ease;
+}
+
+.superadmin-health-alert-acknowledge:hover {
+  background: #00A085;
+  transform: translateY(-2px);
+}
+
+.superadmin-health-no-alerts {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+  padding: 40px 20px;
+  color: #666;
+}
+
+.superadmin-health-no-alerts i {
+  font-size: 48px;
+  color: #00B894;
+  margin-bottom: 15px;
+}
+
+.superadmin-health-no-alerts p {
+  font-size: 16px;
+  font-weight: 600;
+}
+
+/* Server Details */
+.superadmin-health-server-details {
+  background: white;
+  border-radius: 16px;
+  box-shadow: 0 4px 20px rgba(0, 0, 0, 0.08);
+  border: 2px solid #FFEC8B;
+  overflow: hidden;
+}
+
+.superadmin-health-details-header {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  padding: 25px;
+  background: linear-gradient(135deg, #FFEC8B 0%, #FFD700 100%);
+}
+
+.superadmin-health-details-title {
+  font-size: 20px;
+  font-weight: 700;
+  color: #000;
+  margin: 0;
+  display: flex;
+  align-items: center;
+  gap: 10px;
+}
+
+.superadmin-health-details-close {
+  background: none;
+  border: none;
+  font-size: 18px;
+  color: #666;
+  cursor: pointer;
+  padding: 8px;
+  border-radius: 8px;
+  transition: all 0.3s ease;
+}
+
+.superadmin-health-details-close:hover {
+  background: rgba(0, 0, 0, 0.1);
+  color: #000;
+}
+
+.superadmin-health-details-content {
+  padding: 25px;
+}
+
+.superadmin-health-details-section {
+  margin-bottom: 30px;
+}
+
+.superadmin-health-details-section:last-child {
+  margin-bottom: 0;
+}
+
+.superadmin-health-details-subtitle {
+  font-size: 16px;
+  font-weight: 700;
+  color: #000;
+  margin: 0 0 15px 0;
+  padding-bottom: 10px;
+  border-bottom: 2px solid #FFEC8B;
+}
+
+.superadmin-health-details-grid {
+  display: grid;
+  grid-template-columns: repeat(2, 1fr);
+  gap: 15px;
+}
+
+.superadmin-health-detail-item {
+  margin-bottom: 12px;
+}
+
+.superadmin-health-detail-item label {
+  display: block;
+  font-size: 12px;
+  font-weight: 600;
+  color: #666;
+  text-transform: uppercase;
+  letter-spacing: 0.5px;
+  margin-bottom: 6px;
+}
+
+.superadmin-health-detail-value {
+  font-size: 14px;
+  font-weight: 600;
+  color: #333;
+  padding: 8px 12px;
+  background: #FFFDF0;
+  border-radius: 8px;
+  border: 1px solid #FFEC8B;
+}
+
+/* Resource Metrics */
+.superadmin-health-resource-metrics {
+  display: flex;
+  flex-direction: column;
+  gap: 15px;
+}
+
+.superadmin-health-resource-metric {
+  margin-bottom: 12px;
+}
+
+.superadmin-health-resource-header {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  margin-bottom: 8px;
+}
+
+.superadmin-health-resource-header span:first-child {
+  font-size: 14px;
+  font-weight: 600;
+  color: #333;
+}
+
+.superadmin-health-resource-value {
+  font-size: 14px;
+  font-weight: 700;
+  color: #000;
+}
+
+.superadmin-health-resource-bar {
+  height: 10px;
+  background: #f0f0f0;
+  border-radius: 5px;
+  overflow: hidden;
+}
+
+.superadmin-health-resource-fill {
+  height: 100%;
+  border-radius: 5px;
+  transition: width 0.3s ease;
+}
+
+/* Services List */
+.superadmin-health-services-list {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 10px;
+}
+
+.superadmin-health-service-tag {
+  padding: 8px 16px;
+  background: #FFF9C4;
+  color: #B8860B;
+  border-radius: 20px;
+  font-size: 13px;
+  font-weight: 600;
+  display: flex;
+  align-items: center;
+  gap: 8px;
+  border: 1px solid #FFEC8B;
+}
+
+/* Action Buttons */
+.superadmin-health-action-buttons {
+  display: grid;
+  grid-template-columns: repeat(2, 1fr);
+  gap: 12px;
+}
+
+.superadmin-health-action-btn {
+  padding: 10px 16px;
+  border: none;
+  border-radius: 8px;
+  font-size: 13px;
+  font-weight: 600;
+  cursor: pointer;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  gap: 8px;
+  background: #FFF9C4;
+  color: #B8860B;
+  border: 1px solid #FFEC8B;
+  transition: all 0.3s ease;
+}
+
+.superadmin-health-action-btn:hover {
+  background: #FFEC8B;
+  transform: translateY(-2px);
+}
+
+/* System Metrics */
+.superadmin-health-system-metrics {
+  display: flex;
+  flex-direction: column;
+  gap: 20px;
+}
+
+.superadmin-health-metrics-card {
+  background: white;
+  padding: 25px;
+  border-radius: 16px;
+  box-shadow: 0 4px 20px rgba(0, 0, 0, 0.08);
+  border: 2px solid #FFEC8B;
+}
+
+.superadmin-health-metrics-title {
+  font-size: 18px;
+  font-weight: 700;
+  color: #000;
+  margin: 0 0 20px 0;
+  display: flex;
+  align-items: center;
+  gap: 10px;
+}
+
+/* Performance Metrics */
+.superadmin-health-performance-metrics {
+  display: flex;
+  flex-direction: column;
+  gap: 15px;
+}
+
+.superadmin-health-performance-metric {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  padding: 12px;
+  background: #FFFDF0;
+  border-radius: 8px;
+  border: 1px solid #FFEC8B;
+}
+
+.superadmin-health-performance-label {
+  font-size: 14px;
+  font-weight: 600;
+  color: #333;
+  display: flex;
+  align-items: center;
+  gap: 10px;
+}
+
+.superadmin-health-performance-value {
+  font-size: 16px;
+  font-weight: 900;
+  color: #000;
+}
+
+/* Services Status */
+.superadmin-health-services-status {
+  display: flex;
+  flex-direction: column;
+  gap: 12px;
+}
+
+.superadmin-health-service-status {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  padding: 12px;
+  background: #FFFDF0;
+  border-radius: 8px;
+  border: 1px solid #FFEC8B;
+}
+
+.superadmin-health-service-name {
+  font-size: 14px;
+  font-weight: 600;
+  color: #333;
+}
+
+.superadmin-health-service-metrics {
+  display: flex;
+  align-items: center;
+  gap: 15px;
+}
+
+.superadmin-health-service-status-badge {
+  padding: 4px 12px;
+  border-radius: 20px;
+  font-size: 12px;
+  font-weight: 700;
+  text-transform: uppercase;
+  min-width: 60px;
+  text-align: center;
+}
+
+.superadmin-health-service-status-badge.status-up {
+  background: #E6FFF9;
+  color: #00B894;
+  border: 1px solid #A8FFE9;
+}
+
+.superadmin-health-service-status-badge.status-down {
+  background: #FFE6E6;
+  color: #D63031;
+  border: 1px solid #FFB8B8;
+}
+
+.superadmin-health-service-status-badge.status-warning {
+  background: #FFF9E6;
+  color: #FDCB6E;
+  border: 1px solid #FFEAA7;
+}
+
+.superadmin-health-service-uptime {
+  font-size: 12px;
+  color: #666;
+}
+
+.superadmin-health-service-response {
+  font-size: 12px;
+  font-weight: 700;
+  color: #000;
+  background: #FFF9C4;
+  padding: 2px 8px;
+  border-radius: 4px;
+}
+
+/* Statistics */
+.superadmin-health-statistics {
+  display: grid;
+  grid-template-columns: repeat(2, 1fr);
+  gap: 15px;
+}
+
+.superadmin-health-statistic {
+  padding: 12px;
+  background: #FFFDF0;
+  border-radius: 8px;
+  border: 1px solid #FFEC8B;
+}
+
+.superadmin-health-statistic-label {
+  font-size: 12px;
+  color: #666;
+  margin-bottom: 5px;
+  font-weight: 600;
+}
+
+.superadmin-health-statistic-value {
+  font-size: 18px;
+  font-weight: 900;
+  color: #000;
+}
+
+/* Loading State */
+.superadmin-health-loading {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+  padding: 60px 20px;
+  color: #666;
+}
+
+.superadmin-health-loading i {
+  font-size: 40px;
+  color: #FFD700;
+  margin-bottom: 20px;
+}
+
+.superadmin-health-loading p {
+  font-size: 16px;
+  font-weight: 600;
+}
+
+/* Footer */
+.superadmin-health-footer {
+  margin-top: 40px;
+  padding: 25px;
+  background: linear-gradient(135deg, #ffffff 0%, #fff9e6 100%);
+  border-radius: 16px;
+  border: 2px solid #FFEC8B;
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+}
+
+.superadmin-health-footer-info {
+  display: flex;
+  gap: 30px;
+}
+
+.superadmin-health-footer-stat {
+  display: flex;
+  align-items: center;
+  gap: 15px;
+}
+
+.superadmin-health-footer-stat i {
+  font-size: 24px;
+  color: #FFD700;
+  width: 50px;
+  height: 50px;
+  background: linear-gradient(135deg, rgba(255, 215, 0, 0.1) 0%, rgba(184, 134, 11, 0.05) 100%);
+  border-radius: 10px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+}
+
+.superadmin-health-footer-value {
+  font-size: 14px;
+  font-weight: 700;
+  color: #000;
+  margin-bottom: 3px;
+}
+
+.superadmin-health-footer-label {
+  font-size: 12px;
+  color: #666;
+  font-weight: 600;
+  text-transform: uppercase;
+  letter-spacing: 0.5px;
+}
+
+.superadmin-health-footer-actions {
+  display: flex;
+  gap: 15px;
+}
+
+.superadmin-health-footer-btn {
+  padding: 10px 20px;
+  border: none;
+  border-radius: 8px;
+  font-size: 13px;
+  font-weight: 600;
+  cursor: pointer;
+  display: flex;
+  align-items: center;
+  gap: 8px;
+  background: white;
+  color: #333;
+  border: 2px solid #FFEC8B;
+  transition: all 0.3s ease;
+}
+
+.superadmin-health-footer-btn:hover {
+  background: #FFEC8B;
+  transform: translateY(-2px);
+}
+
+/* Responsive Design */
+@media (max-width: 1200px) {
+  .superadmin-health-content {
+    grid-template-columns: 1fr;
+  }
+  
+  .superadmin-health-overview {
+    grid-template-columns: 1fr;
+  }
+  
+  .superadmin-health-servers-list {
+    grid-template-columns: repeat(3, 1fr);
+  }
+}
+
+@media (max-width: 992px) {
+  .superadmin-health-servers-list {
+    grid-template-columns: repeat(2, 1fr);
+  }
+  
+  .superadmin-health-quick-metrics {
+    grid-template-columns: repeat(2, 1fr);
+  }
+  
+  .superadmin-health-statistics {
+    grid-template-columns: 1fr;
+  }
+  
+  .superadmin-health-details-grid {
+    grid-template-columns: 1fr;
+  }
+  
+  .superadmin-health-action-buttons {
+    grid-template-columns: 1fr;
+  }
+}
+
+@media (max-width: 768px) {
+  .superadmin-system-health-container {
+    padding: 15px;
+  }
+  
+  .superadmin-health-header {
+    flex-direction: column;
+    gap: 20px;
+  }
+  
+  .superadmin-health-controls {
+    width: 100%;
+    justify-content: space-between;
+  }
+  
+  .superadmin-health-tabs {
+    flex-wrap: wrap;
+  }
+  
+  .superadmin-health-tab {
+    min-width: calc(50% - 10px);
+  }
+  
+  .superadmin-health-servers-list {
+    grid-template-columns: 1fr;
+  }
+  
+  .superadmin-health-quick-metrics {
+    grid-template-columns: 1fr;
+  }
+  
+  .superadmin-health-footer {
+    flex-direction: column;
+    gap: 20px;
+    text-align: center;
+  }
+  
+  .superadmin-health-footer-info {
+    flex-direction: column;
+    gap: 20px;
+    width: 100%;
+  }
+  
+  .superadmin-health-footer-stat {
+    justify-content: center;
+  }
+  
+  .superadmin-health-footer-actions {
+    flex-wrap: wrap;
+    justify-content: center;
+  }
+}
+
+@media (max-width: 480px) {
+  .superadmin-health-title {
+    font-size: 24px;
+  }
+  
+  .superadmin-health-controls {
+    flex-direction: column;
+    gap: 15px;
+  }
+  
+  .superadmin-health-refresh-btn,
+  .superadmin-health-report-btn {
+    width: 100%;
+    justify-content: center;
+  }
+  
+  .superadmin-health-status-main {
+    flex-direction: column;
+    gap: 30px;
+  }
+  
+  .superadmin-health-tab {
+    min-width: 100%;
+  }
+}
+
+/* Scrollbar Styling */
+::-webkit-scrollbar {
+  width: 8px;
+  height: 8px;
+}
+
+::-webkit-scrollbar-track {
+  background: #f1f1f1;
+  border-radius: 4px;
+}
+
+::-webkit-scrollbar-thumb {
+  background: linear-gradient(135deg, #FFD700 0%, #B8860B 100%);
+  border-radius: 4px;
+}
+
+::-webkit-scrollbar-thumb:hover {
+  background: linear-gradient(135deg, #FFC72C 0%, #DAA520 100%);
+}

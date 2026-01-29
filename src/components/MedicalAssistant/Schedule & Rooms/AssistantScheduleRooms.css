@@ -1,0 +1,868 @@
+/* AssistantScheduleRooms.css - Unique CSS for Schedule & Rooms Module */
+
+/* ========== GLOBAL STYLES ========== */
+.assistant-schedule-wrapper {
+  display: flex;
+  min-height: 100vh;
+  font-family: 'Inter', 'Segoe UI', sans-serif;
+}
+
+/* ========== ASSISTANT SIDEBAR THEME ========== */
+.assistant-schedule-sidebar {
+  width: 280px;
+  height: 100vh;
+  position: fixed;
+  z-index: 1000;
+  transition: all 0.3s cubic-bezier(0.4, 0, 0.2, 1);
+  background-color: #e0d1ff;
+  overflow-y: auto;
+  box-shadow: 3px 0 15px rgba(0, 0, 0, 0.08);
+}
+
+.assistant-schedule-sidebar.collapsed {
+  width: 80px;
+}
+
+.assistant-schedule-header {
+  padding: 28px 20px;
+  display: flex;
+  align-items: center;
+  border-bottom: 2px solid rgba(167, 139, 250, 0.2);
+}
+
+.assistant-schedule-logo {
+  width: 52px;
+  height: 52px;
+  background: linear-gradient(135deg, #a78bfa 0%, #7c3aed 100%);
+  border-radius: 14px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  color: white;
+  font-size: 26px;
+ 
+  box-shadow: 0 4px 12px rgba(167, 139, 250, 0.3);
+}
+
+.assistant-schedule-title {
+  font-size: 22px;
+  font-weight: 800;
+  color: #2d1b69;
+  letter-spacing: -0.5px;
+}
+
+.assistant-schedule-title.collapsed {
+  display: none;
+}
+
+.assistant-schedule-menu {
+  padding: 25px 0;
+  flex: 1;
+}
+
+.assistant-schedule-menuitem {
+  margin: 6px 15px;
+  border-radius: 14px;
+  transition: all 0.3s ease;
+}
+
+.assistant-schedule-menulink {
+  display: flex;
+  align-items: center;
+  padding: 16px 20px;
+  cursor: pointer;
+  color: #2d1b69;
+  text-decoration: none;
+  transition: all 0.3s ease;
+  border-radius: 14px;
+  font-weight: 600;
+  font-size: 15px;
+}
+
+.assistant-schedule-menulink:hover {
+  background-color: #f0e9ff;
+  transform: translateX(5px);
+  box-shadow: 0 4px 12px rgba(167, 139, 250, 0.15);
+}
+
+.assistant-schedule-menuitem.active .assistant-schedule-menulink {
+  background-color: #a78bfa;
+  color: white;
+  box-shadow: 0 4px 15px rgba(167, 139, 250, 0.3);
+}
+
+.assistant-schedule-menuicon {
+  margin-right: 16px;
+  font-size: 22px;
+  width: 26px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+}
+
+.assistant-schedule-menutext {
+  white-space: nowrap;
+  transition: opacity 0.3s ease;
+}
+
+.assistant-schedule-sidebar.collapsed .assistant-schedule-menutext {
+  opacity: 0;
+  visibility: hidden;
+  width: 0;
+}
+
+.assistant-schedule-footer {
+  padding: 20px;
+  border-top: 2px solid rgba(167, 139, 250, 0.2);
+  margin-top: auto;
+}
+
+.assistant-schedule-userinfo {
+  display: flex;
+  align-items: center;
+  gap: 12px;
+}
+
+.assistant-schedule-useravatar {
+  width: 48px;
+  height: 48px;
+  background: linear-gradient(135deg, #a78bfa 0%, #7c3aed 100%);
+  border-radius: 50%;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  color: white;
+  font-weight: 700;
+  font-size: 18px;
+  box-shadow: 0 4px 8px rgba(167, 139, 250, 0.3);
+}
+
+.assistant-schedule-userdetails {
+  display: flex;
+  flex-direction: column;
+}
+
+.assistant-schedule-username {
+  font-size: 16px;
+  font-weight: 700;
+  color: #2d1b69;
+  margin: 0;
+}
+
+.assistant-schedule-userrole {
+  font-size: 13px;
+  color: #5b4b8a;
+  margin: 4px 0 0 0;
+  font-weight: 500;
+}
+
+.assistant-schedule-sidebar.collapsed .assistant-schedule-userdetails {
+  display: none;
+}
+
+/* ========== NAVBAR STYLES ========== */
+.assistant-schedule-navbar {
+  height: 80px;
+  background: linear-gradient(135deg, #ffffff 0%, #f8f5ff 100%);
+  box-shadow: 0 2px 15px rgba(0, 0, 0, 0.05);
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  padding: 0 35px;
+  position: sticky;
+  top: 0;
+  z-index: 999;
+  border-bottom: 2px solid rgba(224, 209, 255, 0.3);
+}
+
+.assistant-schedule-navleft {
+  display: flex;
+  align-items: center;
+  gap: 25px;
+}
+
+.assistant-schedule-menutoggle {
+  background: none;
+  border: none;
+  color: #a78bfa;
+  font-size: 24px;
+  cursor: pointer;
+  padding: 8px;
+  border-radius: 10px;
+  transition: all 0.3s ease;
+}
+
+.assistant-schedule-menutoggle:hover {
+  background-color: #f0e9ff;
+  transform: rotate(90deg);
+}
+
+.assistant-schedule-pagetitle {
+  font-size: 26px;
+  font-weight: 800;
+  color: #2d1b69;
+  margin: 0;
+  background: linear-gradient(135deg, #2d1b69 0%, #a78bfa 100%);
+  -webkit-background-clip: text;
+  -webkit-text-fill-color: transparent;
+}
+
+.assistant-schedule-navright {
+  display: flex;
+  align-items: center;
+  gap: 28px;
+}
+
+.assistant-schedule-notification {
+  position: relative;
+  cursor: pointer;
+}
+
+.assistant-schedule-notificationbell {
+  font-size: 24px;
+  color: #5b4b8a;
+  transition: all 0.3s ease;
+}
+
+.assistant-schedule-notificationbell:hover {
+  color: #a78bfa;
+  transform: scale(1.1);
+}
+
+.assistant-schedule-notificationbadge {
+  position: absolute;
+  top: -8px;
+  right: -8px;
+  background: linear-gradient(135deg, #ef4444 0%, #dc2626 100%);
+  color: white;
+  border-radius: 50%;
+  width: 22px;
+  height: 22px;
+  font-size: 12px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  font-weight: 700;
+  box-shadow: 0 2px 8px rgba(239, 68, 68, 0.3);
+}
+
+.assistant-schedule-datedisplay {
+  background: linear-gradient(135deg, #f0e9ff 0%, #e0d1ff 100%);
+  padding: 10px 20px;
+  border-radius: 12px;
+  color: #2d1b69;
+  font-weight: 600;
+  font-size: 15px;
+  box-shadow: 0 2px 8px rgba(167, 139, 250, 0.1);
+}
+
+/* ========== MAIN CONTENT ========== */
+.assistant-schedule-main {
+  flex: 1;
+ 
+  transition: margin-left 0.3s cubic-bezier(0.4, 0, 0.2, 1);
+  background-color: #f8f5ff;
+  min-height: 100vh;
+}
+
+
+
+.assistant-schedule-content {
+  padding: 35px;
+}
+
+/* ========== WELCOME SECTION ========== */
+.assistant-schedule-welcome {
+  margin-bottom: 40px;
+  padding: 30px;
+  background: linear-gradient(135deg, #ffffff 0%, #f8f5ff 100%);
+  border-radius: 20px;
+  box-shadow: 0 4px 20px rgba(0, 0, 0, 0.05);
+  border: 2px solid rgba(224, 209, 255, 0.3);
+}
+
+.assistant-schedule-welcometitle {
+  font-size: 32px;
+  font-weight: 800;
+  color: #2d1b69;
+  margin-bottom: 12px;
+}
+
+.assistant-schedule-welcomesubtitle {
+  font-size: 17px;
+  color: #5b4b8a;
+  max-width: 700px;
+  line-height: 1.6;
+}
+
+/* ========== SCHEDULE OVERVIEW CARDS ========== */
+.assistant-schedule-overview {
+  display: grid;
+  grid-template-columns: repeat(auto-fit, minmax(280px, 1fr));
+  gap: 25px;
+  margin-bottom: 40px;
+}
+
+.assistant-schedule-overviewcard {
+  background: linear-gradient(135deg, #ffffff 0%, #fcfaff 100%);
+  border-radius: 16px;
+  padding: 25px;
+  box-shadow: 0 6px 20px rgba(0, 0, 0, 0.06);
+  transition: all 0.3s ease;
+  border: 2px solid rgba(224, 209, 255, 0.2);
+  position: relative;
+  overflow: hidden;
+}
+
+.assistant-schedule-overviewcard::before {
+  content: '';
+  position: absolute;
+  top: 0;
+  left: 0;
+  width: 6px;
+  height: 100%;
+  background: linear-gradient(135deg, #a78bfa 0%, #7c3aed 100%);
+}
+
+.assistant-schedule-overviewcard:hover {
+  transform: translateY(-5px);
+  box-shadow: 0 10px 30px rgba(167, 139, 250, 0.15);
+}
+
+.assistant-schedule-cardheader {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  margin-bottom: 20px;
+}
+
+.assistant-schedule-cardtitle {
+  font-size: 18px;
+  font-weight: 700;
+  color: #2d1b69;
+  margin: 0;
+}
+
+.assistant-schedule-cardicon {
+  width: 50px;
+  height: 50px;
+  border-radius: 14px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  font-size: 24px;
+  color: white;
+  box-shadow: 0 4px 10px rgba(167, 139, 250, 0.3);
+}
+
+.assistant-schedule-cardvalue {
+  font-size: 36px;
+  font-weight: 900;
+  color: #2d1b69;
+  line-height: 1;
+  margin-bottom: 8px;
+  background: linear-gradient(135deg, #2d1b69 0%, #a78bfa 100%);
+  -webkit-background-clip: text;
+  -webkit-text-fill-color: transparent;
+}
+
+.assistant-schedule-cardinfo {
+  color: #5b4b8a;
+  font-size: 14px;
+  line-height: 1.5;
+}
+
+/* ========== SCHEDULE CALENDAR SECTION ========== */
+.assistant-schedule-calendar {
+  background: linear-gradient(135deg, #ffffff 0%, #fcfaff 100%);
+  border-radius: 20px;
+  padding: 32px;
+  box-shadow: 0 6px 25px rgba(0, 0, 0, 0.06);
+  margin-bottom: 40px;
+  border: 2px solid rgba(224, 209, 255, 0.2);
+}
+
+.assistant-schedule-calendarheader {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  margin-bottom: 30px;
+}
+
+.assistant-schedule-calendartitle {
+  font-size: 22px;
+  font-weight: 800;
+  color: #2d1b69;
+  margin: 0;
+}
+
+.assistant-schedule-calendarcontrols {
+  display: flex;
+  align-items: center;
+  gap: 15px;
+}
+
+.assistant-schedule-calendarbutton {
+  background: linear-gradient(135deg, #f0e9ff 0%, #e0d1ff 100%);
+  border: 2px solid #a78bfa;
+  color: #2d1b69;
+  padding: 10px 20px;
+  border-radius: 12px;
+  font-weight: 600;
+  font-size: 15px;
+  cursor: pointer;
+  transition: all 0.3s ease;
+  display: flex;
+  align-items: center;
+  gap: 8px;
+}
+
+.assistant-schedule-calendarbutton:hover {
+  background: linear-gradient(135deg, #a78bfa 0%, #7c3aed 100%);
+  color: white;
+  transform: translateY(-2px);
+}
+
+.assistant-schedule-calendargrid {
+  display: grid;
+  grid-template-columns: repeat(7, 1fr);
+  gap: 15px;
+  margin-bottom: 30px;
+}
+
+.assistant-schedule-calendarday {
+  text-align: center;
+  padding: 15px;
+  font-weight: 700;
+  color: #5b4b8a;
+  background: #f0e9ff;
+  border-radius: 12px;
+}
+
+.assistant-schedule-calendarcell {
+  background: #f8f5ff;
+  border-radius: 12px;
+  padding: 20px;
+  min-height: 120px;
+  border: 2px solid rgba(224, 209, 255, 0.3);
+  transition: all 0.3s ease;
+}
+
+.assistant-schedule-calendarcell:hover {
+  border-color: #a78bfa;
+  box-shadow: 0 4px 15px rgba(167, 139, 250, 0.1);
+}
+
+.assistant-schedule-calendardate {
+  font-weight: 700;
+  color: #2d1b69;
+  margin-bottom: 10px;
+  font-size: 18px;
+}
+
+.assistant-schedule-scheduleitem {
+  background: white;
+  padding: 8px 12px;
+  border-radius: 8px;
+  margin-bottom: 8px;
+  border-left: 4px solid #a78bfa;
+  font-size: 13px;
+  cursor: pointer;
+  transition: all 0.3s ease;
+}
+
+.assistant-schedule-scheduleitem:hover {
+  transform: translateX(5px);
+  box-shadow: 0 2px 8px rgba(167, 139, 250, 0.2);
+}
+
+/* ========== ROOMS AVAILABILITY SECTION ========== */
+.assistant-schedule-rooms {
+  background: linear-gradient(135deg, #ffffff 0%, #fcfaff 100%);
+  border-radius: 20px;
+  padding: 32px;
+  box-shadow: 0 6px 25px rgba(0, 0, 0, 0.06);
+  margin-bottom: 40px;
+  border: 2px solid rgba(224, 209, 255, 0.2);
+}
+
+.assistant-schedule-roomsheader {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  margin-bottom: 30px;
+}
+
+.assistant-schedule-roomstitle {
+  font-size: 22px;
+  font-weight: 800;
+  color: #2d1b69;
+  margin: 0;
+}
+
+.assistant-schedule-roomsfilter {
+  display: flex;
+  gap: 12px;
+}
+
+.assistant-schedule-filterbutton {
+  background: linear-gradient(135deg, #f0e9ff 0%, #e0d1ff 100%);
+  border: 2px solid #e0d1ff;
+  color: #2d1b69;
+  padding: 8px 16px;
+  border-radius: 10px;
+  font-weight: 600;
+  font-size: 14px;
+  cursor: pointer;
+  transition: all 0.3s ease;
+}
+
+.assistant-schedule-filterbutton.active {
+  background: linear-gradient(135deg, #a78bfa 0%, #7c3aed 100%);
+  color: white;
+  border-color: #7c3aed;
+}
+
+.assistant-schedule-filterbutton:hover:not(.active) {
+  border-color: #a78bfa;
+}
+
+.assistant-schedule-roomsgrid {
+  display: grid;
+  grid-template-columns: repeat(auto-fill, minmax(300px, 1fr));
+  gap: 25px;
+}
+
+.assistant-schedule-roomcard {
+  background: white;
+  border-radius: 16px;
+  padding: 25px;
+  box-shadow: 0 4px 15px rgba(0, 0, 0, 0.05);
+  border: 2px solid rgba(224, 209, 255, 0.3);
+  transition: all 0.3s ease;
+  position: relative;
+  overflow: hidden;
+}
+
+.assistant-schedule-roomcard:hover {
+  transform: translateY(-5px);
+  box-shadow: 0 8px 25px rgba(167, 139, 250, 0.15);
+  border-color: #a78bfa;
+}
+
+.assistant-schedule-roomcard.occupied {
+  border-color: rgba(239, 68, 68, 0.3);
+}
+
+.assistant-schedule-roomcard.available {
+  border-color: rgba(16, 185, 129, 0.3);
+}
+
+.assistant-schedule-roomcard.maintenance {
+  border-color: rgba(245, 158, 11, 0.3);
+}
+
+.assistant-schedule-roomheader {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  margin-bottom: 20px;
+}
+
+.assistant-schedule-roomnumber {
+  font-size: 24px;
+  font-weight: 900;
+  color: #2d1b69;
+  margin: 0;
+}
+
+.assistant-schedule-roomstatus {
+  padding: 6px 14px;
+  border-radius: 20px;
+  font-size: 13px;
+  font-weight: 700;
+  text-transform: uppercase;
+  letter-spacing: 0.5px;
+}
+
+.assistant-schedule-status-occupied {
+  background: linear-gradient(135deg, rgba(239, 68, 68, 0.15) 0%, rgba(220, 38, 38, 0.15) 100%);
+  color: #dc2626;
+}
+
+.assistant-schedule-status-available {
+  background: linear-gradient(135deg, rgba(16, 185, 129, 0.15) 0%, rgba(5, 150, 105, 0.15) 100%);
+  color: #059669;
+}
+
+.assistant-schedule-status-maintenance {
+  background: linear-gradient(135deg, rgba(245, 158, 11, 0.15) 0%, rgba(217, 119, 6, 0.15) 100%);
+  color: #d97706;
+}
+
+.assistant-schedule-roominfo {
+  margin-bottom: 20px;
+}
+
+.assistant-schedule-roomdetail {
+  display: flex;
+  align-items: center;
+  margin-bottom: 10px;
+  color: #5b4b8a;
+  font-size: 15px;
+}
+
+.assistant-schedule-roomicon {
+  margin-right: 12px;
+  color: #a78bfa;
+  font-size: 18px;
+  width: 24px;
+}
+
+.assistant-schedule-roomcurrent {
+  background: #f8f5ff;
+  padding: 15px;
+  border-radius: 12px;
+  margin-top: 15px;
+}
+
+.assistant-schedule-roomcurrenttitle {
+  font-size: 14px;
+  color: #5b4b8a;
+  margin-bottom: 8px;
+  font-weight: 600;
+}
+
+.assistant-schedule-roompatient {
+  font-size: 16px;
+  font-weight: 700;
+  color: #2d1b69;
+}
+
+.assistant-schedule-roomdoctor {
+  font-size: 14px;
+  color: #7c3aed;
+  margin-top: 4px;
+}
+
+/* ========== UPCOMING APPOINTMENTS ========== */
+.assistant-schedule-appointments {
+  background: linear-gradient(135deg, #ffffff 0%, #fcfaff 100%);
+  border-radius: 20px;
+  padding: 32px;
+  box-shadow: 0 6px 25px rgba(0, 0, 0, 0.06);
+  border: 2px solid rgba(224, 209, 255, 0.2);
+}
+
+.assistant-schedule-appointmentsheader {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  margin-bottom: 30px;
+}
+
+.assistant-schedule-appointmentstitle {
+  font-size: 22px;
+  font-weight: 800;
+  color: #2d1b69;
+  margin: 0;
+}
+
+.assistant-schedule-appointmentslist {
+  display: flex;
+  flex-direction: column;
+  gap: 15px;
+}
+
+.assistant-schedule-appointmentcard {
+  background: white;
+  border-radius: 16px;
+  padding: 25px;
+  box-shadow: 0 4px 15px rgba(0, 0, 0, 0.05);
+  border: 2px solid rgba(224, 209, 255, 0.3);
+  transition: all 0.3s ease;
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+}
+
+.assistant-schedule-appointmentcard:hover {
+  transform: translateX(5px);
+  border-color: #a78bfa;
+  box-shadow: 0 6px 20px rgba(167, 139, 250, 0.15);
+}
+
+.assistant-schedule-appointmentinfo {
+  display: flex;
+  align-items: center;
+  gap: 20px;
+}
+
+.assistant-schedule-appointmenttime {
+  background: linear-gradient(135deg, #f0e9ff 0%, #e0d1ff 100%);
+  padding: 15px;
+  border-radius: 12px;
+  text-align: center;
+  min-width: 120px;
+}
+
+.assistant-schedule-appointmenthour {
+  font-size: 24px;
+  font-weight: 900;
+  color: #2d1b69;
+  margin: 0;
+}
+
+.assistant-schedule-appointmentperiod {
+  font-size: 14px;
+  color: #5b4b8a;
+  margin-top: 4px;
+}
+
+.assistant-schedule-appointmentdetails {
+  flex: 1;
+}
+
+.assistant-schedule-appointmentpatient {
+  font-size: 18px;
+  font-weight: 700;
+  color: #2d1b69;
+  margin-bottom: 8px;
+}
+
+.assistant-schedule-appointmentdoctor {
+  font-size: 15px;
+  color: #7c3aed;
+  margin-bottom: 8px;
+}
+
+.assistant-schedule-appointmentpurpose {
+  font-size: 14px;
+  color: #5b4b8a;
+  background: #f8f5ff;
+  padding: 6px 12px;
+  border-radius: 8px;
+  display: inline-block;
+}
+
+.assistant-schedule-appointmentactions {
+  display: flex;
+  gap: 12px;
+}
+
+.assistant-schedule-actionbutton {
+  background: linear-gradient(135deg, #f0e9ff 0%, #e0d1ff 100%);
+  border: 2px solid #e0d1ff;
+  color: #2d1b69;
+  padding: 10px 20px;
+  border-radius: 10px;
+  font-weight: 600;
+  font-size: 14px;
+  cursor: pointer;
+  transition: all 0.3s ease;
+  display: flex;
+  align-items: center;
+  gap: 8px;
+}
+
+.assistant-schedule-actionbutton:hover {
+  background: linear-gradient(135deg, #a78bfa 0%, #7c3aed 100%);
+  color: white;
+  border-color: #7c3aed;
+}
+
+/* ========== RESPONSIVE DESIGN ========== */
+@media (max-width: 1200px) {
+  .assistant-schedule-roomsgrid {
+    grid-template-columns: repeat(2, 1fr);
+  }
+}
+
+@media (max-width: 992px) {
+  .assistant-schedule-overview {
+    grid-template-columns: repeat(2, 1fr);
+  }
+  
+  .assistant-schedule-sidebar {
+    width: 80px;
+  }
+  
+  .assistant-schedule-main {
+    margin-left: 80px;
+  }
+  
+  .assistant-schedule-title,
+  .assistant-schedule-userdetails {
+    display: none;
+  }
+}
+
+@media (max-width: 768px) {
+  .assistant-schedule-overview,
+  .assistant-schedule-roomsgrid {
+    grid-template-columns: 1fr;
+  }
+  
+  .assistant-schedule-content {
+    padding: 20px;
+  }
+  
+  .assistant-schedule-navbar {
+    padding: 0 20px;
+  }
+  
+  .assistant-schedule-navright {
+    gap: 15px;
+  }
+  
+  .assistant-schedule-datedisplay {
+    display: none;
+  }
+  
+  .assistant-schedule-calendargrid {
+    grid-template-columns: repeat(3, 1fr);
+  }
+  
+  .assistant-schedule-appointmentcard {
+    flex-direction: column;
+    align-items: flex-start;
+    gap: 20px;
+  }
+  
+  .assistant-schedule-appointmentactions {
+    width: 100%;
+    justify-content: flex-end;
+  }
+}
+
+/* ========== ANIMATIONS ========== */
+@keyframes assistantFadeIn {
+  from {
+    opacity: 0;
+    transform: translateY(20px);
+  }
+  to {
+    opacity: 1;
+    transform: translateY(0);
+  }
+}
+
+.assistant-schedule-overviewcard {
+  animation: assistantFadeIn 0.5s ease-out forwards;
+}
+
+.assistant-schedule-roomcard {
+  animation: assistantFadeIn 0.5s ease-out forwards;
+}
+
+.assistant-schedule-overviewcard:nth-child(1) { animation-delay: 0.1s; }
+.assistant-schedule-overviewcard:nth-child(2) { animation-delay: 0.2s; }
+.assistant-schedule-overviewcard:nth-child(3) { animation-delay: 0.3s; }
+.assistant-schedule-overviewcard:nth-child(4) { animation-delay: 0.4s; }
+
+.assistant-schedule-roomcard:nth-child(1) { animation-delay: 0.1s; }
+.assistant-schedule-roomcard:nth-child(2) { animation-delay: 0.2s; }
+.assistant-schedule-roomcard:nth-child(3) { animation-delay: 0.3s; }
+.assistant-schedule-roomcard:nth-child(4) { animation-delay: 0.4s; }
+.assistant-schedule-roomcard:nth-child(5) { animation-delay: 0.5s; }
+.assistant-schedule-roomcard:nth-child(6) { animation-delay: 0.6s; }

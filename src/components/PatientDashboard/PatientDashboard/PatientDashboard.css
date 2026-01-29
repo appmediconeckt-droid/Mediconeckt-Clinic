@@ -2,7 +2,7 @@
 .patient-dashboard {
   font-family: "Segoe UI", Tahoma, Geneva, Verdana, sans-serif;
   color: #333;
-  padding: 20px;
+  
   margin: 0 auto;
   border-radius: 12px;
   transition: all 0.3s ease;
@@ -170,7 +170,7 @@
   font-weight: 600;
 }
 
-.info-grid {
+.patient-info-grid {
   display: grid;
   grid-template-columns: repeat(auto-fit, minmax(320px, 1fr));
   gap: 30px;
@@ -538,16 +538,27 @@
   font-weight: 600;
   margin-left: 10px;
 }
+.patient-app-header {
+  /* text-align: center; */
+  margin-bottom: 0px;
+  /* padding: 30px 20px; */
+  /* background: linear-gradient(135deg, #8af5aa 0%, #6bc48a 100%); */
+  color: #2d7a4d;
+  /* border-radius: 15px; */
+  /* box-shadow: 0 8px 25px rgba(107, 196, 138, 0.2); */
+  position: relative;
+  overflow: hidden;
+}
 
 /* Responsive adjustments */
 @media (max-width: 1024px) {
-  .info-grid {
+  .patient-info-grid {
     grid-template-columns: repeat(auto-fit, minmax(280px, 1fr));
   }
 }
 
 @media (max-width: 768px) {
-  .info-grid {
+  .patient-info-grid {
     grid-template-columns: 1fr;
     gap: 20px;
   }

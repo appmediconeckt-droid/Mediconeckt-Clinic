@@ -1,0 +1,1008 @@
+/* Supervisor Staff Management Container */
+
+
+/* Loading State */
+.supervisor-staff-loading {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+  height: 100vh;
+  
+}
+
+.supervisor-staff-loading-spinner {
+  width: 60px;
+  height: 60px;
+  border: 6px solid #26c6da;
+  border-top: 6px solid transparent;
+  border-radius: 50%;
+  animation: supervisor-staff-spin 1.2s linear infinite;
+  margin-bottom: 20px;
+}
+
+@keyframes supervisor-staff-spin {
+  0% { transform: rotate(0deg); }
+  100% { transform: rotate(360deg); }
+}
+
+/* Header */
+.supervisor-staff-header {
+  background: white;
+  border-radius: 20px;
+  padding: 25px 30px;
+  margin-bottom: 30px;
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  box-shadow: 0 6px 20px rgba(38, 198, 218, 0.12);
+  border-left: 8px solid #26c6da;
+}
+
+.supervisor-staff-header-left {
+  flex: 1;
+}
+
+.supervisor-staff-title {
+  color: #00838f;
+  font-size: 32px;
+  margin: 0 0 10px 0;
+  display: flex;
+  align-items: center;
+  gap: 15px;
+}
+
+.supervisor-staff-header-icon {
+  font-size: 36px;
+  animation: supervisor-icon-pulse 2s infinite;
+}
+
+@keyframes supervisor-icon-pulse {
+  0%, 100% { transform: scale(1); }
+  50% { transform: scale(1.1); }
+}
+
+.supervisor-staff-subtitle {
+  color: #546e7a;
+  font-size: 16px;
+  margin: 0;
+  font-weight: 500;
+}
+
+.supervisor-staff-header-right {
+  display: flex;
+  gap: 15px;
+}
+
+.supervisor-staff-add-btn,
+.supervisor-staff-schedule-btn {
+  padding: 14px 25px;
+  border: none;
+  border-radius: 12px;
+  font-size: 16px;
+  font-weight: 600;
+  cursor: pointer;
+  display: flex;
+  align-items: center;
+  gap: 10px;
+  transition: all 0.3s ease;
+  box-shadow: 0 4px 15px rgba(0, 0, 0, 0.1);
+}
+
+.supervisor-staff-add-btn {
+  background: linear-gradient(135deg, #26c6da 0%, #00838f 100%);
+  color: white;
+}
+
+.supervisor-staff-add-btn:hover {
+  transform: translateY(-3px);
+  box-shadow: 0 8px 25px rgba(38, 198, 218, 0.3);
+}
+
+.supervisor-staff-schedule-btn {
+  background: white;
+  color: #00838f;
+  border: 2px solid #26c6da;
+}
+
+.supervisor-staff-schedule-btn:hover {
+  background: #e0f7fa;
+  transform: translateY(-3px);
+}
+
+.supervisor-btn-icon {
+  font-size: 18px;
+}
+
+/* Stats Grid */
+.supervisor-staff-stats-grid {
+  display: grid;
+  grid-template-columns: repeat(auto-fit, minmax(280px, 1fr));
+  gap: 25px;
+  margin-bottom: 30px;
+}
+
+.supervisor-staff-stat-card {
+  background: white;
+  border-radius: 18px;
+  padding: 25px;
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  box-shadow: 0 6px 20px rgba(0, 0, 0, 0.08);
+  transition: all 0.3s ease;
+  border-top: 5px solid #26c6da;
+}
+
+.supervisor-staff-stat-card:hover {
+  transform: translateY(-8px);
+  box-shadow: 0 12px 30px rgba(38, 198, 218, 0.18);
+}
+
+.supervisor-staff-stat-content {
+  flex: 1;
+}
+
+.supervisor-staff-stat-title {
+  color: #546e7a;
+  font-size: 16px;
+  margin: 0 0 10px 0;
+  font-weight: 600;
+}
+
+.supervisor-staff-stat-value {
+  color: #00838f;
+  font-size: 36px;
+  font-weight: bold;
+  margin: 0 0 8px 0;
+}
+
+.supervisor-staff-stat-trend {
+  font-size: 13px;
+}
+
+.supervisor-trend-up {
+  color: #4caf50;
+  font-weight: 600;
+}
+
+.supervisor-trend-down {
+  color: #f44336;
+  font-weight: 600;
+}
+
+.supervisor-trend-neutral {
+  color: #ff9800;
+  font-weight: 600;
+}
+
+.supervisor-staff-stat-icon {
+  font-size: 48px;
+  width: 80px;
+  height: 80px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  border-radius: 50%;
+  background: linear-gradient(135deg, #e0f7fa 0%, #b2ebf2 100%);
+  color: #00838f;
+}
+
+/* Filters */
+.supervisor-staff-filters {
+  background: white;
+  border-radius: 18px;
+  padding: 25px;
+  margin-bottom: 30px;
+  display: flex;
+  gap: 25px;
+  align-items: center;
+  flex-wrap: wrap;
+  box-shadow: 0 4px 20px rgba(38, 198, 218, 0.1);
+}
+
+.supervisor-filter-group {
+  flex: 1;
+  min-width: 200px;
+}
+
+.supervisor-filter-label {
+  display: block;
+  color: #00838f;
+  font-size: 14px;
+  font-weight: 600;
+  margin-bottom: 8px;
+}
+
+.supervisor-filter-select {
+  width: 100%;
+  padding: 12px 18px;
+  border: 2px solid #e0f7fa;
+  border-radius: 10px;
+  background: white;
+  color: #00838f;
+  font-size: 15px;
+  font-weight: 500;
+  cursor: pointer;
+  transition: border-color 0.3s ease;
+}
+
+.supervisor-filter-select:focus {
+  outline: none;
+  border-color: #26c6da;
+}
+
+.supervisor-filter-search {
+  flex: 2;
+  display: flex;
+  gap: 10px;
+}
+
+.supervisor-search-input {
+  flex: 1;
+  padding: 12px 20px;
+  border: 2px solid #e0f7fa;
+  border-radius: 10px;
+  font-size: 15px;
+  color: #546e7a;
+}
+
+.supervisor-search-input:focus {
+  outline: none;
+  border-color: #26c6da;
+}
+
+.supervisor-search-btn {
+  padding: 12px 25px;
+  background: #26c6da;
+  color: white;
+  border: none;
+  border-radius: 10px;
+  cursor: pointer;
+  font-size: 16px;
+  transition: background 0.3s ease;
+}
+
+.supervisor-search-btn:hover {
+  background: #00838f;
+}
+
+.supervisor-search-icon {
+  font-size: 18px;
+}
+
+/* Main Content Grid */
+.supervisor-staff-content-grid {
+  display: grid;
+  grid-template-columns: 2fr 1fr;
+  gap: 30px;
+  margin-bottom: 30px;
+}
+
+/* Staff List Section */
+.supervisor-staff-list-section {
+  background: white;
+  border-radius: 20px;
+  padding: 25px;
+  box-shadow: 0 6px 25px rgba(38, 198, 218, 0.12);
+}
+
+.supervisor-section-header {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  margin-bottom: 25px;
+  padding-bottom: 20px;
+  border-bottom: 3px solid #e0f7fa;
+}
+
+.supervisor-section-title {
+  color: #00838f;
+  font-size: 24px;
+  margin: 0;
+  font-weight: 600;
+}
+
+.supervisor-staff-actions {
+  display: flex;
+  gap: 15px;
+}
+
+.supervisor-action-btn {
+  padding: 10px 20px;
+  border: none;
+  border-radius: 8px;
+  font-size: 14px;
+  font-weight: 600;
+  cursor: pointer;
+  transition: all 0.3s ease;
+}
+
+.supervisor-btn-export {
+  background: #e0f7fa;
+  color: #00838f;
+  border: 2px solid #26c6da;
+}
+
+.supervisor-btn-export:hover {
+  background: #26c6da;
+  color: white;
+}
+
+.supervisor-btn-print {
+  background: white;
+  color: #00838f;
+  border: 2px solid #e0f7fa;
+}
+
+.supervisor-btn-print:hover {
+  background: #e0f7fa;
+}
+
+/* Staff Table */
+.supervisor-staff-table-container {
+  overflow-x: auto;
+  border-radius: 12px;
+  border: 2px solid #e0f7fa;
+}
+
+.supervisor-staff-table {
+  width: 100%;
+  border-collapse: collapse;
+  min-width: 800px;
+}
+
+.supervisor-staff-table thead {
+  background: linear-gradient(135deg, #e0f7fa 0%, #b2ebf2 100%);
+}
+
+.supervisor-staff-table th {
+  padding: 18px 20px;
+  text-align: left;
+  color: #00838f;
+  font-weight: 700;
+  font-size: 16px;
+  border-bottom: 3px solid #26c6da;
+  white-space: nowrap;
+}
+
+.supervisor-staff-table td {
+  padding: 18px 20px;
+  border-bottom: 2px solid #f5f5f5;
+  vertical-align: middle;
+}
+
+.supervisor-staff-row {
+  cursor: pointer;
+  transition: background 0.3s ease;
+}
+
+.supervisor-staff-row:hover {
+  background: #f8fdff;
+}
+
+.supervisor-staff-row:last-child td {
+  border-bottom: none;
+}
+
+.supervisor-staff-info {
+  display: flex;
+  align-items: center;
+  gap: 15px;
+}
+
+.supervisor-staff-avatar {
+  width: 50px;
+  height: 50px;
+  border-radius: 50%;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  color: white;
+  font-size: 20px;
+  font-weight: bold;
+  box-shadow: 0 4px 10px rgba(0, 0, 0, 0.1);
+}
+
+.supervisor-staff-details {
+  flex: 1;
+}
+
+.supervisor-staff-name {
+  color: #00838f;
+  font-size: 17px;
+  font-weight: 600;
+  margin: 0 0 5px 0;
+}
+
+.supervisor-staff-contact {
+  color: #78909c;
+  font-size: 14px;
+  margin: 0;
+}
+
+.supervisor-staff-role {
+  background: #f3e5f5;
+  color: #7b1fa2;
+  padding: 6px 15px;
+  border-radius: 20px;
+  font-size: 13px;
+  font-weight: 600;
+}
+
+.supervisor-dept-badge {
+  background: #e3f2fd;
+  color: #1565c0;
+  padding: 6px 15px;
+  border-radius: 20px;
+  font-size: 13px;
+  font-weight: 600;
+  display: inline-block;
+}
+
+.supervisor-shift-badge {
+  background: #fff3e0;
+  color: #e65100;
+  padding: 6px 15px;
+  border-radius: 20px;
+  font-size: 13px;
+  font-weight: 600;
+  display: inline-block;
+}
+
+.supervisor-status-badge {
+  padding: 8px 18px;
+  border-radius: 20px;
+  font-size: 13px;
+  font-weight: 600;
+  display: inline-block;
+  text-transform: capitalize;
+}
+
+.supervisor-status-active {
+  background: #c8e6c9;
+  color: #1b5e20;
+}
+
+.supervisor-status-on-leave {
+  background: #fff3e0;
+  color: #e65100;
+}
+
+.supervisor-status-inactive {
+  background: #ffcdd2;
+  color: #c62828;
+}
+
+.supervisor-staff-row-actions {
+  display: flex;
+  gap: 10px;
+}
+
+.supervisor-row-btn {
+  width: 40px;
+  height: 40px;
+  border: none;
+  border-radius: 8px;
+  cursor: pointer;
+  font-size: 16px;
+  transition: all 0.3s ease;
+}
+
+.supervisor-btn-view {
+  background: #e3f2fd;
+  color: #1565c0;
+}
+
+.supervisor-btn-view:hover {
+  background: #bbdefb;
+  transform: scale(1.1);
+}
+
+.supervisor-btn-edit {
+  background: #fff3e0;
+  color: #e65100;
+}
+
+.supervisor-btn-edit:hover {
+  background: #ffe0b2;
+  transform: scale(1.1);
+}
+
+.supervisor-btn-leave {
+  background: #e8f5e9;
+  color: #1b5e20;
+}
+
+.supervisor-btn-leave:hover {
+  background: #c8e6c9;
+  transform: scale(1.1);
+}
+
+/* Sidebar */
+.supervisor-staff-sidebar {
+  display: flex;
+  flex-direction: column;
+  gap: 25px;
+}
+
+/* Staff Detail Card */
+.supervisor-staff-detail-card {
+  background: white;
+  border-radius: 20px;
+  padding: 25px;
+  box-shadow: 0 6px 25px rgba(38, 198, 218, 0.12);
+  animation: supervisor-card-appear 0.5s ease;
+}
+
+@keyframes supervisor-card-appear {
+  from {
+    opacity: 0;
+    transform: translateY(20px);
+  }
+  to {
+    opacity: 1;
+    transform: translateY(0);
+  }
+}
+
+.supervisor-staff-detail-header {
+  display: flex;
+  align-items: center;
+  gap: 20px;
+  margin-bottom: 25px;
+  padding-bottom: 20px;
+  border-bottom: 3px solid #e0f7fa;
+}
+
+.supervisor-detail-avatar {
+  width: 70px;
+  height: 70px;
+  border-radius: 50%;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  color: white;
+  font-size: 28px;
+  font-weight: bold;
+  box-shadow: 0 6px 15px rgba(0, 0, 0, 0.15);
+}
+
+.supervisor-detail-title {
+  flex: 1;
+}
+
+.supervisor-detail-title h3 {
+  color: #00838f;
+  font-size: 24px;
+  margin: 0 0 5px 0;
+}
+
+.supervisor-detail-title p {
+  color: #78909c;
+  font-size: 16px;
+  margin: 0;
+  font-weight: 500;
+}
+
+.supervisor-staff-detail-info {
+  display: grid;
+  grid-template-columns: 1fr 1fr;
+  gap: 15px;
+  margin-bottom: 25px;
+}
+
+.supervisor-detail-item {
+  padding: 12px;
+  background: #f8fdff;
+  border-radius: 10px;
+  border: 2px solid #e0f7fa;
+}
+
+.supervisor-detail-label {
+  display: block;
+  color: #546e7a;
+  font-size: 13px;
+  font-weight: 600;
+  margin-bottom: 5px;
+}
+
+.supervisor-detail-value {
+  display: block;
+  color: #00838f;
+  font-size: 16px;
+  font-weight: 600;
+}
+
+.supervisor-staff-detail-actions {
+  display: grid;
+  grid-template-columns: repeat(3, 1fr);
+  gap: 12px;
+}
+
+.supervisor-detail-btn {
+  padding: 12px;
+  border: none;
+  border-radius: 10px;
+  font-size: 14px;
+  font-weight: 600;
+  cursor: pointer;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  gap: 8px;
+  transition: all 0.3s ease;
+}
+
+.supervisor-btn-message {
+  background: #e3f2fd;
+  color: #1565c0;
+}
+
+.supervisor-btn-message:hover {
+  background: #bbdefb;
+}
+
+.supervisor-btn-schedule {
+  background: #fff3e0;
+  color: #e65100;
+}
+
+.supervisor-btn-schedule:hover {
+  background: #ffe0b2;
+}
+
+.supervisor-btn-performance {
+  background: #e8f5e9;
+  color: #1b5e20;
+}
+
+.supervisor-btn-performance:hover {
+  background: #c8e6c9;
+}
+
+/* Select Prompt */
+.supervisor-staff-select-prompt {
+  background: white;
+  border-radius: 20px;
+  padding: 40px 25px;
+  text-align: center;
+  box-shadow: 0 6px 25px rgba(38, 198, 218, 0.12);
+  border: 3px dashed #e0f7fa;
+}
+
+.supervisor-prompt-icon {
+  font-size: 48px;
+  margin-bottom: 20px;
+  animation: supervisor-prompt-bounce 2s infinite;
+}
+
+@keyframes supervisor-prompt-bounce {
+  0%, 100% { transform: translateY(0); }
+  50% { transform: translateY(-10px); }
+}
+
+.supervisor-staff-select-prompt h3 {
+  color: #00838f;
+  font-size: 22px;
+  margin: 0 0 10px 0;
+}
+
+.supervisor-staff-select-prompt p {
+  color: #78909c;
+  font-size: 16px;
+  margin: 0;
+}
+
+/* Departments Card */
+.supervisor-departments-card {
+  background: white;
+  border-radius: 20px;
+  padding: 25px;
+  box-shadow: 0 6px 25px rgba(38, 198, 218, 0.12);
+  max-height: 400px;
+  overflow-y: auto;
+}
+
+.supervisor-departments-card::-webkit-scrollbar {
+  width: 6px;
+}
+
+.supervisor-departments-card::-webkit-scrollbar-track {
+  background: #f1f1f1;
+  border-radius: 10px;
+}
+
+.supervisor-departments-card::-webkit-scrollbar-thumb {
+  background: #26c6da;
+  border-radius: 10px;
+}
+
+.supervisor-departments-title {
+  color: #00838f;
+  font-size: 20px;
+  margin: 0 0 20px 0;
+  padding-bottom: 15px;
+  border-bottom: 3px solid #e0f7fa;
+}
+
+.supervisor-departments-list {
+  display: flex;
+  flex-direction: column;
+  gap: 15px;
+}
+
+.supervisor-department-item {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  padding: 15px;
+  background: #f8fdff;
+  border-radius: 12px;
+  border: 2px solid #e0f7fa;
+  transition: all 0.3s ease;
+}
+
+.supervisor-department-item:hover {
+  background: #e0f7fa;
+  transform: translateX(5px);
+}
+
+.supervisor-dept-info {
+  flex: 1;
+}
+
+.supervisor-dept-name {
+  color: #00838f;
+  font-size: 16px;
+  margin: 0 0 5px 0;
+  font-weight: 600;
+}
+
+.supervisor-dept-head {
+  color: #78909c;
+  font-size: 14px;
+  margin: 0;
+}
+
+.supervisor-dept-stats {
+  background: #26c6da;
+  color: white;
+  padding: 6px 15px;
+  border-radius: 20px;
+  font-size: 14px;
+  font-weight: 600;
+}
+
+/* Footer Summary */
+.supervisor-staff-summary {
+  background: white;
+  border-radius: 20px;
+  padding: 25px;
+  display: grid;
+  grid-template-columns: repeat(auto-fit, minmax(200px, 1fr));
+  gap: 20px;
+  box-shadow: 0 6px 25px rgba(38, 198, 218, 0.12);
+}
+
+.supervisor-summary-item {
+  text-align: center;
+  padding: 15px;
+  background: #f8fdff;
+  border-radius: 15px;
+  border: 2px solid #e0f7fa;
+}
+
+.supervisor-summary-label {
+  display: block;
+  color: #546e7a;
+  font-size: 14px;
+  font-weight: 600;
+  margin-bottom: 8px;
+}
+
+.supervisor-summary-value {
+  display: block;
+  color: #00838f;
+  font-size: 22px;
+  font-weight: bold;
+}
+
+/* Modals */
+.supervisor-modal-overlay {
+  position: fixed;
+  top: 0;
+  left: 0;
+  right: 0;
+  bottom: 0;
+  background: rgba(0, 0, 0, 0.5);
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  z-index: 1000;
+  animation: supervisor-fade-in 0.3s ease;
+}
+
+@keyframes supervisor-fade-in {
+  from { opacity: 0; }
+  to { opacity: 1; }
+}
+
+.supervisor-add-staff-modal,
+.supervisor-schedule-modal {
+  background: white;
+  border-radius: 25px;
+  width: 90%;
+  max-width: 600px;
+  max-height: 90vh;
+  overflow-y: auto;
+  animation: supervisor-modal-slide 0.4s ease;
+}
+
+@keyframes supervisor-modal-slide {
+  from {
+    opacity: 0;
+    transform: translateY(-50px);
+  }
+  to {
+    opacity: 1;
+    transform: translateY(0);
+  }
+}
+
+.supervisor-modal-header {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  padding: 25px 30px;
+  border-bottom: 3px solid #e0f7fa;
+}
+
+.supervisor-modal-header h2 {
+  color: #00838f;
+  margin: 0;
+  font-size: 26px;
+}
+
+.supervisor-modal-close {
+  background: none;
+  border: none;
+  font-size: 30px;
+  color: #78909c;
+  cursor: pointer;
+  padding: 0;
+  width: 40px;
+  height: 40px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  border-radius: 50%;
+  transition: background 0.3s ease;
+}
+
+.supervisor-modal-close:hover {
+  background: #e0f7fa;
+}
+
+.supervisor-modal-body {
+  padding: 30px;
+  color: #546e7a;
+}
+
+.supervisor-modal-footer {
+  padding: 20px 30px;
+  border-top: 3px solid #e0f7fa;
+  display: flex;
+  justify-content: flex-end;
+  gap: 15px;
+}
+
+.supervisor-modal-btn {
+  padding: 12px 30px;
+  border: none;
+  border-radius: 10px;
+  font-size: 16px;
+  font-weight: 600;
+  cursor: pointer;
+  transition: all 0.3s ease;
+}
+
+.supervisor-btn-cancel {
+  background: #f5f5f5;
+  color: #78909c;
+}
+
+.supervisor-btn-cancel:hover {
+  background: #e0e0e0;
+}
+
+.supervisor-btn-save {
+  background: #26c6da;
+  color: white;
+}
+
+.supervisor-btn-save:hover {
+  background: #00838f;
+}
+
+/* Responsive Design */
+@media (max-width: 1200px) {
+  .supervisor-staff-content-grid {
+    grid-template-columns: 1fr;
+  }
+  
+  .supervisor-staff-sidebar {
+    display: grid;
+    grid-template-columns: 1fr 1fr;
+    gap: 25px;
+  }
+}
+
+@media (max-width: 992px) {
+  .supervisor-staff-filters {
+    flex-direction: column;
+    align-items: stretch;
+  }
+  
+  .supervisor-filter-group {
+    width: 100%;
+  }
+  
+  .supervisor-staff-header {
+    flex-direction: column;
+    gap: 20px;
+    text-align: center;
+  }
+  
+  .supervisor-staff-header-right {
+    width: 100%;
+    justify-content: center;
+  }
+}
+
+@media (max-width: 768px) {
+  .supervisor-staff-stats-grid {
+    grid-template-columns: 1fr 1fr;
+  }
+  
+  .supervisor-staff-sidebar {
+    grid-template-columns: 1fr;
+  }
+  
+  .supervisor-staff-summary {
+    grid-template-columns: 1fr 1fr;
+  }
+  
+  .supervisor-staff-detail-info {
+    grid-template-columns: 1fr;
+  }
+  
+  .supervisor-staff-detail-actions {
+    grid-template-columns: 1fr;
+  }
+}
+
+@media (max-width: 576px) {
+  .supervisor-staff-stats-grid {
+    grid-template-columns: 1fr;
+  }
+  
+  .supervisor-staff-summary {
+    grid-template-columns: 1fr;
+  }
+  
+  .supervisor-staff-actions {
+    flex-direction: column;
+    width: 100%;
+  }
+  
+  .supervisor-staff-header-right {
+    flex-direction: column;
+  }
+  
+  .supervisor-staff-add-btn,
+  .supervisor-staff-schedule-btn {
+    width: 100%;
+    justify-content: center;
+  }
+}

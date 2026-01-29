@@ -1,17 +1,17 @@
-.notification-container {
+.doctor-notification-container {
   width: 80%;
   margin: 20px auto;
   padding: 20px;
 }
 
-.notification-title {
+.doctor-notification-title {
   font-size: 26px;
   margin-bottom: 20px;
   font-weight: bold;
   color: #333;
 }
 
-.notification-card {
+.doctor-notification-card {
   margin-bottom: 15px;
   padding: 15px 20px;
   border-radius: 8px;
@@ -24,74 +24,74 @@
 /* ---------- COLOR THEMES ---------- */
 
 /* Blue - Appointment */
-.notification-card.appointment {
+.doctor-notification-card.appointment {
   background: #e3f2ff;
   border-left: 6px solid #007bff;
 }
-.notification-card.appointment:hover {
+.doctor-notification-card.appointment:hover {
   background: #d4e8ff;
 }
 
 /* Purple - Report */
-.notification-card.report {
+.doctor-notification-card.report {
   background: #f3e8ff;
   border-left: 6px solid #9b59b6;
 }
-.notification-card.report:hover {
+.doctor-notification-card.report:hover {
   background: #ead8ff;
 }
 
 /* Green - Payment */
-.notification-card.payment {
+.doctor-notification-card.payment {
   background: #e7ffe8;
   border-left: 6px solid #28a745;
 }
-.notification-card.payment:hover {
+.doctor-notification-card.payment:hover {
   background: #d9ffd9;
 }
 
 /* Orange - Message */
-.notification-card.message {
+.doctor-notification-card.message {
   background: #fff2e5;
   border-left: 6px solid #ff8c42;
 }
-.notification-card.message:hover {
+.doctor-notification-card.message:hover {
   background: #ffe4cc;
 }
 
 /* Red - Emergency */
-.notification-card.emergency {
+.doctor-notification-card.emergency {
   background: #ffe5e5;
   border-left: 6px solid #e74c3c;
 }
-.notification-card.emergency:hover {
+.doctor-notification-card.emergency:hover {
   background: #ffd6d6;
 }
 
 /* Yellow - Follow-up */
-.notification-card.followup {
+.doctor-notification-card.followup {
   background: #fff9d9;
   border-left: 6px solid #f1c40f;
 }
-.notification-card.followup:hover {
+.doctor-notification-card.followup:hover {
   background: #fff3b3;
 }
 
 /* ---------------------------------- */
 
-.notification-info h4 {
+.doctor-notification-info h4 {
   margin: 0;
   font-size: 18px;
   font-weight: 600;
 }
 
-.notification-info p {
+.doctor-notification-info p {
   margin-top: 5px;
   font-size: 14px;
   color: #333;
 }
 
-.notification-time {
+.doctor-notification-time {
   font-size: 13px;
   color: #555;
   margin-top: 5px;

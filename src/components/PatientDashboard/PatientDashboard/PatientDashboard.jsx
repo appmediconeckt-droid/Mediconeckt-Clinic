@@ -49,11 +49,11 @@ const PatientDashboard = ({
   const patientStatus = getPatientStatus();
 
   return (
-    <div className={`patient-dashboard patient-status-${patientStatus}`}>
+    <div className={`patient-dashboard patient-status-${patientStatus} p-3`}>
 
-      <header className="app-header">
+      <header className="patient-app-header">
         <div className=" d-flex flex-column flex-md-row justify-content-between align-items-start align-items-md-center  gap-3">
-          <h1>Dashboard</h1>
+          <h2>Dashboard</h2>
           </div>
       </header>
       <div className="dashboard-header">
@@ -76,7 +76,7 @@ const PatientDashboard = ({
           </div>
         </div>
 
-        <div className="info-grid">
+        <div className="patient-info-grid">
           <div className="info-column">
             <div className="info-item">
               <h3><i className="icon-phone"></i> Phone No</h3>

@@ -93,7 +93,7 @@ const HospitalDashboard = () => {
     staff: {
       total: 1421,
       active: 393,
-      departments: 12
+      departments: 10
     }
   };
 
