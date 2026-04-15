@@ -1,0 +1,1633 @@
+/* ========== SUPER ADMIN SYSTEM HEALTH ========== */
+/* Unique class names to prevent conflicts */
+
+/* Main Container */
+.syshealth-container {
+  min-height: 100vh;
+  background: linear-gradient(135deg, #f8f9fa 0%, #e9ecef 100%);
+  
+  font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+  box-sizing: border-box;
+}
+
+/* Header Styles */
+.syshealth-header {
+  display: flex;
+  justify-content: space-between;
+  align-items: flex-start;
+  margin-bottom: 30px;
+  padding: 25px;
+  background: linear-gradient(135deg, #ffffff 0%, #fff9e6 100%);
+  border-radius: 16px;
+  box-shadow: 0 8px 32px rgba(255, 215, 0, 0.15);
+  border: 2px solid #FFEC8B;
+}
+
+.syshealth-header-main {
+  flex: 1;
+}
+
+.syshealth-title {
+  font-size: 32px;
+  font-weight: 900;
+  color: #000;
+  margin: 0 0 10px 0;
+  display: flex;
+  align-items: center;
+  gap: 15px;
+}
+
+.syshealth-crown {
+  color: #FFD700;
+  font-size: 28px;
+  text-shadow: 0 0 10px rgba(255, 215, 0, 0.5);
+  animation: syshealth-crown-spin 4s linear infinite;
+}
+
+@keyframes syshealth-crown-spin {
+  0% { transform: rotate(0deg); }
+  25% { transform: rotate(5deg); }
+  75% { transform: rotate(-5deg); }
+  100% { transform: rotate(0deg); }
+}
+
+.syshealth-subtitle {
+  font-size: 16px;
+  color: #666;
+  margin: 0;
+  max-width: 600px;
+  font-weight: 500;
+  line-height: 1.5;
+}
+
+/* Controls */
+.syshealth-controls {
+  display: flex;
+  gap: 15px;
+  align-items: center;
+  flex-wrap: wrap;
+}
+
+.syshealth-auto-refresh {
+  display: flex;
+  align-items: center;
+  gap: 10px;
+}
+
+.syshealth-toggle {
+  position: relative;
+  display: flex;
+  align-items: center;
+  gap: 8px;
+  cursor: pointer;
+}
+
+.syshealth-toggle input {
+  opacity: 0;
+  width: 0;
+  height: 0;
+}
+
+.syshealth-toggle-slider {
+  position: relative;
+  display: inline-block;
+  width: 50px;
+  height: 24px;
+  background-color: #ccc;
+  border-radius: 24px;
+  transition: .4s;
+}
+
+.syshealth-toggle-slider:before {
+  position: absolute;
+  content: "";
+  height: 18px;
+  width: 18px;
+  left: 3px;
+  bottom: 3px;
+  background-color: white;
+  border-radius: 50%;
+  transition: .4s;
+}
+
+.syshealth-toggle input:checked + .syshealth-toggle-slider {
+  background: linear-gradient(135deg, #FFD700 0%, #B8860B 100%);
+}
+
+.syshealth-toggle input:checked + .syshealth-toggle-slider:before {
+  transform: translateX(26px);
+}
+
+.syshealth-toggle-label {
+  font-size: 14px;
+  font-weight: 600;
+  color: #666;
+}
+
+/* Action Buttons */
+.syshealth-refresh-btn,
+.syshealth-report-btn {
+  padding: 12px 24px;
+  border: none;
+  border-radius: 10px;
+  font-size: 14px;
+  font-weight: 700;
+  cursor: pointer;
+  display: flex;
+  align-items: center;
+  gap: 10px;
+  transition: all 0.3s ease;
+  min-width: 140px;
+  justify-content: center;
+}
+
+.syshealth-refresh-btn {
+  background: linear-gradient(135deg, #6C5CE7 0%, #5B4FCF 100%);
+  color: white;
+}
+
+.syshealth-refresh-btn:hover:not(:disabled) {
+  transform: translateY(-2px);
+  box-shadow: 0 6px 20px rgba(108, 92, 231, 0.3);
+}
+
+.syshealth-refresh-btn:disabled {
+  opacity: 0.7;
+  cursor: not-allowed;
+}
+
+.syshealth-report-btn {
+  background: linear-gradient(135deg, #00B894 0%, #00A085 100%);
+  color: white;
+}
+
+.syshealth-report-btn:hover {
+  transform: translateY(-2px);
+  box-shadow: 0 6px 20px rgba(0, 184, 148, 0.3);
+}
+
+/* Overview Section */
+.syshealth-overview {
+  display: grid;
+  grid-template-columns: 1fr 2fr;
+  gap: 30px;
+  margin-bottom: 30px;
+}
+
+/* Health Status Card */
+.syshealth-status-card {
+  background: white;
+  padding: 25px;
+  border-radius: 16px;
+  box-shadow: 0 4px 20px rgba(0, 0, 0, 0.08);
+  border: 2px solid #FFEC8B;
+}
+
+.syshealth-status-header {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  margin-bottom: 25px;
+}
+
+.syshealth-status-title {
+  font-size: 20px;
+  font-weight: 700;
+  color: #000;
+  margin: 0;
+  display: flex;
+  align-items: center;
+  gap: 10px;
+}
+
+.syshealth-uptime {
+  font-size: 14px;
+  font-weight: 600;
+  color: #666;
+  display: flex;
+  align-items: center;
+  gap: 8px;
+}
+
+.syshealth-status-main {
+  display: flex;
+  align-items: center;
+  justify-content: space-around;
+  margin-bottom: 25px;
+}
+
+/* Health Score Circle */
+.syshealth-score {
+  text-align: center;
+}
+
+.syshealth-score-circle {
+  width: 140px;
+  height: 140px;
+  border-radius: 50%;
+  background: #f8f9fa;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  margin: 0 auto 15px;
+  position: relative;
+  overflow: hidden;
+}
+
+.syshealth-score-fill {
+  width: 120px;
+  height: 120px;
+  border-radius: 50%;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  position: relative;
+  z-index: 2;
+}
+
+.syshealth-score-value {
+  font-size: 36px;
+  font-weight: 900;
+  color: white;
+  text-shadow: 0 2px 4px rgba(0, 0, 0, 0.2);
+}
+
+.syshealth-score-percent {
+  font-size: 20px;
+  font-weight: 700;
+}
+
+.syshealth-score-label {
+  font-size: 16px;
+  font-weight: 700;
+  color: #333;
+}
+
+/* Status Indicators */
+.syshealth-status-indicators {
+  display: flex;
+  flex-direction: column;
+  gap: 15px;
+}
+
+.syshealth-indicator {
+  display: flex;
+  align-items: center;
+  gap: 12px;
+}
+
+.syshealth-indicator-dot {
+  width: 12px;
+  height: 12px;
+  border-radius: 50%;
+}
+
+.syshealth-indicator-text {
+  font-size: 14px;
+  font-weight: 600;
+  color: #333;
+  min-width: 70px;
+}
+
+.syshealth-indicator-count {
+  font-size: 18px;
+  font-weight: 900;
+  color: #000;
+  background: #FFF9C4;
+  padding: 4px 12px;
+  border-radius: 20px;
+  min-width: 40px;
+  text-align: center;
+}
+
+.syshealth-last-updated {
+  font-size: 13px;
+  color: #666;
+  display: flex;
+  align-items: center;
+  gap: 8px;
+  justify-content: center;
+  padding-top: 15px;
+  border-top: 1px solid #f0f0f0;
+}
+
+/* Quick Metrics */
+.syshealth-quick-metrics {
+  display: grid;
+  grid-template-columns: repeat(3, 1fr);
+  gap: 15px;
+}
+
+.syshealth-metric-card {
+  background: white;
+  padding: 20px;
+  border-radius: 12px;
+  box-shadow: 0 4px 15px rgba(0, 0, 0, 0.05);
+  border: 2px solid #FFEC8B;
+  transition: all 0.3s ease;
+}
+
+.syshealth-metric-card:hover {
+  transform: translateY(-3px);
+  box-shadow: 0 6px 20px rgba(255, 215, 0, 0.15);
+}
+
+.syshealth-metric-header {
+  display: flex;
+  align-items: center;
+  gap: 12px;
+  margin-bottom: 15px;
+}
+
+.syshealth-metric-icon {
+  width: 40px;
+  height: 40px;
+  border-radius: 10px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  color: white;
+  font-size: 16px;
+}
+
+.syshealth-metric-title {
+  font-size: 14px;
+  font-weight: 600;
+  color: #666;
+  text-transform: uppercase;
+  letter-spacing: 0.5px;
+}
+
+.syshealth-metric-value {
+  font-size: 28px;
+  font-weight: 900;
+  color: #000;
+  line-height: 1;
+}
+
+.syshealth-metric-unit {
+  font-size: 16px;
+  font-weight: 700;
+  color: #666;
+  margin-left: 4px;
+}
+
+/* Navigation Tabs */
+.syshealth-tabs {
+  display: flex;
+  gap: 10px;
+  margin-bottom: 30px;
+  padding: 15px;
+  background: white;
+  border-radius: 16px;
+  box-shadow: 0 4px 20px rgba(0, 0, 0, 0.08);
+  overflow-x: auto;
+  scrollbar-width: none;
+  -ms-overflow-style: none;
+}
+
+.syshealth-tabs::-webkit-scrollbar {
+  display: none;
+}
+
+.syshealth-tab {
+  flex: 1;
+  min-width: 120px;
+  padding: 15px 20px;
+  border: none;
+  background: transparent;
+  border-radius: 12px;
+  font-size: 14px;
+  font-weight: 700;
+  color: #666;
+  cursor: pointer;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  gap: 10px;
+  transition: all 0.3s ease;
+  white-space: nowrap;
+}
+
+.syshealth-tab:hover {
+  background: #FFF9C4;
+  color: #000;
+  transform: translateY(-2px);
+}
+
+.syshealth-tab-active {
+  background: linear-gradient(135deg, #FFD700 0%, #B8860B 100%);
+  color: #000;
+  box-shadow: 0 4px 15px rgba(255, 215, 0, 0.4);
+}
+
+/* Main Content Layout */
+.syshealth-content {
+  display: grid;
+  grid-template-columns: 2fr 1fr;
+  gap: 30px;
+  margin-bottom: 30px;
+}
+
+/* Section Titles */
+.syshealth-section-title {
+  font-size: 18px;
+  font-weight: 700;
+  color: #000;
+  margin: 0 0 20px 0;
+  display: flex;
+  align-items: center;
+  gap: 10px;
+}
+
+/* Servers Grid */
+.syshealth-servers-grid {
+  background: white;
+  padding: 25px;
+  border-radius: 16px;
+  box-shadow: 0 4px 20px rgba(0, 0, 0, 0.08);
+  border: 2px solid #FFEC8B;
+  margin-bottom: 30px;
+}
+
+.syshealth-servers-list {
+  display: grid;
+  grid-template-columns: repeat(2, 1fr);
+  gap: 15px;
+}
+
+/* Server Card */
+.syshealth-server-card {
+  background: #FFFDF0;
+  padding: 20px;
+  border-radius: 12px;
+  border: 2px solid #FFEC8B;
+  cursor: pointer;
+  transition: all 0.3s ease;
+  position: relative;
+  overflow: hidden;
+}
+
+.syshealth-server-card:hover {
+  transform: translateY(-3px);
+  box-shadow: 0 6px 20px rgba(255, 215, 0, 0.15);
+  border-color: #FFD700;
+}
+
+.syshealth-server-selected {
+  background: linear-gradient(135deg, rgba(255, 215, 0, 0.1) 0%, rgba(184, 134, 11, 0.05) 100%);
+  border-color: #FFD700;
+  box-shadow: 0 4px 15px rgba(255, 215, 0, 0.3);
+}
+
+.syshealth-server-header {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  margin-bottom: 15px;
+}
+
+.syshealth-server-name {
+  font-size: 16px;
+  font-weight: 700;
+  color: #000;
+  display: flex;
+  align-items: center;
+  gap: 10px;
+}
+
+.syshealth-server-name i {
+  color: #B8860B;
+}
+
+.syshealth-server-status {
+  display: flex;
+  align-items: center;
+  gap: 8px;
+}
+
+.syshealth-status-badge {
+  padding: 6px 12px;
+  border-radius: 20px;
+  font-size: 12px;
+  font-weight: 700;
+  text-transform: uppercase;
+  color: white;
+  min-width: 70px;
+  text-align: center;
+  display: inline-block;
+}
+
+/* Server Metrics */
+.syshealth-server-metrics {
+  display: flex;
+  flex-direction: column;
+  gap: 12px;
+  margin-bottom: 15px;
+}
+
+.syshealth-server-metric {
+  display: flex;
+  align-items: center;
+  gap: 12px;
+}
+
+.syshealth-server-metric-label {
+  font-size: 12px;
+  font-weight: 600;
+  color: #666;
+  min-width: 40px;
+}
+
+.syshealth-server-metric-bar {
+  flex: 1;
+  height: 8px;
+  background: #f0f0f0;
+  border-radius: 4px;
+  overflow: hidden;
+}
+
+.syshealth-server-metric-fill {
+  height: 100%;
+  border-radius: 4px;
+  transition: width 0.3s ease;
+}
+
+.syshealth-server-metric-value {
+  font-size: 12px;
+  font-weight: 700;
+  color: #333;
+  min-width: 40px;
+  text-align: right;
+}
+
+/* Server Info */
+.syshealth-server-info {
+  display: flex;
+  justify-content: space-between;
+  padding-top: 15px;
+  border-top: 1px solid #FFEC8B;
+}
+
+.syshealth-server-info-item {
+  display: flex;
+  align-items: center;
+  gap: 6px;
+  font-size: 12px;
+  color: #666;
+}
+
+.syshealth-server-info-item i {
+  color: #B8860B;
+}
+
+/* Alerts Section */
+.syshealth-alerts {
+  background: white;
+  padding: 25px;
+  border-radius: 16px;
+  box-shadow: 0 4px 20px rgba(0, 0, 0, 0.08);
+  border: 2px solid #FFEC8B;
+}
+
+.syshealth-alerts-header {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  margin-bottom: 20px;
+}
+
+.syshealth-alert-badge {
+  background: #D63031;
+  color: white;
+  padding: 4px 10px;
+  border-radius: 20px;
+  font-size: 12px;
+  font-weight: 900;
+  margin-left: 10px;
+}
+
+.syshealth-alerts-clear {
+  padding: 8px 16px;
+  border: none;
+  border-radius: 8px;
+  font-size: 13px;
+  font-weight: 600;
+  cursor: pointer;
+  display: flex;
+  align-items: center;
+  gap: 8px;
+  background: #FFF9C4;
+  color: #B8860B;
+  border: 1px solid #FFEC8B;
+  transition: all 0.3s ease;
+}
+
+.syshealth-alerts-clear:hover {
+  background: #FFEC8B;
+}
+
+/* Alerts List */
+.syshealth-alerts-list {
+  display: flex;
+  flex-direction: column;
+  gap: 12px;
+  max-height: 400px;
+  overflow-y: auto;
+  padding-right: 5px;
+}
+
+.syshealth-alert-item {
+  display: flex;
+  align-items: flex-start;
+  gap: 15px;
+  padding: 15px;
+  border-radius: 10px;
+  background: #FFFDF0;
+  border-left: 4px solid #FFD700;
+  transition: all 0.3s ease;
+}
+
+.syshealth-alert-item[data-severity="critical"] {
+  border-left-color: #D63031;
+  background: #FFE6E6;
+}
+
+.syshealth-alert-item[data-severity="warning"] {
+  border-left-color: #FDCB6E;
+  background: #FFF9E6;
+}
+
+.syshealth-alert-item[data-severity="info"] {
+  border-left-color: #0984E3;
+  background: #E6F7FF;
+}
+
+.syshealth-alert-acknowledged {
+  opacity: 0.7;
+}
+
+.syshealth-alert-icon {
+  font-size: 18px;
+  color: #B8860B;
+  margin-top: 2px;
+  min-width: 20px;
+}
+
+.syshealth-alert-item[data-severity="critical"] .syshealth-alert-icon {
+  color: #D63031;
+}
+
+.syshealth-alert-item[data-severity="warning"] .syshealth-alert-icon {
+  color: #FDCB6E;
+}
+
+.syshealth-alert-item[data-severity="info"] .syshealth-alert-icon {
+  color: #0984E3;
+}
+
+.syshealth-alert-content {
+  flex: 1;
+  min-width: 0;
+}
+
+.syshealth-alert-title {
+  font-size: 14px;
+  font-weight: 700;
+  color: #000;
+  margin-bottom: 5px;
+  word-break: break-word;
+}
+
+.syshealth-alert-message {
+  font-size: 13px;
+  color: #666;
+  margin-bottom: 8px;
+  line-height: 1.4;
+  word-break: break-word;
+}
+
+.syshealth-alert-meta {
+  display: flex;
+  gap: 15px;
+  font-size: 12px;
+  color: #666;
+  flex-wrap: wrap;
+}
+
+.syshealth-alert-server,
+.syshealth-alert-time {
+  display: flex;
+  align-items: center;
+  gap: 5px;
+}
+
+.syshealth-alert-acknowledge {
+  padding: 6px 12px;
+  border: none;
+  border-radius: 6px;
+  font-size: 12px;
+  font-weight: 600;
+  cursor: pointer;
+  background: #00B894;
+  color: white;
+  display: flex;
+  align-items: center;
+  gap: 5px;
+  transition: all 0.3s ease;
+  flex-shrink: 0;
+}
+
+.syshealth-alert-acknowledge:hover {
+  background: #00A085;
+  transform: translateY(-2px);
+}
+
+.syshealth-no-alerts {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+  padding: 40px 20px;
+  color: #666;
+  text-align: center;
+}
+
+.syshealth-no-alerts i {
+  font-size: 48px;
+  color: #00B894;
+  margin-bottom: 15px;
+}
+
+.syshealth-no-alerts p {
+  font-size: 16px;
+  font-weight: 600;
+}
+
+/* Server Details */
+.syshealth-server-details {
+  background: white;
+  border-radius: 16px;
+  box-shadow: 0 4px 20px rgba(0, 0, 0, 0.08);
+  border: 2px solid #FFEC8B;
+  overflow: hidden;
+}
+
+.syshealth-details-header {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  padding: 25px;
+  background: linear-gradient(135deg, #FFEC8B 0%, #FFD700 100%);
+}
+
+.syshealth-details-title {
+  font-size: 20px;
+  font-weight: 700;
+  color: #000;
+  margin: 0;
+  display: flex;
+  align-items: center;
+  gap: 10px;
+}
+
+.syshealth-details-close {
+  background: none;
+  border: none;
+  font-size: 18px;
+  color: #666;
+  cursor: pointer;
+  padding: 8px;
+  border-radius: 8px;
+  transition: all 0.3s ease;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+}
+
+.syshealth-details-close:hover {
+  background: rgba(0, 0, 0, 0.1);
+  color: #000;
+}
+
+.syshealth-details-content {
+  padding: 25px;
+}
+
+.syshealth-details-section {
+  margin-bottom: 30px;
+}
+
+.syshealth-details-section:last-child {
+  margin-bottom: 0;
+}
+
+.syshealth-details-subtitle {
+  font-size: 16px;
+  font-weight: 700;
+  color: #000;
+  margin: 0 0 15px 0;
+  padding-bottom: 10px;
+  border-bottom: 2px solid #FFEC8B;
+}
+
+.syshealth-details-grid {
+  display: grid;
+  grid-template-columns: repeat(2, 1fr);
+  gap: 15px;
+}
+
+.syshealth-detail-item {
+  margin-bottom: 12px;
+}
+
+.syshealth-detail-item label {
+  display: block;
+  font-size: 12px;
+  font-weight: 600;
+  color: #666;
+  text-transform: uppercase;
+  letter-spacing: 0.5px;
+  margin-bottom: 6px;
+}
+
+.syshealth-detail-value {
+  font-size: 14px;
+  font-weight: 600;
+  color: #333;
+  padding: 8px 12px;
+  background: #FFFDF0;
+  border-radius: 8px;
+  border: 1px solid #FFEC8B;
+  word-break: break-word;
+}
+
+/* Resource Metrics */
+.syshealth-resource-metrics {
+  display: flex;
+  flex-direction: column;
+  gap: 15px;
+}
+
+.syshealth-resource-metric {
+  margin-bottom: 12px;
+}
+
+.syshealth-resource-header {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  margin-bottom: 8px;
+}
+
+.syshealth-resource-header span:first-child {
+  font-size: 14px;
+  font-weight: 600;
+  color: #333;
+}
+
+.syshealth-resource-value {
+  font-size: 14px;
+  font-weight: 700;
+  color: #000;
+}
+
+.syshealth-resource-bar {
+  height: 10px;
+  background: #f0f0f0;
+  border-radius: 5px;
+  overflow: hidden;
+}
+
+.syshealth-resource-fill {
+  height: 100%;
+  border-radius: 5px;
+  transition: width 0.3s ease;
+}
+
+/* Services List */
+.syshealth-services-list {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 10px;
+}
+
+.syshealth-service-tag {
+  padding: 8px 16px;
+  background: #FFF9C4;
+  color: #B8860B;
+  border-radius: 20px;
+  font-size: 13px;
+  font-weight: 600;
+  display: flex;
+  align-items: center;
+  gap: 8px;
+  border: 1px solid #FFEC8B;
+}
+
+/* Action Buttons */
+.syshealth-action-buttons {
+  display: grid;
+  grid-template-columns: repeat(2, 1fr);
+  gap: 12px;
+}
+
+.syshealth-action-btn {
+  padding: 10px 16px;
+  border: none;
+  border-radius: 8px;
+  font-size: 13px;
+  font-weight: 600;
+  cursor: pointer;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  gap: 8px;
+  background: #FFF9C4;
+  color: #B8860B;
+  border: 1px solid #FFEC8B;
+  transition: all 0.3s ease;
+}
+
+.syshealth-action-btn:hover {
+  background: #FFEC8B;
+  transform: translateY(-2px);
+}
+
+/* System Metrics */
+.syshealth-system-metrics {
+  display: flex;
+  flex-direction: column;
+  gap: 20px;
+}
+
+.syshealth-metrics-card {
+  background: white;
+  padding: 25px;
+  border-radius: 16px;
+  box-shadow: 0 4px 20px rgba(0, 0, 0, 0.08);
+  border: 2px solid #FFEC8B;
+}
+
+.syshealth-metrics-title {
+  font-size: 18px;
+  font-weight: 700;
+  color: #000;
+  margin: 0 0 20px 0;
+  display: flex;
+  align-items: center;
+  gap: 10px;
+}
+
+/* Performance Metrics */
+.syshealth-performance-metrics {
+  display: flex;
+  flex-direction: column;
+  gap: 15px;
+}
+
+.syshealth-performance-metric {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  padding: 12px;
+  background: #FFFDF0;
+  border-radius: 8px;
+  border: 1px solid #FFEC8B;
+}
+
+.syshealth-performance-label {
+  font-size: 14px;
+  font-weight: 600;
+  color: #333;
+  display: flex;
+  align-items: center;
+  gap: 10px;
+}
+
+.syshealth-performance-value {
+  font-size: 16px;
+  font-weight: 900;
+  color: #000;
+}
+
+/* Services Status */
+.syshealth-services-status {
+  display: flex;
+  flex-direction: column;
+  gap: 12px;
+}
+
+.syshealth-service-status {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  padding: 12px;
+  background: #FFFDF0;
+  border-radius: 8px;
+  border: 1px solid #FFEC8B;
+}
+
+.syshealth-service-name {
+  font-size: 14px;
+  font-weight: 600;
+  color: #333;
+}
+
+.syshealth-service-metrics {
+  display: flex;
+  align-items: center;
+  gap: 15px;
+  flex-wrap: wrap;
+}
+
+.syshealth-service-status-badge {
+  padding: 4px 12px;
+  border-radius: 20px;
+  font-size: 12px;
+  font-weight: 700;
+  text-transform: uppercase;
+  min-width: 60px;
+  text-align: center;
+}
+
+.syshealth-service-status-badge.status-up {
+  background: #E6FFF9;
+  color: #00B894;
+  border: 1px solid #A8FFE9;
+}
+
+.syshealth-service-status-badge.status-down {
+  background: #FFE6E6;
+  color: #D63031;
+  border: 1px solid #FFB8B8;
+}
+
+.syshealth-service-status-badge.status-warning {
+  background: #FFF9E6;
+  color: #FDCB6E;
+  border: 1px solid #FFEAA7;
+}
+
+.syshealth-service-uptime {
+  font-size: 12px;
+  color: #666;
+}
+
+.syshealth-service-response {
+  font-size: 12px;
+  font-weight: 700;
+  color: #000;
+  background: #FFF9C4;
+  padding: 2px 8px;
+  border-radius: 4px;
+}
+
+/* Statistics */
+.syshealth-statistics {
+  display: grid;
+  grid-template-columns: repeat(2, 1fr);
+  gap: 15px;
+}
+
+.syshealth-statistic {
+  padding: 12px;
+  background: #FFFDF0;
+  border-radius: 8px;
+  border: 1px solid #FFEC8B;
+}
+
+.syshealth-statistic-label {
+  font-size: 12px;
+  color: #666;
+  margin-bottom: 5px;
+  font-weight: 600;
+}
+
+.syshealth-statistic-value {
+  font-size: 18px;
+  font-weight: 900;
+  color: #000;
+}
+
+/* Loading State */
+.syshealth-loading {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+  padding: 60px 20px;
+  color: #666;
+}
+
+.syshealth-loading-spinner {
+  position: relative;
+  width: 80px;
+  height: 80px;
+  margin-bottom: 20px;
+}
+
+.syshealth-spinner-circle {
+  position: absolute;
+  width: 100%;
+  height: 100%;
+  border: 4px solid transparent;
+  border-top-color: #FFD700;
+  border-radius: 50%;
+  animation: syshealth-spin 1s linear infinite;
+}
+
+.syshealth-spinner-circle:nth-child(2) {
+  border-top-color: #B8860B;
+  animation-delay: 0.2s;
+}
+
+.syshealth-spinner-circle:nth-child(3) {
+  border-top-color: #FFD700;
+  animation-delay: 0.4s;
+}
+
+.syshealth-spinner-circle:nth-child(4) {
+  border-top-color: #B8860B;
+  animation-delay: 0.6s;
+}
+
+@keyframes syshealth-spin {
+  0% { transform: rotate(0deg); }
+  100% { transform: rotate(360deg); }
+}
+
+.syshealth-loading-text {
+  text-align: center;
+}
+
+.syshealth-loading-text h3 {
+  font-size: 18px;
+  font-weight: 700;
+  color: #333;
+  margin-bottom: 10px;
+}
+
+/* Footer */
+.syshealth-footer {
+  margin-top: 40px;
+  padding: 25px;
+  background: linear-gradient(135deg, #ffffff 0%, #fff9e6 100%);
+  border-radius: 16px;
+  border: 2px solid #FFEC8B;
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+}
+
+.syshealth-footer-info {
+  display: flex;
+  gap: 30px;
+}
+
+.syshealth-footer-stat {
+  display: flex;
+  align-items: center;
+  gap: 15px;
+}
+
+.syshealth-footer-stat i {
+  font-size: 24px;
+  color: #FFD700;
+  width: 50px;
+  height: 50px;
+  background: linear-gradient(135deg, rgba(255, 215, 0, 0.1) 0%, rgba(184, 134, 11, 0.05) 100%);
+  border-radius: 10px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+}
+
+.syshealth-footer-value {
+  font-size: 14px;
+  font-weight: 700;
+  color: #000;
+  margin-bottom: 3px;
+}
+
+.syshealth-footer-label {
+  font-size: 12px;
+  color: #666;
+  font-weight: 600;
+  text-transform: uppercase;
+  letter-spacing: 0.5px;
+}
+
+.syshealth-footer-actions {
+  display: flex;
+  gap: 15px;
+}
+
+.syshealth-footer-btn {
+  padding: 10px 20px;
+  border: none;
+  border-radius: 8px;
+  font-size: 13px;
+  font-weight: 600;
+  cursor: pointer;
+  display: flex;
+  align-items: center;
+  gap: 8px;
+  background: white;
+  color: #333;
+  border: 2px solid #FFEC8B;
+  transition: all 0.3s ease;
+}
+
+.syshealth-footer-btn:hover {
+  background: #FFEC8B;
+  transform: translateY(-2px);
+}
+
+/* ========== RESPONSIVE DESIGN ========== */
+
+/* Large Desktop (1200px and above) */
+@media (min-width: 1200px) {
+  .syshealth-container {
+    
+    margin: 0 auto;
+  }
+}
+
+/* Desktop (992px to 1199px) */
+@media (max-width: 1199px) {
+  .syshealth-content {
+    grid-template-columns: 1.5fr 1fr;
+  }
+  
+  .syshealth-servers-list {
+    grid-template-columns: repeat(2, 1fr);
+  }
+  
+  .syshealth-quick-metrics {
+    grid-template-columns: repeat(2, 1fr);
+  }
+}
+
+/* Tablet Landscape (768px to 991px) */
+@media (max-width: 991px) {
+  .syshealth-container {
+    padding: 20px;
+  }
+  
+  .syshealth-overview {
+    grid-template-columns: 1fr;
+    gap: 20px;
+  }
+  
+  .syshealth-content {
+    grid-template-columns: 1fr;
+    gap: 20px;
+  }
+  
+  .syshealth-header {
+    flex-direction: column;
+    gap: 20px;
+    padding: 20px;
+  }
+  
+  .syshealth-controls {
+    width: 100%;
+    justify-content: flex-start;
+  }
+  
+  .syshealth-status-main {
+    flex-direction: column;
+    gap: 30px;
+  }
+  
+  .syshealth-quick-metrics {
+    grid-template-columns: repeat(3, 1fr);
+  }
+  
+  .syshealth-servers-list {
+    grid-template-columns: repeat(3, 1fr);
+  }
+  
+  .syshealth-statistics {
+    grid-template-columns: repeat(3, 1fr);
+  }
+  
+  .syshealth-footer {
+    flex-direction: column;
+    gap: 20px;
+    text-align: center;
+  }
+  
+  .syshealth-footer-info {
+    flex-direction: column;
+    gap: 15px;
+  }
+  
+  .syshealth-footer-stat {
+    justify-content: center;
+  }
+}
+
+/* Tablet Portrait (576px to 767px) */
+@media (max-width: 767px) {
+  .syshealth-container {
+    padding: 15px;
+  }
+  
+  .syshealth-title {
+    font-size: 26px;
+  }
+  
+  .syshealth-subtitle {
+    font-size: 14px;
+  }
+  
+  .syshealth-controls {
+    flex-direction: column;
+    align-items: stretch;
+  }
+  
+  .syshealth-auto-refresh {
+    justify-content: center;
+  }
+  
+  .syshealth-refresh-btn,
+  .syshealth-report-btn {
+    width: 100%;
+  }
+  
+  .syshealth-tabs {
+    padding: 10px;
+  }
+  
+  .syshealth-tab {
+    min-width: 100px;
+    padding: 12px 15px;
+    font-size: 13px;
+  }
+  
+  .syshealth-quick-metrics {
+    grid-template-columns: repeat(2, 1fr);
+  }
+  
+  .syshealth-servers-list {
+    grid-template-columns: repeat(2, 1fr);
+  }
+  
+  .syshealth-statistics {
+    grid-template-columns: repeat(2, 1fr);
+  }
+  
+  .syshealth-details-grid {
+    grid-template-columns: 1fr;
+  }
+  
+  .syshealth-action-buttons {
+    grid-template-columns: 1fr;
+  }
+  
+  .syshealth-footer-actions {
+    flex-wrap: wrap;
+    justify-content: center;
+  }
+}
+
+/* Mobile (575px and below) */
+@media (max-width: 575px) {
+  .syshealth-container {
+    padding: 10px;
+  }
+  
+  .syshealth-header {
+    padding: 15px;
+  }
+  
+  .syshealth-title {
+    font-size: 22px;
+    flex-direction: column;
+    text-align: center;
+    gap: 8px;
+  }
+  
+  .syshealth-crown {
+    font-size: 24px;
+  }
+  
+  .syshealth-subtitle {
+    text-align: center;
+    font-size: 13px;
+  }
+  
+  .syshealth-status-header {
+    flex-direction: column;
+    align-items: flex-start;
+    gap: 10px;
+  }
+  
+  .syshealth-status-title {
+    font-size: 18px;
+  }
+  
+  .syshealth-uptime {
+    font-size: 13px;
+  }
+  
+  .syshealth-tabs {
+    flex-direction: column;
+  }
+  
+  .syshealth-tab {
+    width: 100%;
+    min-width: 100%;
+    justify-content: flex-start;
+    padding: 15px;
+  }
+  
+  .syshealth-quick-metrics {
+    grid-template-columns: 1fr;
+  }
+  
+  .syshealth-servers-list {
+    grid-template-columns: 1fr;
+  }
+  
+  .syshealth-server-info {
+    flex-direction: column;
+    gap: 8px;
+    align-items: flex-start;
+  }
+  
+  .syshealth-alerts-header {
+    flex-direction: column;
+    align-items: flex-start;
+    gap: 15px;
+  }
+  
+  .syshealth-alerts-clear {
+    width: 100%;
+    justify-content: center;
+  }
+  
+  .syshealth-alert-item {
+    flex-direction: column;
+    gap: 10px;
+  }
+  
+  .syshealth-alert-content {
+    width: 100%;
+  }
+  
+  .syshealth-alert-meta {
+    flex-direction: column;
+    gap: 8px;
+  }
+  
+  .syshealth-alert-acknowledge {
+    width: 100%;
+    justify-content: center;
+  }
+  
+  .syshealth-details-header {
+    flex-direction: column;
+    align-items: flex-start;
+    gap: 15px;
+  }
+  
+  .syshealth-details-title {
+    font-size: 18px;
+  }
+  
+  .syshealth-details-close {
+    align-self: flex-end;
+  }
+  
+  .syshealth-performance-metric {
+    flex-direction: column;
+    align-items: flex-start;
+    gap: 5px;
+  }
+  
+  .syshealth-service-status {
+    flex-direction: column;
+    align-items: flex-start;
+    gap: 10px;
+  }
+  
+  .syshealth-service-metrics {
+    width: 100%;
+    justify-content: space-between;
+  }
+  
+  .syshealth-statistics {
+    grid-template-columns: 1fr;
+  }
+  
+  .syshealth-footer {
+    padding: 15px;
+  }
+  
+  .syshealth-footer-stat {
+    flex-direction: column;
+    text-align: center;
+    gap: 8px;
+  }
+  
+  .syshealth-footer-stat i {
+    width: 40px;
+    height: 40px;
+    font-size: 20px;
+  }
+  
+  .syshealth-footer-actions {
+    flex-direction: column;
+    width: 100%;
+  }
+  
+  .syshealth-footer-btn {
+    width: 100%;
+    justify-content: center;
+  }
+}
+
+/* Extra Small Mobile (375px and below) */
+@media (max-width: 375px) {
+  .syshealth-title {
+    font-size: 20px;
+  }
+  
+  .syshealth-metric-value {
+    font-size: 24px;
+  }
+  
+  .syshealth-score-circle {
+    width: 120px;
+    height: 120px;
+  }
+  
+  .syshealth-score-fill {
+    width: 100px;
+    height: 100px;
+  }
+  
+  .syshealth-score-value {
+    font-size: 30px;
+  }
+  
+  .syshealth-server-name {
+    font-size: 14px;
+  }
+  
+  .syshealth-status-badge {
+    font-size: 11px;
+    min-width: 60px;
+    padding: 5px 8px;
+  }
+}
+
+/* Scrollbar Styling */
+.syshealth-alerts-list::-webkit-scrollbar,
+.syshealth-tabs::-webkit-scrollbar {
+  width: 6px;
+  height: 6px;
+}
+
+.syshealth-alerts-list::-webkit-scrollbar-track {
+  background: #f1f1f1;
+  border-radius: 4px;
+}
+
+.syshealth-alerts-list::-webkit-scrollbar-thumb {
+  background: linear-gradient(135deg, #FFD700 0%, #B8860B 100%);
+  border-radius: 4px;
+}
+
+.syshealth-alerts-list::-webkit-scrollbar-thumb:hover {
+  background: linear-gradient(135deg, #FFC72C 0%, #DAA520 100%);
+}
+
+/* Print Styles */
+@media print {
+  .syshealth-container {
+    background: white;
+    padding: 0;
+  }
+  
+  .syshealth-header,
+  .syshealth-controls,
+  .syshealth-tabs,
+  .syshealth-footer {
+    display: none;
+  }
+  
+  .syshealth-content {
+    display: block;
+  }
+  
+  .syshealth-servers-grid,
+  .syshealth-alerts,
+  .syshealth-metrics-card {
+    break-inside: avoid;
+    page-break-inside: avoid;
+  }
+}

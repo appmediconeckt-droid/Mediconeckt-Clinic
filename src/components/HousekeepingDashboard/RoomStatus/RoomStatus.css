@@ -1,0 +1,1402 @@
+/* Room Status Styles with Housekeeping Theme */
+.hk-room-container {
+  padding: 25px;
+  background: linear-gradient(135deg, #f8f9fa 0%, #f0f0f0 100%);
+  min-height: 100vh;
+  font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+}
+
+/* Header Styles */
+.hk-room-header {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  margin-bottom: 30px;
+  padding: 25px;
+  background: linear-gradient(135deg, #fff9c4 0%, #ffec8b 100%);
+  border-radius: 16px;
+  box-shadow: 0 6px 20px rgba(253, 216, 53, 0.2);
+  border: 3px solid #ffd700;
+  position: relative;
+  overflow: hidden;
+}
+
+.hk-room-header::before {
+  content: '';
+  position: absolute;
+  top: 0;
+  left: 0;
+  right: 0;
+  height: 5px;
+  background: linear-gradient(90deg, #fdd835, #ffc400, #fdd835);
+  animation: shimmer 3s infinite;
+}
+
+@keyframes shimmer {
+  0% { background-position: -200px 0; }
+  100% { background-position: 200px 0; }
+}
+
+.hk-room-title-section {
+  flex: 1;
+}
+
+.hk-room-title {
+  margin: 0;
+  color: #000;
+  font-size: 34px;
+  display: flex;
+  align-items: center;
+  gap: 15px;
+  font-weight: 800;
+  text-shadow: 2px 2px 4px rgba(0, 0, 0, 0.1);
+}
+
+.hk-room-title-icon {
+  color: #f57c00;
+  font-size: 38px;
+  filter: drop-shadow(0 2px 4px rgba(245, 124, 0, 0.3));
+}
+
+.hk-room-subtitle {
+  margin: 10px 0 0;
+  color: #5d4037;
+  font-size: 16px;
+  font-weight: 600;
+  max-width: 800px;
+}
+
+.hk-room-header-actions {
+  display: flex;
+  align-items: center;
+  gap: 15px;
+}
+
+/* Button Styles */
+.hk-room-btn-primary,
+.hk-room-btn-secondary,
+.hk-room-btn-refresh,
+.hk-room-btn-export {
+  padding: 14px 24px;
+  border: none;
+  border-radius: 12px;
+  font-size: 15px;
+  font-weight: 700;
+  cursor: pointer;
+  display: inline-flex;
+  align-items: center;
+  gap: 10px;
+  transition: all 0.3s cubic-bezier(0.4, 0, 0.2, 1);
+  height: 50px;
+  box-shadow: 0 4px 8px rgba(0, 0, 0, 0.15);
+  text-transform: uppercase;
+  letter-spacing: 0.5px;
+}
+
+.hk-room-btn-primary {
+  background: linear-gradient(135deg, #fdd835 0%, #ffc400 100%);
+  color: #000;
+  border: 3px solid #ffd700;
+}
+
+.hk-room-btn-primary:hover {
+  background: linear-gradient(135deg, #ffc400 0%, #ffab00 100%);
+  transform: translateY(-4px);
+  box-shadow: 0 8px 16px rgba(255, 193, 7, 0.4);
+}
+
+.hk-room-btn-secondary {
+  background: white;
+  color: #333;
+  border: 3px solid #ffd700;
+}
+
+.hk-room-btn-secondary:hover {
+  background: #fffde7;
+  transform: translateY(-3px);
+  box-shadow: 0 6px 12px rgba(255, 215, 0, 0.3);
+}
+
+.hk-room-btn-refresh {
+  background: linear-gradient(135deg, #2196f3 0%, #1976d2 100%);
+  color: white;
+  border: 3px solid #1976d2;
+  padding: 12px 20px;
+}
+
+.hk-room-btn-refresh:hover {
+  background: linear-gradient(135deg, #1976d2 0%, #1565c0 100%);
+  transform: rotate(180deg);
+  transition: transform 0.6s ease;
+}
+
+.hk-room-btn-export {
+  background: linear-gradient(135deg, #4caf50 0%, #388e3c 100%);
+  color: white;
+  border: 3px solid #388e3c;
+}
+
+.hk-room-btn-export:hover {
+  background: linear-gradient(135deg, #388e3c 0%, #2e7d32 100%);
+  transform: translateY(-3px);
+}
+
+/* Section Titles */
+.hk-room-section-title {
+  margin: 0 0 25px;
+  color: #333;
+  font-size: 24px;
+  display: flex;
+  align-items: center;
+  gap: 12px;
+  font-weight: 800;
+  padding-bottom: 12px;
+  /* border-bottom: 3px solid #ffd700; */
+  position: relative;
+}
+
+.hk-room-section-title::after {
+  content: '';
+  position: absolute;
+  bottom: -3px;
+  left: 0;
+  width: 100px;
+  height: 3px;
+  /* background: linear-gradient(90deg, #f57c00, #ffd700); */
+}
+
+.hk-room-section-title svg {
+  color: #f57c00;
+  font-size: 26px;
+}
+
+/* Statistics Section */
+.hk-room-stats-section {
+  background: white;
+  padding: 28px;
+  border-radius: 16px;
+  margin-bottom: 35px;
+  box-shadow: 0 6px 20px rgba(0, 0, 0, 0.1);
+  border: 3px solid #ffecb3;
+}
+
+.hk-room-stats-grid {
+  display: grid;
+  grid-template-columns: repeat(auto-fit, minmax(240px, 1fr));
+  gap: 22px;
+}
+
+.hk-room-stat-card {
+  padding: 24px;
+  border-radius: 14px;
+  display: flex;
+  align-items: center;
+  gap: 18px;
+  box-shadow: 0 4px 12px rgba(0, 0, 0, 0.1);
+  transition: all 0.4s cubic-bezier(0.4, 0, 0.2, 1);
+  border: 3px solid transparent;
+  position: relative;
+  overflow: hidden;
+}
+
+.hk-room-stat-card::before {
+  content: '';
+  position: absolute;
+  top: 0;
+  left: 0;
+  width: 100%;
+  height: 5px;
+}
+
+.hk-room-stat-total::before { background: linear-gradient(90deg, #ffd700, #f57c00); }
+.hk-room-stat-occupied::before { background: linear-gradient(90deg, #ff5252, #d32f2f); }
+.hk-room-stat-vacant::before { background: linear-gradient(90deg, #4caf50, #388e3c); }
+.hk-room-stat-cleaned::before { background: linear-gradient(90deg, #2196f3, #1976d2); }
+.hk-room-stat-maintenance::before { background: linear-gradient(90deg, #ff9800, #f57c00); }
+.hk-room-stat-critical::before { background: linear-gradient(90deg, #9c27b0, #7b1fa2); }
+
+.hk-room-stat-card:hover {
+  transform: translateY(-8px) scale(1.02);
+  box-shadow: 0 12px 24px rgba(0, 0, 0, 0.2);
+}
+
+.hk-room-stat-icon {
+  width: 65px;
+  height: 65px;
+  border-radius: 16px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  font-size: 30px;
+  flex-shrink: 0;
+  box-shadow: 0 6px 12px rgba(0, 0, 0, 0.15);
+}
+
+.hk-room-stat-total .hk-room-stat-icon { background: linear-gradient(135deg, #fff9c4 0%, #ffec8b 100%); color: #f57c00; }
+.hk-room-stat-occupied .hk-room-stat-icon { background: linear-gradient(135deg, #ffcdd2 0%, #ef9a9a 100%); color: #c62828; }
+.hk-room-stat-vacant .hk-room-stat-icon { background: linear-gradient(135deg, #c8e6c9 0%, #a5d6a7 100%); color: #388e3c; }
+.hk-room-stat-cleaned .hk-room-stat-icon { background: linear-gradient(135deg, #bbdefb 0%, #90caf9 100%); color: #1976d2; }
+.hk-room-stat-maintenance .hk-room-stat-icon { background: linear-gradient(135deg, #ffecb3 0%, #ffe082 100%); color: #ff8f00; }
+.hk-room-stat-critical .hk-room-stat-icon { background: linear-gradient(135deg, #e1bee7 0%, #ce93d8 100%); color: #7b1fa2; }
+
+.hk-room-stat-content {
+  flex: 1;
+}
+
+.hk-room-stat-content h3 {
+  margin: 0;
+  font-size: 32px;
+  font-weight: 900;
+  color: #222;
+  line-height: 1;
+}
+
+.hk-room-stat-content p {
+  margin: 8px 0 0;
+  color: #666;
+  font-size: 16px;
+  font-weight: 700;
+}
+
+.hk-room-stat-trend,
+.hk-room-stat-detail {
+  font-size: 14px;
+  font-weight: 700;
+  padding: 6px 14px;
+  border-radius: 20px;
+  text-align: center;
+}
+
+.hk-room-stat-trend {
+  background: #f5f5f5;
+}
+
+.hk-room-trend-up { color: #2e7d32; background: #e8f5e9 !important; }
+.hk-room-trend-down { color: #c62828; background: #ffebee !important; }
+.hk-room-trend-neutral { color: #616161; background: #f5f5f5 !important; }
+
+.hk-room-stat-detail {
+  background: rgba(255, 255, 255, 0.9);
+  color: #666;
+  margin-top: 8px;
+}
+
+/* Ward Summary */
+.hk-room-ward-section {
+  background: white;
+  padding: 28px;
+  border-radius: 16px;
+  margin-bottom: 35px;
+  box-shadow: 0 6px 20px rgba(0, 0, 0, 0.1);
+  border: 3px solid #ffecb3;
+}
+
+.hk-room-ward-grid {
+  display: grid;
+  grid-template-columns: repeat(auto-fit, minmax(280px, 1fr));
+  gap: 22px;
+}
+
+.hk-room-ward-card {
+  padding: 22px;
+  background: linear-gradient(135deg, #f8f9fa 0%, #f0f0f0 100%);
+  border-radius: 14px;
+  border: 3px solid #ffecb3;
+  transition: all 0.3s ease;
+}
+
+.hk-room-ward-card:hover {
+  transform: translateY(-6px);
+  box-shadow: 0 10px 20px rgba(255, 215, 0, 0.2);
+  border-color: #ffd700;
+}
+
+.hk-room-ward-name {
+  margin: 0 0 18px;
+  color: #333;
+  font-size: 20px;
+  font-weight: 800;
+  padding-bottom: 12px;
+  border-bottom: 2px solid #ffd700;
+  display: flex;
+  align-items: center;
+  gap: 10px;
+}
+
+.hk-room-ward-name::before {
+  content: '🏥';
+  font-size: 18px;
+}
+
+.hk-room-ward-stats {
+  display: grid;
+  grid-template-columns: 1fr 1fr;
+  gap: 15px;
+  margin-bottom: 20px;
+}
+
+.hk-room-ward-stat {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  padding: 10px;
+  background: white;
+  border-radius: 10px;
+  border: 2px solid #f0f0f0;
+}
+
+.hk-room-ward-stat-label {
+  color: #666;
+  font-size: 14px;
+  font-weight: 600;
+}
+
+.hk-room-ward-stat-value {
+  font-weight: 800;
+  font-size: 20px;
+  min-width: 30px;
+  text-align: center;
+}
+
+.hk-room-ward-occupied { color: #c62828; }
+.hk-room-ward-vacant { color: #388e3c; }
+.hk-room-ward-maintenance { color: #ff8f00; }
+
+.hk-room-ward-occupancy {
+  margin-top: 15px;
+}
+
+.hk-room-occupancy-bar {
+  height: 12px;
+  background: #e0e0e0;
+  border-radius: 6px;
+  margin-bottom: 10px;
+  overflow: hidden;
+}
+
+.hk-room-occupancy-fill {
+  height: 100%;
+  background: linear-gradient(90deg, #fdd835, #ffc400);
+  border-radius: 6px;
+  transition: width 1s ease;
+}
+
+.hk-room-occupancy-text {
+  text-align: center;
+  color: #f57c00;
+  font-weight: 700;
+  font-size: 16px;
+}
+
+/* Filters Section */
+.hk-room-filters-section {
+  background: white;
+  padding: 25px;
+  border-radius: 16px;
+  margin-bottom: 35px;
+  display: flex;
+  flex-direction: column;
+  gap: 22px;
+  box-shadow: 0 6px 20px rgba(0, 0, 0, 0.1);
+  border: 3px solid #ffecb3;
+}
+
+.hk-room-search-container {
+  display: flex;
+  align-items: center;
+  gap: 15px;
+  background: linear-gradient(135deg, #f8f9fa 0%, #f0f0f0 100%);
+  padding: 16px 22px;
+  border-radius: 12px;
+  border: 3px solid #ffd700;
+}
+
+.hk-room-search-icon {
+  color: #f57c00;
+  font-size: 20px;
+  flex-shrink: 0;
+}
+
+.hk-room-search-input {
+  flex: 1;
+  border: none;
+  background: transparent;
+  outline: none;
+  font-size: 16px;
+  color: #333;
+  font-weight: 600;
+}
+
+.hk-room-search-input::placeholder {
+  color: #888;
+  font-weight: 500;
+}
+
+.hk-room-filter-group {
+  display: flex;
+  align-items: center;
+  gap: 15px;
+  flex-wrap: wrap;
+}
+
+.hk-room-filter-select {
+  padding: 14px 20px;
+  border: 3px solid #ffd700;
+  border-radius: 12px;
+  background: white;
+  color: #333;
+  font-size: 15px;
+  font-weight: 700;
+  cursor: pointer;
+  outline: none;
+  min-width: 180px;
+  transition: all 0.3s ease;
+  box-shadow: 0 2px 6px rgba(0, 0, 0, 0.1);
+}
+
+.hk-room-filter-select:focus {
+  border-color: #f57c00;
+  box-shadow: 0 0 0 4px rgba(255, 193, 7, 0.3);
+  transform: scale(1.02);
+}
+
+.hk-room-filter-btn,
+.hk-room-reset-btn {
+  padding: 14px 24px;
+  border: none;
+  border-radius: 12px;
+  font-size: 15px;
+  font-weight: 700;
+  cursor: pointer;
+  display: inline-flex;
+  align-items: center;
+  gap: 10px;
+  transition: all 0.3s ease;
+  height: 50px;
+  box-shadow: 0 4px 8px rgba(0, 0, 0, 0.15);
+}
+
+.hk-room-filter-btn {
+  background: linear-gradient(135deg, #2196f3 0%, #1976d2 100%);
+  color: white;
+  border: 3px solid #1976d2;
+}
+
+.hk-room-filter-btn:hover {
+  background: linear-gradient(135deg, #1976d2 0%, #1565c0 100%);
+  transform: translateY(-3px);
+}
+
+.hk-room-reset-btn {
+  background: linear-gradient(135deg, #757575 0%, #616161 100%);
+  color: white;
+  border: 3px solid #616161;
+}
+
+.hk-room-reset-btn:hover {
+  background: linear-gradient(135deg, #616161 0%, #424242 100%);
+  transform: translateY(-3px);
+}
+
+/* Table Section */
+.hk-room-table-section {
+  background: white;
+  padding: 28px;
+  border-radius: 16px;
+  margin-bottom: 35px;
+  box-shadow: 0 8px 24px rgba(0, 0, 0, 0.12);
+  border: 3px solid #ffecb3;
+}
+
+.hk-room-table-header {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  margin-bottom: 25px;
+  padding-bottom: 20px;
+  border-bottom: 3px solid #ffd700;
+}
+
+.hk-room-table-info {
+  display: flex;
+  align-items: center;
+  gap: 20px;
+}
+
+.hk-room-table-count {
+  color: #666;
+  font-size: 16px;
+  font-weight: 700;
+  background: #f8f9fa;
+  padding: 10px 18px;
+  border-radius: 10px;
+  border: 2px solid #ffecb3;
+}
+
+.hk-room-table-container {
+  overflow-x: auto;
+  border-radius: 12px;
+  border: 3px solid #f0f0f0;
+  background: #fafafa;
+  margin-bottom: 25px;
+}
+
+.hk-room-table {
+  width: 100%;
+  border-collapse: separate;
+  border-spacing: 0;
+  min-width: 1400px;
+}
+
+.hk-room-table th {
+  padding: 22px 20px;
+  background: linear-gradient(135deg, #fff9c4 0%, #ffec8b 100%);
+  color: #000;
+  font-weight: 800;
+  font-size: 16px;
+  text-align: left;
+  border-bottom: 3px solid #ffd700;
+  position: sticky;
+  top: 0;
+  z-index: 100;
+  text-transform: uppercase;
+  letter-spacing: 1px;
+}
+
+.hk-room-table th:first-child {
+  border-radius: 12px 0 0 0;
+}
+
+.hk-room-table th:last-child {
+  border-radius: 0 12px 0 0;
+}
+
+.hk-room-table td {
+  padding: 22px 20px;
+  border-bottom: 2px solid #f0f0f0;
+  font-size: 15px;
+  color: #444;
+  background: white;
+  transition: all 0.3s ease;
+  vertical-align: top;
+}
+
+.hk-room-table-row:hover td {
+  background: #fffde7;
+  transform: scale(1.001);
+  box-shadow: 0 4px 12px rgba(255, 215, 0, 0.15);
+}
+
+/* Room Details Column */
+.hk-room-details {
+  display: flex;
+  flex-direction: column;
+  gap: 15px;
+}
+
+.hk-room-basic-info {
+  display: flex;
+  flex-direction: column;
+  gap: 12px;
+}
+
+.hk-room-number-section {
+  display: flex;
+  align-items: center;
+  gap: 15px;
+}
+
+.hk-room-door-icon {
+  color: #f57c00;
+  font-size: 24px;
+  flex-shrink: 0;
+}
+
+.hk-room-number {
+  font-size: 22px;
+  font-weight: 900;
+  color: #222;
+  line-height: 1;
+}
+
+.hk-room-type {
+  font-size: 14px;
+  color: #666;
+  font-weight: 600;
+  margin-top: 4px;
+}
+
+.hk-room-meta {
+  display: flex;
+  gap: 15px;
+  flex-wrap: wrap;
+}
+
+.hk-room-ward,
+.hk-room-floor,
+.hk-room-beds {
+  padding: 6px 12px;
+  border-radius: 8px;
+  font-size: 13px;
+  font-weight: 700;
+  display: inline-flex;
+  align-items: center;
+  gap: 6px;
+}
+
+.hk-room-ward {
+  background: #e3f2fd;
+  color: #1976d2;
+}
+
+.hk-room-floor {
+  background: #f3e5f5;
+  color: #7b1fa2;
+}
+
+.hk-room-beds {
+  background: #e8f5e9;
+  color: #388e3c;
+}
+
+.hk-room-status-group {
+  display: flex;
+  align-items: center;
+  gap: 12px;
+}
+
+.hk-room-status-select {
+  padding: 10px 16px;
+  border: 3px solid;
+  border-radius: 10px;
+  background: white;
+  color: #333;
+  font-size: 14px;
+  font-weight: 700;
+  cursor: pointer;
+  outline: none;
+  transition: all 0.3s ease;
+  min-width: 140px;
+}
+
+.hk-room-status-occupied {
+  border-color: #ff5252;
+  background: #ffebee;
+  color: #c62828;
+}
+
+.hk-room-status-vacant {
+  border-color: #4caf50;
+  background: #e8f5e9;
+  color: #2e7d32;
+}
+
+.hk-room-status-maintenance {
+  border-color: #ff9800;
+  background: #fff3e0;
+  color: #ef6c00;
+}
+
+.hk-room-status-select:focus {
+  box-shadow: 0 0 0 3px rgba(255, 193, 7, 0.3);
+}
+
+.hk-room-priority-badge {
+  display: flex;
+  align-items: center;
+  gap: 8px;
+  padding: 8px 16px;
+  border-radius: 20px;
+  font-size: 13px;
+  font-weight: 800;
+  background: #f5f5f5;
+  color: #333;
+}
+
+.hk-room-priority-dot {
+  width: 10px;
+  height: 10px;
+  border-radius: 50%;
+}
+
+.hk-room-priority-critical { background: #ff5252; }
+.hk-room-priority-high { background: #ff9800; }
+.hk-room-priority-medium { background: #ffc107; }
+.hk-room-priority-low { background: #4caf50; }
+
+/* Patient/Doctor Column */
+.hk-room-patient-info {
+  display: flex;
+  flex-direction: column;
+  gap: 12px;
+}
+
+.hk-room-patient-details {
+  display: flex;
+  flex-direction: column;
+  gap: 8px;
+}
+
+.hk-room-patient-name {
+  font-size: 18px;
+  font-weight: 800;
+  color: #333;
+  display: flex;
+  align-items: center;
+  gap: 10px;
+}
+
+.hk-room-patient-name svg {
+  color: #2196f3;
+}
+
+.hk-room-patient-id {
+  font-size: 14px;
+  color: #666;
+  font-weight: 600;
+  background: #f5f5f5;
+  padding: 4px 10px;
+  border-radius: 6px;
+  display: inline-block;
+}
+
+.hk-room-doctor {
+  font-size: 14px;
+  color: #7b1fa2;
+  font-weight: 700;
+  display: flex;
+  align-items: center;
+  gap: 8px;
+}
+
+.hk-room-notes {
+  background: #fff9c4;
+  padding: 10px;
+  border-radius: 8px;
+  border-left: 4px solid #ffd700;
+  font-size: 13px;
+  color: #5d4037;
+}
+
+.hk-room-vacant-info {
+  text-align: center;
+  padding: 20px;
+  background: #e8f5e9;
+  border-radius: 10px;
+  border: 3px dashed #4caf50;
+}
+
+.hk-room-vacant-icon {
+  font-size: 32px;
+  color: #4caf50;
+  margin-bottom: 10px;
+}
+
+.hk-room-vacant-text {
+  font-size: 18px;
+  font-weight: 800;
+  color: #2e7d32;
+  margin-bottom: 5px;
+}
+
+.hk-room-vacant-subtext {
+  font-size: 14px;
+  color: #388e3c;
+}
+
+/* Cleaning Status Column */
+.hk-room-cleaning-info {
+  display: flex;
+  flex-direction: column;
+  gap: 15px;
+}
+
+.hk-room-cleaning-status {
+  display: flex;
+  align-items: center;
+  gap: 12px;
+}
+
+.hk-room-cleaning-select {
+  flex: 1;
+  padding: 10px 16px;
+  border: 3px solid;
+  border-radius: 10px;
+  background: white;
+  color: #333;
+  font-size: 14px;
+  font-weight: 700;
+  cursor: pointer;
+  outline: none;
+  transition: all 0.3s ease;
+}
+
+.hk-room-cleaning-cleaned { border-color: #4caf50; background: #e8f5e9; color: #2e7d32; }
+.hk-room-cleaning-inprogress { border-color: #2196f3; background: #e3f2fd; color: #1565c0; }
+.hk-room-cleaning-pending { border-color: #ff9800; background: #fff3e0; color: #ef6c00; }
+.hk-room-cleaning-needsattention { border-color: #ff5252; background: #ffebee; color: #c62828; }
+.hk-room-cleaning-maintenance { border-color: #9c27b0; background: #f3e5f5; color: #7b1fa2; }
+.hk-room-cleaning-biohazard { border-color: #795548; background: #efebe9; color: #5d4037; }
+.hk-room-cleaning-emergency { border-color: #d32f2f; background: #ffebee; color: #b71c1c; }
+
+.hk-room-clean-btn {
+  width: 44px;
+  height: 44px;
+  border: none;
+  border-radius: 10px;
+  background: linear-gradient(135deg, #fdd835 0%, #ffc400 100%);
+  color: #000;
+  font-size: 18px;
+  cursor: pointer;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  transition: all 0.3s ease;
+}
+
+.hk-room-clean-btn:hover {
+  transform: rotate(45deg) scale(1.1);
+  box-shadow: 0 4px 12px rgba(255, 193, 7, 0.4);
+}
+
+.hk-room-cleaning-details {
+  display: flex;
+  flex-direction: column;
+  gap: 8px;
+}
+
+.hk-room-cleaning-time,
+.hk-room-cleaning-next {
+  display: flex;
+  align-items: center;
+  gap: 8px;
+  font-size: 13px;
+  color: #666;
+  font-weight: 600;
+}
+
+.hk-room-cleaning-time svg { color: #f57c00; }
+.hk-room-cleaning-next svg { color: #2196f3; }
+
+.hk-room-cleaning-staff {
+  display: flex;
+  flex-direction: column;
+  gap: 8px;
+}
+
+.hk-room-staff-assign {
+  display: flex;
+  align-items: center;
+  gap: 10px;
+}
+
+.hk-room-staff-assign svg {
+  color: #7b1fa2;
+}
+
+.hk-room-staff-select {
+  flex: 1;
+  padding: 8px 12px;
+  border: 2px solid #ffd700;
+  border-radius: 8px;
+  background: white;
+  color: #333;
+  font-size: 13px;
+  cursor: pointer;
+  outline: none;
+}
+
+.hk-room-supervisor {
+  font-size: 12px;
+  color: #666;
+  text-align: center;
+  background: #f5f5f5;
+  padding: 4px 8px;
+  border-radius: 6px;
+}
+
+/* Maintenance Column */
+.hk-room-maintenance-info {
+  display: flex;
+  flex-direction: column;
+  gap: 12px;
+}
+
+.hk-room-maintenance-status {
+  padding: 12px;
+  border-radius: 10px;
+  font-weight: 700;
+  display: flex;
+  align-items: center;
+  gap: 10px;
+}
+
+.hk-room-maintenance-ok {
+  background: #e8f5e9;
+  color: #2e7d32;
+  border: 2px solid #4caf50;
+}
+
+.hk-room-maintenance-issues {
+  background: #fff3e0;
+  color: #ef6c00;
+  border: 2px solid #ff9800;
+}
+
+.hk-room-issues-count {
+  text-align: center;
+}
+
+.hk-room-issue-btn {
+  padding: 8px 16px;
+  border: 2px solid #ff9800;
+  background: #fff3e0;
+  color: #ef6c00;
+  border-radius: 8px;
+  font-weight: 700;
+  cursor: pointer;
+  display: inline-flex;
+  align-items: center;
+  gap: 8px;
+  transition: all 0.3s ease;
+}
+
+.hk-room-issue-btn:hover {
+  background: #ffe0b2;
+  transform: scale(1.05);
+}
+
+.hk-room-maintenance-dates {
+  display: flex;
+  justify-content: space-between;
+  gap: 10px;
+}
+
+.hk-room-last-maintenance,
+.hk-room-next-maintenance {
+  font-size: 12px;
+  color: #666;
+  background: #f5f5f5;
+  padding: 6px 10px;
+  border-radius: 6px;
+  text-align: center;
+  flex: 1;
+}
+
+/* Amenities Column */
+.hk-room-amenities {
+  display: flex;
+  flex-direction: column;
+  gap: 12px;
+}
+
+.hk-room-amenities-list {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 8px;
+}
+
+.hk-room-amenity {
+  display: flex;
+  align-items: center;
+  gap: 6px;
+  padding: 6px 10px;
+  background: #f5f5f5;
+  border-radius: 6px;
+  font-size: 12px;
+  font-weight: 600;
+  color: #333;
+}
+
+.hk-room-amenity svg {
+  color: #f57c00;
+  font-size: 14px;
+}
+
+.hk-room-cleaning-type {
+  padding: 8px 12px;
+  background: #fff9c4;
+  border-radius: 8px;
+  font-size: 13px;
+  font-weight: 700;
+  color: #f57c00;
+  display: flex;
+  align-items: center;
+  gap: 8px;
+  justify-content: center;
+}
+
+/* Actions Column */
+.hk-room-action-buttons {
+  display: grid;
+  grid-template-columns: repeat(3, 1fr);
+  gap: 8px;
+  margin-bottom: 12px;
+}
+
+.hk-room-action-btn {
+  width: 40px;
+  height: 40px;
+  border: none;
+  border-radius: 10px;
+  font-size: 16px;
+  cursor: pointer;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  transition: all 0.3s ease;
+  box-shadow: 0 2px 6px rgba(0, 0, 0, 0.1);
+}
+
+.hk-room-action-view {
+  background: linear-gradient(135deg, #bbdefb 0%, #90caf9 100%);
+  color: #1565c0;
+}
+
+.hk-room-action-edit {
+  background: linear-gradient(135deg, #fff9c4 0%, #ffec8b 100%);
+  color: #f57c00;
+}
+
+.hk-room-action-clean {
+  background: linear-gradient(135deg, #c8e6c9 0%, #a5d6a7 100%);
+  color: #2e7d32;
+}
+
+.hk-room-action-maintenance {
+  background: linear-gradient(135deg, #ffecb3 0%, #ffe082 100%);
+  color: #ff8f00;
+}
+
+.hk-room-action-print {
+  background: linear-gradient(135deg, #f5f5f5 0%, #e0e0e0 100%);
+  color: #616161;
+}
+
+.hk-room-action-btn:hover {
+  transform: translateY(-3px) scale(1.1);
+  box-shadow: 0 4px 12px rgba(0, 0, 0, 0.2);
+}
+
+.hk-room-quick-actions {
+  display: flex;
+  gap: 8px;
+}
+
+.hk-room-quick-btn {
+  flex: 1;
+  padding: 8px;
+  border: none;
+  border-radius: 8px;
+  font-size: 12px;
+  font-weight: 700;
+  cursor: pointer;
+  transition: all 0.3s ease;
+}
+
+.hk-room-btn-checkin {
+  background: linear-gradient(135deg, #4caf50 0%, #388e3c 100%);
+  color: white;
+}
+
+.hk-room-btn-checkout {
+  background: linear-gradient(135deg, #ff9800 0%, #f57c00 100%);
+  color: white;
+}
+
+.hk-room-quick-btn:hover {
+  transform: translateY(-2px);
+  box-shadow: 0 4px 8px rgba(0, 0, 0, 0.2);
+}
+
+/* No Results */
+.hk-room-no-results {
+  text-align: center;
+  padding: 60px 20px;
+  background: #f8f9fa;
+  border-radius: 12px;
+  border: 3px dashed #ffd700;
+  margin: 20px 0;
+}
+
+.hk-room-no-results-icon {
+  font-size: 48px;
+  color: #ffd700;
+  margin-bottom: 20px;
+  animation: bounce 2s infinite;
+}
+
+@keyframes bounce {
+  0%, 100% { transform: translateY(0); }
+  50% { transform: translateY(-10px); }
+}
+
+.hk-room-no-results h3 {
+  color: #333;
+  margin-bottom: 10px;
+  font-size: 24px;
+}
+
+.hk-room-no-results p {
+  color: #666;
+  font-size: 16px;
+}
+
+/* Table Footer */
+.hk-room-table-footer {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  margin-top: 25px;
+  padding-top: 20px;
+  border-top: 3px solid #ffecb3;
+}
+
+.hk-room-pagination {
+  display: flex;
+  align-items: center;
+  gap: 15px;
+}
+
+.hk-room-page-btn {
+  padding: 10px 20px;
+  background: white;
+  color: #333;
+  border: 3px solid #ffd700;
+  border-radius: 10px;
+  font-size: 14px;
+  font-weight: 700;
+  cursor: pointer;
+  transition: all 0.3s ease;
+}
+
+.hk-room-page-btn:hover {
+  background: #fff9c4;
+  transform: translateY(-2px);
+}
+
+.hk-room-page-info {
+  color: #666;
+  font-weight: 700;
+  font-size: 16px;
+}
+
+.hk-room-summary {
+  display: flex;
+  gap: 25px;
+}
+
+.hk-room-summary-stats {
+  display: flex;
+  gap: 25px;
+}
+
+.hk-room-summary-item {
+  display: flex;
+  align-items: center;
+  gap: 10px;
+  color: #333;
+  font-weight: 700;
+  font-size: 16px;
+}
+
+.hk-room-summary-dot {
+  width: 12px;
+  height: 12px;
+  border-radius: 50%;
+}
+
+.hk-room-summary-occupied { background: #ff5252; }
+.hk-room-summary-vacant { background: #4caf50; }
+.hk-room-summary-cleaned { background: #2196f3; }
+
+/* Quick Operations */
+.hk-room-quick-ops {
+  background: white;
+  padding: 28px;
+  border-radius: 16px;
+  box-shadow: 0 6px 20px rgba(0, 0, 0, 0.1);
+  border: 3px solid #ffecb3;
+}
+
+.hk-room-ops-grid {
+  display: grid;
+  grid-template-columns: repeat(auto-fit, minmax(200px, 1fr));
+  gap: 20px;
+}
+
+.hk-room-op-btn {
+  padding: 18px 24px;
+  border: none;
+  border-radius: 12px;
+  font-size: 16px;
+  font-weight: 800;
+  cursor: pointer;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  gap: 12px;
+  transition: all 0.3s cubic-bezier(0.4, 0, 0.2, 1);
+  text-align: center;
+  height: 60px;
+  box-shadow: 0 4px 10px rgba(0, 0, 0, 0.15);
+  text-transform: uppercase;
+  letter-spacing: 1px;
+}
+
+.hk-room-op-checkout {
+  background: linear-gradient(135deg, #ff5252 0%, #d32f2f 100%);
+  color: white;
+  border: 3px solid #d32f2f;
+}
+
+.hk-room-op-cleaning {
+  background: linear-gradient(135deg, #fdd835 0%, #ffc400 100%);
+  color: #000;
+  border: 3px solid #ffd700;
+}
+
+.hk-room-op-maintenance {
+  background: linear-gradient(135deg, #ff9800 0%, #f57c00 100%);
+  color: white;
+  border: 3px solid #f57c00;
+}
+
+.hk-room-op-report {
+  background: linear-gradient(135deg, #2196f3 0%, #1976d2 100%);
+  color: white;
+  border: 3px solid #1976d2;
+}
+
+.hk-room-op-notify {
+  background: linear-gradient(135deg, #9c27b0 0%, #7b1fa2 100%);
+  color: white;
+  border: 3px solid #7b1fa2;
+}
+
+.hk-room-op-btn:hover {
+  transform: translateY(-6px) scale(1.05);
+  box-shadow: 0 10px 25px rgba(0, 0, 0, 0.25);
+}
+
+/* Responsive Design */
+@media (max-width: 1600px) {
+  .hk-room-table {
+    min-width: 1200px;
+  }
+}
+
+@media (max-width: 1400px) {
+  .hk-room-filters-section {
+    flex-direction: column;
+  }
+  
+  .hk-room-filter-group {
+    justify-content: center;
+  }
+}
+
+@media (max-width: 1200px) {
+  .hk-room-stats-grid {
+    grid-template-columns: repeat(2, 1fr);
+  }
+  
+  .hk-room-ward-grid {
+    grid-template-columns: repeat(2, 1fr);
+  }
+  
+  .hk-room-ops-grid {
+    grid-template-columns: repeat(3, 1fr);
+  }
+}
+
+@media (max-width: 992px) {
+  .hk-room-header {
+    flex-direction: column;
+    gap: 25px;
+    text-align: center;
+  }
+  
+  .hk-room-header-actions {
+    flex-wrap: wrap;
+    justify-content: center;
+  }
+  
+  .hk-room-stats-grid {
+    grid-template-columns: 1fr;
+  }
+  
+  .hk-room-ward-grid {
+    grid-template-columns: 1fr;
+  }
+  
+  .hk-room-filter-group {
+    flex-direction: column;
+    align-items: stretch;
+  }
+  
+  .hk-room-filter-select {
+    width: 100%;
+  }
+  
+  .hk-room-ops-grid {
+    grid-template-columns: repeat(2, 1fr);
+  }
+}
+
+@media (max-width: 768px) {
+  .hk-room-container {
+    padding: 15px;
+  }
+  
+  .hk-room-title {
+    font-size: 28px;
+  }
+  
+  .hk-room-section-title {
+    font-size: 20px;
+  }
+  
+  .hk-room-table-header {
+    flex-direction: column;
+    gap: 15px;
+    text-align: center;
+  }
+  
+  .hk-room-table-footer {
+    flex-direction: column;
+    gap: 20px;
+    text-align: center;
+  }
+  
+  .hk-room-summary-stats {
+    flex-direction: column;
+    gap: 15px;
+  }
+  
+  .hk-room-ops-grid {
+    grid-template-columns: 1fr;
+  }
+}
+
+@media (max-width: 576px) {
+  .hk-room-title {
+    font-size: 24px;
+    flex-direction: column;
+    gap: 10px;
+  }
+  
+  .hk-room-title-icon {
+    font-size: 32px;
+  }
+  
+  .hk-room-btn-primary,
+  .hk-room-btn-secondary {
+    padding: 12px 18px;
+    font-size: 14px;
+  }
+  
+  .hk-room-action-buttons {
+    grid-template-columns: repeat(2, 1fr);
+  }
+}

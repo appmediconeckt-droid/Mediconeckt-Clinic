@@ -1,0 +1,1695 @@
+/* Reset and Base Styles */
+.entcare-container {
+  font-family: 'Inter', -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, sans-serif;
+  line-height: 1.6;
+  color: #1f2937;
+  overflow-x: hidden;
+}
+
+* {
+  margin: 0;
+  padding: 0;
+  box-sizing: border-box;
+}
+
+/* Navigation Styles */
+.entcare-navbar {
+  position: fixed;
+  top: 0;
+  left: 0;
+  right: 0;
+  background: rgba(255, 255, 255, 0.95);
+  backdrop-filter: blur(10px);
+  border-bottom: 1px solid rgba(229, 231, 235, 0.8);
+  z-index: 1000;
+  padding: 1rem 0;
+}
+
+.entcare-nav-container {
+  max-width: 1280px;
+  margin: 0 auto;
+  padding: 0 2rem;
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+}
+
+.entcare-logo {
+  display: flex;
+  align-items: center;
+  gap: 1rem;
+}
+
+.entcare-logo-icon {
+  font-size: 2rem;
+}
+
+.entcare-logo-text {
+  display: flex;
+  flex-direction: column;
+}
+
+.entcare-logo-title {
+  font-size: 1.5rem;
+  font-weight: 700;
+  color: #1e40af;
+  line-height: 1.2;
+}
+
+.entcare-logo-subtitle {
+  font-size: 0.875rem;
+  color: #6b7280;
+  font-weight: 500;
+}
+
+.entcare-menu-btn {
+  display: none;
+  flex-direction: column;
+  gap: 4px;
+  background: none;
+  border: none;
+  cursor: pointer;
+  padding: 8px;
+  z-index: 1001;
+}
+
+.entcare-menu-line {
+  width: 24px;
+  height: 2px;
+  background: #1e40af;
+  transition: all 0.3s ease;
+  border-radius: 2px;
+}
+
+.entcare-menu-active .entcare-line-1 {
+  transform: rotate(45deg) translate(5px, 5px);
+}
+
+.entcare-menu-active .entcare-line-2 {
+  opacity: 0;
+}
+
+.entcare-menu-active .entcare-line-3 {
+  transform: rotate(-45deg) translate(7px, -6px);
+}
+
+.entcare-nav-menu {
+  display: flex;
+  align-items: center;
+}
+
+.entcare-nav-list {
+  display: flex;
+  list-style: none;
+  gap: 2rem;
+  align-items: center;
+}
+
+.entcare-nav-link {
+  text-decoration: none;
+  color: #4b5563;
+  font-weight: 500;
+  transition: color 0.2s ease;
+  padding: 0.5rem 0;
+  position: relative;
+}
+
+.entcare-nav-link:hover {
+  color: #1e40af;
+}
+
+.entcare-nav-link::after {
+  content: '';
+  position: absolute;
+  bottom: 0;
+  left: 0;
+  width: 0;
+  height: 2px;
+  background: #1e40af;
+  transition: width 0.3s ease;
+}
+
+.entcare-nav-link:hover::after {
+  width: 100%;
+}
+
+.entcare-nav-cta {
+  background: linear-gradient(135deg, #1e40af, #3b82f6);
+  color: white;
+  padding: 0.75rem 1.5rem;
+  border-radius: 8px;
+  text-decoration: none;
+  font-weight: 600;
+  transition: all 0.3s ease;
+  border: none;
+  cursor: pointer;
+}
+
+.entcare-nav-cta:hover {
+  transform: translateY(-2px);
+  box-shadow: 0 10px 25px rgba(30, 64, 175, 0.2);
+}
+
+/* Hero Section */
+.entcare-hero {
+  padding-top: 100px;
+  padding-bottom: 4rem;
+  position: relative;
+  background: linear-gradient(135deg, #f0f9ff 0%, #e0f2fe 100%);
+  overflow: hidden;
+}
+
+.entcare-hero-background {
+  position: absolute;
+  top: 0;
+  left: 0;
+  right: 0;
+  bottom: 0;
+  overflow: hidden;
+}
+
+.entcare-hero-gradient {
+  position: absolute;
+  top: -50%;
+  right: -20%;
+  width: 70%;
+  height: 150%;
+  background: radial-gradient(circle, rgba(59, 130, 246, 0.1) 0%, rgba(59, 130, 246, 0) 70%);
+}
+
+.entcare-hero-pattern {
+  position: absolute;
+  top: 0;
+  left: 0;
+  right: 0;
+  bottom: 0;
+  background-image: url("data:image/svg+xml,%3Csvg width='60' height='60' viewBox='0 0 60 60' xmlns='http://www.w3.org/2000/svg'%3E%3Cg fill='none' fill-rule='evenodd'%3E%3Cg fill='%239C92AC' fill-opacity='0.05'%3E%3Cpath d='M36 34v-4h-2v4h-4v2h4v4h2v-4h4v-2h-4zm0-30V0h-2v4h-4v2h4v4h2V6h4V4h-4zM6 34v-4H4v4H0v2h4v4h2v-4h4v-2H6zM6 4V0H4v4H0v2h4v4h2V6h4V4H6z'/%3E%3C/g%3E%3C/g%3E%3C/svg%3E");
+}
+
+.entcare-hero-content {
+  max-width: 1280px;
+  margin: 0 auto;
+  padding: 0 2rem;
+  display: grid;
+  grid-template-columns: 1fr 1fr;
+  gap: 4rem;
+  align-items: center;
+  position: relative;
+  z-index: 1;
+}
+
+.entcare-hero-text {
+  max-width: 600px;
+}
+
+.entcare-hero-badge {
+  display: inline-block;
+  background: rgba(30, 64, 175, 0.1);
+  color: #1e40af;
+  padding: 0.5rem 1rem;
+  border-radius: 2rem;
+  font-size: 0.875rem;
+  font-weight: 600;
+  margin-bottom: 1.5rem;
+}
+
+.entcare-hero-title {
+  font-size: 3rem;
+  font-weight: 700;
+  line-height: 1.2;
+  color: #111827;
+  margin-bottom: 1.5rem;
+}
+
+.entcare-hero-description {
+  font-size: 1.125rem;
+  color: #4b5563;
+  margin-bottom: 2rem;
+  line-height: 1.7;
+}
+
+.entcare-hero-actions {
+  display: flex;
+  gap: 1rem;
+  flex-wrap: wrap;
+}
+
+.entcare-btn {
+  display: inline-flex;
+  align-items: center;
+  gap: 0.75rem;
+  padding: 1rem 2rem;
+  border-radius: 8px;
+  text-decoration: none;
+  font-weight: 600;
+  font-size: 1rem;
+  transition: all 0.3s ease;
+  border: none;
+  cursor: pointer;
+}
+
+.entcare-btn-primary {
+  background: linear-gradient(135deg, #1e40af, #3b82f6);
+  color: white;
+}
+
+.entcare-btn-primary:hover {
+  transform: translateY(-2px);
+  box-shadow: 0 10px 25px rgba(30, 64, 175, 0.3);
+}
+
+.entcare-btn-secondary {
+  background: white;
+  color: #1e40af;
+  border: 2px solid #dbeafe;
+}
+
+.entcare-btn-secondary:hover {
+  border-color: #3b82f6;
+  transform: translateY(-2px);
+  box-shadow: 0 10px 25px rgba(59, 130, 246, 0.1);
+}
+
+.entcare-btn-icon {
+  font-size: 1.25rem;
+}
+
+.entcare-hero-visual {
+  display: flex;
+  justify-content: center;
+  align-items: center;
+}
+
+.entcare-visual-main {
+  position: relative;
+  width: 400px;
+  height: 400px;
+}
+
+.entcare-visual-element {
+  position: absolute;
+  width: 80px;
+  height: 80px;
+  border-radius: 20px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  font-size: 2.5rem;
+  animation: float 6s ease-in-out infinite;
+}
+
+.entcare-element-1 {
+  top: 20%;
+  left: 10%;
+  background: linear-gradient(135deg, #dbeafe, #93c5fd);
+  animation-delay: 0s;
+}
+
+.entcare-element-2 {
+  top: 60%;
+  left: 5%;
+  background: linear-gradient(135deg, #d1fae5, #a7f3d0);
+  animation-delay: 1s;
+}
+
+.entcare-element-3 {
+  top: 30%;
+  right: 10%;
+  background: linear-gradient(135deg, #f3e8ff, #e9d5ff);
+  animation-delay: 2s;
+}
+
+.entcare-element-4 {
+  bottom: 20%;
+  right: 15%;
+  background: linear-gradient(135deg, #fef3c7, #fde68a);
+  animation-delay: 3s;
+}
+
+@keyframes float {
+  0%, 100% { transform: translateY(0px); }
+  50% { transform: translateY(-20px); }
+}
+
+.entcare-hero-stats {
+  max-width: 1280px;
+  margin: 4rem auto 0;
+  padding: 0 2rem;
+  display: grid;
+  grid-template-columns: repeat(auto-fit, minmax(200px, 1fr));
+  gap: 2rem;
+}
+
+.entcare-stat-card {
+  background: white;
+  padding: 2rem;
+  border-radius: 16px;
+  box-shadow: 0 4px 20px rgba(0, 0, 0, 0.05);
+  text-align: center;
+  transition: transform 0.3s ease;
+}
+
+.entcare-stat-card:hover {
+  transform: translateY(-5px);
+}
+
+.entcare-stat-content {
+  display: flex;
+  flex-direction: column;
+  gap: 0.5rem;
+}
+
+.entcare-stat-number {
+  font-size: 2.5rem;
+  font-weight: 700;
+  background: linear-gradient(135deg, #1e40af, #3b82f6);
+  -webkit-background-clip: text;
+  -webkit-text-fill-color: transparent;
+  background-clip: text;
+}
+
+.entcare-stat-label {
+  color: #6b7280;
+  font-size: 0.875rem;
+  font-weight: 500;
+}
+
+/* Services Section */
+.entcare-services {
+  padding: 6rem 2rem;
+  background: white;
+}
+
+.entcare-section-header {
+  text-align: center;
+  max-width: 800px;
+  margin: 0 auto 4rem;
+}
+
+.entcare-section-badge {
+  display: inline-block;
+  background: rgba(30, 64, 175, 0.1);
+  color: #1e40af;
+  padding: 0.5rem 1rem;
+  border-radius: 2rem;
+  font-size: 0.875rem;
+  font-weight: 600;
+  margin-bottom: 1rem;
+}
+
+.entcare-section-title {
+  font-size: 2.5rem;
+  font-weight: 700;
+  color: #111827;
+  margin-bottom: 1rem;
+}
+
+.entcare-section-subtitle {
+  font-size: 1.125rem;
+  color: #6b7280;
+  line-height: 1.6;
+}
+
+.entcare-services-grid {
+  max-width: 1280px;
+  margin: 0 auto;
+  display: grid;
+  grid-template-columns: repeat(auto-fit, minmax(280px, 1fr));
+  gap: 2rem;
+}
+
+.entcare-service-card {
+  background: white;
+  padding: 2rem;
+  border-radius: 16px;
+  border: 1px solid #e5e7eb;
+  transition: all 0.3s ease;
+  position: relative;
+  overflow: hidden;
+}
+
+.entcare-service-card:hover {
+  border-color: #3b82f6;
+  transform: translateY(-5px);
+  box-shadow: 0 20px 40px rgba(59, 130, 246, 0.1);
+}
+
+.entcare-service-card::before {
+  content: '';
+  position: absolute;
+  top: 0;
+  left: 0;
+  right: 0;
+  height: 4px;
+  background: linear-gradient(90deg, #3b82f6, #8b5cf6);
+  transform: scaleX(0);
+  transition: transform 0.3s ease;
+}
+
+.entcare-service-card:hover::before {
+  transform: scaleX(1);
+}
+
+.entcare-service-icon-wrapper {
+  width: 64px;
+  height: 64px;
+  border-radius: 16px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  margin-bottom: 1.5rem;
+}
+
+.entcare-service-icon {
+  font-size: 2rem;
+}
+
+.entcare-service-name {
+  font-size: 1.25rem;
+  font-weight: 600;
+  color: #111827;
+  margin-bottom: 0.75rem;
+}
+
+.entcare-service-description {
+  color: #6b7280;
+  font-size: 0.9375rem;
+  line-height: 1.6;
+  margin-bottom: 1.5rem;
+}
+
+.entcare-service-link {
+  display: inline-flex;
+  align-items: center;
+  gap: 0.5rem;
+  color: #1e40af;
+  text-decoration: none;
+  font-weight: 500;
+  font-size: 0.9375rem;
+  transition: gap 0.3s ease;
+}
+
+.entcare-service-link:hover {
+  gap: 0.75rem;
+}
+
+.entcare-link-arrow {
+  transition: transform 0.3s ease;
+}
+
+.entcare-service-link:hover .entcare-link-arrow {
+  transform: translateX(5px);
+}
+
+/* Conditions Section */
+.entcare-conditions {
+  padding: 6rem 2rem;
+  background: linear-gradient(135deg, #f8fafc 0%, #f1f5f9 100%);
+}
+
+.entcare-conditions-container {
+  max-width: 1280px;
+  margin: 0 auto;
+  display: grid;
+  grid-template-columns: 1fr 1fr;
+  gap: 4rem;
+  align-items: start;
+}
+
+.entcare-conditions-content {
+  max-width: 600px;
+}
+
+.entcare-conditions-badge {
+  display: inline-block;
+  background: rgba(30, 64, 175, 0.1);
+  color: #1e40af;
+  padding: 0.5rem 1rem;
+  border-radius: 2rem;
+  font-size: 0.875rem;
+  font-weight: 600;
+  margin-bottom: 1rem;
+}
+
+.entcare-conditions-title {
+  font-size: 2.5rem;
+  font-weight: 700;
+  color: #111827;
+  margin-bottom: 1rem;
+}
+
+.entcare-conditions-description {
+  font-size: 1.125rem;
+  color: #6b7280;
+  line-height: 1.6;
+  margin-bottom: 3rem;
+}
+
+.entcare-conditions-grid {
+  display: grid;
+  grid-template-columns: repeat(auto-fit, minmax(250px, 1fr));
+  gap: 1.5rem;
+}
+
+.entcare-condition-card {
+  background: white;
+  padding: 1.5rem;
+  border-radius: 12px;
+  border: 1px solid #e5e7eb;
+  display: flex;
+  align-items: center;
+  gap: 1rem;
+  transition: all 0.3s ease;
+}
+
+.entcare-condition-card:hover {
+  border-color: #3b82f6;
+  transform: translateY(-3px);
+  box-shadow: 0 10px 25px rgba(59, 130, 246, 0.1);
+}
+
+.entcare-condition-icon {
+  font-size: 2rem;
+  flex-shrink: 0;
+}
+
+.entcare-condition-info {
+  flex: 1;
+}
+
+.entcare-condition-name {
+  font-size: 1rem;
+  font-weight: 600;
+  color: #111827;
+  margin-bottom: 0.25rem;
+}
+
+.entcare-condition-area {
+  display: inline-block;
+  background: rgba(30, 64, 175, 0.1);
+  color: #1e40af;
+  padding: 0.25rem 0.75rem;
+  border-radius: 1rem;
+  font-size: 0.75rem;
+  font-weight: 500;
+  margin-bottom: 0.5rem;
+}
+
+.entcare-condition-desc {
+  font-size: 0.875rem;
+  color: #6b7280;
+  line-height: 1.4;
+}
+
+.entcare-conditions-visual {
+  position: relative;
+}
+
+.entcare-specialties {
+  background: white;
+  padding: 2rem;
+  border-radius: 16px;
+  box-shadow: 0 4px 20px rgba(0, 0, 0, 0.08);
+  position: sticky;
+  top: 120px;
+}
+
+.entcare-specialties-header {
+  display: flex;
+  align-items: center;
+  gap: 1rem;
+  margin-bottom: 2rem;
+}
+
+.entcare-specialties-icon {
+  font-size: 2rem;
+}
+
+.entcare-specialties-title {
+  font-size: 1.5rem;
+  font-weight: 600;
+  color: #111827;
+}
+
+.entcare-specialties-list {
+  display: flex;
+  flex-direction: column;
+  gap: 1.5rem;
+}
+
+.entcare-specialty {
+  display: flex;
+  align-items: center;
+  gap: 1rem;
+  padding: 1rem;
+  border-radius: 12px;
+  background: #f8fafc;
+  transition: all 0.3s ease;
+}
+
+.entcare-specialty:hover {
+  background: #f1f5f9;
+  transform: translateX(5px);
+}
+
+.entcare-specialty-icon {
+  font-size: 1.5rem;
+  flex-shrink: 0;
+}
+
+.entcare-specialty-content {
+  flex: 1;
+}
+
+.entcare-specialty-content h4 {
+  font-size: 1rem;
+  font-weight: 600;
+  color: #111827;
+  margin-bottom: 0.25rem;
+}
+
+.entcare-specialty-content p {
+  font-size: 0.875rem;
+  color: #6b7280;
+}
+
+/* Treatments Section */
+.entcare-treatments {
+  padding: 6rem 2rem;
+  background: white;
+}
+
+.entcare-treatments-grid {
+  max-width: 1280px;
+  margin: 0 auto 4rem;
+  display: grid;
+  grid-template-columns: repeat(auto-fit, minmax(280px, 1fr));
+  gap: 2rem;
+}
+
+.entcare-treatment-card {
+  background: white;
+  padding: 2rem;
+  border-radius: 16px;
+  border: 1px solid #e5e7eb;
+  text-align: center;
+  transition: all 0.3s ease;
+}
+
+.entcare-treatment-card:hover {
+  border-color: #3b82f6;
+  transform: translateY(-5px);
+  box-shadow: 0 20px 40px rgba(59, 130, 246, 0.1);
+}
+
+.entcare-treatment-icon {
+  width: 80px;
+  height: 80px;
+  margin: 0 auto 1.5rem;
+  background: linear-gradient(135deg, #dbeafe, #93c5fd);
+  border-radius: 50%;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+}
+
+.entcare-treatment-icon-inner {
+  font-size: 2rem;
+}
+
+.entcare-treatment-name {
+  font-size: 1.25rem;
+  font-weight: 600;
+  color: #111827;
+  margin-bottom: 0.75rem;
+}
+
+.entcare-treatment-description {
+  color: #6b7280;
+  font-size: 0.9375rem;
+  line-height: 1.6;
+}
+
+.entcare-technology {
+  max-width: 1280px;
+  margin: 0 auto;
+  background: linear-gradient(135deg, #1e40af, #3b82f6);
+  padding: 3rem;
+  border-radius: 24px;
+  color: white;
+}
+
+.entcare-technology-content {
+  text-align: center;
+}
+
+.entcare-technology-title {
+  font-size: 2rem;
+  font-weight: 700;
+  margin-bottom: 2rem;
+}
+
+.entcare-technology-features {
+  display: grid;
+  grid-template-columns: repeat(auto-fit, minmax(200px, 1fr));
+  gap: 2rem;
+}
+
+.entcare-technology-feature {
+  display: flex;
+  align-items: center;
+  gap: 1rem;
+  font-size: 1rem;
+  font-weight: 500;
+}
+
+.entcare-tech-icon {
+  font-size: 1.5rem;
+  flex-shrink: 0;
+}
+
+/* Doctors Section */
+.entcare-doctors {
+  padding: 6rem 2rem;
+  background: #f8fafc;
+}
+
+.entcare-doctors-grid {
+  max-width: 1280px;
+  margin: 0 auto;
+  display: grid;
+  grid-template-columns: repeat(auto-fit, minmax(350px, 1fr));
+  gap: 2rem;
+}
+
+.entcare-doctor-card {
+  background: white;
+  padding: 2rem;
+  border-radius: 16px;
+  box-shadow: 0 4px 20px rgba(0, 0, 0, 0.05);
+  transition: all 0.3s ease;
+}
+
+.entcare-doctor-card:hover {
+  transform: translateY(-5px);
+  box-shadow: 0 20px 40px rgba(0, 0, 0, 0.1);
+}
+
+.entcare-doctor-header {
+  display: flex;
+  gap: 1.5rem;
+  margin-bottom: 2rem;
+}
+
+.entcare-doctor-image {
+  flex-shrink: 0;
+}
+
+.entcare-doctor-avatar {
+  width: 100px;
+  height: 100px;
+  background: linear-gradient(135deg, #dbeafe, #93c5fd);
+  border-radius: 50%;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  margin-bottom: 1rem;
+}
+
+.entcare-avatar-icon {
+  font-size: 3rem;
+}
+
+.entcare-doctor-badge {
+  background: #10b981;
+  color: white;
+  padding: 0.25rem 0.75rem;
+  border-radius: 1rem;
+  font-size: 0.75rem;
+  font-weight: 500;
+  display: flex;
+  align-items: center;
+  gap: 0.25rem;
+  justify-content: center;
+}
+
+.entcare-badge-icon {
+  font-size: 0.875rem;
+}
+
+.entcare-doctor-info {
+  flex: 1;
+}
+
+.entcare-doctor-name {
+  font-size: 1.5rem;
+  font-weight: 700;
+  color: #111827;
+  margin-bottom: 0.25rem;
+}
+
+.entcare-doctor-education {
+  color: #1e40af;
+  font-size: 0.875rem;
+  font-weight: 600;
+  margin-bottom: 0.25rem;
+}
+
+.entcare-doctor-specialty {
+  color: #6b7280;
+  font-size: 0.9375rem;
+  margin-bottom: 1rem;
+}
+
+.entcare-doctor-details {
+  display: flex;
+  gap: 1rem;
+  flex-wrap: wrap;
+}
+
+.entcare-doctor-detail {
+  display: flex;
+  align-items: center;
+  gap: 0.5rem;
+  font-size: 0.875rem;
+  color: #4b5563;
+}
+
+.entcare-detail-icon {
+  font-size: 1rem;
+}
+
+.entcare-doctor-expertise {
+  margin-bottom: 1.5rem;
+}
+
+.entcare-doctor-expertise h4 {
+  font-size: 0.9375rem;
+  font-weight: 600;
+  color: #4b5563;
+  margin-bottom: 0.75rem;
+}
+
+.entcare-expertise-tags {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 0.5rem;
+}
+
+.entcare-expertise-tag {
+  background: #f3f4f6;
+  color: #4b5563;
+  padding: 0.375rem 0.75rem;
+  border-radius: 1rem;
+  font-size: 0.8125rem;
+  font-weight: 500;
+}
+
+.entcare-doctor-philosophy {
+  background: #f0f9ff;
+  padding: 1rem;
+  border-radius: 12px;
+  margin-bottom: 1.5rem;
+  display: flex;
+  gap: 1rem;
+}
+
+.entcare-philosophy-icon {
+  font-size: 1.25rem;
+  flex-shrink: 0;
+  color: #1e40af;
+}
+
+.entcare-philosophy-text {
+  font-size: 0.9375rem;
+  font-style: italic;
+  color: #4b5563;
+  line-height: 1.6;
+}
+
+.entcare-doctor-consult {
+  display: block;
+  text-align: center;
+  background: linear-gradient(135deg, #1e40af, #3b82f6);
+  color: white;
+  padding: 1rem;
+  border-radius: 8px;
+  text-decoration: none;
+  font-weight: 600;
+  transition: all 0.3s ease;
+}
+
+.entcare-doctor-consult:hover {
+  transform: translateY(-2px);
+  box-shadow: 0 10px 25px rgba(30, 64, 175, 0.3);
+}
+
+/* Testimonials */
+.entcare-testimonials {
+  padding: 6rem 2rem;
+  background: white;
+}
+
+.entcare-testimonials-container {
+  max-width: 1280px;
+  margin: 0 auto;
+}
+
+.entcare-testimonials-header {
+  text-align: center;
+  max-width: 800px;
+  margin: 0 auto 4rem;
+}
+
+.entcare-testimonials-badge {
+  display: inline-block;
+  background: rgba(30, 64, 175, 0.1);
+  color: #1e40af;
+  padding: 0.5rem 1rem;
+  border-radius: 2rem;
+  font-size: 0.875rem;
+  font-weight: 600;
+  margin-bottom: 1rem;
+}
+
+.entcare-testimonials-title {
+  font-size: 2.5rem;
+  font-weight: 700;
+  color: #111827;
+  margin-bottom: 1rem;
+}
+
+.entcare-testimonials-subtitle {
+  font-size: 1.125rem;
+  color: #6b7280;
+  line-height: 1.6;
+}
+
+.entcare-testimonials-grid {
+  display: grid;
+  grid-template-columns: repeat(auto-fit, minmax(300px, 1fr));
+  gap: 2rem;
+}
+
+.entcare-testimonial-card {
+  background: white;
+  padding: 2rem;
+  border-radius: 16px;
+  border: 1px solid #e5e7eb;
+  transition: all 0.3s ease;
+}
+
+.entcare-testimonial-card:hover {
+  border-color: #3b82f6;
+  transform: translateY(-5px);
+  box-shadow: 0 20px 40px rgba(59, 130, 246, 0.1);
+}
+
+.entcare-testimonial-header {
+  display: flex;
+  justify-content: space-between;
+  align-items: start;
+  margin-bottom: 1.5rem;
+}
+
+.entcare-testimonial-rating {
+  display: flex;
+  gap: 0.25rem;
+}
+
+.entcare-rating-star {
+  color: #e5e7eb;
+  font-size: 1.25rem;
+}
+
+.entcare-star-active {
+  color: #f59e0b;
+}
+
+.entcare-testimonial-condition {
+  background: rgba(30, 64, 175, 0.1);
+  color: #1e40af;
+  padding: 0.25rem 0.75rem;
+  border-radius: 1rem;
+  font-size: 0.75rem;
+  font-weight: 500;
+}
+
+.entcare-testimonial-text {
+  font-size: 1rem;
+  color: #4b5563;
+  line-height: 1.7;
+  font-style: italic;
+  margin-bottom: 2rem;
+  quotes: "“" "”";
+}
+
+.entcare-testimonial-text::before {
+  content: open-quote;
+  color: #3b82f6;
+  font-size: 2rem;
+  line-height: 0;
+  margin-right: 0.25rem;
+}
+
+.entcare-testimonial-author {
+  display: flex;
+  align-items: center;
+  gap: 1rem;
+}
+
+.entcare-author-avatar {
+  width: 48px;
+  height: 48px;
+  background: linear-gradient(135deg, #1e40af, #3b82f6);
+  color: white;
+  border-radius: 50%;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  font-weight: 600;
+  flex-shrink: 0;
+}
+
+.entcare-author-info {
+  flex: 1;
+}
+
+.entcare-author-name {
+  font-size: 1rem;
+  font-weight: 600;
+  color: #111827;
+  margin-bottom: 0.25rem;
+}
+
+.entcare-author-details {
+  display: flex;
+  gap: 1rem;
+  font-size: 0.875rem;
+  color: #6b7280;
+}
+
+.entcare-author-success {
+  color: #10b981;
+  font-weight: 500;
+}
+
+/* Appointment Section */
+.entcare-appointment {
+  padding: 6rem 2rem;
+  background: linear-gradient(135deg, #f0f9ff 0%, #e0f2fe 100%);
+}
+
+.entcare-appointment-container {
+  max-width: 1280px;
+  margin: 0 auto;
+  display: grid;
+  grid-template-columns: 1fr 1fr;
+  gap: 4rem;
+}
+
+.entcare-appointment-form {
+  background: white;
+  padding: 3rem;
+  border-radius: 24px;
+  box-shadow: 0 20px 60px rgba(0, 0, 0, 0.08);
+}
+
+.entcare-form-header {
+  margin-bottom: 2rem;
+}
+
+.entcare-form-title {
+  font-size: 2rem;
+  font-weight: 700;
+  color: #111827;
+  margin-bottom: 0.5rem;
+}
+
+.entcare-form-subtitle {
+  font-size: 1.125rem;
+  color: #6b7280;
+}
+
+.entcare-booking-form {
+  display: flex;
+  flex-direction: column;
+  gap: 1.5rem;
+}
+
+.entcare-form-row {
+  display: grid;
+  grid-template-columns: 1fr 1fr;
+  gap: 1rem;
+}
+
+.entcare-form-group {
+  display: flex;
+  flex-direction: column;
+  gap: 0.5rem;
+}
+
+.entcare-form-label {
+  font-size: 0.875rem;
+  font-weight: 600;
+  color: #374151;
+}
+
+.entcare-form-input,
+.entcare-form-select,
+.entcare-form-textarea {
+  padding: 0.75rem 1rem;
+  border: 2px solid #e5e7eb;
+  border-radius: 8px;
+  font-size: 1rem;
+  transition: all 0.3s ease;
+  font-family: inherit;
+}
+
+.entcare-form-input:focus,
+.entcare-form-select:focus,
+.entcare-form-textarea:focus {
+  outline: none;
+  border-color: #3b82f6;
+  box-shadow: 0 0 0 3px rgba(59, 130, 246, 0.1);
+}
+
+.entcare-form-textarea {
+  resize: vertical;
+  min-height: 100px;
+}
+
+.entcare-form-urgency {
+  margin: 0.5rem 0;
+}
+
+.entcare-urgency-label {
+  display: flex;
+  align-items: center;
+  gap: 0.5rem;
+  cursor: pointer;
+}
+
+.entcare-urgency-label input[type="checkbox"] {
+  width: 18px;
+  height: 18px;
+  accent-color: #3b82f6;
+}
+
+.entcare-urgency-text {
+  font-size: 0.875rem;
+  color: #374151;
+  font-weight: 500;
+}
+
+.entcare-btn-submit {
+  background: linear-gradient(135deg, #1e40af, #3b82f6);
+  color: white;
+  border: none;
+  font-size: 1.125rem;
+  padding: 1.25rem;
+  justify-content: center;
+}
+
+.entcare-btn-submit:hover {
+  transform: translateY(-2px);
+  box-shadow: 0 15px 30px rgba(30, 64, 175, 0.3);
+}
+
+.entcare-submit-icon {
+  font-size: 1.5rem;
+}
+
+.entcare-form-notice {
+  text-align: center;
+  font-size: 0.875rem;
+  color: #6b7280;
+  margin-top: 1rem;
+}
+
+.entcare-appointment-info {
+  position: relative;
+}
+
+.entcare-info-card {
+  background: white;
+  padding: 2rem;
+  border-radius: 20px;
+  box-shadow: 0 10px 40px rgba(0, 0, 0, 0.05);
+  position: sticky;
+  top: 120px;
+}
+
+.entcare-info-header {
+  margin-bottom: 2rem;
+  padding-bottom: 2rem;
+  border-bottom: 2px solid #f3f4f6;
+}
+
+.entcare-info-title {
+  font-size: 1.75rem;
+  font-weight: 700;
+  color: #111827;
+  margin-bottom: 0.5rem;
+}
+
+.entcare-info-subtitle {
+  font-size: 1rem;
+  color: #6b7280;
+}
+
+.entcare-info-features {
+  display: flex;
+  flex-direction: column;
+  gap: 1.5rem;
+  margin-bottom: 2rem;
+}
+
+.entcare-info-feature {
+  display: flex;
+  gap: 1rem;
+  align-items: start;
+}
+
+.entcare-feature-icon {
+  font-size: 1.5rem;
+  flex-shrink: 0;
+}
+
+.entcare-info-feature h4 {
+  font-size: 1rem;
+  font-weight: 600;
+  color: #111827;
+  margin-bottom: 0.25rem;
+}
+
+.entcare-info-feature p {
+  font-size: 0.875rem;
+  color: #6b7280;
+}
+
+.entcare-clinic-hours {
+  margin-bottom: 2rem;
+  padding-bottom: 2rem;
+  border-bottom: 2px solid #f3f4f6;
+}
+
+.entcare-hours-title {
+  font-size: 1.25rem;
+  font-weight: 600;
+  color: #111827;
+  margin-bottom: 1rem;
+}
+
+.entcare-hours-grid {
+  display: flex;
+  flex-direction: column;
+  gap: 0.75rem;
+}
+
+.entcare-hour-item {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  padding: 0.75rem;
+  background: #f8fafc;
+  border-radius: 8px;
+}
+
+.entcare-hour-day {
+  font-weight: 500;
+  color: #374151;
+}
+
+.entcare-hour-time {
+  color: #6b7280;
+  font-size: 0.875rem;
+}
+
+.entcare-emergency {
+  background: #fef2f2;
+  border: 2px solid #fecaca;
+}
+
+.entcare-emergency .entcare-hour-day {
+  color: #dc2626;
+  font-weight: 600;
+}
+
+.entcare-emergency .entcare-hour-time {
+  color: #dc2626;
+  font-weight: 600;
+}
+
+.entcare-facility {
+  margin-bottom: 2rem;
+}
+
+.entcare-facility-title {
+  font-size: 1.25rem;
+  font-weight: 600;
+  color: #111827;
+  margin-bottom: 1rem;
+}
+
+.entcare-facility-features {
+  display: grid;
+  grid-template-columns: 1fr 1fr;
+  gap: 0.75rem;
+}
+
+.entcare-facility-feature {
+  display: flex;
+  align-items: center;
+  gap: 0.5rem;
+  font-size: 0.875rem;
+  color: #374151;
+}
+
+.entcare-facility-icon {
+  color: #10b981;
+  font-size: 1rem;
+}
+
+.entcare-contact-details {
+  display: flex;
+  flex-direction: column;
+  gap: 1rem;
+}
+
+.entcare-contact-item {
+  display: flex;
+  align-items: center;
+  gap: 1rem;
+  padding: 1rem;
+  background: #f8fafc;
+  border-radius: 12px;
+}
+
+.entcare-contact-icon {
+  font-size: 1.5rem;
+  flex-shrink: 0;
+}
+
+.entcare-contact-item h4 {
+  font-size: 0.9375rem;
+  font-weight: 600;
+  color: #111827;
+  margin-bottom: 0.25rem;
+}
+
+.entcare-contact-item p {
+  font-size: 0.875rem;
+  color: #6b7280;
+}
+
+/* Footer */
+.entcare-footer {
+  background: linear-gradient(135deg, #111827, #1f2937);
+  color: white;
+  padding: 4rem 2rem 2rem;
+}
+
+.entcare-footer-container {
+  max-width: 1280px;
+  margin: 0 auto;
+}
+
+.entcare-footer-main {
+  display: grid;
+  grid-template-columns: 1fr 2fr;
+  gap: 4rem;
+  margin-bottom: 3rem;
+}
+
+.entcare-footer-brand {
+  display: flex;
+  flex-direction: column;
+  gap: 1.5rem;
+}
+
+.entcare-footer-logo {
+  display: flex;
+  align-items: center;
+  gap: 1rem;
+}
+
+.entcare-footer-icon {
+  font-size: 2rem;
+}
+
+.entcare-footer-title {
+  font-size: 1.5rem;
+  font-weight: 700;
+  margin-bottom: 0.25rem;
+}
+
+.entcare-footer-tagline {
+  font-size: 0.875rem;
+  color: #d1d5db;
+}
+
+.entcare-footer-description {
+  font-size: 0.9375rem;
+  color: #9ca3af;
+  line-height: 1.6;
+}
+
+.entcare-footer-social {
+  display: flex;
+  gap: 1rem;
+}
+
+.entcare-social-link {
+  width: 40px;
+  height: 40px;
+  background: rgba(255, 255, 255, 0.1);
+  border-radius: 50%;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  text-decoration: none;
+  color: white;
+  transition: all 0.3s ease;
+}
+
+.entcare-social-link:hover {
+  background: rgba(59, 130, 246, 0.8);
+  transform: translateY(-3px);
+}
+
+.entcare-social-icon {
+  font-size: 1.25rem;
+}
+
+.entcare-footer-links {
+  display: grid;
+  grid-template-columns: repeat(3, 1fr);
+  gap: 3rem;
+}
+
+.entcare-footer-column {
+  display: flex;
+  flex-direction: column;
+  gap: 1rem;
+}
+
+.entcare-column-title {
+  font-size: 1rem;
+  font-weight: 600;
+  margin-bottom: 0.5rem;
+  color: white;
+}
+
+.entcare-footer-link {
+  text-decoration: none;
+  color: #d1d5db;
+  font-size: 0.875rem;
+  transition: color 0.3s ease;
+}
+
+.entcare-footer-link:hover {
+  color: #60a5fa;
+}
+
+.entcare-contact-info {
+  font-size: 0.875rem;
+  color: #d1d5db;
+  line-height: 1.6;
+  display: flex;
+  align-items: center;
+  gap: 0.5rem;
+}
+
+.entcare-contact-info::before {
+  font-size: 1rem;
+  margin-right: 0.5rem;
+}
+
+.entcare-footer-bottom {
+  padding-top: 2rem;
+  border-top: 1px solid rgba(255, 255, 255, 0.1);
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  flex-wrap: wrap;
+  gap: 1rem;
+}
+
+.entcare-copyright {
+  font-size: 0.875rem;
+  color: #9ca3af;
+}
+
+.entcare-footer-legal {
+  display: flex;
+  gap: 2rem;
+}
+
+.entcare-legal-link {
+  text-decoration: none;
+  color: #d1d5db;
+  font-size: 0.875rem;
+  transition: color 0.3s ease;
+}
+
+.entcare-legal-link:hover {
+  color: #60a5fa;
+}
+
+/* Responsive Design */
+@media (max-width: 1024px) {
+  .entcare-hero-content,
+  .entcare-conditions-container,
+  .entcare-appointment-container {
+    grid-template-columns: 1fr;
+    gap: 3rem;
+  }
+  
+  .entcare-footer-main {
+    grid-template-columns: 1fr;
+    gap: 3rem;
+  }
+  
+  .entcare-footer-links {
+    grid-template-columns: repeat(2, 1fr);
+  }
+}
+
+@media (max-width: 768px) {
+  .entcare-menu-btn {
+    display: flex;
+  }
+  
+  .entcare-nav-menu {
+    position: fixed;
+    top: 0;
+    right: -100%;
+    height: 100vh;
+    width: 300px;
+    background: white;
+    box-shadow: -10px 0 30px rgba(0, 0, 0, 0.1);
+    transition: right 0.3s ease;
+    padding-top: 100px;
+    padding-left: 2rem;
+  }
+  
+  .entcare-nav-show {
+    right: 0;
+  }
+  
+  .entcare-nav-list {
+    flex-direction: column;
+    align-items: flex-start;
+    gap: 1.5rem;
+  }
+  
+  .entcare-hero-title {
+    font-size: 2.5rem;
+  }
+  
+  .entcare-form-row,
+  .entcare-facility-features,
+  .entcare-footer-links {
+    grid-template-columns: 1fr;
+  }
+  
+  .entcare-hero-stats,
+  .entcare-services-grid,
+  .entcare-treatments-grid,
+  .entcare-doctors-grid,
+  .entcare-testimonials-grid {
+    grid-template-columns: 1fr;
+  }
+  
+  .entcare-hero-actions {
+    flex-direction: column;
+  }
+  
+  .entcare-btn {
+    width: 100%;
+    justify-content: center;
+  }
+  
+  .entcare-technology-features {
+    grid-template-columns: 1fr;
+    gap: 1rem;
+  }
+  
+  .entcare-footer-bottom {
+    flex-direction: column;
+    text-align: center;
+  }
+  
+  .entcare-footer-legal {
+    justify-content: center;
+    flex-wrap: wrap;
+    gap: 1rem;
+  }
+}
+
+@media (max-width: 480px) {
+  .entcare-hero-title {
+    font-size: 2rem;
+  }
+  
+  .entcare-section-title {
+    font-size: 2rem;
+  }
+  
+  .entcare-hero,
+  .entcare-services,
+  .entcare-conditions,
+  .entcare-treatments,
+  .entcare-doctors,
+  .entcare-testimonials,
+  .entcare-appointment {
+    padding: 3rem 1rem;
+  }
+  
+  .entcare-nav-container,
+  .entcare-hero-content,
+  .entcare-appointment-form {
+    padding-left: 1rem;
+    padding-right: 1rem;
+  }
+  
+  .entcare-appointment-form {
+    padding: 2rem 1rem;
+  }
+  
+  .entcare-technology {
+    padding: 2rem 1rem;
+  }
+  
+  .entcare-visual-main {
+    width: 300px;
+    height: 300px;
+  }
+  
+  .entcare-visual-element {
+    width: 60px;
+    height: 60px;
+    font-size: 2rem;
+  }
+}

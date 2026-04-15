@@ -1,0 +1,678 @@
+/* ============================================
+   RESPONSIVE NAVBAR - COMPLETE GUIDE
+   ============================================ */
+
+/* ========== BASE NAVBAR STYLES (Desktop First) ========== */
+.navbar {
+  position: fixed;
+  top: 0;
+  left: 0;
+  right: 0;
+  height: 60px;
+  z-index: 999;
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  padding: 0 15px;
+  transition: all 0.3s ease;
+}
+
+.nav-conte {
+  display: flex;
+  align-items: center;
+  width: 100%;
+  justify-content: space-between;
+}
+
+.nav-content {
+  display: flex;
+  align-items: center;
+  width: 100%;
+  justify-content: space-between;
+}
+
+.nav-brand {
+  display: flex;
+  align-items: center;
+  gap: 10px;
+  margin-bottom: 0 !important;
+}
+
+/* Logo Styles */
+.navbar-logo-full {
+  display: inline-block;
+  height: 35px;
+  transition: all 0.3s ease;
+}
+
+.navbar-logo-short {
+  display: none;
+  width: 40px;
+  height: 40px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  font-size: 24px;
+  font-weight: 700;
+  border-radius: 8px;
+  transition: all 0.3s ease;
+}
+
+/* Navbar Toggle Button - Hidden on Desktop */
+.navbar-toggle-btn {
+  display: none !important;
+  background: transparent !important;
+  border: none !important;
+  font-size: 24px !important;
+  cursor: pointer !important;
+  padding: 5px !important;
+  margin-right: 10px !important;
+  transition: all 0.3s ease !important;
+}
+
+.navbar-toggle-btn:hover {
+  transform: scale(1.2) !important;
+}
+
+/* Main Icon Container */
+.nav-main-icon {
+  display: flex;
+  align-items: center;
+  gap: 15px;
+  margin-bottom: 10px;
+}
+
+.emergency-container {
+  display: flex;
+  align-items: center;
+  position: relative;
+}
+
+.emergency-icon {
+  background: transparent !important;
+  border: none !important;
+  cursor: pointer !important;
+  padding: 5px !important;
+  border-radius: 50% !important;
+  transition: all 0.3s ease !important;
+  font-size: 20px !important;
+  margin-bottom: 0 !important;
+}
+
+.emergency-alert {
+  position: absolute;
+  top: -5px;
+  right: -5px;
+  width: 10px;
+  height: 10px;
+  border-radius: 50%;
+  background: #dc2626;
+  animation: pulse 1s infinite;
+}
+
+@keyframes pulse {
+  0% {
+    transform: scale(1);
+    opacity: 1;
+  }
+  50% {
+    transform: scale(1.2);
+    opacity: 0.7;
+  }
+  100% {
+    transform: scale(1);
+    opacity: 1;
+  }
+}
+
+/* Notification Badge */
+.notification-badge {
+  position: absolute;
+  top: -8px;
+  right: -8px;
+  background-color: #dc2626;
+  color: white;
+  border-radius: 50%;
+  width: 16px;
+  height: 16px;
+  font-size: 10px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  font-weight: 700;
+}
+
+/* Profile Element */
+.profile-element {
+  position: relative;
+  display: flex;
+  align-items: center;
+}
+
+.profile {
+  cursor: pointer !important;
+  transition: all 0.3s ease !important;
+}
+
+.profile img {
+  width: 40px !important;
+  height: 40px !important;
+  border-radius: 50% !important;
+  margin-top: 0 !important;
+  transition: all 0.3s ease !important;
+}
+
+.profile img:hover {
+  transform: scale(1.05) !important;
+}
+
+.superadmin-profile-badge {
+  position: absolute;
+  bottom: 40px;
+  right: 0;
+  background: #ffd700;
+  color: #000;
+  width: 16px;
+  height: 16px;
+  border-radius: 50%;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  font-size: 10px;
+  border: 2px solid #000;
+  animation: goldGlow 2s infinite alternate;
+}
+
+@keyframes goldGlow {
+  0% {
+    box-shadow: 0 0 5px rgba(255, 215, 0, 0.5);
+  }
+  100% {
+    box-shadow: 0 0 15px rgba(255, 215, 0, 0.8);
+  }
+}
+
+/* ========== RESPONSIVE BREAKPOINTS ========== */
+
+/* ========== TABLET (768px and below) ========== */
+@media (max-width: 768px) {
+  .navbar {
+    padding-left: 10px;
+    padding-right: 10px;
+  }
+
+  .navbar-toggle-btn {
+    display: flex !important;
+    margin-right: 8px !important;
+  }
+
+  .navbar-logo-full {
+    display: none;
+  }
+
+  .navbar-logo-short {
+    display: flex !important;
+    width: 35px !important;
+    height: 35px !important;
+    font-size: 20px !important;
+  }
+
+  .nav-brand {
+    margin-right: 10px;
+  }
+
+  .nav-main-icon {
+    gap: 12px;
+  }
+
+  /* Hide some icons on tablet */
+  .emergency-container {
+    display: none;
+  }
+}
+
+/* ========== MOBILE (480px and below) ========== */
+@media (max-width: 480px) {
+  .navbar {
+    padding: 0 8px;
+    height: 56px;
+  }
+
+  .navbar-toggle-btn {
+    display: flex !important;
+    margin-right: 6px !important;
+    font-size: 20px !important;
+  }
+
+  .navbar-logo-short {
+    display: flex !important;
+    width: 32px !important;
+    height: 32px !important;
+    font-size: 18px !important;
+    margin-right: 6px !important;
+  }
+
+  .nav-brand {
+    margin-right: 6px;
+  }
+
+  .nav-main-icon {
+    gap: 8px;
+    margin-bottom: 8px;
+  }
+
+  .profile img {
+    width: 36px !important;
+    height: 36px !important;
+  }
+
+  /* Hide emergency for very small screens */
+  .emergency-container {
+    display: none;
+  }
+}
+
+/* ========== SMALL DEVICES (360px and below) ========== */
+@media (max-width: 360px) {
+  .navbar {
+    height: 52px;
+    padding: 0 6px;
+  }
+
+  .navbar-toggle-btn {
+    font-size: 18px !important;
+    margin-right: 4px !important;
+  }
+
+  .navbar-logo-short {
+    width: 30px !important;
+    height: 30px !important;
+    font-size: 16px !important;
+  }
+
+  .profile img {
+    width: 32px !important;
+    height: 32px !important;
+  }
+}
+
+/* ========== DESKTOP (769px and above) - Full Logo ========== */
+@media (min-width: 769px) {
+  .navbar-toggle-btn {
+    display: none !important;
+  }
+
+  .navbar-logo-full {
+    display: inline-block !important;
+  }
+
+  .navbar-logo-short {
+    display: none !important;
+  }
+
+  .nav-brand {
+    margin-right: auto;
+  }
+
+  .emergency-container {
+    display: flex !important;
+  }
+}
+
+/* ========== THEME-SPECIFIC RESPONSIVE STYLES ========== */
+
+/* Doctor Theme */
+body.doctor-theme-navbar .navbar {
+  background-color: #a8d8ff !important;
+}
+
+body.doctor-theme-navbar .navbar-logo-short {
+  background: linear-gradient(135deg, #1e88e5 0%, #1565c0 100%) !important;
+  color: #ffffff !important;
+  box-shadow: 0 2px 8px rgba(30, 136, 229, 0.3) !important;
+}
+
+body.doctor-theme-navbar .navbar-toggle-btn {
+  color: #0d47a1 !important;
+}
+
+body.doctor-theme-navbar .fa-bell {
+  color: #121314ff !important;
+}
+
+body.doctor-theme-navbar .profile img {
+  border: 2px solid #101012ff !important;
+}
+
+/* Patient Theme */
+body.patient-theme-navbar .navbar {
+  background-color: #8af5aaff !important;
+}
+
+body.patient-theme-navbar .navbar-logo-short {
+  background: linear-gradient(135deg, #00897b 0%, #00695c 100%) !important;
+  color: #ffffff !important;
+  box-shadow: 0 2px 8px rgba(0, 137, 123, 0.3) !important;
+}
+
+body.patient-theme-navbar .navbar-toggle-btn {
+  color: #00695c !important;
+}
+
+body.patient-theme-navbar .fa-bell {
+  color: #191515ff !important;
+}
+
+body.patient-theme-navbar .profile img {
+  border: 2px solid #991b1b !important;
+}
+
+/* Nurse Theme */
+body.nurse-theme-navbar .navbar {
+  background-color: #ffd6e7 !important;
+}
+
+body.nurse-theme-navbar .navbar-logo-short {
+  background: linear-gradient(135deg, #9c27b0 0%, #7b1fa2 100%) !important;
+  color: #ffffff !important;
+  box-shadow: 0 2px 8px rgba(156, 39, 176, 0.3) !important;
+}
+
+body.nurse-theme-navbar .navbar-toggle-btn {
+  color: #c2185b !important;
+}
+
+body.nurse-theme-navbar .fa-bell {
+  color: #c2185b !important;
+}
+
+body.nurse-theme-navbar .profile img {
+  border: 2px solid #c2185b !important;
+}
+
+/* Assistant Theme */
+body.assistant-theme-navbar .navbar {
+  background-color: #e0d1ff !important;
+}
+
+body.assistant-theme-navbar .navbar-logo-short {
+  background: linear-gradient(135deg, #7b1fa2 0%, #6a1b9a 100%) !important;
+  color: #ffffff !important;
+  box-shadow: 0 2px 8px rgba(123, 31, 162, 0.3) !important;
+}
+
+body.assistant-theme-navbar .navbar-toggle-btn {
+  color: #7b1fa2 !important;
+}
+
+body.assistant-theme-navbar .fa-bell {
+  color: #7b1fa2 !important;
+}
+
+body.assistant-theme-navbar .profile img {
+  border: 2px solid #7b1fa2 !important;
+}
+
+/* Technician Theme */
+body.technician-theme-navbar .navbar {
+  background-color: #ffe4c9 !important;
+}
+
+body.technician-theme-navbar .navbar-logo-short {
+  background: linear-gradient(135deg, #f4511e 0%, #d84315 100%) !important;
+  color: #ffffff !important;
+  box-shadow: 0 2px 8px rgba(244, 81, 30, 0.3) !important;
+}
+
+body.technician-theme-navbar .navbar-toggle-btn {
+  color: #f57c00 !important;
+}
+
+body.technician-theme-navbar .fa-bell {
+  color: #f57c00 !important;
+}
+
+body.technician-theme-navbar .profile img {
+  border: 2px solid #f57c00 !important;
+}
+
+/* Housekeeping Theme */
+body.housekeeping-theme-navbar .navbar {
+  background-color: #fff9c9 !important;
+}
+
+body.housekeeping-theme-navbar .navbar-logo-short {
+  background: linear-gradient(135deg, #cddc39 0%, #afb42b 100%) !important;
+  color: #ffffff !important;
+  box-shadow: 0 2px 8px rgba(175, 180, 43, 0.3) !important;
+}
+
+body.housekeeping-theme-navbar .navbar-toggle-btn {
+  color: #f9a825 !important;
+}
+
+body.housekeeping-theme-navbar .fa-bell {
+  color: #f9a825 !important;
+}
+
+body.housekeeping-theme-navbar .profile img {
+  border: 2px solid #f9a825 !important;
+}
+
+/* Supervisor Theme */
+body.supervisor-theme-navbar .navbar {
+  background-color: #b2ebf2 !important;
+}
+
+body.supervisor-theme-navbar .navbar-logo-short {
+  background: linear-gradient(135deg, #26c6da 0%, #00acc1 100%) !important;
+  color: #ffffff !important;
+  box-shadow: 0 2px 8px rgba(0, 172, 193, 0.3) !important;
+}
+
+body.supervisor-theme-navbar .navbar-toggle-btn {
+  color: #00838f !important;
+}
+
+body.supervisor-theme-navbar .fa-bell {
+  color: #00838f !important;
+}
+
+body.supervisor-theme-navbar .profile img {
+  border: 2px solid #00838f !important;
+}
+
+/* Manager Theme */
+body.manager-theme-navbar .navbar {
+  background-color: #e6e6ff !important;
+}
+
+body.manager-theme-navbar .navbar-logo-short {
+  background: linear-gradient(135deg, #5c6bc0 0%, #3f51b5 100%) !important;
+  color: #ffffff !important;
+  box-shadow: 0 2px 8px rgba(63, 81, 181, 0.3) !important;
+}
+
+body.manager-theme-navbar .navbar-toggle-btn {
+  color: #3949ab !important;
+}
+
+body.manager-theme-navbar .fa-bell {
+  color: #3949ab !important;
+}
+
+body.manager-theme-navbar .profile img {
+  border: 2px solid #3949ab !important;
+}
+
+/* Billing Theme */
+body.billing-theme-navbar .navbar {
+  background-color: #c8f7c5 !important;
+}
+
+body.billing-theme-navbar .navbar-logo-short {
+  background: linear-gradient(135deg, #9ccc65 0%, #7cb342 100%) !important;
+  color: #ffffff !important;
+  box-shadow: 0 2px 8px rgba(124, 179, 66, 0.3) !important;
+}
+
+body.billing-theme-navbar .navbar-toggle-btn {
+  color: #388e3c !important;
+}
+
+body.billing-theme-navbar .fa-bell {
+  color: #388e3c !important;
+}
+
+body.billing-theme-navbar .profile img {
+  border: 2px solid #388e3c !important;
+}
+
+/* Admin Theme */
+body.admin-theme-navbar .navbar {
+  background-color: #e3f2fd !important;
+}
+
+body.admin-theme-navbar .navbar-logo-short {
+  background: linear-gradient(135deg, #78909c 0%, #607d8b 100%) !important;
+  color: #ffffff !important;
+  box-shadow: 0 2px 8px rgba(96, 125, 139, 0.3) !important;
+}
+
+body.admin-theme-navbar .navbar-toggle-btn {
+  color: #1976d2 !important;
+}
+
+body.admin-theme-navbar .fa-bell {
+  color: #1976d2 !important;
+}
+
+body.admin-theme-navbar .profile img {
+  border: 2px solid #1976d2 !important;
+}
+
+/* Super Admin Theme - PREMIUM GOLD */
+body.superadmin-theme-navbar .navbar {
+  background: linear-gradient(135deg, #fff9c2 0%, #ffec8b 100%) !important;
+  border-bottom: 3px solid #ffd700 !important;
+  box-shadow: 0 4px 15px rgba(255, 215, 0, 0.3) !important;
+}
+
+body.superadmin-theme-navbar .navbar-logo-short {
+  background: linear-gradient(135deg, #ffd54f 0%, #ffb300 100%) !important;
+  color: #000000 !important;
+  box-shadow: 0 0 10px rgba(255, 215, 0, 0.5) !important;
+  font-weight: 700;
+}
+
+body.superadmin-theme-navbar .navbar-toggle-btn {
+  color: #000000 !important;
+  font-weight: 700;
+}
+
+body.superadmin-theme-navbar .fa-bell {
+  color: #ff8f00 !important;
+  text-shadow: 0 0 3px rgba(255, 215, 0, 0.5);
+}
+
+body.superadmin-theme-navbar .fa-bell:hover {
+  color: #ffd700 !important;
+  transform: scale(1.1);
+}
+
+body.superadmin-theme-navbar .profile img {
+  border: 3px solid #ffd700 !important;
+  box-shadow: 0 0 10px rgba(255, 215, 0, 0.5) !important;
+}
+
+body.superadmin-theme-navbar .profile img:hover {
+  box-shadow: 0 0 15px rgba(255, 215, 0, 0.8) !important;
+}
+
+body.superadmin-theme-navbar .notification-badge {
+  background: linear-gradient(135deg, #ff0000 0%, #cc0000 100%) !important;
+  box-shadow: 0 0 8px rgba(255, 0, 0, 0.5) !important;
+  font-weight: 700 !important;
+}
+
+body.superadmin-theme-navbar .emergency-icon .fa-triangle-exclamation {
+  color: #8b6914 !important;
+}
+
+body.superadmin-theme-navbar .emergency-icon.active .fa-triangle-exclamation {
+  color: #b8860b !important;
+  animation: pulse 1.5s infinite !important;
+}
+
+body.superadmin-theme-navbar .emergency-icon:hover {
+  background: rgba(255, 215, 0, 0.2) !important;
+  transform: scale(1.1) !important;
+}
+
+body.superadmin-theme-navbar .fa-crown {
+  animation: crownGlow 2s infinite alternate;
+}
+
+@keyframes crownGlow {
+  0% {
+    filter: drop-shadow(0 0 2px rgba(255, 215, 0, 0.5));
+    transform: scale(1);
+  }
+  100% {
+    filter: drop-shadow(0 0 8px rgba(255, 215, 0, 0.8));
+    transform: scale(1.1);
+  }
+}
+
+/* ========== SIDEBAR RESPONSIVE ADJUSTMENTS ========== */
+
+/* When sidebar is visible on desktop, navbar adjusts */
+@media (min-width: 769px) {
+  .sidebar-container {
+    position: fixed;
+    left: 0;
+    top: 60px;
+    height: calc(100vh - 60px);
+  }
+}
+
+/* On tablet and mobile, sidebar overlay */
+@media (max-width: 768px) {
+  .sidebar-container {
+    position: fixed;
+    left: 0;
+    top: 60px;
+    z-index: 998;
+    height: calc(100vh - 60px);
+    transform: translateX(-100%);
+    transition: transform 0.3s ease;
+  }
+
+  .sidebar-container.expanded {
+    transform: translateX(0);
+  }
+
+  .right-side-content {
+    margin-left: 0 !important;
+  }
+}
+
+/* ========== ACCESSIBILITY ========== */
+.navbar-toggle-btn:focus {
+  outline: 2px solid #ffd700;
+  outline-offset: 2px;
+}
+
+.profile:focus-visible {
+  outline: 2px solid #ffd700;
+  outline-offset: 2px;
+  border-radius: 50%;
+}
+
+/* ========== PRINT STYLES ========== */
+@media print {
+  .navbar,
+  .navbar-toggle-btn {
+    display: none;
+  }
+}

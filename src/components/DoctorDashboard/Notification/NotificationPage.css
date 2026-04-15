@@ -1,0 +1,99 @@
+.doctor-notification-container {
+  width: 80%;
+  margin: 20px auto;
+  padding: 20px;
+}
+
+.doctor-notification-title {
+  font-size: 26px;
+  margin-bottom: 20px;
+  font-weight: bold;
+  color: #333;
+}
+
+.doctor-notification-card {
+  margin-bottom: 15px;
+  padding: 15px 20px;
+  border-radius: 8px;
+  display: flex;
+  justify-content: space-between;
+  align-items: flex-start;
+  transition: 0.3s ease-in-out;
+}
+
+/* ---------- COLOR THEMES ---------- */
+
+/* Blue - Appointment */
+.doctor-notification-card.appointment {
+  background: #e3f2ff;
+  border-left: 6px solid #007bff;
+}
+.doctor-notification-card.appointment:hover {
+  background: #d4e8ff;
+}
+
+/* Purple - Report */
+.doctor-notification-card.report {
+  background: #f3e8ff;
+  border-left: 6px solid #9b59b6;
+}
+.doctor-notification-card.report:hover {
+  background: #ead8ff;
+}
+
+/* Green - Payment */
+.doctor-notification-card.payment {
+  background: #e7ffe8;
+  border-left: 6px solid #28a745;
+}
+.doctor-notification-card.payment:hover {
+  background: #d9ffd9;
+}
+
+/* Orange - Message */
+.doctor-notification-card.message {
+  background: #fff2e5;
+  border-left: 6px solid #ff8c42;
+}
+.doctor-notification-card.message:hover {
+  background: #ffe4cc;
+}
+
+/* Red - Emergency */
+.doctor-notification-card.emergency {
+  background: #ffe5e5;
+  border-left: 6px solid #e74c3c;
+}
+.doctor-notification-card.emergency:hover {
+  background: #ffd6d6;
+}
+
+/* Yellow - Follow-up */
+.doctor-notification-card.followup {
+  background: #fff9d9;
+  border-left: 6px solid #f1c40f;
+}
+.doctor-notification-card.followup:hover {
+  background: #fff3b3;
+}
+
+/* ---------------------------------- */
+
+.doctor-notification-info h4 {
+  margin: 0;
+  font-size: 18px;
+  font-weight: 600;
+}
+
+.doctor-notification-info p {
+  margin-top: 5px;
+  font-size: 14px;
+  color: #333;
+}
+
+.doctor-notification-time {
+  font-size: 13px;
+  color: #555;
+  margin-top: 5px;
+  white-space: nowrap;
+}

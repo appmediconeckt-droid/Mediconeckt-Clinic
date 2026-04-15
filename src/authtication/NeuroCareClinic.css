@@ -1,0 +1,994 @@
+/* NeuroCareClinic.css */
+
+/* Reset and Base Styles */
+* {
+  margin: 0;
+  padding: 0;
+  box-sizing: border-box;
+}
+
+body {
+  font-family: 'Inter', 'Segoe UI', system-ui, sans-serif;
+  color: #1a202c;
+  line-height: 1.6;
+  background-color: #f8fafc;
+}
+
+.neurocare-container {
+  max-width: 100%;
+  overflow-x: hidden;
+}
+
+/* Navigation Styles */
+.neurocare-navbar {
+  background-color: rgba(255, 255, 255, 0.95);
+  backdrop-filter: blur(10px);
+  position: sticky;
+  top: 0;
+  z-index: 1000;
+  box-shadow: 0 2px 20px rgba(0, 0, 0, 0.08);
+  border-bottom: 1px solid rgba(226, 232, 240, 0.8);
+}
+
+.neurocare-navbar-inner {
+  max-width: 1280px;
+  margin: 0 auto;
+  padding: 1rem 2rem;
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+}
+
+.neurocare-logo {
+  display: flex;
+  align-items: center;
+  gap: 0.75rem;
+}
+
+.neurocare-logo-icon {
+  font-size: 2.2rem;
+  background: linear-gradient(135deg, #4f46e5, #7c3aed);
+  -webkit-background-clip: text;
+  -webkit-text-fill-color: transparent;
+}
+
+.neurocare-logo-text {
+  font-size: 1.5rem;
+  background: linear-gradient(135deg, #4f46e5, #7c3aed);
+  -webkit-background-clip: text;
+  -webkit-text-fill-color: transparent;
+  font-weight: 700;
+  letter-spacing: -0.5px;
+}
+
+.neurocare-menu-toggle {
+  display: none;
+  flex-direction: column;
+  gap: 4px;
+  background: transparent;
+  border: none;
+  cursor: pointer;
+  padding: 0.5rem;
+  z-index: 1001;
+}
+
+.neurocare-menu-icon {
+  width: 24px;
+  height: 2.5px;
+  background: linear-gradient(135deg, #4f46e5, #7c3aed);
+  border-radius: 2px;
+  transition: all 0.3s ease;
+}
+
+.neurocare-nav-links {
+  display: flex;
+  list-style: none;
+  gap: 2.5rem;
+  align-items: center;
+}
+
+.neurocare-nav-item {
+  text-decoration: none;
+  color: #4a5568;
+  font-weight: 500;
+  font-size: 0.95rem;
+  padding: 0.5rem 0;
+  position: relative;
+  transition: color 0.3s ease;
+  letter-spacing: -0.2px;
+}
+
+.neurocare-nav-item:hover {
+  color: #4f46e5;
+}
+
+.neurocare-nav-item::after {
+  content: '';
+  position: absolute;
+  width: 0;
+  height: 2px;
+  background: linear-gradient(135deg, #4f46e5, #7c3aed);
+  bottom: 0;
+  left: 0;
+  transition: width 0.3s ease;
+  border-radius: 1px;
+}
+
+.neurocare-nav-item:hover::after {
+  width: 100%;
+}
+
+.neurocare-nav-cta {
+  background: linear-gradient(135deg, #4f46e5, #7c3aed);
+  color: white !important;
+  padding: 0.7rem 1.8rem;
+  border-radius: 12px;
+  transition: all 0.3s ease;
+  box-shadow: 0 4px 12px rgba(79, 70, 229, 0.25);
+}
+
+.neurocare-nav-cta:hover {
+  transform: translateY(-2px);
+  box-shadow: 0 6px 20px rgba(79, 70, 229, 0.35);
+}
+
+.neurocare-nav-cta::after {
+  display: none;
+}
+
+/* Hero Section */
+.neurocare-hero {
+  position: relative;
+  background: linear-gradient(135deg, #f8fafc 0%, #f1f5f9 100%);
+  min-height: 85vh;
+  display: flex;
+  align-items: center;
+  overflow: hidden;
+}
+
+.neurocare-hero-background {
+  position: absolute;
+  top: 0;
+  right: 0;
+  width: 50%;
+  height: 100%;
+  background: linear-gradient(135deg, rgba(79, 70, 229, 0.05) 0%, rgba(124, 58, 237, 0.05) 100%);
+  clip-path: polygon(25% 0%, 100% 0%, 100% 100%, 0% 100%);
+}
+
+.neurocare-hero-content {
+  max-width: 1280px;
+  margin: 0 auto;
+  padding: 4rem 2rem;
+  width: 100%;
+  position: relative;
+  z-index: 1;
+  display: flex;
+  flex-direction: column;
+  gap: 3rem;
+}
+
+.neurocare-hero-text {
+  max-width: 700px;
+}
+
+.neurocare-hero-title {
+  font-size: 3.2rem;
+  font-weight: 700;
+  line-height: 1.2;
+  background: linear-gradient(135deg, #1e293b, #4f46e5);
+  -webkit-background-clip: text;
+  -webkit-text-fill-color: transparent;
+  margin-bottom: 1.5rem;
+  letter-spacing: -0.5px;
+}
+
+.neurocare-hero-subtitle {
+  font-size: 1.25rem;
+  color: #64748b;
+  margin-bottom: 2.5rem;
+  max-width: 600px;
+  line-height: 1.7;
+}
+
+.neurocare-hero-buttons {
+  display: flex;
+  gap: 1rem;
+  flex-wrap: wrap;
+}
+
+.neurocare-btn {
+  padding: 1rem 2.2rem;
+  border-radius: 12px;
+  font-weight: 600;
+  text-decoration: none;
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  transition: all 0.3s ease;
+  border: none;
+  cursor: pointer;
+  font-size: 1rem;
+  letter-spacing: -0.2px;
+}
+
+.neurocare-btn-primary {
+  background: linear-gradient(135deg, #4f46e5, #7c3aed);
+  color: white;
+  box-shadow: 0 4px 15px rgba(79, 70, 229, 0.3);
+}
+
+.neurocare-btn-primary:hover {
+  transform: translateY(-3px);
+  box-shadow: 0 8px 25px rgba(79, 70, 229, 0.4);
+}
+
+.neurocare-btn-secondary {
+  background-color: white;
+  color: #4f46e5;
+  border: 2px solid #e2e8f0;
+  box-shadow: 0 4px 12px rgba(0, 0, 0, 0.05);
+}
+
+.neurocare-btn-secondary:hover {
+  background-color: #f8fafc;
+  border-color: #4f46e5;
+  transform: translateY(-3px);
+  box-shadow: 0 8px 20px rgba(0, 0, 0, 0.1);
+}
+
+.neurocare-hero-stats {
+  display: flex;
+  gap: 4rem;
+  margin-top: 2rem;
+  flex-wrap: wrap;
+}
+
+.neurocare-stat {
+  display: flex;
+  flex-direction: column;
+  align-items: flex-start;
+}
+
+.neurocare-stat-number {
+  font-size: 2.5rem;
+  font-weight: 700;
+  background: linear-gradient(135deg, #4f46e5, #7c3aed);
+  -webkit-background-clip: text;
+  -webkit-text-fill-color: transparent;
+  line-height: 1;
+}
+
+.neurocare-stat-label {
+  font-size: 0.95rem;
+  color: #64748b;
+  margin-top: 0.5rem;
+  font-weight: 500;
+}
+
+/* Conditions Section */
+.neurocare-conditions {
+  padding: 6rem 2rem;
+  background-color: white;
+}
+
+.neurocare-section-header {
+  text-align: center;
+  max-width: 800px;
+  margin: 0 auto 4rem;
+}
+
+.neurocare-section-title {
+  font-size: 2.8rem;
+  font-weight: 700;
+  background: linear-gradient(135deg, #1e293b, #4f46e5);
+  -webkit-background-clip: text;
+  -webkit-text-fill-color: transparent;
+  margin-bottom: 1rem;
+  letter-spacing: -0.5px;
+}
+
+.neurocare-section-subtitle {
+  font-size: 1.2rem;
+  color: #64748b;
+  line-height: 1.6;
+}
+
+.neurocare-conditions-grid {
+  max-width: 1280px;
+  margin: 0 auto;
+  display: grid;
+  grid-template-columns: repeat(auto-fill, minmax(280px, 1fr));
+  gap: 2rem;
+}
+
+.neurocare-condition-card {
+  background: linear-gradient(135deg, #ffffff 0%, #f8fafc 100%);
+  border-radius: 16px;
+  padding: 2rem;
+  box-shadow: 0 4px 20px rgba(0, 0, 0, 0.05);
+  transition: all 0.3s ease;
+  border: 1px solid #f1f5f9;
+  position: relative;
+  overflow: hidden;
+}
+
+.neurocare-condition-card:hover {
+  transform: translateY(-8px);
+  box-shadow: 0 12px 40px rgba(79, 70, 229, 0.15);
+  border-color: rgba(79, 70, 229, 0.2);
+}
+
+.neurocare-condition-card::before {
+  content: '';
+  position: absolute;
+  top: 0;
+  left: 0;
+  width: 4px;
+  height: 100%;
+  background: linear-gradient(135deg, #4f46e5, #7c3aed);
+  opacity: 0;
+  transition: opacity 0.3s ease;
+}
+
+.neurocare-condition-card:hover::before {
+  opacity: 1;
+}
+
+.neurocare-condition-icon {
+  font-size: 2.5rem;
+  margin-bottom: 1.5rem;
+}
+
+.neurocare-condition-name {
+  font-size: 1.4rem;
+  color: #1e293b;
+  margin-bottom: 1rem;
+  font-weight: 600;
+}
+
+.neurocare-condition-desc {
+  color: #64748b;
+  font-size: 0.95rem;
+  margin-bottom: 1.5rem;
+  line-height: 1.6;
+}
+
+.neurocare-condition-link {
+  color: #4f46e5;
+  text-decoration: none;
+  font-weight: 600;
+  font-size: 0.95rem;
+  display: inline-flex;
+  align-items: center;
+  gap: 0.5rem;
+  transition: gap 0.3s ease;
+}
+
+.neurocare-condition-link:hover {
+  gap: 0.75rem;
+}
+
+/* Treatments Section */
+.neurocare-treatments {
+  background: linear-gradient(135deg, #f1f5f9 0%, #e2e8f0 100%);
+  padding: 6rem 2rem;
+}
+
+.neurocare-treatments-container {
+  max-width: 1280px;
+  margin: 0 auto;
+  display: flex;
+  gap: 4rem;
+  align-items: center;
+}
+
+.neurocare-treatments-content {
+  flex: 1;
+}
+
+.neurocare-treatments-title {
+  font-size: 2.5rem;
+  font-weight: 700;
+  color: #1e293b;
+  margin-bottom: 1.5rem;
+  line-height: 1.2;
+}
+
+.neurocare-treatments-text {
+  font-size: 1.1rem;
+  color: #475569;
+  margin-bottom: 3rem;
+  line-height: 1.7;
+}
+
+.neurocare-treatments-list {
+  display: flex;
+  flex-direction: column;
+  gap: 1.5rem;
+}
+
+.neurocare-treatment-item {
+  display: flex;
+  gap: 1rem;
+  align-items: flex-start;
+}
+
+.neurocare-treatment-marker {
+  width: 8px;
+  height: 8px;
+  background: linear-gradient(135deg, #4f46e5, #7c3aed);
+  border-radius: 50%;
+  margin-top: 0.5rem;
+  flex-shrink: 0;
+}
+
+.neurocare-treatment-name {
+  font-size: 1.2rem;
+  color: #1e293b;
+  margin-bottom: 0.25rem;
+  font-weight: 600;
+}
+
+.neurocare-treatment-desc {
+  color: #64748b;
+  font-size: 0.95rem;
+}
+
+.neurocare-treatments-visual {
+  flex: 1;
+  display: flex;
+  justify-content: center;
+}
+
+.neurocare-visual-placeholder {
+  width: 100%;
+  max-width: 450px;
+  height: 400px;
+  background: linear-gradient(135deg, #4f46e5, #7c3aed);
+  border-radius: 20px;
+  display: flex;
+  flex-direction: column;
+  justify-content: center;
+  align-items: center;
+  box-shadow: 0 20px 60px rgba(79, 70, 229, 0.3);
+  position: relative;
+  overflow: hidden;
+}
+
+.neurocare-visual-placeholder::before {
+  content: '';
+  position: absolute;
+  top: -50%;
+  left: -50%;
+  width: 200%;
+  height: 200%;
+  background: radial-gradient(circle, rgba(255,255,255,0.1) 1px, transparent 1px);
+  background-size: 30px 30px;
+  animation: neurocare-shift 20s linear infinite;
+}
+
+@keyframes neurocare-shift {
+  0% { transform: translate(0, 0) rotate(0deg); }
+  100% { transform: translate(30px, 30px) rotate(360deg); }
+}
+
+.neurocare-visual-icon {
+  font-size: 5rem;
+  color: white;
+  margin-bottom: 1.5rem;
+  z-index: 1;
+}
+
+.neurocare-visual-text {
+  font-size: 1.2rem;
+  color: white;
+  font-weight: 600;
+  text-align: center;
+  z-index: 1;
+  padding: 0 1rem;
+}
+
+/* Team Section */
+.neurocare-team {
+  padding: 6rem 2rem;
+  background-color: white;
+}
+
+.neurocare-team-grid {
+  max-width: 1280px;
+  margin: 0 auto;
+  display: grid;
+  grid-template-columns: repeat(auto-fill, minmax(350px, 1fr));
+  gap: 2.5rem;
+}
+
+.neurocare-team-card {
+  background: linear-gradient(135deg, #ffffff 0%, #f8fafc 100%);
+  border-radius: 20px;
+  padding: 2.5rem 2rem;
+  box-shadow: 0 8px 30px rgba(0, 0, 0, 0.08);
+  transition: all 0.3s ease;
+  text-align: center;
+  border: 1px solid #f1f5f9;
+}
+
+.neurocare-team-card:hover {
+  transform: translateY(-10px);
+  box-shadow: 0 20px 60px rgba(79, 70, 229, 0.15);
+}
+
+.neurocare-team-avatar {
+  width: 100px;
+  height: 100px;
+  background: linear-gradient(135deg, #4f46e5, #7c3aed);
+  border-radius: 50%;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  margin: 0 auto 1.5rem;
+}
+
+.neurocare-avatar-icon {
+  font-size: 3rem;
+  color: white;
+}
+
+.neurocare-team-name {
+  font-size: 1.6rem;
+  color: #1e293b;
+  margin-bottom: 0.5rem;
+  font-weight: 700;
+}
+
+.neurocare-team-role {
+  color: #4f46e5;
+  font-weight: 600;
+  margin-bottom: 0.5rem;
+  font-size: 1.1rem;
+}
+
+.neurocare-team-exp {
+  color: #64748b;
+  font-size: 0.9rem;
+  margin-bottom: 1.5rem;
+}
+
+.neurocare-team-bio {
+  color: #475569;
+  line-height: 1.7;
+  font-size: 0.95rem;
+}
+
+/* Patient Stories */
+.neurocare-stories {
+  padding: 6rem 2rem;
+  background: linear-gradient(135deg, #f8fafc 0%, #f1f5f9 100%);
+}
+
+.neurocare-stories-container {
+  max-width: 1280px;
+  margin: 0 auto;
+  display: grid;
+  grid-template-columns: repeat(auto-fill, minmax(350px, 1fr));
+  gap: 2.5rem;
+}
+
+.neurocare-story-card {
+  background: white;
+  border-radius: 20px;
+  padding: 2.5rem;
+  box-shadow: 0 8px 30px rgba(0, 0, 0, 0.06);
+  transition: all 0.3s ease;
+  position: relative;
+  overflow: hidden;
+}
+
+.neurocare-story-card:hover {
+  transform: translateY(-8px);
+  box-shadow: 0 20px 50px rgba(79, 70, 229, 0.12);
+}
+
+.neurocare-story-card::before {
+  content: '"';
+  position: absolute;
+  top: 1rem;
+  right: 2rem;
+  font-size: 6rem;
+  color: rgba(79, 70, 229, 0.05);
+  font-family: Georgia, serif;
+  line-height: 1;
+}
+
+.neurocare-story-rating {
+  color: #fbbf24;
+  font-size: 1.3rem;
+  margin-bottom: 1.5rem;
+}
+
+.neurocare-story-text {
+  color: #475569;
+  font-size: 1.1rem;
+  line-height: 1.7;
+  margin-bottom: 2rem;
+  font-style: italic;
+}
+
+.neurocare-story-footer {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  padding-top: 1.5rem;
+  border-top: 1px solid #f1f5f9;
+}
+
+.neurocare-story-name {
+  font-size: 1.2rem;
+  color: #1e293b;
+  font-weight: 600;
+}
+
+.neurocare-story-condition {
+  background: linear-gradient(135deg, #4f46e5, #7c3aed);
+  color: white;
+  padding: 0.4rem 1rem;
+  border-radius: 20px;
+  font-size: 0.85rem;
+  font-weight: 500;
+}
+
+/* Appointment Section */
+.neurocare-appointment {
+  padding: 6rem 2rem;
+  background-color: white;
+}
+
+.neurocare-appointment-container {
+  max-width: 1280px;
+  margin: 0 auto;
+  display: flex;
+  gap: 4rem;
+  background: linear-gradient(135deg, #ffffff 0%, #f8fafc 100%);
+  border-radius: 24px;
+  overflow: hidden;
+  box-shadow: 0 20px 60px rgba(0, 0, 0, 0.1);
+}
+
+.neurocare-appointment-info {
+  flex: 1;
+  padding: 4rem;
+  background: linear-gradient(135deg, #4f46e5, #7c3aed);
+  color: white;
+}
+
+.neurocare-appointment-title {
+  font-size: 2.5rem;
+  font-weight: 700;
+  margin-bottom: 1.5rem;
+  line-height: 1.2;
+}
+
+.neurocare-appointment-text {
+  font-size: 1.1rem;
+  opacity: 0.9;
+  margin-bottom: 3rem;
+  line-height: 1.7;
+}
+
+.neurocare-appointment-details {
+  display: flex;
+  flex-direction: column;
+  gap: 2rem;
+}
+
+.neurocare-detail-item {
+  display: flex;
+  gap: 1rem;
+  align-items: flex-start;
+}
+
+.neurocare-detail-icon {
+  font-size: 2rem;
+  opacity: 0.9;
+}
+
+.neurocare-detail-item h4 {
+  font-size: 1.2rem;
+  font-weight: 600;
+  margin-bottom: 0.5rem;
+}
+
+.neurocare-detail-item p {
+  opacity: 0.8;
+  font-size: 0.95rem;
+}
+
+.neurocare-consultation-form {
+  flex: 1;
+  padding: 4rem;
+}
+
+.neurocare-form-title {
+  font-size: 2rem;
+  color: #1e293b;
+  margin-bottom: 2.5rem;
+  font-weight: 700;
+}
+
+.neurocare-form-row {
+  display: flex;
+  gap: 1.5rem;
+  margin-bottom: 1.5rem;
+}
+
+.neurocare-form-group {
+  flex: 1;
+  margin-bottom: 1.5rem;
+}
+
+.neurocare-form-input,
+.neurocare-form-select,
+.neurocare-form-textarea {
+  width: 100%;
+  padding: 1rem 1.2rem;
+  border: 2px solid #e2e8f0;
+  border-radius: 12px;
+  font-size: 1rem;
+  transition: all 0.3s ease;
+  background-color: white;
+  color: #1e293b;
+}
+
+.neurocare-form-input:focus,
+.neurocare-form-select:focus,
+.neurocare-form-textarea:focus {
+  outline: none;
+  border-color: #4f46e5;
+  box-shadow: 0 0 0 4px rgba(79, 70, 229, 0.1);
+}
+
+.neurocare-form-textarea {
+  resize: vertical;
+  min-height: 120px;
+}
+
+.neurocare-btn-submit {
+  width: 100%;
+  background: linear-gradient(135deg, #4f46e5, #7c3aed);
+  color: white;
+  font-size: 1.1rem;
+  padding: 1.2rem;
+  border-radius: 12px;
+  margin-top: 1rem;
+  box-shadow: 0 4px 15px rgba(79, 70, 229, 0.3);
+}
+
+.neurocare-btn-submit:hover {
+  transform: translateY(-3px);
+  box-shadow: 0 8px 25px rgba(79, 70, 229, 0.4);
+}
+
+.neurocare-form-note {
+  text-align: center;
+  color: #64748b;
+  font-size: 0.9rem;
+  margin-top: 1.5rem;
+}
+
+/* Footer */
+.neurocare-footer {
+  background: linear-gradient(135deg, #1e293b, #0f172a);
+  color: white;
+  padding-top: 4rem;
+}
+
+.neurocare-footer-content {
+  max-width: 1280px;
+  margin: 0 auto;
+  padding: 0 2rem;
+}
+
+.neurocare-footer-main {
+  display: flex;
+  justify-content: space-between;
+  padding-bottom: 4rem;
+  border-bottom: 1px solid rgba(255, 255, 255, 0.1);
+}
+
+.neurocare-footer-logo {
+  display: flex;
+  gap: 1rem;
+  align-items: flex-start;
+  max-width: 300px;
+}
+
+.neurocare-footer-logo-text {
+  font-size: 1.5rem;
+  font-weight: 700;
+  margin-bottom: 0.5rem;
+}
+
+.neurocare-footer-tagline {
+  opacity: 0.7;
+  font-size: 0.95rem;
+  line-height: 1.6;
+}
+
+.neurocare-footer-links {
+  display: flex;
+  gap: 4rem;
+  flex-wrap: wrap;
+}
+
+.neurocare-footer-column {
+  display: flex;
+  flex-direction: column;
+  gap: 1rem;
+}
+
+.neurocare-footer-column h4 {
+  font-size: 1.1rem;
+  font-weight: 600;
+  margin-bottom: 0.5rem;
+  color: #cbd5e1;
+}
+
+.neurocare-footer-link {
+  color: #94a3b8;
+  text-decoration: none;
+  font-size: 0.95rem;
+  transition: color 0.3s ease;
+}
+
+.neurocare-footer-link:hover {
+  color: white;
+}
+
+.neurocare-contact-info,
+.neurocare-hours {
+  color: #94a3b8;
+  font-size: 0.95rem;
+  margin-bottom: 0.5rem;
+}
+
+.neurocare-footer-bottom {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  padding: 2rem 0;
+  flex-wrap: wrap;
+  gap: 1.5rem;
+}
+
+.neurocare-copyright {
+  color: #94a3b8;
+  font-size: 0.9rem;
+}
+
+.neurocare-footer-social {
+  display: flex;
+  gap: 1rem;
+}
+
+.neurocare-social-link {
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  width: 40px;
+  height: 40px;
+  background-color: rgba(255, 255, 255, 0.1);
+  border-radius: 50%;
+  color: white;
+  font-size: 1.1rem;
+  text-decoration: none;
+  transition: all 0.3s ease;
+}
+
+.neurocare-social-link:hover {
+  background-color: #4f46e5;
+  transform: translateY(-3px);
+}
+
+/* Responsive Styles */
+@media (max-width: 1024px) {
+  .neurocare-hero-title {
+    font-size: 2.8rem;
+  }
+  
+  .neurocare-appointment-container {
+    flex-direction: column;
+  }
+  
+  .neurocare-footer-main {
+    flex-direction: column;
+    gap: 3rem;
+  }
+}
+
+@media (max-width: 768px) {
+  .neurocare-menu-toggle {
+    display: flex;
+  }
+  
+  .neurocare-nav-links {
+    position: fixed;
+    top: 80px;
+    left: 0;
+    right: 0;
+    background-color: white;
+    flex-direction: column;
+    padding: 2rem;
+    box-shadow: 0 10px 30px rgba(0, 0, 0, 0.1);
+    transform: translateY(-100%);
+    opacity: 0;
+    visibility: hidden;
+    transition: all 0.3s ease;
+    z-index: 999;
+    gap: 1.5rem;
+  }
+  
+  .neurocare-nav-active {
+    transform: translateY(0);
+    opacity: 1;
+    visibility: visible;
+  }
+  
+  .neurocare-hero-title {
+    font-size: 2.3rem;
+  }
+  
+  .neurocare-section-title {
+    font-size: 2.2rem;
+  }
+  
+  .neurocare-treatments-container {
+    flex-direction: column;
+  }
+  
+  .neurocare-form-row {
+    flex-direction: column;
+    gap: 0;
+  }
+  
+  .neurocare-hero-buttons {
+    flex-direction: column;
+    align-items: stretch;
+  }
+}
+
+@media (max-width: 480px) {
+  .neurocare-hero,
+  .neurocare-conditions,
+  .neurocare-treatments,
+  .neurocare-team,
+  .neurocare-stories,
+  .neurocare-appointment {
+    padding-left: 1.5rem;
+    padding-right: 1.5rem;
+  }
+  
+  .neurocare-navbar-inner,
+  .neurocare-footer-content {
+    padding-left: 1.5rem;
+    padding-right: 1.5rem;
+  }
+  
+  .neurocare-hero-title {
+    font-size: 2rem;
+  }
+  
+  .neurocare-section-title {
+    font-size: 1.8rem;
+  }
+  
+  .neurocare-conditions-grid,
+  .neurocare-team-grid,
+  .neurocare-stories-container {
+    grid-template-columns: 1fr;
+  }
+  
+  .neurocare-appointment-info,
+  .neurocare-consultation-form {
+    padding: 2.5rem 1.5rem;
+  }
+}

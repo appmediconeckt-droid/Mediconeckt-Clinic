@@ -1,0 +1,1131 @@
+/* Login.css */
+.med-login-container {
+  display: flex;
+  min-height: 100vh;
+  background: linear-gradient(135deg, #f5f7fa 0%, #c3cfe2 100%);
+  font-family: 'Inter', -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, Oxygen, Ubuntu, sans-serif;
+  overflow: hidden; /* Prevent container scrolling */
+}
+
+.med-login-left-side {
+  flex: 1;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  padding: 2rem;
+   background: linear-gradient(135deg, #fafbff 0%, #26d0ce 100%);
+  color: white;
+  overflow-y: auto; /* Enable vertical scrolling */
+  max-height: 100vh; /* Limit height to viewport */
+}
+
+.med-login-right-side {
+  flex: 1;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  padding: 2rem;
+  background: white;
+ 
+  max-height: 100vh; /* Limit height to viewport */
+}
+
+.med-login-right-content {
+
+  width: 100%;
+  max-width: 450px;
+}
+
+.med-logo-container {
+  text-align: center;
+  max-width: 400px;
+  padding: 2rem 0;
+}
+
+.med-logo {
+  margin-bottom: 2rem;
+  filter: drop-shadow(0 4px 6px rgba(0, 0, 0, 0.1));
+  max-width: 100%;
+  height: auto;
+}
+
+.med-welcome-text {
+  margin-top: 2rem;
+}
+
+.med-welcome-title {
+  font-size: 2.5rem;
+  font-weight: 700;
+  margin-bottom: 0.5rem;
+  letter-spacing: -0.5px;
+  line-height: 1.2;
+}
+
+.med-welcome-subtitle {
+  font-size: 1.1rem;
+  opacity: 0.9;
+  font-weight: 300;
+  line-height: 1.5;
+}
+
+.med-login-form-wrapper {
+  width: 100%;
+}
+
+.med-login-form {
+  background: white;
+  border-radius: 24px;
+  padding: 3rem;
+  box-shadow: 0 20px 60px rgba(0, 0, 0, 0.08);
+  margin: 1rem 0; /* Add margin for spacing when scrolling */
+}
+
+.med-form-header {
+  text-align: center;
+  margin-bottom: 2.5rem;
+}
+
+.med-form-title {
+  color: #1a202c;
+  font-size: 2rem;
+  font-weight: 700;
+  margin-bottom: 0.5rem;
+  line-height: 1.2;
+}
+
+.med-form-subtitle {
+  color: #718096;
+  font-size: 0.95rem;
+  font-weight: 400;
+  line-height: 1.5;
+}
+
+.med-role-section {
+  margin-bottom: 2rem;
+}
+
+.med-section-label {
+  display: block;
+  color: #4a5568;
+  font-size: 0.875rem;
+  font-weight: 600;
+  margin-bottom: 0.75rem;
+  text-transform: uppercase;
+  letter-spacing: 0.05em;
+}
+
+.med-role-buttons {
+  display: flex;
+  gap: 0.75rem;
+  margin-bottom: 1rem;
+  flex-wrap: wrap;
+}
+
+.med-role-button {
+  flex: 1;
+  min-width: 120px;
+  padding: 1rem 0.5rem;
+  border: 2px solid #e2e8f0;
+  border-radius: 12px;
+  background: #f8fafc;
+  color: #64748b;
+  font-weight: 600;
+  cursor: pointer;
+  transition: all 0.2s ease;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  gap: 0.5rem;
+}
+
+.med-role-button:hover {
+  border-color: #cbd5e0;
+  background: #f1f5f9;
+  transform: translateY(-1px);
+}
+
+.med-role-button.med-role-active {
+  border-color: #667eea;
+  background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+  color: white;
+  box-shadow: 0 4px 12px rgba(102, 126, 234, 0.15);
+}
+
+.med-role-icon {
+  font-size: 1.25rem;
+}
+
+.med-role-text {
+  font-size: 0.875rem;
+}
+
+.med-role-selected-indicator {
+  display: flex;
+  align-items: center;
+  gap: 0.5rem;
+  color: #10b981;
+  font-size: 0.875rem;
+  font-weight: 500;
+  padding: 0.5rem 1rem;
+  background: rgba(16, 185, 129, 0.1);
+  border-radius: 8px;
+  margin-top: 1rem;
+}
+
+.med-role-check-icon {
+  font-size: 0.875rem;
+}
+
+.med-dept-section {
+  margin-bottom: 2rem;
+  background: #f8fafc;
+  padding: 1.5rem;
+  border-radius: 16px;
+  border: 1px solid #e2e8f0;
+}
+
+.med-dept-dropdown-container {
+  position: relative;
+  margin-bottom: 1rem;
+}
+
+.med-dept-dropdown-toggle {
+  width: 100%;
+  padding: 1rem 1.25rem;
+  border: 2px solid #e2e8f0;
+  border-radius: 12px;
+  background: white;
+  color: #4a5568;
+  font-weight: 500;
+  cursor: pointer;
+  transition: all 0.2s ease;
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+}
+
+.med-dept-dropdown-toggle:hover {
+  border-color: #cbd5e0;
+}
+
+.med-dept-dropdown-toggle.med-dropdown-open {
+  border-color: #667eea;
+  box-shadow: 0 0 0 3px rgba(102, 126, 234, 0.1);
+}
+
+.med-dept-dropdown-toggle.med-dept-selected {
+  border-color: #667eea;
+  background: #f8fafc;
+}
+
+.med-dept-toggle-content {
+  display: flex;
+  align-items: center;
+  gap: 0.75rem;
+}
+
+.med-dept-toggle-icon {
+  font-size: 1.1rem;
+  color: #667eea;
+}
+
+.med-dept-toggle-text {
+  font-size: 0.95rem;
+}
+
+.med-dropdown-arrow {
+  font-size: 0.875rem;
+  color: #94a3b8;
+  transition: transform 0.2s ease;
+}
+
+.med-dropdown-arrow.med-arrow-rotate {
+  transform: rotate(180deg);
+}
+
+.med-dept-dropdown-menu {
+  position: absolute;
+  top: calc(100% + 4px);
+  left: 0;
+  right: 0;
+  background: white;
+  border: 1px solid #e2e8f0;
+  border-radius: 12px;
+  box-shadow: 0 10px 40px rgba(0, 0, 0, 0.1);
+  z-index: 10;
+  max-height: 300px;
+  overflow-y: auto;
+  animation: med-slideDown 0.2s ease;
+}
+
+@keyframes med-slideDown {
+  from {
+    opacity: 0;
+    transform: translateY(-10px);
+  }
+  to {
+    opacity: 1;
+    transform: translateY(0);
+  }
+}
+
+.med-dept-dropdown-item {
+  width: 100%;
+  padding: 1rem 1.25rem;
+  border: none;
+  background: transparent;
+  text-align: left;
+  cursor: pointer;
+  transition: all 0.2s ease;
+  display: flex;
+  align-items: center;
+  gap: 0.75rem;
+  border-bottom: 1px solid #f1f5f9;
+}
+
+.med-dept-dropdown-item:last-child {
+  border-bottom: none;
+}
+
+.med-dept-dropdown-item:hover {
+  background: #f8fafc;
+}
+
+.med-dept-dropdown-item.med-dept-item-active {
+  background: linear-gradient(135deg, rgba(102, 126, 234, 0.08) 0%, rgba(118, 75, 162, 0.08) 100%);
+}
+
+.med-dept-item-icon {
+  font-size: 1rem;
+  color: #667eea;
+  min-width: 20px;
+}
+
+.med-dept-item-info {
+  flex: 1;
+  display: flex;
+  flex-direction: column;
+  gap: 0.25rem;
+}
+
+.med-dept-item-label {
+  font-size: 0.9rem;
+  font-weight: 500;
+  color: #1e293b;
+}
+
+.med-dept-item-desc {
+  font-size: 0.75rem;
+  color: #64748b;
+  line-height: 1.3;
+}
+
+.med-dept-item-check {
+  color: #10b981;
+  font-size: 0.875rem;
+}
+
+.med-dept-selected-info {
+  background: white;
+  border: 1px solid #e2e8f0;
+  border-radius: 12px;
+  padding: 1rem;
+  display: flex;
+  align-items: center;
+  gap: 1rem;
+  animation: med-fadeIn 0.3s ease;
+}
+
+@keyframes med-fadeIn {
+  from {
+    opacity: 0;
+    transform: translateY(-5px);
+  }
+  to {
+    opacity: 1;
+    transform: translateY(0);
+  }
+}
+
+.med-dept-info-icon {
+  font-size: 1.5rem;
+  color: #667eea;
+  background: linear-gradient(135deg, rgba(102, 126, 234, 0.1) 0%, rgba(118, 75, 162, 0.1) 100%);
+  padding: 0.75rem;
+  border-radius: 10px;
+}
+
+.med-dept-info-content {
+  flex: 1;
+}
+
+.med-dept-info-title {
+  font-size: 0.95rem;
+  font-weight: 600;
+  color: #1a202c;
+  margin: 0 0 0.25rem 0;
+}
+
+.med-dept-info-desc {
+  font-size: 0.8rem;
+  color: #64748b;
+  margin: 0;
+  line-height: 1.4;
+}
+
+.med-input-group {
+  margin-bottom: 1.75rem;
+}
+
+.med-input-label {
+  display: flex;
+  align-items: center;
+  gap: 0.5rem;
+  color: #4a5568;
+  font-size: 0.875rem;
+  font-weight: 600;
+  margin-bottom: 0.5rem;
+}
+
+.med-input-icon {
+  font-size: 0.9rem;
+  color: #667eea;
+}
+
+.med-input-field {
+  width: 100%;
+  padding: 1rem 1.25rem;
+  border: 2px solid #e2e8f0;
+  border-radius: 12px;
+  font-size: 0.95rem;
+  color: #1a202c;
+  transition: all 0.2s ease;
+  box-sizing: border-box;
+  background: #f8fafc;
+}
+
+.med-input-field:focus {
+  outline: none;
+  border-color: #667eea;
+  background: white;
+  box-shadow: 0 0 0 3px rgba(102, 126, 234, 0.1);
+}
+
+.med-input-field::placeholder {
+  color: #94a3b8;
+}
+
+.med-password-container {
+  position: relative;
+}
+
+.med-password-toggle {
+  position: absolute;
+  right: 1rem;
+  top: 50%;
+  transform: translateY(-50%);
+  background: none;
+  border: none;
+  color: #94a3b8;
+  cursor: pointer;
+  font-size: 1rem;
+  padding: 0.25rem;
+  transition: color 0.2s ease;
+}
+
+.med-password-toggle:hover {
+  color: #667eea;
+}
+
+.med-login-button {
+  width: 100%;
+  padding: 1rem;
+  background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+  color: white;
+  border: none;
+  border-radius: 12px;
+  font-size: 1rem;
+  font-weight: 600;
+  cursor: pointer;
+  transition: all 0.3s ease;
+  margin-top: 0.5rem;
+  letter-spacing: 0.5px;
+}
+
+.med-login-button:hover {
+  transform: translateY(-2px);
+  box-shadow: 0 10px 25px rgba(102, 126, 234, 0.3);
+}
+
+.med-login-button.med-login-has-role {
+  background: linear-gradient(135deg, #10b981 0%, #059669 100%);
+}
+
+.med-signup-container {
+  text-align: center;
+  margin-top: 1.5rem;
+  padding-top: 1.5rem;
+  border-top: 1px solid #e2e8f0;
+}
+
+.med-signup-text {
+  color: #64748b;
+  font-size: 0.9rem;
+}
+
+.med-signup-link {
+  display: inline-block;
+  margin-left: 0.5rem;
+  color: #667eea;
+  text-decoration: none;
+  font-weight: 600;
+  font-size: 0.9rem;
+  transition: color 0.2s ease;
+}
+
+.med-signup-link:hover {
+  color: #764ba2;
+  text-decoration: underline;
+}
+
+.med-forgot-password {
+  text-align: center;
+  margin-top: 1rem;
+}
+
+.med-forgot-link {
+  color: #94a3b8;
+  text-decoration: none;
+  font-size: 0.85rem;
+  transition: color 0.2s ease;
+}
+
+.med-forgot-link:hover {
+  color: #667eea;
+}
+
+.med-notification {
+  position: fixed;
+  bottom: 2rem;
+  right: 2rem;
+  padding: 1rem 1.5rem;
+  border-radius: 12px;
+  display: flex;
+  align-items: center;
+  gap: 0.75rem;
+  color: white;
+  font-weight: 500;
+  box-shadow: 0 10px 30px rgba(0, 0, 0, 0.15);
+  z-index: 1000;
+  animation: med-notificationSlideIn 0.3s ease;
+  max-width: 350px;
+}
+
+@keyframes med-notificationSlideIn {
+  from {
+    transform: translateX(100%);
+    opacity: 0;
+  }
+  to {
+    transform: translateX(0);
+    opacity: 1;
+  }
+}
+
+.med-notification-success {
+  background: linear-gradient(135deg, #10b981 0%, #059669 100%);
+}
+
+.med-notification-error {
+  background: linear-gradient(135deg, #ef4444 0%, #dc2626 100%);
+}
+
+.med-notification-info {
+  background: linear-gradient(135deg, #3b82f6 0%, #1d4ed8 100%);
+}
+
+.med-notification-icon {
+  font-size: 1.1rem;
+}
+
+.med-notification-text {
+  font-size: 0.9rem;
+  line-height: 1.4;
+}
+
+/* Custom scrollbar for left side */
+.med-login-left-side::-webkit-scrollbar {
+  width: 6px;
+}
+
+.med-login-left-side::-webkit-scrollbar-track {
+  background: rgba(255, 255, 255, 0.1);
+  border-radius: 3px;
+}
+
+.med-login-left-side::-webkit-scrollbar-thumb {
+  background: rgba(255, 255, 255, 0.3);
+  border-radius: 3px;
+}
+
+.med-login-left-side::-webkit-scrollbar-thumb:hover {
+  background: rgba(255, 255, 255, 0.5);
+}
+
+/* Custom scrollbar for right side */
+.med-login-right-side::-webkit-scrollbar {
+  width: 6px;
+}
+
+.med-login-right-side::-webkit-scrollbar-track {
+  background: #f1f1f1;
+  border-radius: 3px;
+}
+
+.med-login-right-side::-webkit-scrollbar-thumb {
+  background: #c1c1c1;
+  border-radius: 3px;
+}
+
+.med-login-right-side::-webkit-scrollbar-thumb:hover {
+  background: #a8a8a8;
+}
+
+/* Responsive Design */
+@media (max-width: 1024px) {
+  .med-login-container {
+    flex-direction: column;
+    overflow-y: auto; /* Enable scrolling for mobile */
+  }
+  
+  .med-login-left-side,
+  .med-login-right-side {
+    padding: 1.5rem;
+    max-height: none; /* Remove height limit on mobile */
+    overflow-y: visible;
+    min-height: 50vh; /* Minimum height for each section */
+  }
+  
+  .med-login-left-side {
+    padding-top: 3rem;
+    padding-bottom: 1.5rem;
+    flex: none; /* Don't grow on mobile */
+  }
+  
+  .med-login-right-side {
+    flex: none; /* Don't grow on mobile */
+  }
+  
+  .med-logo {
+    width: 250px;
+  }
+  
+  .med-welcome-title {
+    font-size: 2rem;
+  }
+  
+  .med-login-form-wrapper {
+    padding: 1rem 0;
+  }
+}
+
+@media (max-width: 768px) {
+  .med-login-form {
+    padding: 2rem;
+    margin: 0;
+  }
+  
+  .med-role-buttons {
+    flex-direction: column;
+  }
+  
+  .med-role-button {
+    flex-direction: row;
+    justify-content: flex-start;
+    padding: 1rem 1.5rem;
+    min-width: auto;
+  }
+  
+  .med-welcome-title {
+    font-size: 1.75rem;
+  }
+  
+  .med-form-title {
+    font-size: 1.75rem;
+  }
+  
+  .med-login-left-side,
+  .med-login-right-side {
+    padding: 1rem;
+  }
+}
+
+@media (max-width: 480px) {
+  .med-login-form {
+    padding: 1.5rem;
+    border-radius: 20px;
+  }
+  
+  .med-dept-section {
+    padding: 1rem;
+  }
+  
+  .med-notification {
+    left: 1rem;
+    right: 1rem;
+    bottom: 1rem;
+    max-width: calc(100% - 2rem);
+  }
+  
+  .med-logo {
+    width: 200px;
+  }
+  
+  .med-welcome-title {
+    font-size: 1.5rem;
+  }
+  
+  .med-form-title {
+    font-size: 1.5rem;
+  }
+}
+
+/* Right side specific success notification */
+.med-right-success-notification {
+  position: absolute;
+  top: 30px;
+  right: 30px;
+  width: 350px;
+  background: linear-gradient(135deg, #10b981 0%, #059669 100%);
+  color: white;
+  border-radius: 12px;
+  padding: 20px;
+  box-shadow: 0 10px 30px rgba(16, 185, 129, 0.3);
+  z-index: 1000;
+  overflow: hidden;
+  border: 1px solid rgba(255, 255, 255, 0.1);
+}
+
+.med-right-success-content {
+  display: flex;
+  align-items: center;
+  gap: 15px;
+}
+
+.med-right-success-icon {
+  font-size: 28px;
+  color: white;
+  filter: drop-shadow(0 2px 4px rgba(0, 0, 0, 0.1));
+}
+
+.med-right-success-text {
+  display: flex;
+  flex-direction: column;
+  gap: 4px;
+}
+
+.med-right-success-title {
+  font-weight: 700;
+  font-size: 16px;
+  letter-spacing: 0.5px;
+}
+
+.med-right-success-role {
+  font-size: 14px;
+  opacity: 0.9;
+  font-weight: 500;
+}
+
+.med-right-success-progress {
+  position: absolute;
+  bottom: 0;
+  left: 0;
+  right: 0;
+  height: 4px;
+  background: rgba(255, 255, 255, 0.2);
+  overflow: hidden;
+}
+
+.med-right-success-progress-bar {
+  position: absolute;
+  bottom: 0;
+  left: 0;
+  height: 100%;
+  width: 100%;
+  background: white;
+  animation: med-right-success-progress 1.5s ease-in-out forwards;
+}
+
+@keyframes med-right-success-progress {
+  0% {
+    transform: translateX(-100%);
+  }
+  100% {
+    transform: translateX(0);
+  }
+}
+
+/* Animation for notification entrance */
+@keyframes med-right-slide-in {
+  from {
+    transform: translateX(100%);
+    opacity: 0;
+  }
+  to {
+    transform: translateX(0);
+    opacity: 1;
+  }
+}
+
+@keyframes med-right-slide-out {
+  from {
+    transform: translateX(0);
+    opacity: 1;
+  }
+  to {
+    transform: translateX(100%);
+    opacity: 0;
+  }
+}
+
+/* Responsive adjustments */
+@media (max-width: 768px) {
+  .med-right-success-notification {
+    top: 20px;
+    right: 20px;
+    left: 20px;
+    width: auto;
+  }
+}
+
+/* ROLE DROPDOWN STYLES */
+.med-role-dropdown-container {
+  position: relative;
+  width: 100%;
+  margin-bottom: 1rem;
+}
+
+.med-role-dropdown-toggle {
+  width: 100%;
+  padding: 1rem 1.5rem;
+  background: white;
+  border: 2px solid #e2e8f0;
+  border-radius: 12px;
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  cursor: pointer;
+  transition: all 0.3s ease;
+  text-align: left;
+  color: #4a5568;
+  font-size: 1rem;
+}
+
+.med-role-dropdown-toggle:hover {
+  border-color: #4299e1;
+  box-shadow: 0 2px 8px rgba(66, 153, 225, 0.1);
+}
+
+.med-role-dropdown-toggle.med-dropdown-open {
+  border-color: #4299e1;
+  box-shadow: 0 4px 12px rgba(66, 153, 225, 0.15);
+}
+
+.med-role-dropdown-toggle.med-role-selected {
+  border-color: #38a169;
+  background-color: rgba(56, 161, 105, 0.05);
+}
+
+.med-role-toggle-content {
+  display: flex;
+  align-items: center;
+  gap: 1rem;
+  flex: 1;
+}
+
+.med-role-toggle-icon {
+  font-size: 1.25rem;
+  color: #718096;
+  display: flex;
+  align-items: center;
+}
+
+.med-role-toggle-info {
+  display: flex;
+  flex-direction: column;
+  gap: 0.25rem;
+}
+
+.med-role-toggle-text {
+  font-weight: 500;
+  color: #2d3748;
+}
+
+.med-role-toggle-desc {
+  font-size: 0.85rem;
+  color: #718096;
+  line-height: 1.3;
+}
+
+.med-dropdown-arrow {
+  transition: transform 0.3s ease;
+  color: #718096;
+  font-size: 1.1rem;
+}
+
+.med-dropdown-arrow.med-arrow-rotate {
+  transform: rotate(180deg);
+}
+
+.med-role-dropdown-menu {
+  position: absolute;
+  top: calc(100% + 8px);
+  left: 0;
+  right: 0;
+  background: white;
+  border: 2px solid #e2e8f0;
+  border-radius: 12px;
+  box-shadow: 0 10px 25px rgba(0, 0, 0, 0.1);
+  z-index: 1000;
+  max-height: 400px;
+  overflow-y: auto;
+  animation: dropdownSlide 0.2s ease;
+}
+
+@keyframes dropdownSlide {
+  from {
+    opacity: 0;
+    transform: translateY(-10px);
+  }
+  to {
+    opacity: 1;
+    transform: translateY(0);
+  }
+}
+
+.med-role-dropdown-item {
+  width: 100%;
+  padding: 1rem 1.5rem;
+  display: flex;
+  align-items: center;
+  gap: 1rem;
+  background: transparent;
+  border: none;
+  cursor: pointer;
+  transition: all 0.2s ease;
+  border-bottom: 1px solid #f7fafc;
+  color: #4a5568;
+  text-align: left;
+}
+
+.med-role-dropdown-item:last-child {
+  border-bottom: none;
+}
+
+.med-role-dropdown-item:hover {
+  background-color: #f7fafc;
+  padding-left: 1.75rem;
+}
+
+.med-role-dropdown-item.med-role-item-active {
+  background-color: rgba(56, 161, 105, 0.08);
+}
+
+.med-role-item-icon {
+  font-size: 1.25rem;
+  color: #718096;
+  display: flex;
+  align-items: center;
+  min-width: 24px;
+}
+
+.med-role-item-info {
+  display: flex;
+  flex-direction: column;
+  gap: 0.25rem;
+  flex: 1;
+}
+
+.med-role-item-label {
+  font-weight: 500;
+  color: #2d3748;
+  font-size: 1rem;
+}
+
+.med-role-item-desc {
+  font-size: 0.85rem;
+  color: #718096;
+  line-height: 1.3;
+}
+
+.med-role-item-check {
+  color: #38a169;
+  font-size: 1rem;
+}
+
+.med-role-selected-indicator {
+  margin-top: 0.75rem;
+  padding: 0.75rem;
+  background: rgba(56, 161, 105, 0.1);
+  border-radius: 8px;
+  display: flex;
+  align-items: center;
+  gap: 0.5rem;
+  color: #276749;
+  font-size: 0.95rem;
+  font-weight: 500;
+  animation: fadeIn 0.3s ease;
+}
+
+.med-role-check-icon {
+  color: #38a169;
+  font-size: 1rem;
+}
+
+/* Scrollbar styling for dropdown */
+.med-role-dropdown-menu::-webkit-scrollbar {
+  width: 8px;
+}
+
+.med-role-dropdown-menu::-webkit-scrollbar-track {
+  background: #f7fafc;
+  border-radius: 4px;
+}
+
+.med-role-dropdown-menu::-webkit-scrollbar-thumb {
+  background: #cbd5e0;
+  border-radius: 4px;
+}
+
+.med-role-dropdown-menu::-webkit-scrollbar-thumb:hover {
+  background: #a0aec0;
+}
+
+/* Responsive styles */
+@media (max-width: 768px) {
+  .med-role-dropdown-toggle {
+    padding: 0.875rem 1.25rem;
+  }
+  
+  .med-role-dropdown-item {
+    padding: 0.875rem 1.25rem;
+  }
+  
+  .med-role-toggle-info,
+  .med-role-item-info {
+    gap: 0.125rem;
+  }
+  
+  .med-role-toggle-text,
+  .med-role-item-label {
+    font-size: 0.95rem;
+  }
+  
+  .med-role-toggle-desc,
+  .med-role-item-desc {
+    font-size: 0.8rem;
+  }
+}
+
+/* Animation for dropdown */
+@keyframes fadeIn {
+  from {
+    opacity: 0;
+    transform: translateY(-5px);
+  }
+  to {
+    opacity: 1;
+    transform: translateY(0);
+  }
+}
+
+
+
+/* Super Admin Specific Login Styles */
+
+/* Super Admin Role Item in Dropdown */
+.med-superadmin-item {
+  border-left: 4px solid #ffd700 !important;
+  background: linear-gradient(135deg, rgba(255, 215, 0, 0.1) 0%, rgba(184, 134, 11, 0.05) 100%);
+}
+
+.med-superadmin-item:hover {
+  background: linear-gradient(135deg, rgba(255, 215, 0, 0.2) 0%, rgba(184, 134, 11, 0.1) 100%) !important;
+  transform: translateX(5px);
+  transition: all 0.3s ease;
+}
+
+/* Super Admin Badge */
+.med-superadmin-badge {
+  background: linear-gradient(135deg, #ffd700 0%, #b8860b 100%);
+  color: #000000;
+  padding: 2px 8px;
+  border-radius: 12px;
+  font-size: 10px;
+  font-weight: 700;
+  text-transform: uppercase;
+  letter-spacing: 0.5px;
+  animation: badgePulse 2s infinite alternate;
+}
+
+@keyframes badgePulse {
+  0% {
+    box-shadow: 0 0 5px rgba(255, 215, 0, 0.5);
+  }
+  100% {
+    box-shadow: 0 0 15px rgba(255, 215, 0, 0.8);
+  }
+}
+
+/* Super Admin Login Button */
+.med-superadmin-button {
+  background: linear-gradient(135deg, #ffd700 0%, #b8860b 100%) !important;
+  color: #000000 !important;
+  border: none !important;
+  box-shadow: 0 4px 15px rgba(255, 215, 0, 0.4) !important;
+  position: relative;
+  overflow: hidden;
+  font-weight: 700 !important;
+  letter-spacing: 1px;
+}
+
+.med-superadmin-button:hover {
+  background: linear-gradient(135deg, #ffdf00 0%, #d4af37 100%) !important;
+  box-shadow: 0 6px 20px rgba(255, 215, 0, 0.6) !important;
+  transform: translateY(-2px);
+  transition: all 0.3s ease;
+}
+
+.med-superadmin-button:active {
+  transform: translateY(0);
+  box-shadow: 0 2px 10px rgba(255, 215, 0, 0.4) !important;
+}
+
+/* Super Admin Success Notification */
+.med-right-success-notification .med-right-success-role[data-role="superadmin"] {
+  color: #ffd700;
+  font-weight: 700;
+}
+
+/* Super Admin Role Icon Animation */
+.med-role-item-icon[data-icon="superadmin"] svg {
+  animation: iconSpin 3s linear infinite;
+}
+
+@keyframes iconSpin {
+  0% { transform: rotate(0deg); }
+  100% { transform: rotate(360deg); }
+}
+
+/* Super Admin Input Focus */
+.med-input-field:focus[data-role="superadmin"] {
+  border-color: #ffd700 !important;
+  box-shadow: 0 0 0 3px rgba(255, 215, 0, 0.2) !important;
+}
+
+/* Super Admin Role Selected State */
+.med-role-dropdown-toggle.med-role-selected[data-role="superadmin"] {
+  border-color: #ffd700 !important;
+  background: linear-gradient(135deg, rgba(255, 215, 0, 0.1) 0%, rgba(184, 134, 11, 0.05) 100%) !important;
+  box-shadow: 0 0 10px rgba(255, 215, 0, 0.3) !important;
+}

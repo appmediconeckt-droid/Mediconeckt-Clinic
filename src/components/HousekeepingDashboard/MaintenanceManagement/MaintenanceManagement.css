@@ -1,0 +1,2012 @@
+/* Maintenance Management Styles with Housekeeping Theme */
+.hk-maintenance-container {
+  padding: 25px;
+  background: linear-gradient(135deg, #f8f9fa 0%, #f0f0f0 100%);
+  min-height: 100vh;
+  font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+}
+
+/* Header Styles */
+.hk-maintenance-header {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  margin-bottom: 30px;
+  padding: 25px;
+  background: linear-gradient(135deg, #fff9c4 0%, #ffec8b 100%);
+  border-radius: 16px;
+  box-shadow: 0 6px 20px rgba(253, 216, 53, 0.2);
+  border: 3px solid #ffd700;
+  position: relative;
+  overflow: hidden;
+}
+
+.hk-maintenance-header::before {
+  content: '';
+  position: absolute;
+  top: 0;
+  left: 0;
+  right: 0;
+  height: 5px;
+  background: linear-gradient(90deg, #fdd835, #ffc400, #f57c00, #ffd700);
+  animation: hk-maintenance-shimmer 3s infinite linear;
+}
+
+@keyframes hk-maintenance-shimmer {
+  0% { background-position: -200px 0; }
+  100% { background-position: 200px 0; }
+}
+
+.hk-maintenance-title-section {
+  flex: 1;
+}
+
+.hk-maintenance-title {
+  margin: 0;
+  color: #000;
+  font-size: 34px;
+  display: flex;
+  align-items: center;
+  gap: 15px;
+  font-weight: 800;
+  text-shadow: 2px 2px 4px rgba(0, 0, 0, 0.1);
+}
+
+.hk-maintenance-title-icon {
+  color: #f57c00;
+  font-size: 38px;
+  filter: drop-shadow(0 2px 4px rgba(245, 124, 0, 0.3));
+}
+
+.hk-maintenance-subtitle {
+  margin: 10px 0 0;
+  color: #5d4037;
+  font-size: 16px;
+  font-weight: 600;
+  max-width: 800px;
+}
+
+.hk-maintenance-header-actions {
+  display: flex;
+  align-items: center;
+  gap: 15px;
+}
+
+/* Button Styles */
+.hk-maintenance-btn-primary,
+.hk-maintenance-btn-secondary,
+.hk-maintenance-btn-refresh,
+.hk-maintenance-btn-print {
+  padding: 14px 24px;
+  border: none;
+  border-radius: 12px;
+  font-size: 15px;
+  font-weight: 700;
+  cursor: pointer;
+  display: inline-flex;
+  align-items: center;
+  gap: 10px;
+  transition: all 0.3s cubic-bezier(0.4, 0, 0.2, 1);
+  height: 50px;
+  box-shadow: 0 4px 8px rgba(0, 0, 0, 0.15);
+  text-transform: uppercase;
+  letter-spacing: 0.5px;
+}
+
+.hk-maintenance-btn-primary {
+  background: linear-gradient(135deg, #fdd835 0%, #ffc400 100%);
+  color: #000;
+  border: 3px solid #ffd700;
+}
+
+.hk-maintenance-btn-primary:hover {
+  background: linear-gradient(135deg, #ffc400 0%, #ffab00 100%);
+  transform: translateY(-4px);
+  box-shadow: 0 8px 16px rgba(255, 193, 7, 0.4);
+}
+
+.hk-maintenance-btn-secondary {
+  background: white;
+  color: #333;
+  border: 3px solid #ffd700;
+}
+
+.hk-maintenance-btn-secondary:hover {
+  background: #fffde7;
+  transform: translateY(-3px);
+  box-shadow: 0 6px 12px rgba(255, 215, 0, 0.3);
+}
+
+.hk-maintenance-btn-refresh {
+  background: linear-gradient(135deg, #2196f3 0%, #1976d2 100%);
+  color: white;
+  border: 3px solid #1976d2;
+}
+
+.hk-maintenance-btn-refresh:hover {
+  background: linear-gradient(135deg, #1976d2 0%, #1565c0 100%);
+  transform: rotate(180deg);
+  transition: transform 0.6s ease;
+}
+
+.hk-maintenance-btn-print {
+  background: linear-gradient(135deg, #757575 0%, #616161 100%);
+  color: white;
+  border: 3px solid #616161;
+}
+
+.hk-maintenance-btn-print:hover {
+  background: linear-gradient(135deg, #616161 0%, #424242 100%);
+  transform: translateY(-3px);
+}
+
+/* Section Titles */
+.hk-maintenance-section-title {
+  margin: 0 0 25px;
+  color: #333;
+  font-size: 24px;
+  display: flex;
+  align-items: center;
+  gap: 12px;
+  font-weight: 800;
+  padding-bottom: 12px;
+  /* border-bottom: 3px solid #ffd700; */
+  position: relative;
+}
+
+.hk-maintenance-section-title::after {
+  content: '';
+  position: absolute;
+  bottom: -3px;
+  left: 0;
+  width: 100px;
+  height: 3px;
+  /* background: linear-gradient(90deg, #f57c00, #ffd700); */
+}
+
+.hk-maintenance-section-title svg {
+  color: #f57c00;
+  font-size: 26px;
+}
+
+/* Statistics Section */
+.hk-maintenance-stats-section {
+  background: white;
+  padding: 28px;
+  border-radius: 16px;
+  margin-bottom: 35px;
+  box-shadow: 0 6px 20px rgba(0, 0, 0, 0.1);
+  border: 3px solid #ffecb3;
+}
+
+.hk-maintenance-stats-grid {
+  display: grid;
+  grid-template-columns: repeat(auto-fit, minmax(260px, 1fr));
+  gap: 22px;
+}
+
+.hk-maintenance-stat-card {
+  padding: 24px;
+  border-radius: 14px;
+  display: flex;
+  align-items: center;
+  gap: 18px;
+  box-shadow: 0 4px 12px rgba(0, 0, 0, 0.1);
+  transition: all 0.4s cubic-bezier(0.4, 0, 0.2, 1);
+  border: 3px solid transparent;
+  position: relative;
+  overflow: hidden;
+}
+
+.hk-maintenance-stat-card::before {
+  content: '';
+  position: absolute;
+  top: 0;
+  left: 0;
+  width: 100%;
+  height: 5px;
+}
+
+.hk-maintenance-stat-total::before { background: linear-gradient(90deg, #ffd700, #f57c00); }
+.hk-maintenance-stat-critical::before { background: linear-gradient(90deg, #ff5252, #d32f2f); }
+.hk-maintenance-stat-progress::before { background: linear-gradient(90deg, #2196f3, #1976d2); }
+.hk-maintenance-stat-pending::before { background: linear-gradient(90deg, #ff9800, #f57c00); }
+.hk-maintenance-stat-completed::before { background: linear-gradient(90deg, #4caf50, #388e3c); }
+.hk-maintenance-stat-cost::before { background: linear-gradient(90deg, #9c27b0, #7b1fa2); }
+
+.hk-maintenance-stat-card:hover {
+  transform: translateY(-8px) scale(1.02);
+  box-shadow: 0 12px 24px rgba(0, 0, 0, 0.2);
+}
+
+.hk-maintenance-stat-icon {
+  width: 65px;
+  height: 65px;
+  border-radius: 16px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  font-size: 30px;
+  flex-shrink: 0;
+  box-shadow: 0 6px 12px rgba(0, 0, 0, 0.15);
+}
+
+.hk-maintenance-stat-total .hk-maintenance-stat-icon { background: linear-gradient(135deg, #fff9c4 0%, #ffec8b 100%); color: #f57c00; }
+.hk-maintenance-stat-critical .hk-maintenance-stat-icon { background: linear-gradient(135deg, #ffcdd2 0%, #ef9a9a 100%); color: #c62828; }
+.hk-maintenance-stat-progress .hk-maintenance-stat-icon { background: linear-gradient(135deg, #bbdefb 0%, #90caf9 100%); color: #1976d2; }
+.hk-maintenance-stat-pending .hk-maintenance-stat-icon { background: linear-gradient(135deg, #ffecb3 0%, #ffe082 100%); color: #ff8f00; }
+.hk-maintenance-stat-completed .hk-maintenance-stat-icon { background: linear-gradient(135deg, #c8e6c9 0%, #a5d6a7 100%); color: #388e3c; }
+.hk-maintenance-stat-cost .hk-maintenance-stat-icon { background: linear-gradient(135deg, #e1bee7 0%, #ce93d8 100%); color: #7b1fa2; }
+
+.hk-maintenance-stat-content {
+  flex: 1;
+}
+
+.hk-maintenance-stat-content h3 {
+  margin: 0;
+  font-size: 32px;
+  font-weight: 900;
+  color: #222;
+  line-height: 1;
+}
+
+.hk-maintenance-stat-content p {
+  margin: 8px 0 0;
+  color: #666;
+  font-size: 16px;
+  font-weight: 700;
+}
+
+.hk-maintenance-stat-trend,
+.hk-maintenance-stat-detail {
+  font-size: 14px;
+  font-weight: 700;
+  padding: 6px 14px;
+  border-radius: 20px;
+  text-align: center;
+}
+
+.hk-maintenance-stat-trend {
+  background: #f5f5f5;
+}
+
+.hk-maintenance-trend-up { color: #2e7d32; background: #e8f5e9 !important; }
+.hk-maintenance-trend-down { color: #c62828; background: #ffebee !important; }
+.hk-maintenance-trend-neutral { color: #616161; background: #f5f5f5 !important; }
+
+.hk-maintenance-stat-detail {
+  background: rgba(255, 255, 255, 0.9);
+  color: #666;
+  margin-top: 8px;
+}
+
+/* Teams Section */
+.hk-maintenance-teams-section {
+  background: white;
+  padding: 28px;
+  border-radius: 16px;
+  margin-bottom: 35px;
+  box-shadow: 0 6px 20px rgba(0, 0, 0, 0.1);
+  border: 3px solid #ffecb3;
+}
+
+.hk-maintenance-teams-grid {
+  display: grid;
+  grid-template-columns: repeat(auto-fit, minmax(280px, 1fr));
+  gap: 22px;
+}
+
+.hk-maintenance-team-card {
+  padding: 22px;
+  background: linear-gradient(135deg, #f8f9fa 0%, #f0f0f0 100%);
+  border-radius: 14px;
+  border: 3px solid #ffecb3;
+  transition: all 0.3s ease;
+}
+
+.hk-maintenance-team-card:hover {
+  transform: translateY(-6px);
+  box-shadow: 0 10px 20px rgba(255, 215, 0, 0.2);
+  border-color: #ffd700;
+}
+
+.hk-maintenance-team-header {
+  display: flex;
+  align-items: center;
+  gap: 15px;
+  margin-bottom: 18px;
+}
+
+.hk-maintenance-team-avatar {
+  width: 60px;
+  height: 60px;
+  border-radius: 50%;
+  background: linear-gradient(135deg, #fdd835 0%, #ffc400 100%);
+  color: #000;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  font-weight: 900;
+  font-size: 24px;
+  flex-shrink: 0;
+  box-shadow: 0 4px 8px rgba(0, 0, 0, 0.1);
+}
+
+.hk-maintenance-team-info h3 {
+  margin: 0 0 5px;
+  font-size: 18px;
+  color: #333;
+  font-weight: 800;
+}
+
+.hk-maintenance-team-lead {
+  font-size: 14px;
+  color: #666;
+  font-weight: 600;
+  display: flex;
+  align-items: center;
+  gap: 8px;
+}
+
+.hk-maintenance-team-rating {
+  margin-left: auto;
+}
+
+.hk-maintenance-rating-badge {
+  background: linear-gradient(135deg, #fff9c4 0%, #ffec8b 100%);
+  color: #000;
+  padding: 8px 14px;
+  border-radius: 20px;
+  font-size: 16px;
+  font-weight: 800;
+  border: 2px solid #ffd700;
+}
+
+.hk-maintenance-team-details {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  margin-bottom: 15px;
+  padding: 12px;
+  background: white;
+  border-radius: 10px;
+  border: 2px solid #f0f0f0;
+}
+
+.hk-maintenance-team-contact {
+  font-size: 14px;
+  color: #666;
+  font-weight: 600;
+  display: flex;
+  align-items: center;
+  gap: 8px;
+}
+
+.hk-maintenance-team-workload {
+  text-align: center;
+}
+
+.hk-maintenance-workload-label {
+  font-size: 12px;
+  color: #666;
+  margin-bottom: 4px;
+}
+
+.hk-maintenance-workload-value {
+  font-size: 24px;
+  font-weight: 900;
+  color: #f57c00;
+}
+
+.hk-maintenance-team-progress {
+  height: 8px;
+  background: #e0e0e0;
+  border-radius: 4px;
+  margin-bottom: 15px;
+  overflow: hidden;
+}
+
+.hk-maintenance-team-progress-bar {
+  height: 100%;
+  background: linear-gradient(90deg, #fdd835, #ffc400);
+  border-radius: 4px;
+  transition: width 0.6s ease;
+}
+
+.hk-maintenance-team-actions {
+  display: flex;
+  gap: 10px;
+}
+
+.hk-maintenance-team-action-btn {
+  flex: 1;
+  padding: 10px;
+  border: none;
+  border-radius: 8px;
+  font-size: 14px;
+  font-weight: 700;
+  cursor: pointer;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  gap: 8px;
+  transition: all 0.3s ease;
+}
+
+.hk-maintenance-team-action-btn:first-child {
+  background: linear-gradient(135deg, #4caf50 0%, #388e3c 100%);
+  color: white;
+}
+
+.hk-maintenance-team-action-btn:last-child {
+  background: linear-gradient(135deg, #2196f3 0%, #1976d2 100%);
+  color: white;
+}
+
+.hk-maintenance-team-action-btn:hover {
+  transform: translateY(-2px);
+  box-shadow: 0 4px 8px rgba(0, 0, 0, 0.2);
+}
+
+/* Preventive Maintenance */
+.hk-maintenance-preventive-section {
+  background: white;
+  padding: 28px;
+  border-radius: 16px;
+  margin-bottom: 35px;
+  box-shadow: 0 6px 20px rgba(0, 0, 0, 0.1);
+  border: 3px solid #ffecb3;
+}
+
+.hk-maintenance-preventive-header {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  margin-bottom: 25px;
+}
+
+.hk-maintenance-preventive-grid {
+  display: grid;
+  grid-template-columns: repeat(auto-fit, minmax(300px, 1fr));
+  gap: 22px;
+}
+
+.hk-maintenance-preventive-card {
+  padding: 20px;
+  background: #f8f9fa;
+  border-radius: 12px;
+  border: 3px solid #ffecb3;
+  transition: all 0.3s ease;
+}
+
+.hk-maintenance-preventive-card:hover {
+  background: #fff9c4;
+  border-color: #ffd700;
+  transform: translateY(-4px);
+}
+
+.hk-maintenance-preventive-header {
+  display: flex;
+  align-items: center;
+  gap: 15px;
+  margin-bottom: 15px;
+}
+
+.hk-maintenance-preventive-icon {
+  width: 50px;
+  height: 50px;
+  border-radius: 10px;
+  background: linear-gradient(135deg, #fff9c4 0%, #ffec8b 100%);
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  font-size: 24px;
+  color: #f57c00;
+  flex-shrink: 0;
+}
+
+.hk-maintenance-preventive-info h3 {
+  margin: 0 0 5px;
+  font-size: 18px;
+  color: #333;
+  font-weight: 800;
+}
+
+.hk-maintenance-preventive-frequency {
+  font-size: 14px;
+  color: #666;
+  font-weight: 600;
+  background: #e8f5e9;
+  padding: 4px 10px;
+  border-radius: 6px;
+  display: inline-block;
+}
+
+.hk-maintenance-preventive-status {
+  margin-left: auto;
+  padding: 6px 12px;
+  border-radius: 20px;
+  font-size: 12px;
+  font-weight: 800;
+  text-transform: uppercase;
+}
+
+.hk-maintenance-preventive-scheduled { background: #e3f2fd; color: #1976d2; border: 2px solid #bbdefb; }
+.hk-maintenance-preventive-overdue { background: #ffebee; color: #c62828; border: 2px solid #ffcdd2; animation: hk-maintenance-pulse 1.5s infinite; }
+.hk-maintenance-preventive-duesoon { background: #fff3e0; color: #ef6c00; border: 2px solid #ffe0b2; }
+
+@keyframes hk-maintenance-pulse {
+  0%, 100% { opacity: 1; }
+  50% { opacity: 0.7; }
+}
+
+.hk-maintenance-preventive-dates {
+  display: grid;
+  grid-template-columns: 1fr 1fr;
+  gap: 15px;
+  margin-bottom: 15px;
+}
+
+.hk-maintenance-preventive-date {
+  padding: 10px;
+  background: white;
+  border-radius: 8px;
+  border: 2px solid #f0f0f0;
+}
+
+.hk-maintenance-date-label {
+  font-size: 12px;
+  color: #666;
+  margin-bottom: 4px;
+}
+
+.hk-maintenance-date-value {
+  font-size: 16px;
+  font-weight: 800;
+  color: #333;
+}
+
+.hk-maintenance-date-overdue {
+  color: #d32f2f;
+  animation: hk-maintenance-pulse 1s infinite;
+}
+
+.hk-maintenance-preventive-assigned {
+  font-size: 14px;
+  color: #666;
+  font-weight: 600;
+  display: flex;
+  align-items: center;
+  gap: 8px;
+  margin-bottom: 15px;
+}
+
+.hk-maintenance-preventive-actions {
+  display: flex;
+  gap: 10px;
+}
+
+.hk-maintenance-preventive-action-btn {
+  flex: 1;
+  padding: 10px;
+  border: none;
+  border-radius: 8px;
+  font-size: 14px;
+  font-weight: 700;
+  cursor: pointer;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  gap: 8px;
+  transition: all 0.3s ease;
+}
+
+.hk-maintenance-preventive-action-btn:first-child {
+  background: linear-gradient(135deg, #4caf50 0%, #388e3c 100%);
+  color: white;
+}
+
+.hk-maintenance-preventive-action-btn:last-child {
+  background: linear-gradient(135deg, #ff9800 0%, #f57c00 100%);
+  color: white;
+}
+
+.hk-maintenance-preventive-action-btn:hover {
+  transform: translateY(-2px);
+  box-shadow: 0 4px 8px rgba(0, 0, 0, 0.2);
+}
+
+/* Filters Section */
+.hk-maintenance-filters-section {
+  background: white;
+  padding: 25px;
+  border-radius: 16px;
+  margin-bottom: 35px;
+  display: flex;
+  flex-direction: column;
+  gap: 22px;
+  box-shadow: 0 6px 20px rgba(0, 0, 0, 0.1);
+  border: 3px solid #ffecb3;
+}
+
+.hk-maintenance-search-container {
+  display: flex;
+  align-items: center;
+  gap: 15px;
+  background: linear-gradient(135deg, #f8f9fa 0%, #f0f0f0 100%);
+  padding: 16px 22px;
+  border-radius: 12px;
+  border: 3px solid #ffd700;
+}
+
+.hk-maintenance-search-icon {
+  color: #f57c00;
+  font-size: 20px;
+  flex-shrink: 0;
+}
+
+.hk-maintenance-search-input {
+  flex: 1;
+  border: none;
+  background: transparent;
+  outline: none;
+  font-size: 16px;
+  color: #333;
+  font-weight: 600;
+}
+
+.hk-maintenance-search-input::placeholder {
+  color: #888;
+  font-weight: 500;
+}
+
+.hk-maintenance-filter-group {
+  display: flex;
+  align-items: center;
+  gap: 15px;
+  flex-wrap: wrap;
+}
+
+.hk-maintenance-filter-select {
+  padding: 14px 20px;
+  border: 3px solid #ffd700;
+  border-radius: 12px;
+  background: white;
+  color: #333;
+  font-size: 15px;
+  font-weight: 700;
+  cursor: pointer;
+  outline: none;
+  min-width: 180px;
+  transition: all 0.3s ease;
+  box-shadow: 0 2px 6px rgba(0, 0, 0, 0.1);
+}
+
+.hk-maintenance-filter-select:focus {
+  border-color: #f57c00;
+  box-shadow: 0 0 0 4px rgba(255, 193, 7, 0.3);
+  transform: scale(1.02);
+}
+
+.hk-maintenance-filter-btn,
+.hk-maintenance-reset-btn,
+.hk-maintenance-export-btn {
+  padding: 14px 24px;
+  border: none;
+  border-radius: 12px;
+  font-size: 15px;
+  font-weight: 700;
+  cursor: pointer;
+  display: inline-flex;
+  align-items: center;
+  gap: 10px;
+  transition: all 0.3s ease;
+  height: 50px;
+  box-shadow: 0 4px 8px rgba(0, 0, 0, 0.15);
+}
+
+.hk-maintenance-filter-btn {
+  background: linear-gradient(135deg, #2196f3 0%, #1976d2 100%);
+  color: white;
+  border: 3px solid #1976d2;
+}
+
+.hk-maintenance-filter-btn:hover {
+  background: linear-gradient(135deg, #1976d2 0%, #1565c0 100%);
+  transform: translateY(-3px);
+}
+
+.hk-maintenance-reset-btn {
+  background: linear-gradient(135deg, #757575 0%, #616161 100%);
+  color: white;
+  border: 3px solid #616161;
+}
+
+.hk-maintenance-reset-btn:hover {
+  background: linear-gradient(135deg, #616161 0%, #424242 100%);
+  transform: translateY(-3px);
+}
+
+.hk-maintenance-export-btn {
+  background: linear-gradient(135deg, #4caf50 0%, #388e3c 100%);
+  color: white;
+  border: 3px solid #388e3c;
+}
+
+.hk-maintenance-export-btn:hover {
+  background: linear-gradient(135deg, #388e3c 0%, #2e7d32 100%);
+  transform: translateY(-3px);
+}
+
+/* Table Section */
+.hk-maintenance-table-section {
+  background: white;
+  padding: 28px;
+  border-radius: 16px;
+  margin-bottom: 35px;
+  box-shadow: 0 8px 24px rgba(0, 0, 0, 0.12);
+  border: 3px solid #ffecb3;
+}
+
+.hk-maintenance-table-header {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  margin-bottom: 25px;
+  padding-bottom: 20px;
+  border-bottom: 3px solid #ffd700;
+}
+
+.hk-maintenance-table-info {
+  display: flex;
+  align-items: center;
+  gap: 20px;
+}
+
+.hk-maintenance-table-count {
+  color: #666;
+  font-size: 16px;
+  font-weight: 700;
+  background: #f8f9fa;
+  padding: 10px 18px;
+  border-radius: 10px;
+  border: 2px solid #ffecb3;
+}
+
+.hk-maintenance-table-container {
+  overflow-x: auto;
+  border-radius: 12px;
+  border: 3px solid #f0f0f0;
+  background: #fafafa;
+  margin-bottom: 25px;
+}
+
+.hk-maintenance-table {
+  width: 100%;
+  border-collapse: separate;
+  border-spacing: 0;
+  min-width: 1600px;
+}
+
+.hk-maintenance-table th {
+  padding: 22px 20px;
+  background: linear-gradient(135deg, #fff9c4 0%, #ffec8b 100%);
+  color: #000;
+  font-weight: 800;
+  font-size: 16px;
+  text-align: left;
+  border-bottom: 3px solid #ffd700;
+  position: sticky;
+  top: 0;
+  z-index: 100;
+  text-transform: uppercase;
+  letter-spacing: 1px;
+}
+
+.hk-maintenance-table th:first-child {
+  border-radius: 12px 0 0 0;
+}
+
+.hk-maintenance-table th:last-child {
+  border-radius: 0 12px 0 0;
+}
+
+.hk-maintenance-table td {
+  padding: 22px 20px;
+  border-bottom: 2px solid #f0f0f0;
+  font-size: 15px;
+  color: #444;
+  background: white;
+  transition: all 0.3s ease;
+  vertical-align: top;
+}
+
+.hk-maintenance-table-row:hover td {
+  background: #fffde7;
+  transform: scale(1.001);
+  box-shadow: 0 4px 12px rgba(255, 215, 0, 0.15);
+}
+
+/* Ticket Details Column */
+.hk-maintenance-ticket-details {
+  display: flex;
+  flex-direction: column;
+  gap: 12px;
+}
+
+.hk-maintenance-ticket-header {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  margin-bottom: 10px;
+}
+
+.hk-maintenance-ticket-number {
+  font-size: 16px;
+  font-weight: 900;
+  color: #333;
+  font-family: monospace;
+  display: flex;
+  align-items: center;
+  gap: 8px;
+}
+
+.hk-maintenance-ticket-number svg {
+  color: #f57c00;
+}
+
+.hk-maintenance-status-badge {
+  padding: 8px 16px;
+  border-radius: 20px;
+  font-size: 12px;
+  font-weight: 800;
+  display: inline-block;
+  text-transform: uppercase;
+}
+
+.hk-maintenance-status-completed { background: #e8f5e9; color: #2e7d32; border: 2px solid #4caf50; }
+.hk-maintenance-status-inprogress { background: #e3f2fd; color: #1976d2; border: 2px solid #2196f3; }
+.hk-maintenance-status-pending { background: #fff3e0; color: #ef6c00; border: 2px solid #ff9800; }
+.hk-maintenance-status-scheduled { background: #f3e5f5; color: #7b1fa2; border: 2px solid #9c27b0; }
+
+.hk-maintenance-ticket-title {
+  font-size: 18px;
+  font-weight: 800;
+  color: #222;
+  line-height: 1.3;
+}
+
+.hk-maintenance-ticket-description {
+  font-size: 14px;
+  color: #666;
+  line-height: 1.5;
+  margin-bottom: 10px;
+}
+
+.hk-maintenance-ticket-meta {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  gap: 15px;
+  margin-bottom: 12px;
+}
+
+.hk-maintenance-ticket-type {
+  display: flex;
+  align-items: center;
+  gap: 8px;
+  font-size: 14px;
+  color: #666;
+  font-weight: 600;
+  background: #f5f5f5;
+  padding: 8px 12px;
+  border-radius: 8px;
+}
+
+.hk-maintenance-priority-badge {
+  padding: 8px 16px;
+  border-radius: 20px;
+  font-size: 12px;
+  font-weight: 800;
+  display: inline-block;
+  text-transform: uppercase;
+}
+
+.hk-maintenance-priority-critical { background: #ffebee; color: #c62828; border: 2px solid #ff5252; }
+.hk-maintenance-priority-high { background: #fff3e0; color: #ef6c00; border: 2px solid #ff9800; }
+.hk-maintenance-priority-medium { background: #fff9c4; color: #f57c00; border: 2px solid #ffd700; }
+.hk-maintenance-priority-low { background: #e8f5e9; color: #2e7d32; border: 2px solid #4caf50; }
+
+.hk-maintenance-reported-info {
+  display: flex;
+  flex-direction: column;
+  gap: 8px;
+  background: #f8f9fa;
+  padding: 12px;
+  border-radius: 8px;
+  border-left: 4px solid #ffd700;
+}
+
+.hk-maintenance-reported-by,
+.hk-maintenance-reported-time {
+  font-size: 13px;
+  color: #666;
+  font-weight: 600;
+  display: flex;
+  align-items: center;
+  gap: 8px;
+}
+
+/* Location & Impact Column */
+.hk-maintenance-location-info {
+  display: flex;
+  flex-direction: column;
+  gap: 15px;
+}
+
+.hk-maintenance-room-details {
+  display: flex;
+  flex-direction: column;
+  gap: 10px;
+}
+
+.hk-maintenance-room-header {
+  display: flex;
+  align-items: center;
+  gap: 12px;
+}
+
+.hk-maintenance-room-icon {
+  color: #f57c00;
+  font-size: 24px;
+  flex-shrink: 0;
+}
+
+.hk-maintenance-room-number {
+  font-size: 20px;
+  font-weight: 900;
+  color: #222;
+  line-height: 1;
+}
+
+.hk-maintenance-room-department {
+  font-size: 14px;
+  color: #666;
+  font-weight: 600;
+  margin-top: 4px;
+}
+
+.hk-maintenance-attachments-count {
+  font-size: 13px;
+  color: #1976d2;
+  font-weight: 600;
+  display: flex;
+  align-items: center;
+  gap: 8px;
+  background: #e3f2fd;
+  padding: 6px 12px;
+  border-radius: 6px;
+  display: inline-block;
+}
+
+.hk-maintenance-impact-assessment {
+  background: #ffebee;
+  padding: 12px;
+  border-radius: 8px;
+  border-left: 4px solid #ff5252;
+}
+
+.hk-maintenance-impact-title {
+  font-size: 14px;
+  font-weight: 800;
+  color: #c62828;
+  margin-bottom: 8px;
+  display: flex;
+  align-items: center;
+  gap: 8px;
+}
+
+.hk-maintenance-impact-description {
+  font-size: 13px;
+  color: #666;
+  line-height: 1.4;
+}
+
+.hk-maintenance-notes {
+  background: #fff9c4;
+  padding: 12px;
+  border-radius: 8px;
+  border-left: 4px solid #ffd700;
+}
+
+.hk-maintenance-notes-title {
+  font-size: 14px;
+  font-weight: 800;
+  color: #5d4037;
+  margin-bottom: 8px;
+}
+
+.hk-maintenance-notes-content {
+  font-size: 13px;
+  color: #5d4037;
+  line-height: 1.4;
+  margin-bottom: 8px;
+}
+
+.hk-maintenance-followup {
+  font-size: 12px;
+  color: #f57c00;
+  font-weight: 700;
+  display: flex;
+  align-items: center;
+  gap: 8px;
+  padding: 6px 10px;
+  background: rgba(255, 215, 0, 0.1);
+  border-radius: 6px;
+  margin-top: 8px;
+}
+
+.hk-maintenance-followup-date {
+  margin-left: auto;
+  font-weight: 800;
+}
+
+/* Assignment Column */
+.hk-maintenance-assignment-info {
+  display: flex;
+  flex-direction: column;
+  gap: 15px;
+}
+
+.hk-maintenance-assignment-status {
+  padding: 12px;
+  border-radius: 8px;
+  border: 2px solid #f0f0f0;
+}
+
+.hk-maintenance-assigned {
+  display: flex;
+  flex-direction: column;
+  gap: 8px;
+}
+
+.hk-maintenance-assigned-to {
+  font-size: 16px;
+  font-weight: 800;
+  color: #333;
+  display: flex;
+  align-items: center;
+  gap: 8px;
+}
+
+.hk-maintenance-assigned-date {
+  font-size: 13px;
+  color: #666;
+  font-weight: 600;
+  background: #f5f5f5;
+  padding: 4px 8px;
+  border-radius: 4px;
+  display: inline-block;
+}
+
+.hk-maintenance-unassigned {
+  display: flex;
+  flex-direction: column;
+  gap: 10px;
+}
+
+.hk-maintenance-unassigned-alert {
+  background: #fff3e0;
+  color: #ef6c00;
+  padding: 8px 12px;
+  border-radius: 6px;
+  font-size: 14px;
+  font-weight: 800;
+  display: flex;
+  align-items: center;
+  gap: 8px;
+}
+
+.hk-maintenance-team-select {
+  width: 100%;
+  padding: 8px 12px;
+  border: 2px solid #ffd700;
+  border-radius: 8px;
+  background: white;
+  color: #333;
+  font-size: 14px;
+  font-weight: 600;
+  cursor: pointer;
+  outline: none;
+}
+
+.hk-maintenance-technician {
+  padding: 12px;
+  background: #f8f9fa;
+  border-radius: 8px;
+}
+
+.hk-maintenance-technician-assigned {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+}
+
+.hk-maintenance-technician-info {
+  font-size: 15px;
+  font-weight: 700;
+  color: #333;
+  display: flex;
+  align-items: center;
+  gap: 8px;
+}
+
+.hk-maintenance-technician-rating {
+  color: #ffc107;
+  font-weight: 800;
+  display: flex;
+  align-items: center;
+  gap: 4px;
+}
+
+.hk-maintenance-tech-select {
+  width: 100%;
+  padding: 8px 12px;
+  border: 2px solid #ffd700;
+  border-radius: 8px;
+  background: white;
+  color: #333;
+  font-size: 14px;
+  font-weight: 600;
+  cursor: pointer;
+  outline: none;
+}
+
+.hk-maintenance-vendor-info {
+  padding: 12px;
+  background: #e3f2fd;
+  border-radius: 8px;
+  border: 2px solid #bbdefb;
+}
+
+.hk-maintenance-vendor-header {
+  font-size: 15px;
+  font-weight: 800;
+  color: #1976d2;
+  margin-bottom: 8px;
+  display: flex;
+  align-items: center;
+  gap: 8px;
+}
+
+.hk-maintenance-vendor-contact {
+  font-size: 14px;
+  color: #666;
+  font-weight: 600;
+  display: flex;
+  align-items: center;
+  gap: 8px;
+  margin-bottom: 8px;
+}
+
+.hk-maintenance-vendor-rating {
+  color: #ffc107;
+  font-weight: 800;
+  display: flex;
+  align-items: center;
+  gap: 4px;
+}
+
+.hk-maintenance-materials {
+  padding: 12px;
+  background: #f5f5f5;
+  border-radius: 8px;
+}
+
+.hk-maintenance-materials-title {
+  font-size: 14px;
+  font-weight: 800;
+  color: #333;
+  margin-bottom: 8px;
+}
+
+.hk-maintenance-materials-list {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 8px;
+}
+
+.hk-maintenance-material-badge {
+  background: white;
+  color: #666;
+  padding: 6px 10px;
+  border-radius: 6px;
+  font-size: 12px;
+  font-weight: 600;
+  border: 1px solid #e0e0e0;
+}
+
+.hk-maintenance-no-materials {
+  font-size: 13px;
+  color: #888;
+  font-style: italic;
+}
+
+/* Cost & Timeline Column */
+.hk-maintenance-cost-timeline {
+  display: flex;
+  flex-direction: column;
+  gap: 15px;
+}
+
+.hk-maintenance-cost-info {
+  padding: 12px;
+  background: #f8f9fa;
+  border-radius: 8px;
+  border: 2px solid #f0f0f0;
+}
+
+.hk-maintenance-cost-estimate,
+.hk-maintenance-cost-actual {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  margin-bottom: 10px;
+}
+
+.hk-maintenance-cost-label {
+  font-size: 14px;
+  color: #666;
+  font-weight: 600;
+}
+
+.hk-maintenance-cost-value {
+  font-size: 18px;
+  font-weight: 900;
+  color: #222;
+}
+
+.hk-maintenance-cost-pending {
+  color: #ff9800;
+  font-weight: 700;
+}
+
+.hk-maintenance-cost-difference {
+  padding-top: 10px;
+  border-top: 2px dashed #e0e0e0;
+}
+
+.hk-maintenance-cost-diff {
+  font-size: 13px;
+  font-weight: 800;
+  padding: 6px 10px;
+  border-radius: 6px;
+  text-align: center;
+}
+
+.hk-maintenance-cost-over {
+  background: #ffebee;
+  color: #c62828;
+}
+
+.hk-maintenance-cost-under {
+  background: #e8f5e9;
+  color: #2e7d32;
+}
+
+.hk-maintenance-timeline-info {
+  padding: 12px;
+  background: white;
+  border-radius: 8px;
+  border: 2px solid #ffecb3;
+}
+
+.hk-maintenance-timeline-item {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  margin-bottom: 8px;
+}
+
+.hk-maintenance-timeline-label {
+  font-size: 13px;
+  color: #666;
+  font-weight: 600;
+}
+
+.hk-maintenance-timeline-value {
+  font-size: 14px;
+  font-weight: 700;
+  color: #333;
+}
+
+.hk-maintenance-resolution-time {
+  margin-top: 10px;
+  padding-top: 10px;
+  border-top: 2px solid #ffecb3;
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+}
+
+.hk-maintenance-resolution-label {
+  font-size: 13px;
+  color: #666;
+  font-weight: 600;
+}
+
+.hk-maintenance-resolution-value {
+  font-size: 16px;
+  font-weight: 900;
+  color: #f57c00;
+}
+
+.hk-maintenance-progress-tracker {
+  padding: 12px;
+  background: #f5f5f5;
+  border-radius: 8px;
+}
+
+.hk-maintenance-progress-stages {
+  display: flex;
+  justify-content: space-between;
+  position: relative;
+}
+
+.hk-maintenance-progress-stages::before {
+  content: '';
+  position: absolute;
+  top: 8px;
+  left: 0;
+  right: 0;
+  height: 2px;
+  background: #e0e0e0;
+  z-index: 1;
+}
+
+.hk-maintenance-progress-stage {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  gap: 8px;
+  position: relative;
+  z-index: 2;
+  font-size: 11px;
+  color: #666;
+  font-weight: 600;
+  text-transform: uppercase;
+}
+
+.hk-maintenance-progress-stage.active {
+  color: #f57c00;
+  font-weight: 800;
+}
+
+.hk-maintenance-progress-stage.completed {
+  color: #4caf50;
+}
+
+.hk-maintenance-progress-dot {
+  width: 18px;
+  height: 18px;
+  border-radius: 50%;
+  background: #e0e0e0;
+  border: 2px solid white;
+  box-shadow: 0 2px 4px rgba(0, 0, 0, 0.1);
+}
+
+.hk-maintenance-progress-stage.active .hk-maintenance-progress-dot {
+  background: #f57c00;
+  animation: hk-maintenance-pulse 2s infinite;
+}
+
+.hk-maintenance-progress-stage.completed .hk-maintenance-progress-dot {
+  background: #4caf50;
+}
+
+/* Actions Column */
+.hk-maintenance-action-buttons {
+  display: grid;
+  grid-template-columns: repeat(2, 1fr);
+  gap: 8px;
+  margin-bottom: 12px;
+}
+
+.hk-maintenance-action-btn {
+  width: 40px;
+  height: 40px;
+  border: none;
+  border-radius: 10px;
+  font-size: 16px;
+  cursor: pointer;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  transition: all 0.3s ease;
+  box-shadow: 0 2px 6px rgba(0, 0, 0, 0.1);
+}
+
+.hk-maintenance-action-view {
+  background: linear-gradient(135deg, #bbdefb 0%, #90caf9 100%);
+  color: #1565c0;
+}
+
+.hk-maintenance-action-edit {
+  background: linear-gradient(135deg, #fff9c4 0%, #ffec8b 100%);
+  color: #f57c00;
+}
+
+.hk-maintenance-action-assign {
+  background: linear-gradient(135deg, #c8e6c9 0%, #a5d6a7 100%);
+  color: #2e7d32;
+}
+
+.hk-maintenance-action-update {
+  background: linear-gradient(135deg, #e1bee7 0%, #ce93d8 100%);
+  color: #7b1fa2;
+}
+
+.hk-maintenance-action-btn:hover {
+  transform: translateY(-3px) scale(1.1);
+  box-shadow: 0 4px 12px rgba(0, 0, 0, 0.2);
+}
+
+.hk-maintenance-status-controls {
+  display: flex;
+  flex-direction: column;
+  gap: 10px;
+  margin-bottom: 12px;
+}
+
+.hk-maintenance-status-select {
+  padding: 10px;
+  border: 2px solid #ffd700;
+  border-radius: 8px;
+  background: white;
+  color: #333;
+  font-size: 14px;
+  font-weight: 600;
+  cursor: pointer;
+  outline: none;
+}
+
+.hk-maintenance-complete-btn {
+  padding: 10px;
+  background: linear-gradient(135deg, #4caf50 0%, #388e3c 100%);
+  color: white;
+  border: none;
+  border-radius: 8px;
+  font-size: 14px;
+  font-weight: 700;
+  cursor: pointer;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  gap: 8px;
+  transition: all 0.3s ease;
+}
+
+.hk-maintenance-complete-btn:hover {
+  transform: translateY(-2px);
+  box-shadow: 0 4px 8px rgba(76, 175, 80, 0.3);
+}
+
+.hk-maintenance-quick-info {
+  display: flex;
+  flex-direction: column;
+  gap: 10px;
+  margin-bottom: 12px;
+}
+
+.hk-maintenance-quick-stats {
+  display: flex;
+  justify-content: space-between;
+  gap: 10px;
+}
+
+.hk-maintenance-quick-stat {
+  flex: 1;
+  padding: 8px;
+  background: #f5f5f5;
+  border-radius: 6px;
+  font-size: 12px;
+  font-weight: 700;
+  color: #666;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  gap: 4px;
+}
+
+.hk-maintenance-attachment-btn {
+  text-align: center;
+}
+
+.hk-maintenance-attachments-btn,
+.hk-maintenance-add-attachment {
+  width: 100%;
+  padding: 8px;
+  border: none;
+  border-radius: 8px;
+  font-size: 12px;
+  font-weight: 700;
+  cursor: pointer;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  gap: 6px;
+  transition: all 0.3s ease;
+}
+
+.hk-maintenance-attachments-btn {
+  background: linear-gradient(135deg, #2196f3 0%, #1976d2 100%);
+  color: white;
+}
+
+.hk-maintenance-add-attachment {
+  background: #f5f5f5;
+  color: #666;
+  border: 2px solid #e0e0e0;
+}
+
+.hk-maintenance-attachments-btn:hover,
+.hk-maintenance-add-attachment:hover {
+  transform: translateY(-2px);
+  box-shadow: 0 4px 8px rgba(0, 0, 0, 0.1);
+}
+
+.hk-maintenance-history-link {
+  text-align: center;
+}
+
+.hk-maintenance-history-btn {
+  width: 100%;
+  padding: 8px;
+  background: #fff9c4;
+  color: #5d4037;
+  border: 2px solid #ffd700;
+  border-radius: 8px;
+  font-size: 12px;
+  font-weight: 700;
+  cursor: pointer;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  gap: 6px;
+  transition: all 0.3s ease;
+}
+
+.hk-maintenance-history-btn:hover {
+  background: #ffec8b;
+  transform: translateY(-2px);
+}
+
+/* No Results */
+.hk-maintenance-no-results {
+  text-align: center;
+  padding: 60px 20px;
+  background: #f8f9fa;
+  border-radius: 12px;
+  border: 3px dashed #ffd700;
+  margin: 20px 0;
+}
+
+.hk-maintenance-no-results-icon {
+  font-size: 48px;
+  color: #ffd700;
+  margin-bottom: 20px;
+  animation: hk-maintenance-rotate 3s infinite linear;
+}
+
+@keyframes hk-maintenance-rotate {
+  from { transform: rotate(0deg); }
+  to { transform: rotate(360deg); }
+}
+
+.hk-maintenance-no-results h3 {
+  color: #333;
+  margin-bottom: 10px;
+  font-size: 24px;
+}
+
+.hk-maintenance-no-results p {
+  color: #666;
+  font-size: 16px;
+}
+
+/* Table Footer */
+.hk-maintenance-table-footer {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  margin-top: 25px;
+  padding-top: 20px;
+  border-top: 3px solid #ffecb3;
+}
+
+.hk-maintenance-pagination {
+  display: flex;
+  align-items: center;
+  gap: 15px;
+}
+
+.hk-maintenance-page-btn {
+  padding: 10px 20px;
+  background: white;
+  color: #333;
+  border: 3px solid #ffd700;
+  border-radius: 10px;
+  font-size: 14px;
+  font-weight: 700;
+  cursor: pointer;
+  transition: all 0.3s ease;
+}
+
+.hk-maintenance-page-btn:hover {
+  background: #fff9c4;
+  transform: translateY(-2px);
+}
+
+.hk-maintenance-page-info {
+  color: #666;
+  font-weight: 700;
+  font-size: 16px;
+}
+
+.hk-maintenance-summary {
+  display: flex;
+  gap: 25px;
+}
+
+.hk-maintenance-summary-stats {
+  display: flex;
+  gap: 25px;
+}
+
+.hk-maintenance-summary-item {
+  display: flex;
+  align-items: center;
+  gap: 10px;
+  color: #333;
+  font-weight: 700;
+  font-size: 16px;
+}
+
+.hk-maintenance-summary-dot {
+  width: 12px;
+  height: 12px;
+  border-radius: 50%;
+}
+
+.hk-maintenance-summary-pending { background: #ff9800; }
+.hk-maintenance-summary-inprogress { background: #2196f3; }
+.hk-maintenance-summary-completed { background: #4caf50; }
+.hk-maintenance-summary-critical { background: #ff5252; }
+
+/* Reports Section */
+.hk-maintenance-reports-section {
+  background: white;
+  padding: 28px;
+  border-radius: 16px;
+  margin-bottom: 35px;
+  box-shadow: 0 6px 20px rgba(0, 0, 0, 0.1);
+  border: 3px solid #ffecb3;
+}
+
+.hk-maintenance-reports-grid {
+  display: grid;
+  grid-template-columns: repeat(auto-fit, minmax(300px, 1fr));
+  gap: 25px;
+}
+
+.hk-maintenance-report-card {
+  padding: 22px;
+  background: #f8f9fa;
+  border-radius: 12px;
+  border: 3px solid #ffecb3;
+  transition: all 0.3s ease;
+}
+
+.hk-maintenance-report-card:hover {
+  transform: translateY(-5px);
+  box-shadow: 0 8px 16px rgba(255, 215, 0, 0.15);
+  border-color: #ffd700;
+}
+
+.hk-maintenance-report-card h3 {
+  margin: 0 0 18px;
+  color: #333;
+  font-size: 18px;
+  font-weight: 800;
+  padding-bottom: 12px;
+  border-bottom: 2px solid #ffd700;
+}
+
+.hk-maintenance-report-stats,
+.hk-maintenance-department-stats,
+.hk-maintenance-vendor-performance {
+  display: flex;
+  flex-direction: column;
+  gap: 12px;
+  margin-bottom: 20px;
+}
+
+.hk-maintenance-report-stat {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  padding: 10px;
+  background: white;
+  border-radius: 8px;
+  border: 2px solid #f0f0f0;
+}
+
+.hk-maintenance-report-label {
+  font-size: 14px;
+  color: #666;
+  font-weight: 600;
+}
+
+.hk-maintenance-report-value {
+  font-size: 18px;
+  font-weight: 900;
+  color: #222;
+}
+
+.hk-maintenance-department-stat,
+.hk-maintenance-vendor-stat {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  padding: 8px;
+  background: white;
+  border-radius: 6px;
+}
+
+.hk-maintenance-department-name,
+.hk-maintenance-vendor-name {
+  font-size: 14px;
+  color: #333;
+  font-weight: 600;
+}
+
+.hk-maintenance-department-value,
+.hk-maintenance-vendor-rating {
+  font-size: 14px;
+  font-weight: 800;
+  color: #f57c00;
+}
+
+.hk-maintenance-report-btn {
+  width: 100%;
+  padding: 12px;
+  background: linear-gradient(135deg, #2196f3 0%, #1976d2 100%);
+  color: white;
+  border: none;
+  border-radius: 8px;
+  font-size: 14px;
+  font-weight: 700;
+  cursor: pointer;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  gap: 8px;
+  transition: all 0.3s ease;
+}
+
+.hk-maintenance-report-btn:hover {
+  transform: translateY(-2px);
+  box-shadow: 0 4px 8px rgba(33, 150, 243, 0.3);
+}
+
+/* Quick Actions Section */
+.hk-maintenance-quick-actions-section {
+  background: white;
+  padding: 28px;
+  border-radius: 16px;
+  box-shadow: 0 6px 20px rgba(0, 0, 0, 0.1);
+  border: 3px solid #ffecb3;
+}
+
+.hk-maintenance-quick-grid {
+  display: grid;
+  grid-template-columns: repeat(auto-fit, minmax(220px, 1fr));
+  gap: 20px;
+}
+
+.hk-maintenance-quick-action {
+  padding: 18px 24px;
+  border: none;
+  border-radius: 12px;
+  font-size: 16px;
+  font-weight: 800;
+  cursor: pointer;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  gap: 12px;
+  transition: all 0.3s cubic-bezier(0.4, 0, 0.2, 1);
+  text-align: center;
+  height: 60px;
+  box-shadow: 0 4px 10px rgba(0, 0, 0, 0.15);
+  text-transform: uppercase;
+  letter-spacing: 1px;
+}
+
+.hk-maintenance-action-request {
+  background: linear-gradient(135deg, #fdd835 0%, #ffc400 100%);
+  color: #000;
+  border: 3px solid #ffd700;
+}
+
+.hk-maintenance-action-schedule {
+  background: linear-gradient(135deg, #2196f3 0%, #1976d2 100%);
+  color: white;
+  border: 3px solid #1976d2;
+}
+
+.hk-maintenance-action-report {
+  background: linear-gradient(135deg, #4caf50 0%, #388e3c 100%);
+  color: white;
+  border: 3px solid #388e3c;
+}
+
+.hk-maintenance-action-alert {
+  background: linear-gradient(135deg, #ff9800 0%, #f57c00 100%);
+  color: white;
+  border: 3px solid #f57c00;
+}
+
+.hk-maintenance-action-audit {
+  background: linear-gradient(135deg, #9c27b0 0%, #7b1fa2 100%);
+  color: white;
+  border: 3px solid #7b1fa2;
+}
+
+.hk-maintenance-quick-action:hover {
+  transform: translateY(-6px) scale(1.05);
+  box-shadow: 0 10px 25px rgba(0, 0, 0, 0.25);
+}
+
+/* Responsive Design */
+@media (max-width: 1600px) {
+  .hk-maintenance-table {
+    min-width: 1400px;
+  }
+}
+
+@media (max-width: 1400px) {
+  .hk-maintenance-filters-section {
+    flex-direction: column;
+  }
+  
+  .hk-maintenance-filter-group {
+    justify-content: center;
+  }
+  
+  .hk-maintenance-reports-grid {
+    grid-template-columns: repeat(2, 1fr);
+  }
+}
+
+@media (max-width: 1200px) {
+  .hk-maintenance-stats-grid {
+    grid-template-columns: repeat(2, 1fr);
+  }
+  
+  .hk-maintenance-teams-grid {
+    grid-template-columns: repeat(2, 1fr);
+  }
+  
+  .hk-maintenance-preventive-grid {
+    grid-template-columns: repeat(2, 1fr);
+  }
+  
+  .hk-maintenance-quick-grid {
+    grid-template-columns: repeat(3, 1fr);
+  }
+}
+
+@media (max-width: 992px) {
+  .hk-maintenance-header {
+    flex-direction: column;
+    gap: 25px;
+    text-align: center;
+  }
+  
+  .hk-maintenance-header-actions {
+    flex-wrap: wrap;
+    justify-content: center;
+  }
+  
+  .hk-maintenance-stats-grid {
+    grid-template-columns: 1fr;
+  }
+  
+  .hk-maintenance-teams-grid {
+    grid-template-columns: 1fr;
+  }
+  
+  .hk-maintenance-preventive-grid {
+    grid-template-columns: 1fr;
+  }
+  
+  .hk-maintenance-filter-group {
+    flex-direction: column;
+    align-items: stretch;
+  }
+  
+  .hk-maintenance-filter-select {
+    width: 100%;
+  }
+  
+  .hk-maintenance-reports-grid {
+    grid-template-columns: 1fr;
+  }
+  
+  .hk-maintenance-quick-grid {
+    grid-template-columns: repeat(2, 1fr);
+  }
+}
+
+@media (max-width: 768px) {
+  .hk-maintenance-container {
+    padding: 15px;
+  }
+  
+  .hk-maintenance-title {
+    font-size: 28px;
+  }
+  
+  .hk-maintenance-section-title {
+    font-size: 20px;
+  }
+  
+  .hk-maintenance-table-header {
+    flex-direction: column;
+    gap: 15px;
+    text-align: center;
+  }
+  
+  .hk-maintenance-table-footer {
+    flex-direction: column;
+    gap: 20px;
+    text-align: center;
+  }
+  
+  .hk-maintenance-summary-stats {
+    flex-direction: column;
+    gap: 15px;
+  }
+  
+  .hk-maintenance-quick-grid {
+    grid-template-columns: 1fr;
+  }
+}
+
+@media (max-width: 576px) {
+  .hk-maintenance-title {
+    font-size: 24px;
+    flex-direction: column;
+    gap: 10px;
+  }
+  
+  .hk-maintenance-title-icon {
+    font-size: 32px;
+  }
+  
+  .hk-maintenance-btn-primary,
+  .hk-maintenance-btn-secondary {
+    padding: 12px 18px;
+    font-size: 14px;
+  }
+  
+  .hk-maintenance-action-buttons {
+    grid-template-columns: repeat(2, 1fr);
+  }
+  
+  .hk-maintenance-ticket-meta {
+    flex-direction: column;
+    align-items: flex-start;
+  }
+}

@@ -1,0 +1,1452 @@
+/* EyeCareSpecialists.css */
+
+/* Reset and Base Styles */
+.eyecare-container {
+  margin: 0;
+  padding: 0;
+  font-family: 'Inter', -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, sans-serif;
+  color: #1f2937;
+  background-color: #ffffff;
+  line-height: 1.6;
+  overflow-x: hidden;
+}
+
+* {
+  box-sizing: border-box;
+}
+
+/* Navigation Styles */
+.eyecare-navbar {
+  position: fixed;
+  top: 0;
+  left: 0;
+  right: 0;
+  z-index: 1000;
+  background-color: rgba(255, 255, 255, 0.95);
+  backdrop-filter: blur(10px);
+  border-bottom: 1px solid #e5e7eb;
+  box-shadow: 0 2px 20px rgba(0, 0, 0, 0.05);
+  padding: 1rem 0;
+}
+
+.eyecare-nav-container {
+  max-width: 1280px;
+  margin: 0 auto;
+  padding: 0 2rem;
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+}
+
+.eyecare-logo {
+  display: flex;
+  align-items: center;
+  gap: 1rem;
+}
+
+.eyecare-logo-icon {
+  font-size: 2.5rem;
+  /* background: linear-gradient(135deg, #8B5CF6, #4F46E5);
+  -webkit-background-clip: text;
+  -webkit-text-fill-color: transparent; */
+}
+
+.eyecare-logo-text {
+  display: flex;
+  flex-direction: column;
+}
+
+.eyecare-logo-title {
+  font-size: 1.5rem;
+  font-weight: 700;
+  color: #1e293b;
+  margin: 0;
+  line-height: 1.2;
+}
+
+.eyecare-logo-subtitle {
+  font-size: 0.75rem;
+  color: #6b7280;
+  margin: 0;
+  letter-spacing: 0.5px;
+}
+
+.eyecare-menu-btn {
+  display: none;
+  flex-direction: column;
+  gap: 4px;
+  background: transparent;
+  border: none;
+  cursor: pointer;
+  padding: 0.5rem;
+  z-index: 1001;
+}
+
+.eyecare-menu-line {
+  width: 24px;
+  height: 2px;
+  background-color: #4b5563;
+  border-radius: 2px;
+  transition: transform 0.3s ease, opacity 0.3s ease;
+}
+
+.eyecare-menu-open .eyecare-menu-line:nth-child(1) {
+  transform: rotate(45deg) translate(6px, 6px);
+}
+
+.eyecare-menu-open .eyecare-menu-line:nth-child(2) {
+  opacity: 0;
+}
+
+.eyecare-menu-open .eyecare-menu-line:nth-child(3) {
+  transform: rotate(-45deg) translate(6px, -6px);
+}
+
+.eyecare-nav-menu {
+  display: flex;
+  align-items: center;
+}
+
+.eyecare-nav-list {
+  display: flex;
+  list-style: none;
+  margin: 0;
+  padding: 0;
+  gap: 2.5rem;
+  align-items: center;
+}
+
+.eyecare-nav-item {
+  text-decoration: none;
+  color: #4b5563;
+  font-weight: 500;
+  font-size: 0.95rem;
+  padding: 0.5rem 0;
+  position: relative;
+  transition: color 0.3s ease;
+}
+
+.eyecare-nav-item:hover {
+  color: #8B5CF6;
+}
+
+.eyecare-nav-item::after {
+  content: '';
+  position: absolute;
+  bottom: 0;
+  left: 0;
+  width: 0;
+  height: 2px;
+  background: linear-gradient(135deg, #8B5CF6, #4F46E5);
+  transition: width 0.3s ease;
+}
+
+.eyecare-nav-item:hover::after {
+  width: 100%;
+}
+
+.eyecare-nav-cta {
+  background: linear-gradient(135deg, #8B5CF6, #4F46E5);
+  color: white;
+  padding: 0.75rem 1.5rem;
+  border-radius: 50px;
+  text-decoration: none;
+  font-weight: 600;
+  font-size: 0.95rem;
+  transition: all 0.3s ease;
+  box-shadow: 0 4px 15px rgba(139, 92, 246, 0.3);
+}
+
+.eyecare-nav-cta:hover {
+  transform: translateY(-2px);
+  box-shadow: 0 6px 20px rgba(139, 92, 246, 0.4);
+}
+
+/* Hero Section */
+.eyecare-hero {
+  position: relative;
+  padding: 8rem 2rem 12rem;
+  background: linear-gradient(135deg, #faf5ff 0%, #f3e8ff 100%);
+  overflow: hidden;
+  margin-top: 80px;
+}
+
+.eyecare-hero-bg {
+  position: absolute;
+  top: 0;
+  left: 0;
+  right: 0;
+  bottom: 0;
+  overflow: hidden;
+}
+
+.eyecare-hero-pattern {
+  position: absolute;
+  top: 0;
+  left: 0;
+  right: 0;
+  bottom: 0;
+  background-image: 
+    radial-gradient(circle at 20% 80%, rgba(139, 92, 246, 0.1) 0%, transparent 50%),
+    radial-gradient(circle at 80% 20%, rgba(79, 70, 229, 0.1) 0%, transparent 50%);
+}
+
+.eyecare-hero-glow {
+  position: absolute;
+  top: 50%;
+  left: 50%;
+  transform: translate(-50%, -50%);
+  width: 800px;
+  height: 800px;
+  background: radial-gradient(circle, rgba(139, 92, 246, 0.15) 0%, transparent 70%);
+  filter: blur(60px);
+}
+
+.eyecare-hero-content {
+  position: relative;
+  z-index: 1;
+  max-width: 1280px;
+  margin: 0 auto;
+  display: flex;
+  align-items: center;
+  gap: 4rem;
+}
+
+.eyecare-hero-text {
+  flex: 1;
+}
+
+.eyecare-hero-badge {
+  display: inline-block;
+  background: linear-gradient(135deg, #8B5CF6, #4F46E5);
+  color: white;
+  padding: 0.5rem 1.5rem;
+  border-radius: 50px;
+  font-size: 0.9rem;
+  font-weight: 600;
+  margin-bottom: 2rem;
+  letter-spacing: 0.5px;
+}
+
+.eyecare-hero-title {
+  font-size: 3.5rem;
+  font-weight: 800;
+  line-height: 1.1;
+  color: #1e293b;
+  margin-bottom: 1.5rem;
+  background: linear-gradient(135deg, #1e293b, #8B5CF6);
+  -webkit-background-clip: text;
+  -webkit-text-fill-color: transparent;
+}
+
+.eyecare-hero-description {
+  font-size: 1.25rem;
+  color: #4b5563;
+  margin-bottom: 2.5rem;
+  max-width: 600px;
+  line-height: 1.7;
+}
+
+.eyecare-hero-actions {
+  display: flex;
+  gap: 1rem;
+  flex-wrap: wrap;
+}
+
+.eyecare-btn {
+  padding: 1rem 2rem;
+  border-radius: 50px;
+  font-weight: 600;
+  text-decoration: none;
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  gap: 0.75rem;
+  transition: all 0.3s ease;
+  border: none;
+  cursor: pointer;
+  font-size: 1rem;
+}
+
+.eyecare-btn-primary {
+  background: linear-gradient(135deg, #8B5CF6, #4F46E5);
+  color: white;
+  box-shadow: 0 4px 15px rgba(139, 92, 246, 0.3);
+}
+
+.eyecare-btn-primary:hover {
+  transform: translateY(-3px);
+  box-shadow: 0 8px 25px rgba(139, 92, 246, 0.4);
+}
+
+.eyecare-btn-outline {
+  background: transparent;
+  color: #8B5CF6;
+  border: 2px solid #8B5CF6;
+}
+
+.eyecare-btn-outline:hover {
+  background-color: rgba(139, 92, 246, 0.1);
+  transform: translateY(-3px);
+}
+
+.eyecare-btn-icon {
+  font-size: 1.2rem;
+}
+
+.eyecare-hero-visual {
+  flex: 1;
+  display: flex;
+  justify-content: center;
+}
+
+.eyecare-visual-main {
+  position: relative;
+  width: 400px;
+  height: 400px;
+}
+
+.eyecare-visual-circle {
+  position: absolute;
+  width: 120px;
+  height: 120px;
+  border-radius: 50%;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  font-size: 3rem;
+  animation-duration: 3s;
+  animation-iteration-count: infinite;
+  animation-timing-function: ease-in-out;
+}
+
+.eyecare-circle-1 {
+  top: 0;
+  left: 0;
+  background: linear-gradient(135deg, #e9d5ff, #c4b5fd);
+  animation-name: eyecare-float-1;
+  box-shadow: 0 10px 30px rgba(139, 92, 246, 0.2);
+}
+
+.eyecare-circle-2 {
+  top: 50%;
+  right: 0;
+  transform: translateY(-50%);
+  background: linear-gradient(135deg, #ddd6fe, #a78bfa);
+  animation-name: eyecare-float-2;
+  box-shadow: 0 10px 30px rgba(139, 92, 246, 0.2);
+}
+
+.eyecare-circle-3 {
+  bottom: 0;
+  left: 20%;
+  margin-bottom: 130px;
+  transform: translateX(-50%);
+  background: linear-gradient(135deg, #c4b5fd, #8b5cf6);
+  animation-name: eyecare-float-3;
+  box-shadow: 0 10px 30px rgba(139, 92, 246, 0.2);
+}
+
+.eyecare-circle-icon {
+  font-size: 3rem;
+}
+
+@keyframes eyecare-float-1 {
+  0%, 100% { transform: translateY(0) rotate(0); }
+  50% { transform: translateY(-20px) rotate(10deg); }
+}
+
+@keyframes eyecare-float-2 {
+  0%, 100% { transform: translateY(-50%) scale(1); }
+  50% { transform: translateY(-60%) scale(1.1); }
+}
+
+@keyframes eyecare-float-3 {
+  0%, 100% { transform: translateX(-50%) translateY(0); }
+  50% { transform: translateX(-50%) translateY(20px); }
+}
+
+.eyecare-hero-stats {
+  position: relative;
+  z-index: 1;
+  max-width: 1280px;
+  margin: -6rem auto 0;
+  display: grid;
+  grid-template-columns: repeat(auto-fit, minmax(200px, 1fr));
+  gap: 2rem;
+  background: white;
+  padding: 3rem;
+  border-radius: 24px;
+  box-shadow: 0 20px 60px rgba(0, 0, 0, 0.1);
+}
+
+.eyecare-stat-card {
+  text-align: center;
+  padding: 1.5rem;
+}
+
+.eyecare-stat-content {
+  position: relative;
+}
+
+.eyecare-stat-number {
+  display: block;
+  font-size: 2.8rem;
+  font-weight: 800;
+  background: linear-gradient(135deg, #8B5CF6, #4F46E5);
+  -webkit-background-clip: text;
+  -webkit-text-fill-color: transparent;
+  margin-bottom: 0.5rem;
+  line-height: 1;
+}
+
+.eyecare-stat-label {
+  font-size: 1rem;
+  color: #6b7280;
+  font-weight: 500;
+}
+
+/* Services Section */
+.eyecare-services {
+  padding: 10rem 2rem 8rem;
+  background-color: #ffffff;
+}
+
+.eyecare-section-header {
+  text-align: center;
+  max-width: 800px;
+  margin: 0 auto 4rem;
+}
+
+.eyecare-section-badge {
+  display: inline-block;
+  background: linear-gradient(135deg, #8B5CF6, #4F46E5);
+  color: white;
+  padding: 0.5rem 1.5rem;
+  border-radius: 50px;
+  font-size: 0.9rem;
+  font-weight: 600;
+  margin-bottom: 1rem;
+  letter-spacing: 0.5px;
+}
+
+.eyecare-section-title {
+  font-size: 3rem;
+  font-weight: 700;
+  color: #1e293b;
+  margin-bottom: 1rem;
+  line-height: 1.2;
+}
+
+.eyecare-section-subtitle {
+  font-size: 1.2rem;
+  color: #6b7280;
+  max-width: 600px;
+  margin: 0 auto;
+}
+
+.eyecare-services-grid {
+  max-width: 1280px;
+  margin: 0 auto;
+  display: grid;
+  grid-template-columns: repeat(auto-fit, minmax(280px, 1fr));
+  gap: 2.5rem;
+}
+
+.eyecare-service-card {
+  background: white;
+  border-radius: 20px;
+  padding: 2.5rem;
+  box-shadow: 0 5px 20px rgba(0, 0, 0, 0.05);
+  transition: all 0.3s ease;
+  border: 1px solid #f3f4f6;
+  position: relative;
+  overflow: hidden;
+}
+
+.eyecare-service-card:hover {
+  transform: translateY(-10px);
+  box-shadow: 0 20px 40px rgba(139, 92, 246, 0.15);
+  border-color: #8B5CF6;
+}
+
+.eyecare-service-card::before {
+  content: '';
+  position: absolute;
+  top: 0;
+  left: 0;
+  right: 0;
+  height: 4px;
+  background: linear-gradient(135deg, #8B5CF6, #4F46E5);
+  transform: scaleX(0);
+  transition: transform 0.3s ease;
+}
+
+.eyecare-service-card:hover::before {
+  transform: scaleX(1);
+}
+
+.eyecare-service-icon-container {
+  width: 80px;
+  height: 80px;
+  border-radius: 20px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  margin-bottom: 1.5rem;
+}
+
+.eyecare-service-icon {
+  font-size: 2.5rem;
+}
+
+.eyecare-service-name {
+  font-size: 1.5rem;
+  font-weight: 600;
+  color: #1e293b;
+  margin-bottom: 1rem;
+}
+
+.eyecare-service-description {
+  color: #6b7280;
+  margin-bottom: 1.5rem;
+  line-height: 1.6;
+  font-size: 0.95rem;
+}
+
+.eyecare-service-link {
+  display: inline-flex;
+  align-items: center;
+  gap: 0.5rem;
+  color: #8B5CF6;
+  text-decoration: none;
+  font-weight: 600;
+  transition: gap 0.3s ease;
+}
+
+.eyecare-service-link:hover {
+  gap: 0.75rem;
+}
+
+.eyecare-link-arrow {
+  transition: transform 0.3s ease;
+}
+
+.eyecare-service-link:hover .eyecare-link-arrow {
+  transform: translateX(5px);
+}
+
+/* Technology Section */
+.eyecare-technology {
+  padding: 8rem 2rem;
+  background: linear-gradient(135deg, #faf5ff 0%, #f3e8ff 100%);
+}
+
+.eyecare-tech-container {
+  max-width: 1280px;
+  margin: 0 auto;
+  display: flex;
+  gap: 6rem;
+  align-items: center;
+}
+
+.eyecare-tech-visual {
+  flex: 1;
+  display: flex;
+  justify-content: center;
+}
+
+.eyecare-tech-display {
+  position: relative;
+  width: 400px;
+  height: 300px;
+}
+
+.eyecare-tech-screen {
+  width: 100%;
+  height: 250px;
+  background: linear-gradient(135deg, #1e293b, #0f172a);
+  border-radius: 20px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  position: relative;
+  overflow: hidden;
+  box-shadow: 0 20px 60px rgba(0, 0, 0, 0.3);
+}
+
+.eyecare-tech-icon {
+  font-size: 5rem;
+  color: #8B5CF6;
+  z-index: 1;
+}
+
+.eyecare-tech-glow {
+  position: absolute;
+  top: 50%;
+  left: 50%;
+  transform: translate(-50%, -50%);
+  width: 200px;
+  height: 200px;
+  background: radial-gradient(circle, rgba(139, 92, 246, 0.4) 0%, transparent 70%);
+  filter: blur(40px);
+}
+
+.eyecare-tech-base {
+  width: 60%;
+  height: 30px;
+  background: linear-gradient(135deg, #cbd5e1, #94a3b8);
+  margin: 0 auto;
+  border-radius: 0 0 10px 10px;
+}
+
+.eyecare-tech-content {
+  flex: 1;
+}
+
+.eyecare-tech-badge {
+  display: inline-block;
+  background: linear-gradient(135deg, #8B5CF6, #4F46E5);
+  color: white;
+  padding: 0.5rem 1.5rem;
+  border-radius: 50px;
+  font-size: 0.9rem;
+  font-weight: 600;
+  margin-bottom: 1.5rem;
+  letter-spacing: 0.5px;
+}
+
+.eyecare-tech-title {
+  font-size: 2.5rem;
+  font-weight: 700;
+  color: #1e293b;
+  margin-bottom: 1.5rem;
+  line-height: 1.2;
+}
+
+.eyecare-tech-description {
+  font-size: 1.1rem;
+  color: #4b5563;
+  margin-bottom: 3rem;
+  line-height: 1.7;
+}
+
+.eyecare-tech-list {
+  display: flex;
+  flex-direction: column;
+  gap: 1.5rem;
+}
+
+.eyecare-tech-item {
+  display: flex;
+  gap: 1rem;
+  align-items: flex-start;
+}
+
+.eyecare-tech-marker {
+  width: 8px;
+  height: 8px;
+  background: linear-gradient(135deg, #8B5CF6, #4F46E5);
+  border-radius: 50%;
+  margin-top: 0.5rem;
+  flex-shrink: 0;
+}
+
+.eyecare-tech-name {
+  font-size: 1.2rem;
+  color: #1e293b;
+  margin-bottom: 0.25rem;
+  font-weight: 600;
+}
+
+.eyecare-tech-desc {
+  color: #64748b;
+  font-size: 0.95rem;
+}
+
+/* Doctors Section */
+.eyecare-doctors {
+  padding: 8rem 2rem;
+  background-color: white;
+}
+
+.eyecare-doctors-grid {
+  max-width: 1280px;
+  margin: 4rem auto 0;
+  display: grid;
+  grid-template-columns: repeat(auto-fit, minmax(350px, 1fr));
+  gap: 3rem;
+}
+
+.eyecare-doctor-card {
+  background: white;
+  border-radius: 24px;
+  overflow: hidden;
+  box-shadow: 0 10px 40px rgba(0, 0, 0, 0.08);
+  transition: all 0.3s ease;
+  border: 1px solid #f1f5f9;
+}
+
+.eyecare-doctor-card:hover {
+  transform: translateY(-10px);
+  box-shadow: 0 25px 60px rgba(139, 92, 246, 0.15);
+}
+
+.eyecare-doctor-header {
+  padding: 2.5rem;
+  background: linear-gradient(135deg, #faf5ff, #f3e8ff);
+}
+
+.eyecare-doctor-image {
+  display: flex;
+  align-items: center;
+  gap: 2rem;
+  margin-bottom: 1.5rem;
+}
+
+.eyecare-doctor-avatar {
+  font-size: 4rem;
+  width: 100px;
+  height: 100px;
+  background: white;
+  border-radius: 50%;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  box-shadow: 0 10px 30px rgba(0, 0, 0, 0.1);
+}
+
+.eyecare-doctor-badge {
+  background: linear-gradient(135deg, #8B5CF6, #4F46E5);
+  color: white;
+  padding: 0.5rem 1rem;
+  border-radius: 50px;
+  font-size: 0.85rem;
+  font-weight: 600;
+  display: inline-flex;
+  align-items: center;
+  gap: 0.5rem;
+}
+
+.eyecare-badge-icon {
+  font-size: 0.9rem;
+}
+
+.eyecare-doctor-info {
+  text-align: center;
+}
+
+.eyecare-doctor-name {
+  font-size: 1.8rem;
+  font-weight: 700;
+  color: #1e293b;
+  margin-bottom: 0.5rem;
+}
+
+.eyecare-doctor-education {
+  color: #8B5CF6;
+  font-weight: 600;
+  margin-bottom: 0.5rem;
+  font-size: 1rem;
+}
+
+.eyecare-doctor-specialty {
+  color: #4b5563;
+  font-weight: 500;
+  margin-bottom: 1.5rem;
+  font-size: 1.1rem;
+}
+
+.eyecare-doctor-exp {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  gap: 0.5rem;
+  color: #6b7280;
+  font-size: 0.95rem;
+}
+
+.eyecare-exp-icon {
+  font-size: 1.2rem;
+}
+
+.eyecare-doctor-features {
+  padding: 2rem;
+  display: grid;
+  grid-template-columns: repeat(auto-fit, minmax(150px, 1fr));
+  gap: 1rem;
+  border-bottom: 1px solid #f1f5f9;
+}
+
+.eyecare-doctor-feature {
+  display: flex;
+  align-items: center;
+  gap: 0.75rem;
+  color: #4b5563;
+  font-size: 0.9rem;
+}
+
+.eyecare-feature-icon {
+  color: #10B981;
+  font-size: 1rem;
+}
+
+.eyecare-doctor-consult {
+  display: block;
+  text-align: center;
+  background: linear-gradient(135deg, #8B5CF6, #4F46E5);
+  color: white;
+  padding: 1rem;
+  text-decoration: none;
+  font-weight: 600;
+  transition: all 0.3s ease;
+}
+
+.eyecare-doctor-consult:hover {
+  background: linear-gradient(135deg, #7c3aed, #3730a3);
+}
+
+/* Testimonials Section */
+.eyecare-testimonials {
+  padding: 8rem 2rem;
+  background: linear-gradient(135deg, #faf5ff 0%, #f3e8ff 100%);
+}
+
+.eyecare-testimonials-container {
+  max-width: 1280px;
+  margin: 0 auto;
+}
+
+.eyecare-testimonials-header {
+  text-align: center;
+  margin-bottom: 4rem;
+}
+
+.eyecare-testimonials-badge {
+  display: inline-block;
+  background: linear-gradient(135deg, #8B5CF6, #4F46E5);
+  color: white;
+  padding: 0.5rem 1.5rem;
+  border-radius: 50px;
+  font-size: 0.9rem;
+  font-weight: 600;
+  margin-bottom: 1rem;
+  letter-spacing: 0.5px;
+}
+
+.eyecare-testimonials-title {
+  font-size: 3rem;
+  font-weight: 700;
+  color: #1e293b;
+  margin-bottom: 1rem;
+}
+
+.eyecare-testimonials-subtitle {
+  font-size: 1.2rem;
+  color: #6b7280;
+  max-width: 600px;
+  margin: 0 auto;
+}
+
+.eyecare-testimonials-grid {
+  display: grid;
+  grid-template-columns: repeat(auto-fit, minmax(350px, 1fr));
+  gap: 2.5rem;
+}
+
+.eyecare-testimonial-card {
+  background: white;
+  border-radius: 20px;
+  padding: 2.5rem;
+  box-shadow: 0 5px 20px rgba(0, 0, 0, 0.05);
+  transition: all 0.3s ease;
+}
+
+.eyecare-testimonial-card:hover {
+  transform: translateY(-5px);
+  box-shadow: 0 15px 40px rgba(0, 0, 0, 0.1);
+}
+
+.eyecare-testimonial-header {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  margin-bottom: 1.5rem;
+}
+
+.eyecare-testimonial-rating {
+  display: flex;
+  gap: 0.25rem;
+}
+
+.eyecare-rating-star {
+  color: #d1d5db;
+  font-size: 1.5rem;
+}
+
+.eyecare-star-filled {
+  color: #fbbf24;
+}
+
+.eyecare-testimonial-treatment {
+  background: linear-gradient(135deg, #8B5CF6, #4F46E5);
+  color: white;
+  padding: 0.5rem 1rem;
+  border-radius: 50px;
+  font-size: 0.85rem;
+  font-weight: 600;
+}
+
+.eyecare-testimonial-text {
+  font-size: 1.1rem;
+  color: #4b5563;
+  line-height: 1.7;
+  margin-bottom: 2rem;
+  font-style: italic;
+}
+
+.eyecare-testimonial-author {
+  display: flex;
+  align-items: center;
+  gap: 1rem;
+}
+
+.eyecare-author-avatar {
+  width: 50px;
+  height: 50px;
+  background: linear-gradient(135deg, #8B5CF6, #4F46E5);
+  border-radius: 50%;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  color: white;
+  font-weight: 600;
+  font-size: 1.2rem;
+  flex-shrink: 0;
+}
+
+.eyecare-author-name {
+  font-size: 1.2rem;
+  font-weight: 600;
+  color: #1e293b;
+  margin-bottom: 0.25rem;
+}
+
+.eyecare-author-age {
+  color: #6b7280;
+  font-size: 0.9rem;
+}
+
+/* Appointment Section */
+.eyecare-appointment {
+  padding: 8rem 2rem;
+  background-color: white;
+}
+
+.eyecare-appointment-container {
+  max-width: 1280px;
+  margin: 0 auto;
+  display: flex;
+  gap: 4rem;
+  background: white;
+  border-radius: 24px;
+  overflow: hidden;
+  box-shadow: 0 20px 60px rgba(0, 0, 0, 0.1);
+}
+
+.eyecare-appointment-form {
+  flex: 1;
+  padding: 4rem;
+}
+
+.eyecare-form-header {
+  margin-bottom: 3rem;
+}
+
+.eyecare-form-title {
+  font-size: 2.5rem;
+  font-weight: 700;
+  color: #1e293b;
+  margin-bottom: 1rem;
+}
+
+.eyecare-form-subtitle {
+  font-size: 1.1rem;
+  color: #6b7280;
+}
+
+.eyecare-booking-form {
+  display: flex;
+  flex-direction: column;
+  gap: 1.5rem;
+}
+
+.eyecare-form-row {
+  display: flex;
+  gap: 1.5rem;
+}
+
+.eyecare-form-group {
+  flex: 1;
+}
+
+.eyecare-form-label {
+  display: block;
+  font-size: 0.9rem;
+  font-weight: 600;
+  color: #374151;
+  margin-bottom: 0.5rem;
+}
+
+.eyecare-form-input,
+.eyecare-form-select,
+.eyecare-form-textarea {
+  width: 100%;
+  padding: 1rem 1.25rem;
+  border: 2px solid #e5e7eb;
+  border-radius: 12px;
+  font-size: 1rem;
+  transition: all 0.3s ease;
+  background-color: white;
+  color: #1f2937;
+}
+
+.eyecare-form-input:focus,
+.eyecare-form-select:focus,
+.eyecare-form-textarea:focus {
+  outline: none;
+  border-color: #8B5CF6;
+  box-shadow: 0 0 0 4px rgba(139, 92, 246, 0.1);
+}
+
+.eyecare-form-textarea {
+  resize: vertical;
+  min-height: 120px;
+}
+
+.eyecare-btn-submit {
+  background: linear-gradient(135deg, #8B5CF6, #4F46E5);
+  color: white;
+  font-size: 1.1rem;
+  padding: 1.2rem;
+  border-radius: 12px;
+  margin-top: 1rem;
+  box-shadow: 0 4px 15px rgba(139, 92, 246, 0.3);
+}
+
+.eyecare-btn-submit:hover {
+  transform: translateY(-3px);
+  box-shadow: 0 8px 25px rgba(139, 92, 246, 0.4);
+}
+
+.eyecare-submit-icon {
+  font-size: 1.2rem;
+}
+
+.eyecare-form-notice {
+  text-align: center;
+  color: #6b7280;
+  font-size: 0.9rem;
+  margin-top: 1.5rem;
+}
+
+.eyecare-appointment-info {
+  flex: 1;
+  background: linear-gradient(135deg, #4F46E5, #8B5CF6);
+  padding: 4rem;
+  color: white;
+}
+
+.eyecare-info-card {
+  height: 100%;
+  display: flex;
+  flex-direction: column;
+}
+
+.eyecare-info-header {
+  margin-bottom: 3rem;
+}
+
+.eyecare-info-title {
+  font-size: 2rem;
+  font-weight: 700;
+  margin-bottom: 0.5rem;
+  color: white;
+}
+
+.eyecare-info-subtitle {
+  opacity: 0.9;
+  font-size: 1.1rem;
+}
+
+.eyecare-info-features {
+  display: flex;
+  flex-direction: column;
+  gap: 2rem;
+  margin-bottom: 3rem;
+}
+
+.eyecare-info-feature {
+  display: flex;
+  gap: 1rem;
+  align-items: flex-start;
+}
+
+.eyecare-info-feature .eyecare-feature-icon {
+  flex-shrink: 0;
+  width: 50px;
+  height: 50px;
+  background: rgba(255, 255, 255, 0.1);
+  border-radius: 12px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  font-size: 1.5rem;
+}
+
+.eyecare-info-feature h4 {
+  font-size: 1.2rem;
+  font-weight: 600;
+  margin-bottom: 0.5rem;
+}
+
+.eyecare-info-feature p {
+  opacity: 0.9;
+  font-size: 0.95rem;
+  line-height: 1.6;
+}
+
+.eyecare-contact-details {
+  margin-bottom: 3rem;
+}
+
+.eyecare-contact-item {
+  display: flex;
+  gap: 1rem;
+  align-items: flex-start;
+  margin-bottom: 1.5rem;
+}
+
+.eyecare-contact-icon {
+  font-size: 1.5rem;
+  opacity: 0.9;
+}
+
+.eyecare-contact-item h4 {
+  font-size: 1.1rem;
+  font-weight: 600;
+  margin-bottom: 0.25rem;
+}
+
+.eyecare-contact-item p {
+  opacity: 0.8;
+  font-size: 0.95rem;
+}
+
+.eyecare-insurance-title {
+  font-size: 1.2rem;
+  font-weight: 600;
+  margin-bottom: 1rem;
+}
+
+.eyecare-insurance-badges {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 0.75rem;
+}
+
+.eyecare-insurance-badge {
+  background: rgba(255, 255, 255, 0.1);
+  padding: 0.5rem 1rem;
+  border-radius: 50px;
+  font-size: 0.85rem;
+  font-weight: 500;
+}
+
+/* Footer */
+.eyecare-footer {
+  background: linear-gradient(135deg, #1e293b, #0f172a);
+  color: white;
+  padding-top: 6rem;
+}
+
+.eyecare-footer-container {
+  max-width: 1280px;
+  margin: 0 auto;
+  padding: 0 2rem;
+}
+
+.eyecare-footer-main {
+  display: flex;
+  justify-content: space-between;
+  padding-bottom: 4rem;
+  border-bottom: 1px solid rgba(255, 255, 255, 0.1);
+  flex-wrap: wrap;
+  gap: 4rem;
+}
+
+.eyecare-footer-brand {
+  flex: 1;
+  min-width: 300px;
+}
+
+.eyecare-footer-logo {
+  display: flex;
+  gap: 1rem;
+  align-items: center;
+  margin-bottom: 1.5rem;
+}
+
+.eyecare-footer-icon {
+  font-size: 2.5rem;
+  color: #a78bfa;
+}
+
+.eyecare-footer-title {
+  font-size: 1.8rem;
+  font-weight: 700;
+  margin-bottom: 0.25rem;
+}
+
+.eyecare-footer-tagline {
+  color: #94a3b8;
+  font-size: 0.95rem;
+}
+
+.eyecare-footer-description {
+  color: #94a3b8;
+  margin-bottom: 2rem;
+  line-height: 1.6;
+  max-width: 400px;
+}
+
+.eyecare-footer-social {
+  display: flex;
+  gap: 1rem;
+}
+
+.eyecare-social-link {
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  width: 40px;
+  height: 40px;
+  background: rgba(255, 255, 255, 0.1);
+  border-radius: 50%;
+  color: white;
+  text-decoration: none;
+  font-size: 1.2rem;
+  transition: all 0.3s ease;
+}
+
+.eyecare-social-link:hover {
+  background: #8B5CF6;
+  transform: translateY(-3px);
+}
+
+.eyecare-social-icon {
+  font-size: 1.2rem;
+}
+
+.eyecare-footer-links {
+  display: flex;
+  gap: 4rem;
+  flex-wrap: wrap;
+}
+
+.eyecare-footer-column {
+  min-width: 180px;
+}
+
+.eyecare-column-title {
+  font-size: 1.2rem;
+  font-weight: 600;
+  margin-bottom: 1.5rem;
+  color: #f8fafc;
+}
+
+.eyecare-footer-link {
+  display: block;
+  color: #94a3b8;
+  text-decoration: none;
+  margin-bottom: 0.75rem;
+  transition: color 0.3s ease;
+  font-size: 0.95rem;
+}
+
+.eyecare-footer-link:hover {
+  color: white;
+}
+
+.eyecare-contact-info {
+  color: #94a3b8;
+  margin-bottom: 0.75rem;
+  font-size: 0.95rem;
+}
+
+.eyecare-footer-bottom {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  padding: 2rem 0;
+  flex-wrap: wrap;
+  gap: 1rem;
+}
+
+.eyecare-copyright {
+  color: #94a3b8;
+  font-size: 0.9rem;
+}
+
+.eyecare-footer-legal {
+  display: flex;
+  gap: 2rem;
+}
+
+.eyecare-legal-link {
+  color: #94a3b8;
+  text-decoration: none;
+  font-size: 0.9rem;
+  transition: color 0.3s ease;
+}
+
+.eyecare-legal-link:hover {
+  color: white;
+}
+
+/* Responsive Styles */
+@media (max-width: 1024px) {
+  .eyecare-hero-content {
+    flex-direction: column;
+    text-align: center;
+    gap: 3rem;
+  }
+  
+  .eyecare-hero-description {
+    margin-left: auto;
+    margin-right: auto;
+  }
+  
+  .eyecare-tech-container {
+    flex-direction: column;
+    gap: 4rem;
+  }
+  
+  .eyecare-appointment-container {
+    flex-direction: column;
+  }
+  
+  .eyecare-hero-stats {
+    margin-top: -4rem;
+  }
+}
+
+@media (max-width: 768px) {
+  .eyecare-menu-btn {
+    display: flex;
+  }
+  
+  .eyecare-nav-menu {
+    position: fixed;
+    top: 80px;
+    left: 0;
+    right: 0;
+    background: white;
+    padding: 2rem;
+    box-shadow: 0 10px 30px rgba(0, 0, 0, 0.1);
+    transform: translateY(-100%);
+    opacity: 0;
+    visibility: hidden;
+    transition: all 0.3s ease;
+  }
+  
+  .eyecare-nav-visible {
+    transform: translateY(0);
+    opacity: 1;
+    visibility: visible;
+  }
+  
+  .eyecare-nav-list {
+    flex-direction: column;
+    align-items: stretch;
+    gap: 1.5rem;
+  }
+  
+  .eyecare-hero-title {
+    font-size: 2.5rem;
+  }
+  
+  .eyecare-section-title {
+    font-size: 2.2rem;
+  }
+  
+  .eyecare-form-row {
+    flex-direction: column;
+    gap: 1rem;
+  }
+  
+  .eyecare-hero-stats {
+    grid-template-columns: repeat(2, 1fr);
+    padding: 2rem;
+  }
+  
+  .eyecare-hero {
+    padding: 6rem 1.5rem 8rem;
+  }
+}
+
+@media (max-width: 480px) {
+  .eyecare-hero-title {
+    font-size: 2rem;
+  }
+  
+  .eyecare-section-title,
+  .eyecare-testimonials-title {
+    font-size: 1.8rem;
+  }
+  
+  .eyecare-hero-stats {
+    grid-template-columns: 1fr;
+  }
+  
+  .eyecare-services-grid,
+  .eyecare-doctors-grid,
+  .eyecare-testimonials-grid {
+    grid-template-columns: 1fr;
+  }
+  
+  .eyecare-hero,
+  .eyecare-services,
+  .eyecare-technology,
+  .eyecare-doctors,
+  .eyecare-testimonials,
+  .eyecare-appointment {
+    padding-left: 1.5rem;
+    padding-right: 1.5rem;
+  }
+  
+  .eyecare-appointment-form,
+  .eyecare-appointment-info {
+    padding: 2.5rem 1.5rem;
+  }
+  
+  .eyecare-footer-main {
+    flex-direction: column;
+  }
+  
+  .eyecare-tech-display {
+    width: 300px;
+    height: 250px;
+  }
+  
+  .eyecare-visual-main {
+    width: 300px;
+    height: 300px;
+  }
+  
+  .eyecare-visual-circle {
+    width: 90px;
+    height: 90px;
+    font-size: 2rem;
+  }
+}

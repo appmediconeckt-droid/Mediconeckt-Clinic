@@ -1,0 +1,137 @@
+/* Responsive styles for Appointment List table */
+.table-responsive {
+  width: 100%;
+  overflow-x: auto;
+  -webkit-overflow-scrolling: touch;
+}
+
+/* Search bar styling */
+.search-container {
+  display: flex;
+  align-items: center;
+  gap: 12px;
+}
+
+.search-input {
+  min-width: 240px;
+  max-width: 420px;
+  width: 100%;
+  padding: 10px 14px;
+  border-radius: 10px;
+  border: 1px solid rgba(13,110,253,0.12);
+  background: #fff;
+  box-shadow: 0 4px 12px rgba(13,110,253,0.04);
+  font-size: 14px;
+  transition: box-shadow 0.2s ease, transform 0.08s ease;
+}
+
+.search-input:focus {
+  outline: none;
+  box-shadow: 0 8px 24px rgba(13,110,253,0.12);
+  border-color: #4d7cfe;
+  transform: translateY(-1px);
+}
+
+.responsive-table {
+  min-width: 700px; /* allow horizontal scroll on small devices */
+  width: 100%;
+  border-collapse: collapse;
+  table-layout: fixed;
+}
+
+.responsive-table th,
+.responsive-table td {
+  padding: 12px 14px;
+  text-align: left;
+  vertical-align: middle;
+  white-space: nowrap;
+  overflow: hidden;
+  text-overflow: ellipsis;
+}
+
+.responsive-table thead th {
+  font-weight: 700;
+}
+
+.responsive-table tbody tr {
+  transition: background-color 0.2s ease, transform 0.15s ease;
+}
+
+/* Keep badges readable on narrow screens */
+.responsive-table .badge {
+  white-space: nowrap;
+}
+
+/* Small screens: stack rows into cards */
+@media (max-width: 768px) {
+  .responsive-table {
+    min-width: 100%;
+  }
+
+  .search-container {
+    margin-top: 8px;
+    width: 100%;
+  }
+
+  .search-input {
+    max-width: 100%;
+  }
+
+  .responsive-table thead {
+    display: none;
+  }
+
+  .responsive-table,
+  .responsive-table tbody,
+  .responsive-table tr,
+  .responsive-table td {
+    display: block;
+    width: 100%;
+  }
+
+  .responsive-table tr {
+    margin-bottom: 12px;
+    background: #fff;
+    border-radius: 8px;
+    padding: 10px;
+    box-shadow: 0 1px 3px rgba(0,0,0,0.06);
+  }
+
+  .responsive-table td {
+    padding: 8px 12px;
+    text-align: right;
+    position: relative;
+    white-space: normal;
+  }
+
+  .responsive-table td::before {
+    content: attr(data-label);
+    position: absolute;
+    left: 12px;
+    width: 45%;
+    padding-right: 10px;
+    text-align: left;
+    font-weight: 600;
+    color: #333;
+  }
+
+  .responsive-table td[data-label="Status"]::before {
+    /* keep label consistent when status is long */
+    white-space: normal;
+  }
+
+  .responsive-table td .badge {
+    float: none;
+    display: inline-block;
+  }
+}
+
+@media (max-width: 420px) {
+  .responsive-table td::before { left: 10px; width: 48%; }
+  .responsive-table th, .responsive-table td { padding: 8px; }
+}
+
+/* Hover animation fallback for stacked view */
+@media (hover: hover) {
+  .table-row-animation:hover { transform: none; }
+}

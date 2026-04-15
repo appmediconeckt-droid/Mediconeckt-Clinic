@@ -1,0 +1,1661 @@
+/* Supplies Management Styles with Housekeeping Theme */
+.hk-supplies-container {
+  padding: 25px;
+  background: linear-gradient(135deg, #f8f9fa 0%, #f0f0f0 100%);
+  min-height: 100vh;
+  font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+}
+
+/* Header Styles */
+.hk-supplies-header {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  margin-bottom: 30px;
+  padding: 25px;
+  background: linear-gradient(135deg, #fff9c4 0%, #ffec8b 100%);
+  border-radius: 16px;
+  box-shadow: 0 6px 20px rgba(253, 216, 53, 0.2);
+  border: 3px solid #ffd700;
+  position: relative;
+  overflow: hidden;
+}
+
+.hk-supplies-header::before {
+  content: '';
+  position: absolute;
+  top: 0;
+  left: 0;
+  right: 0;
+  height: 5px;
+  background: linear-gradient(90deg, #fdd835, #ffc400, #f57c00, #ffd700);
+  animation: hk-supplies-shimmer 3s infinite linear;
+}
+
+@keyframes hk-supplies-shimmer {
+  0% { background-position: -200px 0; }
+  100% { background-position: 200px 0; }
+}
+
+.hk-supplies-title-section {
+  flex: 1;
+}
+
+.hk-supplies-title {
+  margin: 0;
+  color: #000;
+  font-size: 34px;
+  display: flex;
+  align-items: center;
+  gap: 15px;
+  font-weight: 800;
+  text-shadow: 2px 2px 4px rgba(0, 0, 0, 0.1);
+}
+
+.hk-supplies-title-icon {
+  color: #f57c00;
+  font-size: 38px;
+  filter: drop-shadow(0 2px 4px rgba(245, 124, 0, 0.3));
+}
+
+.hk-supplies-subtitle {
+  margin: 10px 0 0;
+  color: #5d4037;
+  font-size: 16px;
+  font-weight: 600;
+  max-width: 800px;
+}
+
+.hk-supplies-header-actions {
+  display: flex;
+  align-items: center;
+  gap: 15px;
+}
+
+/* Button Styles */
+.hk-supplies-btn-primary,
+.hk-supplies-btn-secondary,
+.hk-supplies-btn-refresh,
+.hk-supplies-btn-print,
+.hk-supplies-btn-export {
+  padding: 14px 24px;
+  border: none;
+  border-radius: 12px;
+  font-size: 15px;
+  font-weight: 700;
+  cursor: pointer;
+  display: inline-flex;
+  align-items: center;
+  gap: 10px;
+  transition: all 0.3s cubic-bezier(0.4, 0, 0.2, 1);
+  height: 50px;
+  box-shadow: 0 4px 8px rgba(0, 0, 0, 0.15);
+  text-transform: uppercase;
+  letter-spacing: 0.5px;
+}
+
+.hk-supplies-btn-primary {
+  background: linear-gradient(135deg, #fdd835 0%, #ffc400 100%);
+  color: #000;
+  border: 3px solid #ffd700;
+}
+
+.hk-supplies-btn-primary:hover {
+  background: linear-gradient(135deg, #ffc400 0%, #ffab00 100%);
+  transform: translateY(-4px);
+  box-shadow: 0 8px 16px rgba(255, 193, 7, 0.4);
+}
+
+.hk-supplies-btn-secondary {
+  background: white;
+  color: #333;
+  border: 3px solid #ffd700;
+}
+
+.hk-supplies-btn-secondary:hover {
+  background: #fffde7;
+  transform: translateY(-3px);
+  box-shadow: 0 6px 12px rgba(255, 215, 0, 0.3);
+}
+
+.hk-supplies-btn-refresh {
+  background: linear-gradient(135deg, #2196f3 0%, #1976d2 100%);
+  color: white;
+  border: 3px solid #1976d2;
+}
+
+.hk-supplies-btn-refresh:hover {
+  background: linear-gradient(135deg, #1976d2 0%, #1565c0 100%);
+  transform: rotate(180deg);
+  transition: transform 0.6s ease;
+}
+
+.hk-supplies-btn-print {
+  background: linear-gradient(135deg, #757575 0%, #616161 100%);
+  color: white;
+  border: 3px solid #616161;
+}
+
+.hk-supplies-btn-print:hover {
+  background: linear-gradient(135deg, #616161 0%, #424242 100%);
+  transform: translateY(-3px);
+}
+
+.hk-supplies-btn-export {
+  background: linear-gradient(135deg, #4caf50 0%, #388e3c 100%);
+  color: white;
+  border: 3px solid #388e3c;
+}
+
+.hk-supplies-btn-export:hover {
+  background: linear-gradient(135deg, #388e3c 0%, #2e7d32 100%);
+  transform: translateY(-3px);
+}
+
+/* Section Titles */
+.hk-supplies-section-title {
+  margin: 0 0 25px;
+  color: #333;
+  font-size: 24px;
+  display: flex;
+  align-items: center;
+  gap: 12px;
+  font-weight: 800;
+  padding-bottom: 12px;
+  /* border-bottom: 3px solid #ffd700; */
+  position: relative;
+}
+
+.hk-supplies-section-title::after {
+  content: '';
+  position: absolute;
+  bottom: -3px;
+  left: 0;
+  width: 100px;
+  height: 3px;
+  /* background: linear-gradient(90deg, #f57c00, #ffd700); */
+}
+
+.hk-supplies-section-title svg {
+  color: #f57c00;
+  font-size: 26px;
+}
+
+/* Statistics Section */
+.hk-supplies-stats-section {
+  background: white;
+  padding: 28px;
+  border-radius: 16px;
+  margin-bottom: 35px;
+  box-shadow: 0 6px 20px rgba(0, 0, 0, 0.1);
+  border: 3px solid #ffecb3;
+}
+
+.hk-supplies-stats-grid {
+  display: grid;
+  grid-template-columns: repeat(auto-fit, minmax(260px, 1fr));
+  gap: 22px;
+}
+
+.hk-supplies-stat-card {
+  padding: 24px;
+  border-radius: 14px;
+  display: flex;
+  align-items: center;
+  gap: 18px;
+  box-shadow: 0 4px 12px rgba(0, 0, 0, 0.1);
+  transition: all 0.4s cubic-bezier(0.4, 0, 0.2, 1);
+  border: 3px solid transparent;
+  position: relative;
+  overflow: hidden;
+}
+
+.hk-supplies-stat-card::before {
+  content: '';
+  position: absolute;
+  top: 0;
+  left: 0;
+  width: 100%;
+  height: 5px;
+}
+
+.hk-supplies-stat-total::before { background: linear-gradient(90deg, #ffd700, #f57c00); }
+.hk-supplies-stat-value::before { background: linear-gradient(90deg, #4caf50, #388e3c); }
+.hk-supplies-stat-low::before { background: linear-gradient(90deg, #ff9800, #f57c00); }
+.hk-supplies-stat-critical::before { background: linear-gradient(90deg, #ff5252, #d32f2f); }
+.hk-supplies-stat-reorder::before { background: linear-gradient(90deg, #2196f3, #1976d2); }
+.hk-supplies-stat-suppliers::before { background: linear-gradient(90deg, #9c27b0, #7b1fa2); }
+
+.hk-supplies-stat-card:hover {
+  transform: translateY(-8px) scale(1.02);
+  box-shadow: 0 12px 24px rgba(0, 0, 0, 0.2);
+}
+
+.hk-supplies-stat-icon {
+  width: 65px;
+  height: 65px;
+  border-radius: 16px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  font-size: 30px;
+  flex-shrink: 0;
+  box-shadow: 0 6px 12px rgba(0, 0, 0, 0.15);
+}
+
+.hk-supplies-stat-total .hk-supplies-stat-icon { background: linear-gradient(135deg, #fff9c4 0%, #ffec8b 100%); color: #f57c00; }
+.hk-supplies-stat-value .hk-supplies-stat-icon { background: linear-gradient(135deg, #c8e6c9 0%, #a5d6a7 100%); color: #388e3c; }
+.hk-supplies-stat-low .hk-supplies-stat-icon { background: linear-gradient(135deg, #ffecb3 0%, #ffe082 100%); color: #ff8f00; }
+.hk-supplies-stat-critical .hk-supplies-stat-icon { background: linear-gradient(135deg, #ffcdd2 0%, #ef9a9a 100%); color: #c62828; }
+.hk-supplies-stat-reorder .hk-supplies-stat-icon { background: linear-gradient(135deg, #bbdefb 0%, #90caf9 100%); color: #1976d2; }
+.hk-supplies-stat-suppliers .hk-supplies-stat-icon { background: linear-gradient(135deg, #e1bee7 0%, #ce93d8 100%); color: #7b1fa2; }
+
+.hk-supplies-stat-content {
+  flex: 1;
+}
+
+.hk-supplies-stat-content h3 {
+  margin: 0;
+  font-size: 32px;
+  font-weight: 900;
+  color: #222;
+  line-height: 1;
+}
+
+.hk-supplies-stat-content p {
+  margin: 8px 0 0;
+  color: #666;
+  font-size: 16px;
+  font-weight: 700;
+}
+
+.hk-supplies-stat-trend,
+.hk-supplies-stat-detail,
+.hk-supplies-stat-action {
+  font-size: 14px;
+  font-weight: 700;
+  padding: 6px 14px;
+  border-radius: 20px;
+  text-align: center;
+}
+
+.hk-supplies-stat-trend {
+  background: #f5f5f5;
+}
+
+.hk-supplies-trend-up { color: #2e7d32; background: #e8f5e9 !important; }
+.hk-supplies-trend-down { color: #c62828; background: #ffebee !important; }
+.hk-supplies-trend-neutral { color: #616161; background: #f5f5f5 !important; }
+
+.hk-supplies-stat-detail {
+  background: rgba(255, 255, 255, 0.9);
+  color: #666;
+  margin-top: 8px;
+  display: flex;
+  align-items: center;
+  gap: 5px;
+}
+
+.hk-supplies-quick-reorder {
+  padding: 6px 12px;
+  background: linear-gradient(135deg, #ff5252 0%, #d32f2f 100%);
+  color: white;
+  border: none;
+  border-radius: 8px;
+  font-weight: 700;
+  cursor: pointer;
+  transition: all 0.3s ease;
+}
+
+.hk-supplies-quick-reorder:hover {
+  transform: scale(1.1);
+  box-shadow: 0 4px 8px rgba(211, 47, 47, 0.3);
+}
+
+/* Categories Section */
+.hk-supplies-categories-section {
+  background: white;
+  padding: 28px;
+  border-radius: 16px;
+  margin-bottom: 35px;
+  box-shadow: 0 6px 20px rgba(0, 0, 0, 0.1);
+  border: 3px solid #ffecb3;
+}
+
+.hk-supplies-categories-grid {
+  display: grid;
+  grid-template-columns: repeat(auto-fit, minmax(220px, 1fr));
+  gap: 22px;
+}
+
+.hk-supplies-category-card {
+  padding: 22px;
+  background: linear-gradient(135deg, #f8f9fa 0%, #f0f0f0 100%);
+  border-radius: 14px;
+  border: 3px solid #ffecb3;
+  transition: all 0.3s ease;
+}
+
+.hk-supplies-category-card:hover {
+  transform: translateY(-6px);
+  box-shadow: 0 10px 20px rgba(255, 215, 0, 0.2);
+  border-color: #ffd700;
+}
+
+.hk-supplies-category-icon {
+  width: 60px;
+  height: 60px;
+  border-radius: 12px;
+  background: linear-gradient(135deg, #fff9c4 0%, #ffec8b 100%);
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  font-size: 28px;
+  color: #f57c00;
+  margin-bottom: 15px;
+  box-shadow: 0 4px 8px rgba(0, 0, 0, 0.1);
+}
+
+.hk-supplies-category-info h3 {
+  margin: 0 0 12px;
+  color: #333;
+  font-size: 18px;
+  font-weight: 800;
+}
+
+.hk-supplies-category-stats {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  margin-bottom: 15px;
+}
+
+.hk-supplies-category-count {
+  color: #666;
+  font-size: 14px;
+  font-weight: 600;
+}
+
+.hk-supplies-category-value {
+  color: #2e7d32;
+  font-weight: 800;
+  font-size: 16px;
+}
+
+.hk-supplies-category-progress {
+  height: 8px;
+  background: #e0e0e0;
+  border-radius: 4px;
+  overflow: hidden;
+}
+
+.hk-supplies-category-progress-bar {
+  height: 100%;
+  background: linear-gradient(90deg, #fdd835, #ffc400);
+  border-radius: 4px;
+  transition: width 1s ease;
+}
+
+/* Filters Section */
+.hk-supplies-filters-section {
+  background: white;
+  padding: 25px;
+  border-radius: 16px;
+  margin-bottom: 35px;
+  display: flex;
+  flex-direction: column;
+  gap: 22px;
+  box-shadow: 0 6px 20px rgba(0, 0, 0, 0.1);
+  border: 3px solid #ffecb3;
+}
+
+.hk-supplies-search-container {
+  display: flex;
+  align-items: center;
+  gap: 15px;
+  background: linear-gradient(135deg, #f8f9fa 0%, #f0f0f0 100%);
+  padding: 16px 22px;
+  border-radius: 12px;
+  border: 3px solid #ffd700;
+}
+
+.hk-supplies-search-icon {
+  color: #f57c00;
+  font-size: 20px;
+  flex-shrink: 0;
+}
+
+.hk-supplies-search-input {
+  flex: 1;
+  border: none;
+  background: transparent;
+  outline: none;
+  font-size: 16px;
+  color: #333;
+  font-weight: 600;
+}
+
+.hk-supplies-search-input::placeholder {
+  color: #888;
+  font-weight: 500;
+}
+
+.hk-supplies-filter-group {
+  display: flex;
+  align-items: center;
+  gap: 15px;
+  flex-wrap: wrap;
+}
+
+.hk-supplies-filter-select {
+  padding: 14px 20px;
+  border: 3px solid #ffd700;
+  border-radius: 12px;
+  background: white;
+  color: #333;
+  font-size: 15px;
+  font-weight: 700;
+  cursor: pointer;
+  outline: none;
+  min-width: 180px;
+  transition: all 0.3s ease;
+  box-shadow: 0 2px 6px rgba(0, 0, 0, 0.1);
+}
+
+.hk-supplies-filter-select:focus {
+  border-color: #f57c00;
+  box-shadow: 0 0 0 4px rgba(255, 193, 7, 0.3);
+  transform: scale(1.02);
+}
+
+.hk-supplies-filter-btn,
+.hk-supplies-reset-btn,
+.hk-supplies-export-btn {
+  padding: 14px 24px;
+  border: none;
+  border-radius: 12px;
+  font-size: 15px;
+  font-weight: 700;
+  cursor: pointer;
+  display: inline-flex;
+  align-items: center;
+  gap: 10px;
+  transition: all 0.3s ease;
+  height: 50px;
+  box-shadow: 0 4px 8px rgba(0, 0, 0, 0.15);
+}
+
+.hk-supplies-filter-btn {
+  background: linear-gradient(135deg, #2196f3 0%, #1976d2 100%);
+  color: white;
+  border: 3px solid #1976d2;
+}
+
+.hk-supplies-filter-btn:hover {
+  background: linear-gradient(135deg, #1976d2 0%, #1565c0 100%);
+  transform: translateY(-3px);
+}
+
+.hk-supplies-reset-btn {
+  background: linear-gradient(135deg, #757575 0%, #616161 100%);
+  color: white;
+  border: 3px solid #616161;
+}
+
+.hk-supplies-reset-btn:hover {
+  background: linear-gradient(135deg, #616161 0%, #424242 100%);
+  transform: translateY(-3px);
+}
+
+.hk-supplies-export-btn {
+  background: linear-gradient(135deg, #4caf50 0%, #388e3c 100%);
+  color: white;
+  border: 3px solid #388e3c;
+}
+
+.hk-supplies-export-btn:hover {
+  background: linear-gradient(135deg, #388e3c 0%, #2e7d32 100%);
+  transform: translateY(-3px);
+}
+
+/* Table Section */
+.hk-supplies-table-section {
+  background: white;
+  padding: 28px;
+  border-radius: 16px;
+  margin-bottom: 35px;
+  box-shadow: 0 8px 24px rgba(0, 0, 0, 0.12);
+  border: 3px solid #ffecb3;
+}
+
+.hk-supplies-table-header {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  margin-bottom: 25px;
+  padding-bottom: 20px;
+  border-bottom: 3px solid #ffd700;
+}
+
+.hk-supplies-table-info {
+  display: flex;
+  align-items: center;
+  gap: 20px;
+}
+
+.hk-supplies-table-count {
+  color: #666;
+  font-size: 16px;
+  font-weight: 700;
+  background: #f8f9fa;
+  padding: 10px 18px;
+  border-radius: 10px;
+  border: 2px solid #ffecb3;
+}
+
+.hk-supplies-table-container {
+  overflow-x: auto;
+  border-radius: 12px;
+  border: 3px solid #f0f0f0;
+  background: #fafafa;
+  margin-bottom: 25px;
+}
+
+.hk-supplies-table {
+  width: 100%;
+  border-collapse: separate;
+  border-spacing: 0;
+  min-width: 1400px;
+}
+
+.hk-supplies-table th {
+  padding: 22px 20px;
+  background: linear-gradient(135deg, #fff9c4 0%, #ffec8b 100%);
+  color: #000;
+  font-weight: 800;
+  font-size: 16px;
+  text-align: left;
+  border-bottom: 3px solid #ffd700;
+  position: sticky;
+  top: 0;
+  z-index: 100;
+  text-transform: uppercase;
+  letter-spacing: 1px;
+}
+
+.hk-supplies-table th:first-child {
+  border-radius: 12px 0 0 0;
+}
+
+.hk-supplies-table th:last-child {
+  border-radius: 0 12px 0 0;
+}
+
+.hk-supplies-table td {
+  padding: 22px 20px;
+  border-bottom: 2px solid #f0f0f0;
+  font-size: 15px;
+  color: #444;
+  background: white;
+  transition: all 0.3s ease;
+  vertical-align: top;
+}
+
+.hk-supplies-table-row:hover td {
+  background: #fffde7;
+  transform: scale(1.001);
+  box-shadow: 0 4px 12px rgba(255, 215, 0, 0.15);
+}
+
+/* Item Details Column */
+.hk-supplies-item-details {
+  display: flex;
+  flex-direction: column;
+  gap: 15px;
+}
+
+.hk-supplies-item-basic {
+  display: flex;
+  flex-direction: column;
+  gap: 12px;
+}
+
+.hk-supplies-item-code-section {
+  display: flex;
+  align-items: center;
+  gap: 15px;
+}
+
+.hk-supplies-barcode-icon {
+  color: #f57c00;
+  font-size: 24px;
+  flex-shrink: 0;
+}
+
+.hk-supplies-item-code {
+  font-size: 18px;
+  font-weight: 900;
+  color: #222;
+  line-height: 1;
+  font-family: monospace;
+  letter-spacing: 1px;
+}
+
+.hk-supplies-item-name {
+  font-size: 16px;
+  color: #333;
+  font-weight: 700;
+  margin-top: 4px;
+}
+
+.hk-supplies-item-meta {
+  display: flex;
+  gap: 15px;
+  flex-wrap: wrap;
+}
+
+.hk-supplies-item-category,
+.hk-supplies-item-brand,
+.hk-supplies-item-unit {
+  padding: 6px 12px;
+  border-radius: 8px;
+  font-size: 13px;
+  font-weight: 700;
+  display: inline-flex;
+  align-items: center;
+  gap: 6px;
+}
+
+.hk-supplies-item-category {
+  background: #e3f2fd;
+  color: #1976d2;
+}
+
+.hk-supplies-item-brand {
+  background: #f3e5f5;
+  color: #7b1fa2;
+}
+
+.hk-supplies-item-unit {
+  background: #e8f5e9;
+  color: #388e3c;
+}
+
+.hk-supplies-item-notes {
+  display: flex;
+  flex-direction: column;
+  gap: 8px;
+}
+
+.hk-supplies-item-location {
+  font-size: 14px;
+  color: #666;
+  font-weight: 600;
+  display: flex;
+  align-items: center;
+  gap: 8px;
+}
+
+.hk-supplies-notes {
+  background: #fff9c4;
+  padding: 10px;
+  border-radius: 8px;
+  border-left: 4px solid #ffd700;
+  font-size: 13px;
+  color: #5d4037;
+}
+
+/* Stock Level Column */
+.hk-supplies-stock-info {
+  display: flex;
+  flex-direction: column;
+  gap: 15px;
+}
+
+.hk-supplies-stock-levels {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  gap: 20px;
+}
+
+.hk-supplies-stock-current {
+  text-align: center;
+}
+
+.hk-supplies-stock-label {
+  font-size: 12px;
+  color: #666;
+  font-weight: 600;
+  margin-bottom: 4px;
+}
+
+.hk-supplies-stock-value {
+  font-size: 28px;
+  font-weight: 900;
+  color: #222;
+  line-height: 1;
+}
+
+.hk-supplies-stock-minmax {
+  flex: 1;
+}
+
+.hk-supplies-stock-range {
+  display: flex;
+  justify-content: space-between;
+  margin-bottom: 6px;
+}
+
+.hk-supplies-range-min,
+.hk-supplies-range-max {
+  font-size: 12px;
+  font-weight: 700;
+  padding: 4px 8px;
+  border-radius: 6px;
+}
+
+.hk-supplies-range-min {
+  background: #ffebee;
+  color: #c62828;
+}
+
+.hk-supplies-range-max {
+  background: #e8f5e9;
+  color: #2e7d32;
+}
+
+.hk-supplies-reorder-point {
+  font-size: 12px;
+  color: #ff9800;
+  font-weight: 700;
+  text-align: center;
+  background: #fff3e0;
+  padding: 4px 8px;
+  border-radius: 6px;
+}
+
+.hk-supplies-stock-progress {
+  margin: 10px 0;
+}
+
+.hk-supplies-progress-bar {
+  height: 10px;
+  background: #e0e0e0;
+  border-radius: 5px;
+  margin-bottom: 8px;
+  overflow: hidden;
+}
+
+.hk-supplies-progress-fill {
+  height: 100%;
+  background: linear-gradient(90deg, #4caf50, #8bc34a, #ffc107, #ff9800, #ff5722);
+  border-radius: 5px;
+  transition: width 0.6s ease;
+}
+
+.hk-supplies-progress-labels {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+}
+
+.hk-supplies-progress-percentage {
+  font-size: 14px;
+  font-weight: 800;
+  color: #333;
+}
+
+.hk-supplies-status-badge {
+  padding: 6px 14px;
+  border-radius: 20px;
+  font-size: 12px;
+  font-weight: 800;
+  display: inline-block;
+}
+
+.hk-supplies-status-adequate {
+  background: #e8f5e9;
+  color: #2e7d32;
+  border: 2px solid #4caf50;
+}
+
+.hk-supplies-status-low {
+  background: #fff3e0;
+  color: #ef6c00;
+  border: 2px solid #ff9800;
+}
+
+.hk-supplies-status-critical {
+  background: #ffebee;
+  color: #c62828;
+  border: 2px solid #ff5252;
+}
+
+.hk-supplies-stock-controls {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  gap: 15px;
+}
+
+.hk-supplies-stock-adjust {
+  display: flex;
+  align-items: center;
+  gap: 8px;
+}
+
+.hk-supplies-stock-btn {
+  width: 36px;
+  height: 36px;
+  border: none;
+  border-radius: 8px;
+  font-size: 18px;
+  font-weight: 800;
+  cursor: pointer;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  transition: all 0.3s ease;
+}
+
+.hk-supplies-stock-decrease {
+  background: #ffebee;
+  color: #c62828;
+  border: 2px solid #ffcdd2;
+}
+
+.hk-supplies-stock-increase {
+  background: #e8f5e9;
+  color: #2e7d32;
+  border: 2px solid #c8e6c9;
+}
+
+.hk-supplies-stock-btn:hover {
+  transform: scale(1.1);
+  box-shadow: 0 4px 8px rgba(0, 0, 0, 0.2);
+}
+
+.hk-supplies-stock-input {
+  width: 60px;
+  padding: 8px;
+  border: 2px solid #ffd700;
+  border-radius: 8px;
+  text-align: center;
+  font-size: 16px;
+  font-weight: 700;
+  color: #333;
+}
+
+.hk-supplies-days-supply {
+  font-size: 13px;
+  color: #666;
+  font-weight: 700;
+  background: #f5f5f5;
+  padding: 6px 12px;
+  border-radius: 8px;
+}
+
+/* Financials Column */
+.hk-supplies-finance-info {
+  display: flex;
+  flex-direction: column;
+  gap: 12px;
+}
+
+.hk-supplies-unit-cost,
+.hk-supplies-total-value {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  padding: 10px;
+  border-radius: 8px;
+}
+
+.hk-supplies-unit-cost {
+  background: #e3f2fd;
+  border: 2px solid #bbdefb;
+}
+
+.hk-supplies-total-value {
+  background: #e8f5e9;
+  border: 2px solid #c8e6c9;
+}
+
+.hk-supplies-cost-label,
+.hk-supplies-value-label {
+  font-size: 14px;
+  color: #666;
+  font-weight: 600;
+}
+
+.hk-supplies-cost-value,
+.hk-supplies-value-amount {
+  font-size: 20px;
+  font-weight: 900;
+  color: #222;
+}
+
+.hk-supplies-finance-details {
+  display: flex;
+  flex-direction: column;
+  gap: 8px;
+}
+
+.hk-supplies-usage-rate,
+.hk-supplies-expiry {
+  display: flex;
+  align-items: center;
+  gap: 8px;
+  font-size: 13px;
+  color: #666;
+  font-weight: 600;
+}
+
+.hk-supplies-usage-rate svg { color: #2196f3; }
+.hk-supplies-expiry svg { color: #f57c00; }
+
+.hk-supplies-reorder-info {
+  background: #f5f5f5;
+  padding: 12px;
+  border-radius: 8px;
+  margin-top: 8px;
+}
+
+.hk-supplies-last-ordered,
+.hk-supplies-next-order,
+.hk-supplies-lead-time {
+  font-size: 12px;
+  color: #666;
+  margin-bottom: 4px;
+  display: flex;
+  justify-content: space-between;
+}
+
+.hk-supplies-next-order-date {
+  font-weight: 800;
+}
+
+.hk-supplies-urgent {
+  color: #d32f2f;
+  animation: hk-supplies-pulse 1s infinite;
+}
+
+@keyframes hk-supplies-pulse {
+  0%, 100% { opacity: 1; }
+  50% { opacity: 0.5; }
+}
+
+/* Supplier Info Column */
+.hk-supplies-supplier-info {
+  display: flex;
+  flex-direction: column;
+  gap: 15px;
+}
+
+.hk-supplies-supplier-details {
+  display: flex;
+  flex-direction: column;
+  gap: 8px;
+}
+
+.hk-supplies-supplier-name,
+.hk-supplies-supplier-contact,
+.hk-supplies-supplier-email {
+  display: flex;
+  align-items: center;
+  gap: 8px;
+  font-size: 14px;
+  color: #333;
+  font-weight: 600;
+}
+
+.hk-supplies-supplier-name svg { color: #7b1fa2; }
+.hk-supplies-supplier-contact svg { color: #4caf50; }
+.hk-supplies-supplier-email svg { color: #2196f3; }
+
+.hk-supplies-supplier-rating {
+  text-align: center;
+}
+
+.hk-supplies-rating-stars {
+  color: #ffc107;
+  font-size: 16px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  gap: 5px;
+}
+
+.hk-supplies-rating-number {
+  color: #666;
+  font-weight: 700;
+  margin-left: 8px;
+}
+
+.hk-supplies-order-quantity {
+  display: flex;
+  gap: 10px;
+  align-items: center;
+}
+
+.hk-supplies-order-select {
+  flex: 1;
+  padding: 8px 12px;
+  border: 2px solid #ffd700;
+  border-radius: 8px;
+  background: white;
+  color: #333;
+  font-size: 13px;
+  font-weight: 600;
+  cursor: pointer;
+  outline: none;
+}
+
+.hk-supplies-order-btn {
+  padding: 8px 16px;
+  background: linear-gradient(135deg, #fdd835 0%, #ffc400 100%);
+  color: #000;
+  border: 2px solid #ffd700;
+  border-radius: 8px;
+  font-weight: 700;
+  cursor: pointer;
+  display: flex;
+  align-items: center;
+  gap: 8px;
+  transition: all 0.3s ease;
+}
+
+.hk-supplies-order-btn:hover {
+  transform: translateY(-2px);
+  box-shadow: 0 4px 8px rgba(255, 193, 7, 0.3);
+}
+
+/* Actions Column */
+.hk-supplies-action-buttons {
+  display: grid;
+  grid-template-columns: repeat(2, 1fr);
+  gap: 8px;
+  margin-bottom: 12px;
+}
+
+.hk-supplies-action-btn {
+  width: 40px;
+  height: 40px;
+  border: none;
+  border-radius: 10px;
+  font-size: 16px;
+  cursor: pointer;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  transition: all 0.3s ease;
+  box-shadow: 0 2px 6px rgba(0, 0, 0, 0.1);
+}
+
+.hk-supplies-action-view {
+  background: linear-gradient(135deg, #bbdefb 0%, #90caf9 100%);
+  color: #1565c0;
+}
+
+.hk-supplies-action-edit {
+  background: linear-gradient(135deg, #fff9c4 0%, #ffec8b 100%);
+  color: #f57c00;
+}
+
+.hk-supplies-action-order {
+  background: linear-gradient(135deg, #c8e6c9 0%, #a5d6a7 100%);
+  color: #2e7d32;
+}
+
+.hk-supplies-action-delete {
+  background: linear-gradient(135deg, #ffcdd2 0%, #ef9a9a 100%);
+  color: #c62828;
+}
+
+.hk-supplies-action-btn:hover {
+  transform: translateY(-3px) scale(1.1);
+  box-shadow: 0 4px 12px rgba(0, 0, 0, 0.2);
+}
+
+.hk-supplies-critical-indicator {
+  margin: 10px 0;
+}
+
+.hk-supplies-critical-alert {
+  background: linear-gradient(135deg, #ff5252 0%, #d32f2f 100%);
+  color: white;
+  padding: 8px 12px;
+  border-radius: 8px;
+  font-size: 12px;
+  font-weight: 800;
+  text-align: center;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  gap: 8px;
+  animation: hk-supplies-pulse 1.5s infinite;
+}
+
+.hk-supplies-quick-actions {
+  display: flex;
+  gap: 8px;
+}
+
+.hk-supplies-quick-btn {
+  flex: 1;
+  padding: 8px;
+  border: none;
+  border-radius: 8px;
+  font-size: 12px;
+  font-weight: 700;
+  cursor: pointer;
+  transition: all 0.3s ease;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  gap: 5px;
+}
+
+.hk-supplies-btn-reorder {
+  background: linear-gradient(135deg, #ff9800 0%, #f57c00 100%);
+  color: white;
+}
+
+.hk-supplies-btn-history {
+  background: #f5f5f5;
+  color: #666;
+  border: 2px solid #e0e0e0;
+}
+
+.hk-supplies-quick-btn:hover {
+  transform: translateY(-2px);
+  box-shadow: 0 4px 8px rgba(0, 0, 0, 0.2);
+}
+
+/* No Results */
+.hk-supplies-no-results {
+  text-align: center;
+  padding: 60px 20px;
+  background: #f8f9fa;
+  border-radius: 12px;
+  border: 3px dashed #ffd700;
+  margin: 20px 0;
+}
+
+.hk-supplies-no-results-icon {
+  font-size: 48px;
+  color: #ffd700;
+  margin-bottom: 20px;
+  animation: hk-supplies-rotate 3s infinite linear;
+}
+
+@keyframes hk-supplies-rotate {
+  from { transform: rotate(0deg); }
+  to { transform: rotate(360deg); }
+}
+
+.hk-supplies-no-results h3 {
+  color: #333;
+  margin-bottom: 10px;
+  font-size: 24px;
+}
+
+.hk-supplies-no-results p {
+  color: #666;
+  font-size: 16px;
+}
+
+/* Table Footer */
+.hk-supplies-table-footer {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  margin-top: 25px;
+  padding-top: 20px;
+  border-top: 3px solid #ffecb3;
+}
+
+.hk-supplies-pagination {
+  display: flex;
+  align-items: center;
+  gap: 15px;
+}
+
+.hk-supplies-page-btn {
+  padding: 10px 20px;
+  background: white;
+  color: #333;
+  border: 3px solid #ffd700;
+  border-radius: 10px;
+  font-size: 14px;
+  font-weight: 700;
+  cursor: pointer;
+  transition: all 0.3s ease;
+}
+
+.hk-supplies-page-btn:hover {
+  background: #fff9c4;
+  transform: translateY(-2px);
+}
+
+.hk-supplies-page-info {
+  color: #666;
+  font-weight: 700;
+  font-size: 16px;
+}
+
+.hk-supplies-summary {
+  display: flex;
+  gap: 25px;
+}
+
+.hk-supplies-summary-stats {
+  display: flex;
+  gap: 25px;
+}
+
+.hk-supplies-summary-item {
+  display: flex;
+  align-items: center;
+  gap: 10px;
+  color: #333;
+  font-weight: 700;
+  font-size: 16px;
+}
+
+.hk-supplies-summary-dot {
+  width: 12px;
+  height: 12px;
+  border-radius: 50%;
+}
+
+.hk-supplies-summary-adequate { background: #4caf50; }
+.hk-supplies-summary-low { background: #ff9800; }
+.hk-supplies-summary-critical { background: #ff5252; }
+
+/* Suppliers & Orders Section */
+.hk-supplies-orders-section {
+  margin-bottom: 35px;
+}
+
+.hk-supplies-orders-grid {
+  display: grid;
+  grid-template-columns: 1fr 1fr;
+  gap: 25px;
+}
+
+.hk-supplies-suppliers-card,
+.hk-supplies-orders-card {
+  background: white;
+  padding: 25px;
+  border-radius: 16px;
+  box-shadow: 0 6px 20px rgba(0, 0, 0, 0.1);
+  border: 3px solid #ffecb3;
+}
+
+.hk-supplies-card-header {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  margin-bottom: 20px;
+  padding-bottom: 15px;
+  border-bottom: 2px solid #ffd700;
+}
+
+.hk-supplies-card-title {
+  margin: 0;
+  color: #333;
+  font-size: 20px;
+  display: flex;
+  align-items: center;
+  gap: 10px;
+  font-weight: 800;
+}
+
+.hk-supplies-card-action {
+  padding: 8px 16px;
+  background: linear-gradient(135deg, #fdd835 0%, #ffc400 100%);
+  color: #000;
+  border: 2px solid #ffd700;
+  border-radius: 8px;
+  font-size: 14px;
+  font-weight: 700;
+  cursor: pointer;
+  display: flex;
+  align-items: center;
+  gap: 8px;
+  transition: all 0.3s ease;
+}
+
+.hk-supplies-card-action:hover {
+  transform: translateY(-2px);
+  box-shadow: 0 4px 8px rgba(255, 193, 7, 0.3);
+}
+
+.hk-supplies-suppliers-list,
+.hk-supplies-orders-list {
+  display: flex;
+  flex-direction: column;
+  gap: 12px;
+}
+
+.hk-supplies-supplier-item {
+  display: flex;
+  align-items: center;
+  gap: 15px;
+  padding: 15px;
+  background: #f8f9fa;
+  border-radius: 10px;
+  border: 2px solid #f0f0f0;
+  transition: all 0.3s ease;
+}
+
+.hk-supplies-supplier-item:hover {
+  background: #fff9c4;
+  border-color: #ffd700;
+  transform: translateX(5px);
+}
+
+.hk-supplies-supplier-avatar {
+  width: 40px;
+  height: 40px;
+  border-radius: 50%;
+  background: linear-gradient(135deg, #fdd835 0%, #ffc400 100%);
+  color: #000;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  font-weight: 900;
+  font-size: 18px;
+  flex-shrink: 0;
+}
+
+.hk-supplies-supplier-info h4 {
+  margin: 0 0 5px;
+  font-size: 16px;
+  color: #333;
+  font-weight: 800;
+}
+
+.hk-supplies-supplier-details {
+  display: flex;
+  align-items: center;
+  gap: 10px;
+  color: #666;
+  font-size: 13px;
+}
+
+.hk-supplies-supplier-rating {
+  margin-left: auto;
+}
+
+.hk-supplies-rating-badge {
+  background: linear-gradient(135deg, #fff9c4 0%, #ffec8b 100%);
+  color: #000;
+  padding: 6px 12px;
+  border-radius: 20px;
+  font-size: 14px;
+  font-weight: 800;
+  border: 2px solid #ffd700;
+}
+
+.hk-supplies-order-item {
+  padding: 15px;
+  background: #f8f9fa;
+  border-radius: 10px;
+  border: 2px solid #f0f0f0;
+  transition: all 0.3s ease;
+}
+
+.hk-supplies-order-item:hover {
+  background: #fff9c4;
+  border-color: #ffd700;
+  transform: translateX(5px);
+}
+
+.hk-supplies-order-header {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  margin-bottom: 10px;
+}
+
+.hk-supplies-order-number {
+  font-size: 16px;
+  font-weight: 800;
+  color: #333;
+  font-family: monospace;
+}
+
+.hk-supplies-order-status {
+  padding: 6px 12px;
+  border-radius: 20px;
+  font-size: 12px;
+  font-weight: 800;
+  text-transform: uppercase;
+}
+
+.hk-supplies-status-delivered { background: #e8f5e9; color: #2e7d32; border: 2px solid #4caf50; }
+.hk-supplies-status-intransit { background: #e3f2fd; color: #1565c0; border: 2px solid #2196f3; }
+.hk-supplies-status-pending { background: #fff3e0; color: #ef6c00; border: 2px solid #ff9800; }
+
+.hk-supplies-order-details {
+  display: flex;
+  flex-direction: column;
+  gap: 8px;
+}
+
+.hk-supplies-order-supplier {
+  font-size: 14px;
+  color: #666;
+  font-weight: 700;
+}
+
+.hk-supplies-order-meta {
+  display: flex;
+  align-items: center;
+  gap: 10px;
+  color: #888;
+  font-size: 13px;
+}
+
+/* Quick Actions Section */
+.hk-supplies-quick-actions-section {
+  background: white;
+  padding: 28px;
+  border-radius: 16px;
+  box-shadow: 0 6px 20px rgba(0, 0, 0, 0.1);
+  border: 3px solid #ffecb3;
+}
+
+.hk-supplies-quick-grid {
+  display: grid;
+  grid-template-columns: repeat(auto-fit, minmax(200px, 1fr));
+  gap: 20px;
+}
+
+.hk-supplies-quick-action {
+  padding: 18px 24px;
+  border: none;
+  border-radius: 12px;
+  font-size: 16px;
+  font-weight: 800;
+  cursor: pointer;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  gap: 12px;
+  transition: all 0.3s cubic-bezier(0.4, 0, 0.2, 1);
+  text-align: center;
+  height: 60px;
+  box-shadow: 0 4px 10px rgba(0, 0, 0, 0.15);
+  text-transform: uppercase;
+  letter-spacing: 1px;
+}
+
+.hk-supplies-action-inventory {
+  background: linear-gradient(135deg, #2196f3 0%, #1976d2 100%);
+  color: white;
+  border: 3px solid #1976d2;
+}
+
+.hk-supplies-action-order {
+  background: linear-gradient(135deg, #fdd835 0%, #ffc400 100%);
+  color: #000;
+  border: 3px solid #ffd700;
+}
+
+.hk-supplies-action-report {
+  background: linear-gradient(135deg, #4caf50 0%, #388e3c 100%);
+  color: white;
+  border: 3px solid #388e3c;
+}
+
+.hk-supplies-action-alert {
+  background: linear-gradient(135deg, #ff9800 0%, #f57c00 100%);
+  color: white;
+  border: 3px solid #f57c00;
+}
+
+.hk-supplies-action-audit {
+  background: linear-gradient(135deg, #9c27b0 0%, #7b1fa2 100%);
+  color: white;
+  border: 3px solid #7b1fa2;
+}
+
+.hk-supplies-quick-action:hover {
+  transform: translateY(-6px) scale(1.05);
+  box-shadow: 0 10px 25px rgba(0, 0, 0, 0.25);
+}
+
+/* Responsive Design */
+@media (max-width: 1600px) {
+  .hk-supplies-table {
+    min-width: 1200px;
+  }
+}
+
+@media (max-width: 1400px) {
+  .hk-supplies-filters-section {
+    flex-direction: column;
+  }
+  
+  .hk-supplies-filter-group {
+    justify-content: center;
+  }
+  
+  .hk-supplies-orders-grid {
+    grid-template-columns: 1fr;
+  }
+}
+
+@media (max-width: 1200px) {
+  .hk-supplies-stats-grid {
+    grid-template-columns: repeat(2, 1fr);
+  }
+  
+  .hk-supplies-categories-grid {
+    grid-template-columns: repeat(2, 1fr);
+  }
+  
+  .hk-supplies-quick-grid {
+    grid-template-columns: repeat(3, 1fr);
+  }
+}
+
+@media (max-width: 992px) {
+  .hk-supplies-header {
+    flex-direction: column;
+    gap: 25px;
+    text-align: center;
+  }
+  
+  .hk-supplies-header-actions {
+    flex-wrap: wrap;
+    justify-content: center;
+  }
+  
+  .hk-supplies-stats-grid {
+    grid-template-columns: 1fr;
+  }
+  
+  .hk-supplies-categories-grid {
+    grid-template-columns: 1fr;
+  }
+  
+  .hk-supplies-filter-group {
+    flex-direction: column;
+    align-items: stretch;
+  }
+  
+  .hk-supplies-filter-select {
+    width: 100%;
+  }
+  
+  .hk-supplies-quick-grid {
+    grid-template-columns: repeat(2, 1fr);
+  }
+}
+
+@media (max-width: 768px) {
+  .hk-supplies-container {
+    padding: 15px;
+  }
+  
+  .hk-supplies-title {
+    font-size: 28px;
+  }
+  
+  .hk-supplies-section-title {
+    font-size: 20px;
+  }
+  
+  .hk-supplies-table-header {
+    flex-direction: column;
+    gap: 15px;
+    text-align: center;
+  }
+  
+  .hk-supplies-table-footer {
+    flex-direction: column;
+    gap: 20px;
+    text-align: center;
+  }
+  
+  .hk-supplies-summary-stats {
+    flex-direction: column;
+    gap: 15px;
+  }
+  
+  .hk-supplies-quick-grid {
+    grid-template-columns: 1fr;
+  }
+}
+
+@media (max-width: 576px) {
+  .hk-supplies-title {
+    font-size: 24px;
+    flex-direction: column;
+    gap: 10px;
+  }
+  
+  .hk-supplies-title-icon {
+    font-size: 32px;
+  }
+  
+  .hk-supplies-btn-primary,
+  .hk-supplies-btn-secondary {
+    padding: 12px 18px;
+    font-size: 14px;
+  }
+  
+  .hk-supplies-action-buttons {
+    grid-template-columns: repeat(2, 1fr);
+  }
+  
+  .hk-supplies-stock-controls {
+    flex-direction: column;
+    align-items: stretch;
+  }
+}

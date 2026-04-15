@@ -1,0 +1,113 @@
+/* Landing page responsive stylesheet */
+:root{
+  --color-primary: #0d6efd;
+  --color-bg-muted: #f8f9fa;
+  --font-sans: 'Inter', system-ui, -apple-system, 'Segoe UI', Roboto, 'Helvetica Neue', Arial;
+}
+
+html,body,#root{
+  height:100%;
+}
+
+body{
+  font-family: var(--font-sans);
+  color: #222;
+  -webkit-font-smoothing:antialiased;
+  -moz-osx-font-smoothing:grayscale;
+  font-size: clamp(14px, 1rem + 0.2vw, 18px);
+}
+
+/* Fluid typography for headings */
+h1{font-size: clamp(1.6rem, 2.6vw + 0.5rem, 3.2rem);} /* small screens -> desktop */
+h2{font-size: clamp(1.4rem, 2.1vw + 0.4rem, 2.6rem);} 
+h3{font-size: clamp(1.2rem, 1.6vw + 0.4rem, 1.8rem);} 
+
+/* Hero section */
+.hero-section{
+  position:relative;
+  height: clamp(520px, 65vh, 920px);
+  min-height: 480px;
+  display:flex;
+  align-items:center;
+  justify-content:center;
+  overflow:hidden;
+}
+
+.hero-section .position-absolute:first-child{ /* background image wrapper */
+  position:absolute;
+  inset:0;
+  width:100%;
+  height:100%;
+  background-size:cover;
+  background-position:center;
+}
+
+.hero-section .position-absolute + .position-absolute{ /* overlay */
+  position:absolute;
+  inset:0;
+}
+
+.hero-section .container{z-index:2;}
+
+.hero-section .display-3{font-size: clamp(1.8rem, 4vw + 1rem, 3.8rem);}
+.hero-section .lead{font-size: clamp(1rem, 1.2vw + 0.8rem, 1.4rem);} 
+
+/* Navbar adjustments */
+.navbar-brand img{max-width:180px;height:auto;}
+.navbar .nav-link{font-size: clamp(14px, 0.9rem + 0.2vw, 18px);}
+.navbar .btn-login{font-size: clamp(13px, 0.9rem + 0.2vw, 16px);padding: .6rem 1.1rem;}
+
+/* Cards and features */
+.card .card-title{font-size: clamp(1.05rem, 1.6vw + 0.2rem, 1.4rem);}
+.card .card-text{font-size: clamp(0.95rem, 0.9vw + 0.2rem, 1.05rem);}
+
+/* Stats section */
+.display-4{font-size: clamp(1.6rem, 2.6vw + 0.5rem, 2.8rem);}
+
+/* Footer */
+footer{font-size: clamp(13px, 0.9rem + 0.1vw, 16px);} 
+
+/* Utility responsive rules */
+img{max-width:100%;height:auto;display:block;}
+.rounded-4{border-radius:.75rem !important}
+
+/* Breakpoint specific tweaks */
+@media (max-width: 1199.98px){
+  .navbar-brand img{max-width:160px}
+}
+
+@media (max-width: 991.98px){
+  .hero-section{height: clamp(440px, 60vh, 720px);}
+  .navbar-brand img{max-width:140px}
+  .navbar .navbar-toggler{border-radius:8px}
+  .navbar-nav .nav-item{margin-top:.35rem}
+  .navbar-nav .btn{width:100%}
+  .hero-section .display-3{font-size: clamp(1.4rem, 5.5vw, 2.8rem);}
+  .hero-section .lead{font-size: clamp(0.95rem, 2.2vw, 1.1rem);}
+  .card{padding:1rem}
+}
+
+@media (max-width: 767.98px){
+  body{font-size: clamp(13px, 1rem, 15px);} 
+  .hero-section{height: auto; padding: 3.5rem 0; min-height:420px}
+  .hero-section .position-absolute:first-child{background-attachment:scroll !important}
+  .hero-section .display-3{text-align:center}
+  .hero-section .lead{display:block;margin: .5rem auto}
+  .navbar-brand img{max-width:120px}
+  .feature-icon i{font-size:2.6rem !important}
+  .card .card-text{font-size:0.95rem}
+  .display-4{font-size:1.4rem}
+  footer .social-icons a{margin-right:.6rem}
+}
+
+@media (max-width: 479.98px){
+  h1{font-size:1.6rem}
+  .navbar .nav-link{font-size:14px}
+  .btn-login{padding:.55rem .85rem;font-size:14px}
+  .hero-section .display-3{font-size:1.4rem}
+  .hero-section .lead{font-size:0.95rem;padding: .6rem 1rem}
+}
+
+/* Small accessibility helpers */
+.text-primary{color:var(--color-primary) !important}
+.text-light{color:#fff !important}

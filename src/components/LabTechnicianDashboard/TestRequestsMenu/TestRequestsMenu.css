@@ -1,0 +1,914 @@
+/* Test Requests Menu Styles */
+
+.test-requests-container {
+  font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+  
+  background-color: #f5f7fa;
+  min-height: 100vh;
+  color: #333;
+}
+
+/* Header Styles */
+.test-requests__header {
+  background: linear-gradient(135deg, #1a73e8, #0d47a1);
+  color: white;
+  padding: 25px 30px;
+  border-radius: 12px;
+  margin-bottom: 25px;
+  box-shadow: 0 4px 12px rgba(0, 0, 0, 0.1);
+}
+
+.test-requests__title {
+  margin: 0;
+  font-size: 2.2rem;
+  font-weight: 600;
+  letter-spacing: 0.5px;
+}
+
+.test-requests__subtitle {
+  margin: 8px 0 0;
+  font-size: 1.1rem;
+  opacity: 0.9;
+}
+
+/* Dashboard Stats */
+.test-requests__dashboard {
+  background-color: white;
+  border-radius: 12px;
+  padding: 25px;
+  margin-bottom: 25px;
+  box-shadow: 0 3px 10px rgba(0, 0, 0, 0.08);
+}
+
+.test-requests__stats {
+  display: grid;
+  grid-template-columns: repeat(auto-fit, minmax(200px, 1fr));
+  gap: 20px;
+  margin-bottom: 30px;
+}
+
+.test-requests__stat-card {
+  padding: 20px;
+  border-radius: 10px;
+  text-align: center;
+  color: white;
+  transition: transform 0.3s ease;
+}
+
+.test-requests__stat-card:hover {
+  transform: translateY(-5px);
+}
+
+.test-requests__stat-card--total {
+  background: linear-gradient(135deg, #667eea, #764ba2);
+}
+
+.test-requests__stat-card--pending {
+  background: linear-gradient(135deg, #f093fb, #f5576c);
+}
+
+.test-requests__stat-card--in-progress {
+  background: linear-gradient(135deg, #4facfe, #00f2fe);
+}
+
+.test-requests__stat-card--completed {
+  background: linear-gradient(135deg, #43e97b, #38f9d7);
+}
+
+.test-requests__stat-card h3 {
+  margin: 0 0 10px;
+  font-size: 1rem;
+  font-weight: 500;
+  opacity: 0.9;
+}
+
+.test-requests__stat-card p {
+  margin: 0;
+  font-size: 2.5rem;
+  font-weight: 700;
+}
+
+/* Controls Section */
+.test-requests__controls {
+  display: flex;
+  flex-wrap: wrap;
+  justify-content: space-between;
+  align-items: center;
+  gap: 20px;
+}
+
+.test-requests__filters {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 20px;
+  align-items: center;
+}
+
+.test-requests__filter-group {
+  display: flex;
+  flex-direction: column;
+  min-width: 180px;
+}
+
+.test-requests__filter-label {
+  font-weight: 600;
+  margin-bottom: 6px;
+  color: #444;
+  font-size: 0.9rem;
+}
+
+.test-requests__filter-select,
+.test-requests__search-input {
+  padding: 10px 14px;
+  border: 2px solid #e1e5eb;
+  border-radius: 8px;
+  font-size: 1rem;
+  transition: border-color 0.3s;
+  background-color: white;
+}
+
+.test-requests__filter-select:focus,
+.test-requests__search-input:focus {
+  border-color: #1a73e8;
+  outline: none;
+  box-shadow: 0 0 0 3px rgba(26, 115, 232, 0.1);
+}
+
+.test-requests__search-input {
+  min-width: 250px;
+}
+
+.test-requests__add-btn {
+  background: linear-gradient(135deg, #1a73e8, #0d47a1);
+  color: white;
+  border: none;
+  padding: 12px 24px;
+  border-radius: 8px;
+  font-size: 1rem;
+  font-weight: 600;
+  cursor: pointer;
+  transition: all 0.3s;
+  white-space: nowrap;
+}
+
+.test-requests__add-btn:hover {
+  background: linear-gradient(135deg, #0d47a1, #1a73e8);
+  transform: translateY(-2px);
+  box-shadow: 0 4px 12px rgba(26, 115, 232, 0.3);
+}
+
+/* Main Content */
+.test-requests__main-content {
+  background-color: white;
+  border-radius: 12px;
+  padding: 25px;
+  box-shadow: 0 3px 10px rgba(0, 0, 0, 0.08);
+  margin-bottom: 25px;
+}
+
+.test-requests__loading {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+  padding: 60px 20px;
+}
+
+.test-requests__loading-spinner {
+  width: 50px;
+  height: 50px;
+  border: 5px solid #e1e5eb;
+  border-top: 5px solid #1a73e8;
+  border-radius: 50%;
+  animation: test-requests__spin 1s linear infinite;
+  margin-bottom: 20px;
+}
+
+@keyframes test-requests__spin {
+  0% { transform: rotate(0deg); }
+  100% { transform: rotate(360deg); }
+}
+
+.test-requests__results-info {
+  margin-bottom: 20px;
+  padding: 12px 16px;
+  background-color: #f8f9fa;
+  border-radius: 8px;
+  font-weight: 500;
+  color: #555;
+}
+
+.test-requests__no-results {
+  text-align: center;
+  padding: 60px 20px;
+}
+
+.test-requests__no-results p {
+  font-size: 1.1rem;
+  color: #666;
+  margin-bottom: 20px;
+}
+
+.test-requests__reset-btn {
+  background-color: #6c757d;
+  color: white;
+  border: none;
+  padding: 10px 20px;
+  border-radius: 6px;
+  font-size: 0.95rem;
+  cursor: pointer;
+  transition: background-color 0.3s;
+}
+
+.test-requests__reset-btn:hover {
+  background-color: #5a6268;
+}
+
+/* Table Styles */
+.test-requests__table-container {
+  overflow-x: auto;
+  border-radius: 10px;
+  border: 1px solid #e1e5eb;
+}
+
+.test-requests__table {
+  width: 100%;
+  border-collapse: collapse;
+  min-width: 1000px;
+}
+
+.test-requests__table-head {
+  background-color: #f8f9fa;
+}
+
+.test-requests__table-head th {
+  padding: 18px 15px;
+  text-align: left;
+  font-weight: 600;
+  color: #444;
+  border-bottom: 2px solid #e1e5eb;
+  font-size: 0.95rem;
+  text-transform: uppercase;
+  letter-spacing: 0.5px;
+}
+
+.test-requests__table-body tr {
+  border-bottom: 1px solid #e1e5eb;
+  transition: background-color 0.2s;
+}
+
+.test-requests__table-body tr:hover {
+  background-color: #f8f9fa;
+}
+
+.test-requests__table-cell {
+  padding: 18px 15px;
+  vertical-align: middle;
+}
+
+.test-requests__table-cell--id {
+  font-weight: 600;
+  color: #1a73e8;
+}
+
+.test-requests__patient-info {
+  display: flex;
+  flex-direction: column;
+}
+
+.test-requests__patient-id {
+  font-size: 0.85rem;
+  color: #666;
+  margin-top: 4px;
+}
+
+.test-requests__lab-location {
+  font-size: 0.85rem;
+  color: #888;
+  margin-top: 4px;
+  font-style: italic;
+}
+
+/* Badge Styles */
+.test-requests__priority-badge,
+.test-requests__status-badge {
+  display: inline-block;
+  padding: 6px 12px;
+  border-radius: 20px;
+  font-size: 0.85rem;
+  font-weight: 600;
+  text-transform: capitalize;
+  min-width: 80px;
+  text-align: center;
+}
+
+.test-requests__priority-badge--high {
+  background-color: #fce8e6;
+  color: #d93025;
+}
+
+.test-requests__priority-badge--medium {
+  background-color: #fef7e0;
+  color: #f9ab00;
+}
+
+.test-requests__priority-badge--low {
+  background-color: #e8f0fe;
+  color: #1a73e8;
+}
+
+.test-requests__status-badge--pending {
+  background-color: #fef7e0;
+  color: #f9ab00;
+}
+
+.test-requests__status-badge--in-progress {
+  background-color: #e8f0fe;
+  color: #1a73e8;
+}
+
+.test-requests__status-badge--completed {
+  background-color: #e6f4ea;
+  color: #137333;
+}
+
+.test-requests__status-badge--cancelled {
+  background-color: #fce8e6;
+  color: #d93025;
+}
+
+/* Action Buttons */
+.test-requests__table-cell--actions {
+  min-width: 180px;
+}
+
+.test-requests__action-buttons {
+  display: flex;
+  gap: 10px;
+  align-items: center;
+}
+
+.test-requests__status-select {
+  padding: 8px 12px;
+  border: 1px solid #e1e5eb;
+  border-radius: 6px;
+  background-color: white;
+  font-size: 0.9rem;
+  color: #444;
+  cursor: pointer;
+  min-width: 120px;
+}
+
+.test-requests__view-btn {
+  background-color: #34a853;
+  color: white;
+  border: none;
+  padding: 8px 16px;
+  border-radius: 6px;
+  font-size: 0.9rem;
+  font-weight: 500;
+  cursor: pointer;
+  transition: background-color 0.3s;
+}
+
+.test-requests__view-btn:hover {
+  background-color: #2d9248;
+}
+
+/* Footer */
+.test-requests__footer {
+  text-align: center;
+  padding: 20px;
+  color: #666;
+  font-size: 0.9rem;
+}
+
+.test-requests__footer-text {
+  margin: 0;
+}
+
+/* Responsive Design */
+@media (max-width: 1024px) {
+  .test-requests__controls {
+    flex-direction: column;
+    align-items: stretch;
+  }
+  
+  .test-requests__filters {
+    flex-direction: column;
+    align-items: stretch;
+  }
+  
+  .test-requests__filter-group {
+    width: 100%;
+  }
+  
+  .test-requests__search-input {
+    min-width: 100%;
+  }
+  
+  .test-requests__add-btn {
+    width: 100%;
+    text-align: center;
+  }
+}
+
+@media (max-width: 768px) {
+  .test-requests-container {
+    padding: 15px;
+  }
+  
+  .test-requests__header {
+    padding: 20px;
+  }
+  
+  .test-requests__title {
+    font-size: 1.8rem;
+  }
+  
+  .test-requests__subtitle {
+    font-size: 1rem;
+  }
+  
+  .test-requests__stats {
+    grid-template-columns: repeat(2, 1fr);
+  }
+  
+  .test-requests__dashboard,
+  .test-requests__main-content {
+    padding: 20px;
+  }
+  
+  .test-requests__table-cell {
+    padding: 12px 10px;
+  }
+  
+  .test-requests__action-buttons {
+    flex-direction: column;
+  }
+  
+  .test-requests__status-select,
+  .test-requests__view-btn {
+    width: 100%;
+  }
+}
+
+@media (max-width: 480px) {
+  .test-requests__stats {
+    grid-template-columns: 1fr;
+  }
+  
+  .test-requests__title {
+    font-size: 1.5rem;
+  }
+}
+
+/* Test Requests Menu Styles with Technician Theme */
+
+/* Technician Theme Base */
+
+
+/* Header Styles with Technician Theme */
+.technician-header {
+  background: linear-gradient(135deg, #ffb347, #ffcc33) !important; /* Orange gradient */
+  color: #000000 !important;
+  border-left: 5px solid #ff9500;
+}
+
+.technician-header .test-requests__title {
+  color: #000000;
+  text-shadow: 0 2px 4px rgba(255, 149, 0, 0.3);
+}
+
+.technician-header .test-requests__subtitle {
+  color: #333333;
+  opacity: 0.9;
+}
+
+/* Dashboard Stats with Technician Theme */
+.technician-dashboard {
+  background-color: #fff9f0 !important; /* Very light orange */
+  border: 2px solid #ffcc99;
+  box-shadow: 0 4px 15px rgba(255, 149, 0, 0.1) !important;
+}
+
+.technician-stats .technician-stat-card {
+  transition: all 0.3s ease;
+  border: 1px solid transparent;
+}
+
+.technician-stats .technician-stat-card:hover {
+  transform: translateY(-5px);
+  border-color: #ff9500;
+  box-shadow: 0 6px 20px rgba(255, 149, 0, 0.15);
+}
+
+.technician-stat-card--total {
+  background: linear-gradient(135deg, #ff9500, #ff7300) !important;
+  color: white !important;
+}
+
+.technician-stat-card--pending {
+  background: linear-gradient(135deg, #ffa726, #ff9800) !important;
+  color: white !important;
+}
+
+.technician-stat-card--in-progress {
+  background: linear-gradient(135deg, #ffb74d, #ffa726) !important;
+  color: white !important;
+}
+
+.technician-stat-card--completed {
+  background: linear-gradient(135deg, #ffcc80, #ffb74d) !important;
+  color: white !important;
+}
+
+/* Controls Section with Technician Theme */
+.technician-controls {
+  border-top: 2px solid #ffcc99;
+  padding-top: 20px;
+}
+
+.technician-filter-label {
+  color: #cc6600 !important;
+  font-weight: 600;
+}
+
+.technician-filter-select,
+.technician-search-input {
+  border: 2px solid #ffcc99 !important;
+  background-color: white;
+  color: #333;
+  transition: all 0.3s;
+}
+
+.technician-filter-select:focus,
+.technician-search-input:focus {
+  border-color: #ff9500 !important;
+  box-shadow: 0 0 0 3px rgba(255, 149, 0, 0.2) !important;
+  outline: none;
+}
+
+.technician-add-btn {
+  background: linear-gradient(135deg, #ff9500, #ff7300) !important;
+  color: white !important;
+  border: none;
+  font-weight: 600;
+  transition: all 0.3s;
+  border: 2px solid transparent;
+}
+
+.technician-add-btn:hover {
+  background: linear-gradient(135deg, #ff7300, #ff9500) !important;
+  transform: translateY(-2px);
+  box-shadow: 0 6px 20px rgba(255, 149, 0, 0.3) !important;
+  border-color: #ffcc99;
+}
+
+/* Main Content with Technician Theme */
+.technician-main-content {
+  background-color: white !important;
+  border: 2px solid #ffcc99;
+  box-shadow: 0 4px 15px rgba(255, 149, 0, 0.1) !important;
+}
+
+.technician-loading-spinner {
+  border: 5px solid #ffebcc;
+  border-top: 5px solid #ff9500;
+}
+
+.technician-results-info {
+  background-color: #fff5e6 !important;
+  color: #cc6600;
+  border-left: 4px solid #ff9500;
+}
+
+.technician-no-results {
+  color: #cc6600;
+}
+
+.technician-reset-btn {
+  background-color: #ff9500 !important;
+  color: white !important;
+  border: none;
+}
+
+.technician-reset-btn:hover {
+  background-color: #e68a00 !important;
+}
+
+/* Table Styles with Technician Theme */
+.technician-table-container {
+  border: 2px solid #ffcc99 !important;
+  border-radius: 10px;
+  overflow: hidden;
+}
+
+.technician-table-head {
+  background: linear-gradient(135deg, #ffcc66, #ffb347) !important;
+  color: #000000 !important;
+}
+
+.technician-table-head th {
+  border-bottom: 2px solid #ff9500 !important;
+  color: #000000;
+}
+
+.technician-table-body tr {
+  border-bottom: 1px solid #ffebcc;
+  transition: all 0.2s;
+}
+
+.technician-table-body tr:hover {
+  background-color: #fff5e6 !important;
+  transform: scale(1.002);
+}
+
+.technician-table-cell--id {
+  color: #ff7300 !important;
+  font-weight: 700;
+}
+
+.technician-patient-info strong {
+  color: #333;
+}
+
+.technician-patient-id {
+  color: #ff9500 !important;
+  font-weight: 600;
+}
+
+.technician-lab-location {
+  color: #ff7300 !important;
+  font-style: italic;
+}
+
+/* Badge Styles with Technician Theme */
+.technician-priority-badge {
+  font-weight: 600;
+  border: 1px solid transparent;
+}
+
+.technician-priority-badge--high {
+  background-color: #ffe6e6 !important;
+  color: #ff3333 !important;
+  border-color: #ff3333;
+}
+
+.technician-priority-badge--medium {
+  background-color: #fff0cc !important;
+  color: #ff9900 !important;
+  border-color: #ff9900;
+}
+
+.technician-priority-badge--low {
+  background-color: #e6f7ff !important;
+  color: #3399ff !important;
+  border-color: #3399ff;
+}
+
+.technician-status-badge {
+  font-weight: 600;
+  border: 1px solid transparent;
+}
+
+.technician-status-badge--pending {
+  background-color: #fff0cc !important;
+  color: #ff9900 !important;
+  border-color: #ff9900;
+}
+
+.technician-status-badge--in-progress {
+  background-color: #e6f7ff !important;
+  color: #3399ff !important;
+  border-color: #3399ff;
+}
+
+.technician-status-badge--completed {
+  background-color: #e6ffe6 !important;
+  color: #33cc33 !important;
+  border-color: #33cc33;
+}
+
+.technician-status-badge--cancelled {
+  background-color: #ffe6e6 !important;
+  color: #ff3333 !important;
+  border-color: #ff3333;
+}
+
+/* Action Buttons with Technician Theme */
+.technician-table-cell--actions {
+  min-width: 180px;
+}
+
+.technician-action-buttons {
+  gap: 10px;
+}
+
+.technician-status-select {
+  border: 2px solid #ffcc99 !important;
+  background-color: white;
+  color: #333;
+  transition: all 0.3s;
+}
+
+.technician-status-select:focus {
+  border-color: #ff9500 !important;
+  outline: none;
+  box-shadow: 0 0 0 3px rgba(255, 149, 0, 0.2);
+}
+
+.technician-view-btn {
+  background-color: #ff9500 !important;
+  color: white !important;
+  border: 2px solid transparent;
+  transition: all 0.3s;
+}
+
+.technician-view-btn:hover {
+  background-color: #e68a00 !important;
+  border-color: #ffcc99;
+  transform: translateY(-1px);
+}
+
+/* Footer with Technician Theme */
+.technician-footer {
+  background: linear-gradient(135deg, #ffcc66, #ffb347) !important;
+  color: #000000 !important;
+  border-top: 3px solid #ff9500;
+}
+
+.technician-footer-text {
+  color: #000000;
+  font-weight: 600;
+}
+
+/* Loading Animation */
+@keyframes technician-spin {
+  0% { transform: rotate(0deg); }
+  100% { transform: rotate(360deg); }
+}
+
+.technician-loading-spinner {
+  animation: technician-spin 1s linear infinite;
+}
+
+/* Hover Effects */
+.technician-stat-card,
+.technician-add-btn,
+.technician-view-btn,
+.technician-reset-btn {
+  cursor: pointer;
+  transition: all 0.3s ease;
+}
+
+/* Responsive Design */
+@media (max-width: 1024px) {
+  .technician-controls {
+    flex-direction: column;
+    gap: 15px;
+  }
+  
+  .technician-filters {
+    width: 100%;
+  }
+  
+  .technician-filter-group {
+    width: 100%;
+  }
+  
+  .technician-search-input {
+    width: 100%;
+  }
+  
+  .technician-add-btn {
+    width: 100%;
+  }
+}
+
+@media (max-width: 768px) {
+  .technician-stats {
+    grid-template-columns: repeat(2, 1fr);
+    gap: 15px;
+  }
+  
+  .technician-header {
+    padding: 20px !important;
+  }
+  
+  .technician-title {
+    font-size: 1.6rem !important;
+  }
+  
+  .technician-subtitle {
+    font-size: 0.95rem !important;
+  }
+  
+  .technician-dashboard,
+  .technician-main-content {
+    padding: 15px !important;
+  }
+}
+
+@media (max-width: 480px) {
+  .technician-stats {
+    grid-template-columns: 1fr;
+  }
+  
+  .technician-title {
+    font-size: 1.4rem !important;
+  }
+  
+  .technician-action-buttons {
+    flex-direction: column;
+    gap: 8px;
+  }
+  
+  .technician-status-select,
+  .technician-view-btn {
+    width: 100%;
+  }
+}
+
+/* Special Technician Theme Elements */
+.technician-table-row:nth-child(even) {
+  background-color: #fffaf5;
+}
+
+.technician-table-row:nth-child(odd) {
+  background-color: white;
+}
+
+.technician-filter-select option {
+  background-color: white;
+  color: #333;
+}
+
+.technician-filter-select option:hover {
+  background-color: #fff5e6 !important;
+}
+
+/* Button Active States */
+.technician-add-btn:active,
+.technician-view-btn:active,
+.technician-reset-btn:active {
+  transform: translateY(1px);
+}
+
+/* Scrollbar Styling for Technician Theme */
+.technician-table-container::-webkit-scrollbar {
+  height: 8px;
+  width: 8px;
+}
+
+.technician-table-container::-webkit-scrollbar-track {
+  background: #ffebcc;
+  border-radius: 4px;
+}
+
+.technician-table-container::-webkit-scrollbar-thumb {
+  background: #ff9500;
+  border-radius: 4px;
+}
+
+.technician-table-container::-webkit-scrollbar-thumb:hover {
+  background: #e68a00;
+}
+
+/* Focus States */
+.technician-filter-select:focus,
+.technician-search-input:focus,
+.technician-status-select:focus,
+.technician-view-btn:focus,
+.technician-add-btn:focus,
+.technician-reset-btn:focus {
+  outline: 2px solid #ff9500;
+  outline-offset: 2px;
+}
+
+/* Selection Color */
+::selection {
+  background-color: rgba(255, 149, 0, 0.3);
+  color: #000000;
+}
+
+/* Print Styles for Technician Theme */
+@media print {
+  .technician-add-btn,
+  .technician-status-select,
+  .technician-view-btn,
+  .technician-reset-btn {
+    display: none !important;
+  }
+  
+  .technician-dashboard,
+  .technician-main-content {
+    box-shadow: none !important;
+    border: 1px solid #ccc !important;
+  }
+  
+  .technician-header {
+    background: #ff9500 !important;
+    -webkit-print-color-adjust: exact;
+  }
+}

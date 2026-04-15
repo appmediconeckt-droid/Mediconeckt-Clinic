@@ -1,0 +1,1015 @@
+/* Base Styles */
+:root {
+  --primary-green: #6bc48a;
+  --primary-green-dark: #2d7a4d;
+  --primary-green-light: #8af5aa;
+  --light-bg: #f9fdfa;
+  --card-bg: #ffffff;
+  --border-color: #c8e6d4;
+  --text-dark: #2d4036;
+  --text-medium: #666666;
+  --text-light: #888888;
+  --shadow-light: 0 5px 15px rgba(0, 0, 0, 0.05);
+  --shadow-medium: 0 10px 30px rgba(0, 0, 0, 0.1);
+  --shadow-heavy: 0 15px 35px rgba(0, 0, 0, 0.15);
+}
+
+.patient-notification-container {
+  min-height: 100vh;
+  background: var(--light-bg);
+  padding: 20px;
+  font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+  color: var(--text-dark);
+}
+
+/* Header Styles */
+.patient-notification-header {
+  background: linear-gradient(135deg, var(--primary-green-light) 0%, var(--primary-green) 100%);
+  border-radius: 20px;
+  padding: 30px;
+  margin-bottom: 30px;
+  color: white;
+  box-shadow: var(--shadow-medium);
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  flex-wrap: wrap;
+  gap: 20px;
+}
+
+.header-content {
+  flex: 1;
+  min-width: 300px;
+}
+
+.patient-notification-title {
+  font-size: 2.5rem;
+  font-weight: 800;
+  margin-bottom: 10px;
+  display: flex;
+  align-items: center;
+  gap: 15px;
+}
+
+.patient-notification-title i {
+  font-size: 2rem;
+}
+
+.patient-notification-subtitle {
+  font-size: 1.1rem;
+  opacity: 0.95;
+  max-width: 600px;
+}
+
+.header-stats {
+  display: flex;
+  gap: 20px;
+}
+
+.stat-box {
+  background: rgba(255, 255, 255, 0.2);
+  backdrop-filter: blur(10px);
+  border-radius: 15px;
+  padding: 20px;
+  display: flex;
+  align-items: center;
+  gap: 15px;
+  min-width: 120px;
+  transition: transform 0.3s ease;
+}
+
+.stat-box:hover {
+  transform: translateY(-5px);
+  background: rgba(255, 255, 255, 0.3);
+}
+
+.stat-box i {
+  font-size: 2rem;
+  opacity: 0.9;
+}
+
+.stat-box .stat-number {
+  font-size: 2rem;
+  font-weight: 800;
+  display: block;
+  line-height: 1;
+}
+
+.stat-box .stat-label {
+  font-size: 0.9rem;
+  opacity: 0.9;
+  display: block;
+  margin-top: 5px;
+}
+
+/* Controls Panel */
+.patient-notification-controls {
+  background: var(--card-bg);
+  border-radius: 15px;
+  padding: 20px 30px;
+  margin-bottom: 30px;
+  box-shadow: var(--shadow-light);
+  border: 2px solid var(--border-color);
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  flex-wrap: wrap;
+  gap: 20px;
+}
+
+.controls-left {
+  display: flex;
+  align-items: center;
+  gap: 20px;
+  flex-wrap: wrap;
+}
+
+.filter-buttons {
+  display: flex;
+  gap: 10px;
+  background: var(--light-bg);
+  padding: 5px;
+  border-radius: 12px;
+}
+
+.filter-btn {
+  padding: 10px 25px;
+  border: none;
+  border-radius: 10px;
+  background: transparent;
+  color: var(--text-medium);
+  font-weight: 600;
+  cursor: pointer;
+  transition: all 0.3s ease;
+  font-size: 0.95rem;
+}
+
+.filter-btn:hover {
+  background: rgba(107, 196, 138, 0.1);
+  color: var(--primary-green-dark);
+}
+
+.filter-btn.active {
+  background: var(--primary-green);
+  color: white;
+  box-shadow: 0 4px 15px rgba(107, 196, 138, 0.3);
+}
+
+.sort-dropdown {
+  position: relative;
+}
+
+.sort-select {
+  padding: 10px 20px;
+  padding-right: 45px;
+  border: 2px solid var(--border-color);
+  border-radius: 10px;
+  background: white;
+  color: var(--text-dark);
+  font-weight: 600;
+  font-size: 0.95rem;
+  cursor: pointer;
+  appearance: none;
+  min-width: 160px;
+}
+
+.sort-select:focus {
+  outline: none;
+  border-color: var(--primary-green);
+}
+
+.controls-right {
+  display: flex;
+  align-items: center;
+  gap: 20px;
+  flex-wrap: wrap;
+}
+
+.view-toggle {
+  display: flex;
+  gap: 5px;
+  background: var(--light-bg);
+  padding: 5px;
+  border-radius: 12px;
+}
+
+.view-btn {
+  width: 45px;
+  height: 45px;
+  border: none;
+  border-radius: 10px;
+  background: transparent;
+  color: var(--text-medium);
+  font-size: 1.1rem;
+  cursor: pointer;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  transition: all 0.3s ease;
+}
+
+.view-btn:hover {
+  background: rgba(107, 196, 138, 0.1);
+  color: var(--primary-green-dark);
+}
+
+.view-btn.active {
+  background: var(--primary-green);
+  color: white;
+  box-shadow: 0 4px 15px rgba(107, 196, 138, 0.3);
+}
+
+.action-buttons {
+  display: flex;
+  gap: 12px;
+}
+
+.action-btn {
+  display: flex;
+  align-items: center;
+  gap: 10px;
+  padding: 12px 25px;
+  border: none;
+  border-radius: 12px;
+  font-weight: 600;
+  font-size: 0.95rem;
+  cursor: pointer;
+  transition: all 0.3s ease;
+  background: white;
+  color: var(--primary-green-dark);
+  border: 2px solid var(--border-color);
+  white-space: nowrap;
+}
+
+.action-btn i {
+  font-size: 1rem;
+}
+
+.mark-all-btn:hover {
+  background: var(--primary-green);
+  color: white;
+  border-color: var(--primary-green);
+  transform: translateY(-2px);
+  box-shadow: 0 8px 20px rgba(107, 196, 138, 0.3);
+}
+
+.add-btn:hover {
+  background: var(--primary-green);
+  color: white;
+  border-color: var(--primary-green);
+  transform: translateY(-2px);
+  box-shadow: 0 8px 20px rgba(107, 196, 138, 0.3);
+}
+
+.clear-btn:hover {
+  background: #ff4444;
+  color: white;
+  border-color: #ff4444;
+  transform: translateY(-2px);
+  box-shadow: 0 8px 20px rgba(255, 68, 68, 0.3);
+}
+
+/* Table View Styles */
+.notification-table-container {
+  background: var(--card-bg);
+  border-radius: 15px;
+  overflow: hidden;
+  box-shadow: var(--shadow-light);
+  border: 2px solid var(--border-color);
+  margin-bottom: 30px;
+  overflow-x: auto;
+}
+
+.notification-table {
+  width: 100%;
+  border-collapse: collapse;
+  min-width: 1000px;
+}
+
+.notification-table thead {
+  background: linear-gradient(135deg, var(--primary-green-light) 0%, var(--primary-green) 100%);
+}
+
+.notification-table th {
+  padding: 20px;
+  text-align: left;
+  color: white;
+  font-weight: 700;
+  font-size: 0.95rem;
+  text-transform: uppercase;
+  letter-spacing: 0.5px;
+  border-bottom: 3px solid white;
+}
+
+.notification-table th:first-child {
+  border-radius: 15px 0 0 0;
+}
+
+.notification-table th:last-child {
+  border-radius: 0 15px 0 0;
+}
+
+.notification-row {
+  border-bottom: 2px solid var(--light-bg);
+  transition: all 0.3s ease;
+  cursor: pointer;
+}
+
+.notification-row:last-child {
+  border-bottom: none;
+}
+
+.notification-row:hover {
+  background: var(--light-bg);
+  transform: scale(1.002);
+}
+
+.notification-row.unread {
+  background: rgba(138, 245, 170, 0.05);
+  position: relative;
+}
+
+.notification-row.unread::before {
+  content: '';
+  position: absolute;
+  left: 0;
+  top: 0;
+  bottom: 0;
+  width: 4px;
+  background: var(--primary-green);
+}
+
+.notification-table td {
+  padding: 20px;
+  vertical-align: middle;
+}
+
+.status-cell {
+  width: 60px;
+  text-align: center;
+}
+
+.unread-indicator {
+  display: inline-block;
+  width: 12px;
+  height: 12px;
+  background: var(--primary-green);
+  border-radius: 50%;
+  animation: pulse 2s infinite;
+}
+
+.unread-indicator i {
+  color: var(--primary-green);
+  font-size: 0.8rem;
+}
+
+.type-cell {
+  width: 120px;
+}
+
+.type-badge {
+  display: flex;
+  align-items: center;
+  gap: 10px;
+  padding: 8px 15px;
+  background: var(--light-bg);
+  border-radius: 20px;
+  font-size: 0.85rem;
+  font-weight: 600;
+  color: var(--primary-green-dark);
+}
+
+.type-badge i {
+  color: var(--primary-green);
+  font-size: 1rem;
+}
+
+.title-cell {
+  min-width: 300px;
+}
+
+.notification-info {
+  max-width: 500px;
+}
+
+.notification-title {
+  font-size: 1.1rem;
+  font-weight: 700;
+  color: var(--text-dark);
+  margin-bottom: 8px;
+  line-height: 1.3;
+}
+
+.notification-description {
+  color: var(--text-medium);
+  font-size: 0.95rem;
+  line-height: 1.5;
+  margin: 0;
+}
+
+.priority-cell {
+  width: 100px;
+}
+
+.priority-badge {
+  display: flex;
+  align-items: center;
+  gap: 8px;
+  padding: 8px 15px;
+  border-radius: 20px;
+  font-size: 0.85rem;
+  font-weight: 600;
+  text-transform: capitalize;
+}
+
+.priority-badge.high {
+  background: #ffebee;
+  color: #d32f2f;
+}
+
+.priority-badge.medium {
+  background: #fff3e0;
+  color: #f57c00;
+}
+
+.priority-badge.low {
+  background: #e8f8ed;
+  color: var(--primary-green-dark);
+}
+
+.priority-badge i {
+  font-size: 0.9rem;
+}
+
+.date-cell {
+  width: 150px;
+}
+
+.datetime-info {
+  text-align: center;
+}
+
+.datetime-info .date {
+  font-weight: 600;
+  color: var(--text-dark);
+  margin-bottom: 5px;
+}
+
+.datetime-info .time {
+  color: var(--text-light);
+  font-size: 0.9rem;
+}
+
+.actions-cell {
+  width: 100px;
+}
+
+.table-actions {
+  display: flex;
+  gap: 10px;
+  justify-content: flex-end;
+}
+
+.action-icon {
+  width: 40px;
+  height: 40px;
+  border: none;
+  border-radius: 50%;
+  background: var(--light-bg);
+  color: var(--text-medium);
+  font-size: 1rem;
+  cursor: pointer;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  transition: all 0.3s ease;
+}
+
+.action-icon:hover {
+  transform: scale(1.1);
+}
+
+.mark-read-btn:hover {
+  background: var(--primary-green);
+  color: white;
+}
+
+.delete-btn:hover {
+  background: #ff4444;
+  color: white;
+}
+
+/* Card View Styles */
+.notification-cards {
+  display: grid;
+  grid-template-columns: repeat(auto-fill, minmax(350px, 1fr));
+  gap: 25px;
+  margin-bottom: 30px;
+}
+
+.notification-card {
+  background: var(--card-bg);
+  border-radius: 20px;
+  padding: 25px;
+  box-shadow: var(--shadow-light);
+  border: 2px solid var(--border-color);
+  position: relative;
+  cursor: pointer;
+  transition: all 0.4s cubic-bezier(0.175, 0.885, 0.32, 1.275);
+  overflow: hidden;
+}
+
+.notification-card:hover {
+  transform: translateY(-10px);
+  box-shadow: var(--shadow-heavy);
+  border-color: var(--primary-green);
+}
+
+.notification-card.unread {
+  background: linear-gradient(135deg, #f9fdfa 0%, #e8f8ed 100%);
+  border-left: 6px solid var(--primary-green);
+}
+
+.notification-card.high {
+  border-top: 4px solid #d32f2f;
+}
+
+.notification-card.medium {
+  border-top: 4px solid #f57c00;
+}
+
+.notification-card.low {
+  border-top: 4px solid var(--primary-green);
+}
+
+.patient-notification-card-header {
+  display: flex;
+  padding: 10px;
+  border-radius: 10px;
+  background-color: rgb(201, 201, 204) ;
+  justify-content: space-between;
+  align-items: center;
+}
+
+.card-type {
+  display: flex;
+  align-items: center;
+  gap: 10px;
+}
+
+.card-type i {
+  font-size: 1.3rem;
+  color: var(--primary-green);
+}
+
+.type-label {
+  font-weight: 700;
+  color: var(--primary-green-dark);
+  text-transform: uppercase;
+  font-size: 0.85rem;
+  letter-spacing: 0.5px;
+}
+
+.priority-indicator {
+  width: 30px;
+  height: 30px;
+  border-radius: 50%;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  font-size: 0.9rem;
+}
+
+.priority-indicator.high {
+  background: #ffebee;
+  color: #d32f2f;
+}
+
+.priority-indicator.medium {
+  background: #fff3e0;
+  color: #f57c00;
+}
+
+.priority-indicator.low {
+  background: #e8f8ed;
+  color: var(--primary-green-dark);
+}
+
+.card-body {
+  margin-bottom: 25px;
+}
+
+.card-title {
+  font-size: 1.3rem;
+  font-weight: 700;
+  color: var(--text-dark);
+  margin-bottom: 15px;
+  line-height: 1.4;
+}
+
+.card-description {
+  color: var(--text-medium);
+  line-height: 1.6;
+  margin: 0;
+  font-size: 1rem;
+}
+
+.patient-card-footer {
+  display: flex;
+  background-color: #8ab9b5;
+  justify-content: space-between;
+  align-items: center;
+  padding: 10px;
+  border-radius: 10px;
+  border-top: 2px solid var(--light-bg);
+}
+
+.datetime {
+  display: flex;
+  align-items: center;
+  gap: 15px;
+  color: var(--text-light);
+  font-size: 0.95rem;
+}
+
+.datetime i {
+  font-size: 1rem;
+  margin-right: 5px;
+}
+
+.card-actions {
+  display: flex;
+  gap: 10px;
+}
+
+.card-action-btn {
+  width: 40px;
+  height: 40px;
+  border: none;
+  border-radius: 50%;
+  background: var(--light-bg);
+  color: var(--text-medium);
+  font-size: 1rem;
+  cursor: pointer;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  transition: all 0.3s ease;
+}
+
+.card-action-btn:hover {
+  transform: scale(1.1);
+}
+
+.card-action-btn.mark-read:hover {
+  background: var(--primary-green);
+  color: white;
+}
+
+.card-action-btn.delete:hover {
+  background: #ff4444;
+  color: white;
+}
+
+.unread-badge {
+  position: absolute;
+  top: 15px;
+  right: 15px;
+  background: linear-gradient(135deg, var(--primary-green-light) 0%, var(--primary-green) 100%);
+  color: white;
+  font-size: 0.75rem;
+  font-weight: 800;
+  padding: 5px 15px;
+  border-radius: 15px;
+  animation: pulse 2s infinite;
+}
+
+/* Empty State */
+.patient-notification-empty {
+  background: var(--card-bg);
+  border-radius: 20px;
+  padding: 80px 20px;
+  text-align: center;
+  box-shadow: var(--shadow-light);
+  border: 2px solid var(--border-color);
+}
+
+.empty-icon {
+  font-size: 5rem;
+  color: var(--primary-green);
+  opacity: 0.3;
+  margin-bottom: 30px;
+}
+
+.patient-notification-empty h3 {
+  font-size: 1.8rem;
+  color: var(--text-dark);
+  margin-bottom: 15px;
+  font-weight: 700;
+}
+
+.patient-notification-empty p {
+  color: var(--text-medium);
+  font-size: 1.1rem;
+  max-width: 400px;
+  margin: 0 auto 30px;
+}
+
+/* Footer */
+.patient-notification-footer {
+  background: var(--card-bg);
+  border-radius: 15px;
+  padding: 25px 30px;
+  box-shadow: var(--shadow-light);
+  border: 2px solid var(--border-color);
+}
+
+.footer-content {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  flex-wrap: wrap;
+  gap: 20px;
+}
+
+.footer-info {
+  display: flex;
+  align-items: center;
+  gap: 12px;
+  color: var(--primary-green-dark);
+  font-weight: 600;
+  font-size: 0.95rem;
+}
+
+.footer-info i {
+  font-size: 1.2rem;
+}
+
+.footer-stats {
+  display: flex;
+  gap: 25px;
+}
+
+.footer-stats .stat {
+  display: flex;
+  align-items: center;
+  gap: 8px;
+  color: var(--text-medium);
+  font-size: 0.9rem;
+  font-weight: 600;
+}
+
+.footer-stats .stat i {
+  color: var(--primary-green);
+  font-size: 1rem;
+}
+
+/* Animations */
+@keyframes pulse {
+  0% {
+    box-shadow: 0 0 0 0 rgba(107, 196, 138, 0.7);
+  }
+  70% {
+    box-shadow: 0 0 0 10px rgba(107, 196, 138, 0);
+  }
+  100% {
+    box-shadow: 0 0 0 0 rgba(107, 196, 138, 0);
+  }
+}
+
+/* Responsive Design */
+@media (max-width: 1200px) {
+  .notification-cards {
+    grid-template-columns: repeat(auto-fill, minmax(300px, 1fr));
+  }
+}
+
+@media (max-width: 992px) {
+  .patient-notification-header {
+    flex-direction: column;
+    text-align: center;
+    padding: 25px;
+  }
+  
+  .header-content {
+    min-width: auto;
+  }
+  
+  .header-stats {
+    width: 100%;
+    justify-content: center;
+  }
+  
+  .patient-notification-controls {
+    flex-direction: column;
+    align-items: stretch;
+  }
+  
+  .controls-left, .controls-right {
+    width: 100%;
+  }
+  
+  .footer-content {
+    flex-direction: column;
+    text-align: center;
+  }
+  
+  .notification-cards {
+    grid-template-columns: repeat(auto-fill, minmax(280px, 1fr));
+  }
+}
+
+@media (max-width: 768px) {
+  .patient-notification-container {
+    padding: 15px;
+  }
+  
+  .patient-notification-title {
+    font-size: 2rem;
+  }
+  
+  .stat-box {
+    min-width: 100px;
+    padding: 15px;
+  }
+  
+  .stat-box .stat-number {
+    font-size: 1.5rem;
+  }
+  
+  .controls-left {
+    flex-direction: column;
+    align-items: stretch;
+  }
+  
+  .filter-buttons {
+    justify-content: center;
+  }
+  
+  .action-btn {
+    padding: 12px 20px;
+  }
+  
+  .action-btn span {
+    display: none;
+  }
+  
+  .action-btn i {
+    margin: 0;
+  }
+  
+  .notification-table-container {
+    border-radius: 10px;
+    margin: 0 -15px;
+    width: calc(100% + 30px);
+  }
+  
+  .notification-table {
+    min-width: 800px;
+  }
+  
+  .notification-cards {
+    grid-template-columns: 1fr;
+    gap: 20px;
+  }
+  
+  .notification-card {
+    padding: 20px;
+  }
+}
+
+@media (max-width: 576px) {
+  .patient-notification-header {
+    padding: 20px;
+    border-radius: 15px;
+  }
+  
+  .patient-notification-title {
+    font-size: 1.6rem;
+  }
+  
+  .stat-box {
+    flex: 1;
+    justify-content: center;
+  }
+  
+  .filter-buttons {
+    flex-wrap: wrap;
+  }
+  
+  .filter-btn {
+    flex: 1;
+    min-width: 80px;
+  }
+  
+  .view-toggle, .action-buttons {
+    width: 100%;
+    justify-content: center;
+  }
+  
+  .action-btn {
+    flex: 1;
+    justify-content: center;
+  }
+  
+  .notification-card {
+    padding: 15px;
+  }
+  
+  .card-title {
+    font-size: 1.2rem;
+  }
+  
+  .footer-stats {
+    flex-direction: column;
+    gap: 10px;
+  }
+}
+
+@media (max-width: 480px) {
+  .patient-notification-container {
+    padding: 10px;
+  }
+  
+  .patient-notification-title {
+    font-size: 1.4rem;
+  }
+  
+  .stat-box {
+    min-width: auto;
+    padding: 12px;
+  }
+  
+  .stat-box i {
+    font-size: 1.5rem;
+  }
+  
+  .stat-box .stat-number {
+    font-size: 1.2rem;
+  }
+  
+  .notification-cards {
+    gap: 15px;
+  }
+}
+
+/* Dark Mode Support */
+@media (prefers-color-scheme: dark) {
+  :root {
+    --primary-green: #8af5aa;
+    --primary-green-dark: #6bc48a;
+    --primary-green-light: #a8f5c0;
+    --light-bg: #1a2a22;
+    --card-bg: #24352d;
+    --border-color: #3a5c4d;
+    --text-dark: #e0e0e0;
+    --text-medium: #b0b0b0;
+    --text-light: #888888;
+    --shadow-light: 0 5px 15px rgba(0, 0, 0, 0.2);
+    --shadow-medium: 0 10px 30px rgba(0, 0, 0, 0.3);
+    --shadow-heavy: 0 15px 35px rgba(0, 0, 0, 0.4);
+  }
+  
+  .patient-notification-header {
+    background: linear-gradient(135deg, #2d7a4d 0%, #1e5630 100%);
+  }
+  
+  .stat-box {
+    background: rgba(255, 255, 255, 0.1);
+  }
+  
+  .type-badge, .priority-badge.high, .priority-badge.medium, .priority-badge.low {
+    background: rgba(255, 255, 255, 0.1);
+  }
+  
+  .action-icon, .card-action-btn {
+    background: rgba(255, 255, 255, 0.1);
+  }
+  
+  .notification-row.unread {
+    background: rgba(107, 196, 138, 0.1);
+  }
+  
+  .notification-card.unread {
+    background: linear-gradient(135deg, rgba(107, 196, 138, 0.1) 0%, rgba(107, 196, 138, 0.05) 100%);
+  }
+}
+
+/* Custom Scrollbar */
+.notification-table-container::-webkit-scrollbar {
+  height: 8px;
+}
+
+.notification-table-container::-webkit-scrollbar-track {
+  background: var(--light-bg);
+  border-radius: 4px;
+}
+
+.notification-table-container::-webkit-scrollbar-thumb {
+  background: linear-gradient(135deg, var(--primary-green-light) 0%, var(--primary-green) 100%);
+  border-radius: 4px;
+}
+
+.notification-table-container::-webkit-scrollbar-thumb:hover {
+  background: linear-gradient(135deg, var(--primary-green) 0%, var(--primary-green-dark) 100%);
+}

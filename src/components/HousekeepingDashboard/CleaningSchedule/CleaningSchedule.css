@@ -1,0 +1,1101 @@
+/* Cleaning Schedule Styles with Housekeeping Theme */
+.hk-cleaning-container {
+  padding: 25px;
+  background: #f8f9fa;
+  min-height: 100vh;
+  font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+}
+
+/* Header Styles */
+.hk-cleaning-header {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  margin-bottom: 30px;
+  padding: 25px;
+  background: linear-gradient(135deg, #fff9c4 0%, #ffec8b 100%);
+  border-radius: 16px;
+  box-shadow: 0 4px 15px rgba(253, 216, 53, 0.15);
+  border: 2px solid #ffd700;
+}
+
+.hk-cleaning-title-section {
+  flex: 1;
+}
+
+.hk-cleaning-title {
+  margin: 0;
+  color: #000;
+  font-size: 32px;
+  display: flex;
+  align-items: center;
+  gap: 15px;
+  font-weight: 700;
+}
+
+.hk-cleaning-title-icon {
+  color: #f57c00;
+  font-size: 36px;
+}
+
+.hk-cleaning-subtitle {
+  margin: 8px 0 0;
+  color: #5d4037;
+  font-size: 15px;
+  font-weight: 500;
+}
+
+.hk-cleaning-header-actions {
+  display: flex;
+  align-items: center;
+  gap: 20px;
+}
+
+.hk-cleaning-date-selector {
+  display: flex;
+  align-items: center;
+  gap: 12px;
+  background: white;
+  padding: 12px 18px;
+  border-radius: 10px;
+  border: 2px solid #ffd700;
+  box-shadow: 0 2px 8px rgba(255, 215, 0, 0.1);
+}
+
+.hk-cleaning-date-selector svg {
+  color: #f57c00;
+  font-size: 18px;
+}
+
+.hk-cleaning-date-input {
+  border: none;
+  outline: none;
+  background: transparent;
+  font-size: 15px;
+  color: #333;
+  font-weight: 600;
+  min-width: 160px;
+}
+
+/* Button Styles */
+.hk-cleaning-btn-primary,
+.hk-cleaning-btn-secondary,
+.hk-cleaning-filter-btn,
+.hk-cleaning-reset-btn,
+.hk-cleaning-export-btn {
+  padding: 14px 24px;
+  border: none;
+  border-radius: 10px;
+  font-size: 15px;
+  font-weight: 600;
+  cursor: pointer;
+  display: inline-flex;
+  align-items: center;
+  gap: 10px;
+  transition: all 0.3s cubic-bezier(0.4, 0, 0.2, 1);
+  height: 50px;
+  box-shadow: 0 4px 6px rgba(0, 0, 0, 0.1);
+}
+
+.hk-cleaning-btn-primary {
+  background: linear-gradient(135deg, #fdd835 0%, #ffc400 100%);
+  color: #000;
+  border: 2px solid #ffd700;
+}
+
+.hk-cleaning-btn-primary:hover {
+  background: linear-gradient(135deg, #ffc400 0%, #ffab00 100%);
+  transform: translateY(-3px);
+  box-shadow: 0 6px 12px rgba(255, 193, 7, 0.3);
+}
+
+.hk-cleaning-btn-secondary {
+  background: white;
+  color: #333;
+  border: 2px solid #ffd700;
+}
+
+.hk-cleaning-btn-secondary:hover {
+  background: #fffde7;
+  transform: translateY(-2px);
+  box-shadow: 0 4px 8px rgba(255, 215, 0, 0.2);
+}
+
+.hk-cleaning-btn-refresh {
+  padding: 10px 18px;
+  background: #e3f2fd;
+  color: #1976d2;
+  border: 2px solid #1976d2;
+  border-radius: 8px;
+  font-size: 14px;
+  font-weight: 600;
+  cursor: pointer;
+  display: inline-flex;
+  align-items: center;
+  gap: 8px;
+  transition: all 0.3s ease;
+}
+
+.hk-cleaning-btn-refresh:hover {
+  background: #bbdefb;
+}
+
+/* Statistics Grid */
+.hk-cleaning-stats-grid {
+  display: grid;
+  grid-template-columns: repeat(auto-fit, minmax(220px, 1fr));
+  gap: 22px;
+  margin-bottom: 35px;
+}
+
+.hk-cleaning-stat-card {
+  background: white;
+  padding: 24px;
+  border-radius: 14px;
+  display: flex;
+  align-items: center;
+  gap: 18px;
+  box-shadow: 0 4px 12px rgba(0, 0, 0, 0.08);
+  transition: all 0.4s cubic-bezier(0.4, 0, 0.2, 1);
+  border: 2px solid transparent;
+  position: relative;
+  overflow: hidden;
+}
+
+.hk-cleaning-stat-card::before {
+  content: '';
+  position: absolute;
+  top: 0;
+  left: 0;
+  width: 100%;
+  height: 4px;
+  background: #ffd700;
+}
+
+.hk-cleaning-stat-card:hover {
+  transform: translateY(-8px);
+  box-shadow: 0 12px 24px rgba(0, 0, 0, 0.15);
+}
+
+.hk-cleaning-stat-icon {
+  width: 60px;
+  height: 60px;
+  border-radius: 14px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  font-size: 28px;
+  flex-shrink: 0;
+  box-shadow: 0 4px 8px rgba(0, 0, 0, 0.1);
+}
+
+.hk-cleaning-stat-total .hk-cleaning-stat-icon { background: linear-gradient(135deg, #fff9c4 0%, #ffec8b 100%); color: #f57c00; }
+.hk-cleaning-stat-completed .hk-cleaning-stat-icon { background: linear-gradient(135deg, #c8e6c9 0%, #a5d6a7 100%); color: #388e3c; }
+.hk-cleaning-stat-progress .hk-cleaning-stat-icon { background: linear-gradient(135deg, #bbdefb 0%, #90caf9 100%); color: #1976d2; }
+.hk-cleaning-stat-pending .hk-cleaning-stat-icon { background: linear-gradient(135deg, #ffecb3 0%, #ffe082 100%); color: #ff8f00; }
+.hk-cleaning-stat-critical .hk-cleaning-stat-icon { background: linear-gradient(135deg, #ffcdd2 0%, #ef9a9a 100%); color: #c62828; }
+.hk-cleaning-stat-staff .hk-cleaning-stat-icon { background: linear-gradient(135deg, #e1bee7 0%, #ce93d8 100%); color: #7b1fa2; }
+
+.hk-cleaning-stat-content h3 {
+  margin: 0;
+  font-size: 28px;
+  font-weight: 800;
+  color: #222;
+}
+
+.hk-cleaning-stat-content p {
+  margin: 6px 0 0;
+  color: #666;
+  font-size: 15px;
+  font-weight: 500;
+}
+
+.hk-cleaning-stat-trend {
+  margin-left: auto;
+  font-size: 13px;
+  font-weight: 700;
+  padding: 5px 12px;
+  border-radius: 20px;
+  background: #f5f5f5;
+}
+
+.hk-cleaning-trend-up { color: #2e7d32; background: #e8f5e9 !important; }
+.hk-cleaning-trend-down { color: #c62828; background: #ffebee !important; }
+.hk-cleaning-trend-neutral { color: #616161; background: #f5f5f5 !important; }
+
+/* Section Titles */
+.hk-cleaning-section-title {
+  margin: 0 0 25px;
+  color: #333;
+  font-size: 22px;
+  display: flex;
+  align-items: center;
+  gap: 12px;
+  font-weight: 700;
+}
+
+.hk-cleaning-section-title svg {
+  color: #f57c00;
+}
+
+/* Ward Statistics */
+.hk-cleaning-ward-section {
+  background: white;
+  padding: 28px;
+  border-radius: 16px;
+  margin-bottom: 35px;
+  box-shadow: 0 4px 15px rgba(0, 0, 0, 0.08);
+  border: 2px solid #fff9c4;
+}
+
+.hk-cleaning-ward-grid {
+  display: grid;
+  grid-template-columns: repeat(auto-fit, minmax(240px, 1fr));
+  gap: 22px;
+}
+
+.hk-cleaning-ward-card {
+  padding: 22px;
+  background: #f8f9fa;
+  border-radius: 14px;
+  border: 2px solid #ffecb3;
+  transition: all 0.3s ease;
+}
+
+.hk-cleaning-ward-card:hover {
+  transform: translateY(-5px);
+  box-shadow: 0 6px 16px rgba(255, 215, 0, 0.15);
+  border-color: #ffd700;
+}
+
+.hk-cleaning-ward-name {
+  margin: 0 0 18px;
+  color: #333;
+  font-size: 18px;
+  font-weight: 700;
+  padding-bottom: 12px;
+  border-bottom: 2px solid #ffecb3;
+}
+
+.hk-cleaning-ward-stats {
+  display: grid;
+  grid-template-columns: 1fr 1fr;
+  gap: 15px;
+  margin-bottom: 18px;
+}
+
+.hk-cleaning-ward-stat {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+}
+
+.hk-cleaning-ward-stat-label {
+  color: #666;
+  font-size: 14px;
+  font-weight: 500;
+}
+
+.hk-cleaning-ward-stat-value {
+  font-weight: 700;
+  font-size: 18px;
+}
+
+.hk-cleaning-ward-cleaned { color: #388e3c; }
+.hk-cleaning-ward-pending { color: #ff8f00; }
+.hk-cleaning-ward-inprogress { color: #1976d2; }
+
+.hk-cleaning-ward-progress {
+  height: 10px;
+  background: #e0e0e0;
+  border-radius: 5px;
+  margin-bottom: 12px;
+  overflow: hidden;
+}
+
+.hk-cleaning-ward-progress-bar {
+  height: 100%;
+  background: linear-gradient(90deg, #fdd835, #ffc400);
+  border-radius: 5px;
+  transition: width 0.6s ease;
+}
+
+.hk-cleaning-ward-completion {
+  text-align: center;
+  color: #f57c00;
+  font-weight: 700;
+  font-size: 16px;
+}
+
+/* Filters Section */
+.hk-cleaning-filters-section {
+  background: white;
+  padding: 25px;
+  border-radius: 16px;
+  margin-bottom: 35px;
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  gap: 25px;
+  box-shadow: 0 4px 15px rgba(0, 0, 0, 0.08);
+  border: 2px solid #ffecb3;
+}
+
+.hk-cleaning-search-container {
+  flex: 1;
+  display: flex;
+  align-items: center;
+  gap: 15px;
+  background: #f8f9fa;
+  padding: 14px 20px;
+  border-radius: 12px;
+  border: 2px solid #ffd700;
+}
+
+.hk-cleaning-search-icon {
+  color: #f57c00;
+  font-size: 18px;
+  flex-shrink: 0;
+}
+
+.hk-cleaning-search-input {
+  flex: 1;
+  border: none;
+  background: transparent;
+  outline: none;
+  font-size: 15px;
+  color: #333;
+  font-weight: 500;
+}
+
+.hk-cleaning-search-input::placeholder {
+  color: #888;
+}
+
+.hk-cleaning-filter-group {
+  display: flex;
+  align-items: center;
+  gap: 15px;
+  flex-wrap: wrap;
+}
+
+.hk-cleaning-filter-select {
+  padding: 12px 18px;
+  border: 2px solid #ffd700;
+  border-radius: 10px;
+  background: white;
+  color: #333;
+  font-size: 15px;
+  font-weight: 600;
+  cursor: pointer;
+  outline: none;
+  min-width: 160px;
+  transition: all 0.3s ease;
+}
+
+.hk-cleaning-filter-select:focus {
+  border-color: #f57c00;
+  box-shadow: 0 0 0 3px rgba(255, 193, 7, 0.2);
+}
+
+.hk-cleaning-filter-btn {
+  background: linear-gradient(135deg, #4a90e2 0%, #3a80d2 100%);
+  color: white;
+  border: none;
+}
+
+.hk-cleaning-filter-btn:hover {
+  background: linear-gradient(135deg, #3a80d2 0%, #2a70c2 100%);
+  transform: translateY(-2px);
+}
+
+.hk-cleaning-reset-btn {
+  background: #666;
+  color: white;
+  border: none;
+}
+
+.hk-cleaning-reset-btn:hover {
+  background: #555;
+  transform: translateY(-2px);
+}
+
+.hk-cleaning-export-btn {
+  background: linear-gradient(135deg, #34a853 0%, #2a9749 100%);
+  color: white;
+  border: none;
+}
+
+.hk-cleaning-export-btn:hover {
+  background: linear-gradient(135deg, #2a9749 0%, #218838 100%);
+  transform: translateY(-2px);
+}
+
+/* Table Section */
+.hk-cleaning-table-section {
+  background: white;
+  padding: 28px;
+  border-radius: 16px;
+  margin-bottom: 35px;
+  box-shadow: 0 4px 20px rgba(0, 0, 0, 0.1);
+  border: 2px solid #ffecb3;
+}
+
+.hk-cleaning-table-header {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  margin-bottom: 25px;
+  padding-bottom: 20px;
+  border-bottom: 3px solid #ffecb3;
+}
+
+.hk-cleaning-table-actions {
+  display: flex;
+  align-items: center;
+  gap: 20px;
+}
+
+.hk-cleaning-table-count {
+  color: #666;
+  font-size: 15px;
+  font-weight: 600;
+  background: #f8f9fa;
+  padding: 8px 16px;
+  border-radius: 8px;
+  border: 2px solid #ffecb3;
+}
+
+.hk-cleaning-table-container {
+  overflow-x: auto;
+  border-radius: 12px;
+  border: 2px solid #f0f0f0;
+  background: #fafafa;
+}
+
+.hk-cleaning-table {
+  width: 100%;
+  border-collapse: separate;
+  border-spacing: 0;
+  min-width: 1200px;
+}
+
+.hk-cleaning-table th {
+  padding: 20px 18px;
+  background: linear-gradient(135deg, #fff9c4 0%, #ffec8b 100%);
+  color: #000;
+  font-weight: 700;
+  font-size: 15px;
+  text-align: left;
+  border-bottom: 3px solid #ffd700;
+  position: sticky;
+  top: 0;
+  z-index: 10;
+}
+
+.hk-cleaning-table th:first-child {
+  border-radius: 12px 0 0 0;
+}
+
+.hk-cleaning-table th:last-child {
+  border-radius: 0 12px 0 0;
+}
+
+.hk-cleaning-table td {
+  padding: 20px 18px;
+  border-bottom: 2px solid #f0f0f0;
+  font-size: 15px;
+  color: #444;
+  background: white;
+  transition: all 0.3s ease;
+}
+
+.hk-cleaning-table-row:hover td {
+  background: #fffde7;
+  transform: scale(1.002);
+  box-shadow: 0 2px 8px rgba(255, 215, 0, 0.1);
+}
+
+/* Room Column */
+.hk-cleaning-room-info {
+  display: flex;
+  align-items: center;
+  gap: 15px;
+}
+
+.hk-cleaning-room-icon {
+  color: #f57c00;
+  font-size: 20px;
+  flex-shrink: 0;
+}
+
+.hk-cleaning-room-no {
+  font-size: 18px;
+  color: #222;
+  font-weight: 700;
+  display: block;
+  margin-bottom: 4px;
+}
+
+.hk-cleaning-room-procedure {
+  font-size: 13px;
+  color: #666;
+  background: #f5f5f5;
+  padding: 4px 10px;
+  border-radius: 6px;
+  display: inline-block;
+}
+
+/* Ward Badges */
+.hk-cleaning-ward-badge {
+  padding: 8px 16px;
+  border-radius: 20px;
+  font-size: 13px;
+  font-weight: 700;
+  display: inline-block;
+  text-align: center;
+  min-width: 100px;
+}
+
+.icu { background: #ffebee; color: #c62828; border: 2px solid #ffcdd2; }
+.general-ward { background: #e3f2fd; color: #1565c0; border: 2px solid #bbdefb; }
+.opd { background: #e8f5e9; color: #2e7d32; border: 2px solid #c8e6c9; }
+.operation-theater { background: #f3e5f5; color: #7b1fa2; border: 2px solid #e1bee7; }
+.emergency { background: #fff3e0; color: #ef6c00; border: 2px solid #ffe0b2; }
+.pathology { background: #e0f2f1; color: #00695c; border: 2px solid #b2dfdb; }
+.cafeteria { background: #fff9c4; color: #f57f17; border: 2px solid #fff59d; }
+.reception { background: #f5f5f5; color: #424242; border: 2px solid #e0e0e0; }
+
+/* Cleaning Type */
+.hk-cleaning-type-info {
+  display: flex;
+  align-items: center;
+  gap: 10px;
+  font-weight: 600;
+}
+
+.hk-cleaning-type-info svg {
+  color: #f57c00;
+  font-size: 18px;
+}
+
+/* Shift Badges */
+.hk-cleaning-shift-badge {
+  padding: 8px 16px;
+  border-radius: 20px;
+  font-size: 13px;
+  font-weight: 700;
+  display: inline-block;
+  text-align: center;
+  min-width: 140px;
+}
+
+.hk-cleaning-shift-morning {
+  background: linear-gradient(135deg, #fff9c4 0%, #ffec8b 100%);
+  color: #f57c00;
+  border: 2px solid #ffd700;
+}
+
+.hk-cleaning-shift-evening {
+  background: linear-gradient(135deg, #bbdefb 0%, #90caf9 100%);
+  color: #1565c0;
+  border: 2px solid #64b5f6;
+}
+
+.hk-cleaning-shift-night {
+  background: linear-gradient(135deg, #5c6bc0 0%, #3949ab 100%);
+  color: white;
+  border: 2px solid #303f9f;
+}
+
+/* Time Slot */
+.hk-cleaning-time-slot {
+  display: flex;
+  flex-direction: column;
+  gap: 8px;
+}
+
+.hk-cleaning-time-indicator {
+  padding: 6px 14px;
+  border-radius: 20px;
+  font-size: 14px;
+  font-weight: 800;
+  text-align: center;
+  display: inline-block;
+  min-width: 80px;
+}
+
+.hk-cleaning-time-now {
+  background: linear-gradient(135deg, #ff5252 0%, #d32f2f 100%);
+  color: white;
+  animation: pulse 2s infinite;
+}
+
+.hk-cleaning-time-upcoming {
+  background: linear-gradient(135deg, #4caf50 0%, #388e3c 100%);
+  color: white;
+}
+
+.hk-cleaning-time-past {
+  background: linear-gradient(135deg, #757575 0%, #616161 100%);
+  color: white;
+}
+
+@keyframes pulse {
+  0% { transform: scale(1); }
+  50% { transform: scale(1.05); }
+  100% { transform: scale(1); }
+}
+
+.hk-cleaning-time-range {
+  display: flex;
+  align-items: center;
+  gap: 8px;
+  color: #666;
+  font-size: 14px;
+}
+
+.hk-cleaning-time-range svg {
+  color: #f57c00;
+}
+
+.hk-cleaning-duration-badge {
+  background: #f5f5f5;
+  color: #333;
+  padding: 4px 10px;
+  border-radius: 12px;
+  font-size: 13px;
+  font-weight: 600;
+  border: 1px solid #e0e0e0;
+}
+
+/* Staff Assignment */
+.hk-cleaning-staff-assignment {
+  display: flex;
+  align-items: center;
+  gap: 12px;
+}
+
+.hk-cleaning-staff-icon {
+  color: #7b1fa2;
+  font-size: 18px;
+  flex-shrink: 0;
+}
+
+.hk-cleaning-staff-info {
+  flex: 1;
+}
+
+.hk-cleaning-staff-name {
+  font-weight: 700;
+  color: #333;
+  margin-bottom: 6px;
+}
+
+.hk-cleaning-staff-select {
+  width: 100%;
+  padding: 8px 12px;
+  border: 2px solid #ffd700;
+  border-radius: 8px;
+  background: white;
+  color: #333;
+  font-size: 13px;
+  cursor: pointer;
+  outline: none;
+  transition: all 0.3s ease;
+}
+
+.hk-cleaning-staff-select:focus {
+  border-color: #f57c00;
+}
+
+/* Status Select */
+.hk-cleaning-status-cell {
+  display: flex;
+  flex-direction: column;
+  gap: 10px;
+}
+
+.hk-cleaning-status-select {
+  padding: 10px 15px;
+  border: 2px solid;
+  border-radius: 10px;
+  background: white;
+  color: #333;
+  font-size: 14px;
+  font-weight: 600;
+  cursor: pointer;
+  outline: none;
+  transition: all 0.3s ease;
+  width: 100%;
+}
+
+.hk-cleaning-status-select.hk-cleaning-completed {
+  border-color: #4caf50;
+  background: #e8f5e9;
+}
+
+.hk-cleaning-status-select.hk-cleaning-inprogress {
+  border-color: #2196f3;
+  background: #e3f2fd;
+}
+
+.hk-cleaning-status-select.hk-cleaning-pending {
+  border-color: #ff9800;
+  background: #fff3e0;
+}
+
+.hk-cleaning-status-select.hk-cleaning-scheduled {
+  border-color: #9c27b0;
+  background: #f3e5f5;
+}
+
+.hk-cleaning-status-select:focus {
+  box-shadow: 0 0 0 3px rgba(255, 193, 7, 0.2);
+}
+
+.hk-cleaning-last-cleaned {
+  font-size: 12px;
+  color: #666;
+  text-align: center;
+}
+
+/* Priority Badges */
+.hk-cleaning-priority-badge {
+  padding: 10px 18px;
+  border-radius: 20px;
+  font-size: 14px;
+  font-weight: 800;
+  display: inline-block;
+  text-align: center;
+  min-width: 100px;
+  box-shadow: 0 2px 6px rgba(0, 0, 0, 0.1);
+}
+
+.hk-cleaning-priority-critical {
+  background: linear-gradient(135deg, #ff5252 0%, #d32f2f 100%);
+  color: white;
+  border: 2px solid #ff1744;
+}
+
+.hk-cleaning-priority-high {
+  background: linear-gradient(135deg, #ff9800 0%, #f57c00 100%);
+  color: white;
+  border: 2px solid #ff9100;
+}
+
+.hk-cleaning-priority-medium {
+  background: linear-gradient(135deg, #ffb74d 0%, #ff9800 100%);
+  color: #000;
+  border: 2px solid #ff9800;
+}
+
+.hk-cleaning-priority-low {
+  background: linear-gradient(135deg, #a5d6a7 0%, #81c784 100%);
+  color: #000;
+  border: 2px solid #66bb6a;
+}
+
+/* Action Buttons */
+.hk-cleaning-action-buttons {
+  display: flex;
+  align-items: center;
+  gap: 10px;
+  margin-bottom: 10px;
+}
+
+.hk-cleaning-action-btn {
+  width: 40px;
+  height: 40px;
+  border: none;
+  border-radius: 10px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  font-size: 16px;
+  cursor: pointer;
+  transition: all 0.3s ease;
+  box-shadow: 0 2px 6px rgba(0, 0, 0, 0.1);
+}
+
+.hk-cleaning-action-view {
+  background: linear-gradient(135deg, #bbdefb 0%, #90caf9 100%);
+  color: #1565c0;
+}
+
+.hk-cleaning-action-edit {
+  background: linear-gradient(135deg, #fff9c4 0%, #ffec8b 100%);
+  color: #f57c00;
+}
+
+.hk-cleaning-action-delete {
+  background: linear-gradient(135deg, #ffcdd2 0%, #ef9a9a 100%);
+  color: #c62828;
+}
+
+.hk-cleaning-action-btn:hover {
+  transform: translateY(-3px) scale(1.1);
+  box-shadow: 0 4px 12px rgba(0, 0, 0, 0.2);
+}
+
+.hk-cleaning-equipment-badge {
+  background: #f5f5f5;
+  color: #666;
+  padding: 6px 12px;
+  border-radius: 15px;
+  font-size: 12px;
+  font-weight: 600;
+  display: inline-block;
+  border: 1px solid #e0e0e0;
+}
+
+/* No Results */
+.hk-cleaning-no-results {
+  text-align: center;
+  padding: 60px 20px;
+  background: #f8f9fa;
+  border-radius: 12px;
+  border: 3px dashed #ffd700;
+}
+
+.hk-cleaning-no-results-icon {
+  font-size: 48px;
+  color: #ffd700;
+  margin-bottom: 20px;
+}
+
+.hk-cleaning-no-results h3 {
+  color: #333;
+  margin-bottom: 10px;
+  font-size: 22px;
+}
+
+.hk-cleaning-no-results p {
+  color: #666;
+  font-size: 16px;
+}
+
+/* Table Footer */
+.hk-cleaning-table-footer {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  margin-top: 25px;
+  padding-top: 20px;
+  border-top: 3px solid #ffecb3;
+}
+
+.hk-cleaning-pagination {
+  display: flex;
+  align-items: center;
+  gap: 15px;
+}
+
+.hk-cleaning-page-btn {
+  padding: 10px 20px;
+  background: white;
+  color: #333;
+  border: 2px solid #ffd700;
+  border-radius: 8px;
+  font-size: 14px;
+  font-weight: 600;
+  cursor: pointer;
+  transition: all 0.3s ease;
+}
+
+.hk-cleaning-page-btn:hover {
+  background: #fff9c4;
+  transform: translateY(-2px);
+}
+
+.hk-cleaning-page-info {
+  color: #666;
+  font-weight: 600;
+  font-size: 15px;
+}
+
+.hk-cleaning-summary {
+  display: flex;
+  gap: 25px;
+}
+
+.hk-cleaning-summary-item {
+  display: flex;
+  align-items: center;
+  gap: 10px;
+  color: #333;
+  font-weight: 600;
+  font-size: 15px;
+}
+
+.hk-cleaning-summary-dot {
+  width: 12px;
+  height: 12px;
+  border-radius: 50%;
+}
+
+.hk-cleaning-summary-completed { background: #4caf50; }
+.hk-cleaning-summary-inprogress { background: #2196f3; }
+.hk-cleaning-summary-pending { background: #ff9800; }
+
+/* Quick Actions */
+.hk-cleaning-quick-actions {
+  background: white;
+  padding: 28px;
+  border-radius: 16px;
+  box-shadow: 0 4px 15px rgba(0, 0, 0, 0.08);
+  border: 2px solid #ffecb3;
+}
+
+.hk-cleaning-actions-grid {
+  display: grid;
+  grid-template-columns: repeat(auto-fit, minmax(250px, 1fr));
+  gap: 20px;
+}
+
+.hk-cleaning-quick-action-btn {
+  padding: 18px 24px;
+  border: none;
+  border-radius: 12px;
+  font-size: 16px;
+  font-weight: 700;
+  cursor: pointer;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  gap: 12px;
+  transition: all 0.3s cubic-bezier(0.4, 0, 0.2, 1);
+  text-align: center;
+  height: 60px;
+  box-shadow: 0 4px 10px rgba(0, 0, 0, 0.1);
+}
+
+.hk-cleaning-action-add {
+  background: linear-gradient(135deg, #fdd835 0%, #ffc400 100%);
+  color: #000;
+  border: 2px solid #ffd700;
+}
+
+.hk-cleaning-action-bulk {
+  background: linear-gradient(135deg, #4a90e2 0%, #3a80d2 100%);
+  color: white;
+  border: 2px solid #1976d2;
+}
+
+.hk-cleaning-action-notify {
+  background: linear-gradient(135deg, #34a853 0%, #2a9749 100%);
+  color: white;
+  border: 2px solid #388e3c;
+}
+
+.hk-cleaning-action-report {
+  background: linear-gradient(135deg, #9c27b0 0%, #7b1fa2 100%);
+  color: white;
+  border: 2px solid #7b1fa2;
+}
+
+.hk-cleaning-quick-action-btn:hover {
+  transform: translateY(-5px);
+  box-shadow: 0 8px 20px rgba(0, 0, 0, 0.2);
+}
+
+/* Responsive Design */
+@media (max-width: 1400px) {
+  .hk-cleaning-filters-section {
+    flex-direction: column;
+    align-items: stretch;
+  }
+  
+  .hk-cleaning-filter-group {
+    justify-content: center;
+  }
+}
+
+@media (max-width: 1200px) {
+  .hk-cleaning-stats-grid {
+    grid-template-columns: repeat(3, 1fr);
+  }
+  
+  .hk-cleaning-ward-grid {
+    grid-template-columns: repeat(2, 1fr);
+  }
+}
+
+@media (max-width: 992px) {
+  .hk-cleaning-header {
+    flex-direction: column;
+    gap: 25px;
+    align-items: stretch;
+    text-align: center;
+  }
+  
+  .hk-cleaning-header-actions {
+    justify-content: center;
+    flex-wrap: wrap;
+  }
+  
+  .hk-cleaning-stats-grid {
+    grid-template-columns: repeat(2, 1fr);
+  }
+  
+  .hk-cleaning-actions-grid {
+    grid-template-columns: repeat(2, 1fr);
+  }
+}
+
+@media (max-width: 768px) {
+  .hk-cleaning-container {
+    padding: 15px;
+  }
+  
+  .hk-cleaning-stats-grid {
+    grid-template-columns: 1fr;
+  }
+  
+  .hk-cleaning-ward-grid {
+    grid-template-columns: 1fr;
+  }
+  
+  .hk-cleaning-filter-group {
+    flex-direction: column;
+    align-items: stretch;
+  }
+  
+  .hk-cleaning-filter-select {
+    width: 100%;
+  }
+  
+  .hk-cleaning-actions-grid {
+    grid-template-columns: 1fr;
+  }
+  
+  .hk-cleaning-table-footer {
+    flex-direction: column;
+    gap: 20px;
+    text-align: center;
+  }
+  
+  .hk-cleaning-summary {
+    flex-direction: column;
+    gap: 15px;
+  }
+}
+
+@media (max-width: 576px) {
+  .hk-cleaning-title {
+    font-size: 24px;
+    flex-direction: column;
+    gap: 10px;
+  }
+  
+  .hk-cleaning-title-icon {
+    font-size: 28px;
+  }
+  
+  .hk-cleaning-section-title {
+    font-size: 18px;
+    flex-direction: column;
+    gap: 8px;
+    text-align: center;
+  }
+}

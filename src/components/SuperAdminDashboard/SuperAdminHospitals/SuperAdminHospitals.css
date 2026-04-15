@@ -1,0 +1,2058 @@
+/* Super Admin Hospitals CSS - Unique Class Names */
+
+/* Main Container */
+.sa-hospitals-container {
+    min-height: 100vh;
+    background: linear-gradient(135deg, #f5f7fa 0%, #e4e8f0 100%);
+    font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+}
+
+.sa-hospitals-content {
+    padding: 24px;
+    transition: all 0.3s ease;
+}
+
+/* Header */
+.sa-hospitals-header {
+    display: flex;
+    justify-content: space-between;
+    align-items: flex-start;
+    margin-bottom: 32px;
+    padding: 28px;
+    background: linear-gradient(135deg, #ffffff 0%, #f8fafc 100%);
+    border-radius: 20px;
+    box-shadow: 0 6px 24px rgba(0, 0, 0, 0.08);
+    border-left: 6px solid #ffd700;
+    position: relative;
+    overflow: hidden;
+    flex-wrap: wrap;
+    gap: 20px;
+}
+
+.sa-hospitals-header::before {
+    content: "";
+    position: absolute;
+    top: 0;
+    right: 0;
+    width: 220px;
+    height: 100%;
+    background: linear-gradient(135deg, rgba(255, 215, 0, 0.06) 0%, rgba(184, 134, 11, 0.03) 100%);
+    clip-path: polygon(100% 0, 0 0, 100% 100%);
+}
+
+.sa-hosp-header-left {
+    flex: 1;
+    min-width: 300px;
+}
+
+.sa-hosp-title {
+    color: #1a202c;
+    font-size: 34px;
+    font-weight: 800;
+    margin: 0 0 12px 0;
+    background: linear-gradient(135deg, #2d3748 0%, #1a202c 100%);
+    -webkit-background-clip: text;
+    background-clip: text;
+    color: transparent;
+    display: flex;
+    align-items: center;
+    line-height: 1.2;
+}
+
+.sa-hosp-title i {
+    color: #ffd700;
+    text-shadow: 0 0 12px rgba(255, 215, 0, 0.4);
+    font-size: 36px;
+}
+
+.sa-hosp-subtitle {
+    color: #718096;
+    font-size: 17px;
+    margin: 0;
+    font-weight: 500;
+    line-height: 1.5;
+}
+
+.sa-hosp-header-right {
+    display: flex;
+    gap: 16px;
+    align-items: center;
+    flex-shrink: 0;
+}
+
+/* Loading Spinner */
+.sa-hospitals-loading {
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    min-height: 460px;
+    background: white;
+    border-radius: 20px;
+    box-shadow: 0 6px 24px rgba(0, 0, 0, 0.08);
+    margin: 24px 0;
+    border: 2px solid #ffec8b;
+}
+
+.sa-hosp-loading-container {
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    justify-content: center;
+    padding: 50px;
+    text-align: center;
+}
+
+/* Gold Spinner */
+.sa-hosp-spinner {
+    position: relative;
+    width: 90px;
+    height: 90px;
+    margin-bottom: 30px;
+}
+
+.sa-hosp-spinner-circle {
+    position: absolute;
+    width: 100%;
+    height: 100%;
+    border: 6px solid transparent;
+    border-radius: 50%;
+    border-top-color: #ffd700;
+    animation: sa-hosp-spin 1.8s cubic-bezier(0.65, 0.055, 0.675, 0.19) infinite;
+}
+
+.sa-hosp-spinner-circle:nth-child(2) {
+    border-top-color: #b8860b;
+    animation-delay: -0.4s;
+}
+
+.sa-hosp-spinner-circle:nth-child(3) {
+    border-top-color: #ffec8b;
+    animation-delay: -0.8s;
+}
+
+.sa-hosp-spinner-circle:nth-child(4) {
+    border-top-color: #daa520;
+    animation-delay: -1.2s;
+}
+
+@keyframes sa-hosp-spin {
+    0% {
+        transform: rotate(0deg);
+        border-width: 6px;
+    }
+    50% {
+        border-width: 3px;
+        opacity: 0.7;
+    }
+    100% {
+        transform: rotate(360deg);
+        border-width: 6px;
+    }
+}
+
+.sa-hosp-loading-text h3 {
+    font-size: 26px;
+    font-weight: 700;
+    color: #2d3748;
+    margin-bottom: 12px;
+    background: linear-gradient(135deg, #b8860b 0%, #ffd700 100%);
+    -webkit-background-clip: text;
+    background-clip: text;
+    color: transparent;
+}
+
+.sa-hosp-loading-text p {
+    font-size: 17px;
+    color: #718096;
+    max-width: 450px;
+    margin: 0 auto;
+    line-height: 1.6;
+}
+
+/* Buttons */
+.sa-hosp-btn {
+    padding: 14px 28px;
+    border-radius: 14px;
+    border: none;
+    font-weight: 700;
+    font-size: 15px;
+    cursor: pointer;
+    transition: all 0.4s ease;
+    display: inline-flex;
+    align-items: center;
+    justify-content: center;
+    text-transform: uppercase;
+    letter-spacing: 0.6px;
+    font-family: 'Segoe UI', sans-serif;
+    min-height: 52px;
+}
+
+.sa-hosp-btn-primary {
+    background: linear-gradient(135deg, #ffd700 0%, #daa520 100%);
+    color: #1a202c;
+    box-shadow: 0 6px 18px rgba(255, 215, 0, 0.3);
+    font-weight: 700;
+}
+
+.sa-hosp-btn-primary:hover {
+    background: linear-gradient(135deg, #ffe44d 0%, #e6b800 100%);
+    box-shadow: 0 8px 24px rgba(255, 215, 0, 0.4);
+    transform: translateY(-3px);
+}
+
+.sa-hosp-btn-secondary {
+    background: linear-gradient(135deg, #f7fafc 0%, #edf2f7 100%);
+    color: #4a5568;
+    border: 2px solid #e2e8f0;
+    font-weight: 600;
+}
+
+.sa-hosp-btn-secondary:hover {
+    background: linear-gradient(135deg, #edf2f7 0%, #e2e8f0 100%);
+    border-color: #cbd5e0;
+    transform: translateY(-2px);
+}
+
+.sa-hosp-btn-danger {
+    background: linear-gradient(135deg, #e53e3e 0%, #c53030 100%);
+    color: white;
+    box-shadow: 0 6px 18px rgba(229, 62, 62, 0.3);
+    font-weight: 700;
+}
+
+.sa-hosp-btn-danger:hover {
+    background: linear-gradient(135deg, #f56565 0%, #e53e3e 100%);
+    box-shadow: 0 8px 24px rgba(229, 62, 62, 0.4);
+    transform: translateY(-3px);
+}
+
+/* Stats Grid */
+.sa-hosp-stats-grid {
+    display: grid;
+    grid-template-columns: repeat(auto-fit, minmax(260px, 1fr));
+    gap: 24px;
+    margin-bottom: 36px;
+}
+
+.sa-hosp-stat-card {
+    background: white;
+    border-radius: 18px;
+    padding: 28px;
+    box-shadow: 0 6px 18px rgba(0, 0, 0, 0.1);
+    transition: all 0.4s ease;
+    display: flex;
+    align-items: center;
+    gap: 22px;
+    position: relative;
+    overflow: hidden;
+}
+
+.sa-hosp-stat-card:hover {
+    transform: translateY(-6px);
+    box-shadow: 0 12px 30px rgba(0, 0, 0, 0.15);
+}
+
+.sa-hosp-gold-card {
+    border-top: 6px solid #ffd700;
+}
+
+.sa-hosp-gold-card::before {
+    content: "";
+    position: absolute;
+    top: 0;
+    left: 0;
+    width: 100%;
+    height: 6px;
+    background: linear-gradient(90deg, #ffd700, #daa520, #ffd700);
+    background-size: 200% 100%;
+    animation: sa-hosp-shimmer 2.5s infinite linear;
+}
+
+@keyframes sa-hosp-shimmer {
+    0% {
+        background-position: -200% 0;
+    }
+    100% {
+        background-position: 200% 0;
+    }
+}
+
+.sa-hosp-stat-icon {
+    width: 76px;
+    height: 76px;
+    border-radius: 20px;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    font-size: 34px;
+    color: #1a202c;
+    flex-shrink: 0;
+    box-shadow: 0 6px 12px rgba(255, 215, 0, 0.2);
+}
+
+.sa-hosp-gold-card .sa-hosp-stat-icon {
+    background: linear-gradient(135deg, #ffd700 0%, #daa520 100%);
+}
+
+.sa-hosp-stat-content {
+    flex: 1;
+}
+
+.sa-hosp-stat-value {
+    font-size: 40px;
+    font-weight: 900;
+    margin: 0 0 6px 0;
+    color: #1a202c;
+    line-height: 1;
+    font-family: 'Segoe UI', sans-serif;
+}
+
+.sa-hosp-stat-label {
+    font-size: 15px;
+    color: #718096;
+    margin: 0;
+    text-transform: uppercase;
+    letter-spacing: 1.2px;
+    font-weight: 700;
+}
+
+/* Search and Filter */
+.sa-hosp-search-filter-bar {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    margin-bottom: 28px;
+    gap: 24px;
+    flex-wrap: wrap;
+}
+
+.sa-hosp-search-box {
+    flex: 1;
+    min-width: 320px;
+    position: relative;
+}
+
+.sa-hosp-search-icon {
+    position: absolute;
+    left: 18px;
+    top: 50%;
+    transform: translateY(-50%);
+    color: #718096;
+    z-index: 2;
+    font-size: 18px;
+}
+
+.sa-hosp-search-input {
+    width: 100%;
+    padding: 16px 52px 16px 52px;
+    border-radius: 14px;
+    border: 2px solid #e2e8f0;
+    background: white;
+    font-size: 15px;
+    transition: all 0.4s ease;
+    box-shadow: 0 3px 8px rgba(0, 0, 0, 0.06);
+    font-family: 'Segoe UI', sans-serif;
+}
+
+.sa-hosp-search-input:focus {
+    outline: none;
+    border-color: #ffd700;
+    box-shadow: 0 0 0 4px rgba(255, 215, 0, 0.25);
+}
+
+.sa-hosp-clear-search {
+    position: absolute;
+    right: 18px;
+    top: 50%;
+    transform: translateY(-50%);
+    background: none;
+    border: none;
+    color: #a0aec0;
+    cursor: pointer;
+    padding: 6px;
+    border-radius: 50%;
+    transition: all 0.3s ease;
+    font-size: 16px;
+}
+
+.sa-hosp-clear-search:hover {
+    background: #f7fafc;
+    color: #718096;
+}
+
+.sa-hosp-filter-buttons {
+    display: flex;
+    gap: 12px;
+    align-items: center;
+    flex-wrap: wrap;
+}
+
+.sa-hosp-filter-btn {
+    padding: 12px 24px;
+    border-radius: 12px;
+    border: 2px solid #e2e8f0;
+    background: white;
+    color: #718096;
+    font-weight: 600;
+    cursor: pointer;
+    transition: all 0.4s ease;
+    font-size: 14px;
+    font-family: 'Segoe UI', sans-serif;
+    white-space: nowrap;
+}
+
+.sa-hosp-filter-btn:hover {
+    border-color: #ffd700;
+    color: #4a5568;
+    transform: translateY(-2px);
+}
+
+.sa-hosp-filter-btn.sa-hosp-filter-active {
+    background: linear-gradient(135deg, #ffd700 0%, #daa520 100%);
+    color: #1a202c;
+    border-color: #ffd700;
+    font-weight: 700;
+    box-shadow: 0 4px 12px rgba(255, 215, 0, 0.2);
+}
+
+.sa-hosp-type-filter {
+    padding: 12px 18px;
+    border-radius: 12px;
+    border: 2px solid #e2e8f0;
+    background: white;
+    color: #718096;
+    font-weight: 600;
+    cursor: pointer;
+    transition: all 0.4s ease;
+    font-size: 14px;
+    font-family: 'Segoe UI', sans-serif;
+    min-width: 140px;
+}
+
+.sa-hosp-type-filter:focus {
+    outline: none;
+    border-color: #ffd700;
+    box-shadow: 0 0 0 3px rgba(255, 215, 0, 0.2);
+}
+
+/* Table Container */
+.sa-hospitals-table-container {
+    background: white;
+    border-radius: 18px;
+    overflow: hidden;
+    box-shadow: 0 6px 24px rgba(0, 0, 0, 0.08);
+    margin-bottom: 36px;
+}
+
+.sa-hosp-table-wrapper {
+    width: 100%;
+    overflow-x: auto;
+    max-width: 100%;
+    border-radius: 18px;
+}
+
+/* Optimized Table Layout */
+.sa-hosp-table {
+    width: 100%;
+    border-collapse: collapse;
+    min-width: 1100px;
+}
+
+.sa-hosp-table thead {
+    background: linear-gradient(135deg, #f7fafc 0%, #edf2f7 100%);
+    border-bottom: 4px solid #ffd700;
+}
+
+.sa-hosp-table th {
+    padding: 22px 16px;
+    text-align: left;
+    font-weight: 800;
+    color: #2d3748;
+    font-size: 15px;
+    text-transform: uppercase;
+    letter-spacing: 0.8px;
+    border-bottom: 4px solid #ffd700;
+    white-space: nowrap;
+    font-family: 'Segoe UI', sans-serif;
+}
+
+/* Column Widths */
+.sa-hosp-name-col {
+    min-width: 300px;
+    max-width: 340px;
+}
+
+.sa-hosp-location-col {
+    min-width: 200px;
+    max-width: 240px;
+}
+
+.sa-hosp-type-col {
+    min-width: 120px;
+    max-width: 140px;
+}
+
+.sa-hosp-beds-col {
+    min-width: 120px;
+    max-width: 140px;
+}
+
+.sa-hosp-status-col {
+    min-width: 140px;
+    max-width: 160px;
+}
+
+.sa-hosp-rating-col {
+    min-width: 160px;
+    max-width: 180px;
+}
+
+.sa-hosp-actions-col {
+    min-width: 220px;
+    max-width: 240px;
+}
+
+.sa-hosp-table td {
+    padding: 18px 16px;
+    border-bottom: 1px solid #f1f5f9;
+    vertical-align: middle;
+    line-height: 1.5;
+}
+
+.sa-hosp-table tbody tr {
+    transition: all 0.4s ease;
+}
+
+.sa-hosp-table tbody tr:hover {
+    background: linear-gradient(135deg, rgba(255, 215, 0, 0.06) 0%, rgba(218, 165, 32, 0.03) 100%);
+    transform: translateX(3px);
+}
+
+.sa-hosp-inactive-row {
+    background-color: rgba(113, 128, 150, 0.05);
+}
+
+.sa-hosp-inactive-row:hover {
+    background-color: rgba(113, 128, 150, 0.1);
+}
+
+/* Hospital Info Cells */
+.sa-hosp-info {
+    display: flex;
+    align-items: center;
+    gap: 14px;
+}
+
+.sa-hosp-avatar {
+    width: 56px;
+    height: 56px;
+    border-radius: 14px;
+    background: linear-gradient(135deg, #ffd700 0%, #daa520 100%);
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    font-size: 24px;
+    color: #1a202c;
+    flex-shrink: 0;
+    box-shadow: 0 4px 12px rgba(255, 215, 0, 0.25);
+}
+
+.sa-hosp-details {
+    display: flex;
+    flex-direction: column;
+    min-width: 0;
+}
+
+.sa-hosp-name {
+    font-size: 16px;
+    font-weight: 800;
+    color: #2d3748;
+    margin-bottom: 6px;
+    line-height: 1.3;
+    white-space: nowrap;
+    overflow: hidden;
+    text-overflow: ellipsis;
+    font-family: 'Segoe UI', sans-serif;
+}
+
+.sa-hosp-contact {
+    font-size: 13px;
+    color: #718096;
+    margin-bottom: 3px;
+    display: flex;
+    align-items: center;
+    white-space: nowrap;
+    overflow: hidden;
+    text-overflow: ellipsis;
+}
+
+.sa-hosp-contact i {
+    font-size: 11px;
+    margin-right: 5px;
+    opacity: 0.8;
+}
+
+/* Location Info */
+.sa-hosp-location-info {
+    display: flex;
+    flex-direction: column;
+}
+
+.sa-hosp-city-state {
+    font-weight: 700;
+    color: #2d3748;
+    margin-bottom: 5px;
+    display: flex;
+    align-items: center;
+    font-size: 15px;
+}
+
+.sa-hosp-city-state i {
+    font-size: 13px;
+    margin-right: 7px;
+    color: #718096;
+}
+
+.sa-hosp-country {
+    font-size: 13px;
+    color: #718096;
+    font-style: italic;
+}
+
+/* Beds Info */
+.sa-hosp-beds-info {
+    display: flex;
+    align-items: center;
+    font-weight: 800;
+    color: #2d3748;
+    font-size: 18px;
+    font-family: 'Segoe UI', sans-serif;
+}
+
+.sa-hosp-beds-info i {
+    color: #ffd700;
+    font-size: 20px;
+}
+
+.sa-hosp-beds-count {
+    margin-left: 9px;
+}
+
+/* Status Cell */
+.sa-hosp-status-cell {
+    display: flex;
+    align-items: center;
+    gap: 10px;
+}
+
+.sa-hosp-status-toggle-btn {
+    background: none;
+    border: none;
+    cursor: pointer;
+    padding: 5px;
+    border-radius: 6px;
+    transition: all 0.3s ease;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+}
+
+.sa-hosp-status-toggle-btn:hover {
+    background-color: rgba(0, 0, 0, 0.06);
+}
+
+.sa-hosp-status-toggle-btn i {
+    font-size: 16px;
+}
+
+/* Rating Info */
+.sa-hosp-rating-info {
+    display: flex;
+    flex-direction: column;
+    gap: 6px;
+}
+
+.sa-hosp-stars {
+    display: flex;
+    gap: 3px;
+}
+
+.sa-hosp-stars i {
+    font-size: 14px;
+}
+
+.sa-hosp-rating-value {
+    font-size: 14px;
+    font-weight: 700;
+    color: #2d3748;
+    display: flex;
+    align-items: center;
+    gap: 7px;
+    font-family: 'Segoe UI', sans-serif;
+}
+
+.sa-hosp-users-count {
+    font-size: 12px;
+    color: #718096;
+    font-weight: 500;
+}
+
+/* Badges */
+.sa-hosp-badge {
+    display: inline-block;
+    padding: 6px 14px;
+    border-radius: 22px;
+    font-size: 12px;
+    font-weight: 700;
+    text-transform: uppercase;
+    letter-spacing: 0.6px;
+    white-space: nowrap;
+    font-family: 'Segoe UI', sans-serif;
+}
+
+.sa-hosp-badge-success {
+    background: linear-gradient(135deg, rgba(72, 187, 120, 0.15) 0%, rgba(56, 161, 105, 0.08) 100%);
+    color: #38a169;
+    border: 1px solid rgba(72, 187, 120, 0.3);
+}
+
+.sa-hosp-badge-danger {
+    background: linear-gradient(135deg, rgba(245, 101, 101, 0.15) 0%, rgba(229, 62, 62, 0.08) 100%);
+    color: #e53e3e;
+    border: 1px solid rgba(245, 101, 101, 0.3);
+}
+
+.sa-hosp-badge-warning {
+    background: linear-gradient(135deg, rgba(246, 187, 67, 0.15) 0%, rgba(237, 137, 54, 0.08) 100%);
+    color: #ed8936;
+    border: 1px solid rgba(246, 187, 67, 0.3);
+}
+
+.sa-hosp-badge-primary {
+    background: linear-gradient(135deg, rgba(255, 215, 0, 0.15) 0%, rgba(218, 165, 32, 0.08) 100%);
+    color: #b7791f;
+    border: 1px solid rgba(255, 215, 0, 0.3);
+}
+
+.sa-hosp-badge-info {
+    background: linear-gradient(135deg, rgba(66, 153, 225, 0.15) 0%, rgba(49, 130, 206, 0.08) 100%);
+    color: #3182ce;
+    border: 1px solid rgba(66, 153, 225, 0.3);
+}
+
+.sa-hosp-badge-purple {
+    background: linear-gradient(135deg, rgba(159, 122, 234, 0.15) 0%, rgba(128, 90, 213, 0.08) 100%);
+    color: #805ad5;
+    border: 1px solid rgba(159, 122, 234, 0.3);
+}
+
+.sa-hosp-badge-secondary {
+    background: linear-gradient(135deg, rgba(160, 174, 192, 0.15) 0%, rgba(113, 128, 150, 0.08) 100%);
+    color: #718096;
+    border: 1px solid rgba(160, 174, 192, 0.3);
+}
+
+/* Action Buttons */
+.sa-hosp-action-buttons {
+    display: flex;
+    gap: 8px;
+    flex-wrap: wrap;
+}
+
+.sa-hosp-action-btn {
+    width: 38px;
+    height: 38px;
+    border-radius: 10px;
+    border: none;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    cursor: pointer;
+    transition: all 0.4s ease;
+    font-size: 14px;
+    position: relative;
+    flex-shrink: 0;
+}
+
+.sa-hosp-action-btn:hover {
+    transform: translateY(-3px);
+    box-shadow: 0 6px 12px rgba(0, 0, 0, 0.15);
+}
+
+.sa-hosp-action-btn::after {
+    content: attr(title);
+    position: absolute;
+    bottom: 100%;
+    left: 50%;
+    transform: translateX(-50%);
+    background: #2d3748;
+    color: white;
+    padding: 6px 10px;
+    border-radius: 6px;
+    font-size: 12px;
+    white-space: nowrap;
+    opacity: 0;
+    visibility: hidden;
+    transition: all 0.3s ease;
+    pointer-events: none;
+    z-index: 100;
+    font-weight: 600;
+}
+
+.sa-hosp-action-btn:hover::after {
+    opacity: 1;
+    visibility: visible;
+    bottom: 125%;
+}
+
+.sa-hosp-view-btn {
+    background: linear-gradient(135deg, rgba(66, 153, 225, 0.12) 0%, rgba(49, 130, 206, 0.06) 100%);
+    color: #4299e1;
+    border: 1px solid rgba(66, 153, 225, 0.25);
+}
+
+.sa-hosp-view-btn:hover {
+    background: #4299e1;
+    color: white;
+}
+
+.sa-hosp-edit-btn {
+    background: linear-gradient(135deg, rgba(72, 187, 120, 0.12) 0%, rgba(56, 161, 105, 0.06) 100%);
+    color: #48bb78;
+    border: 1px solid rgba(72, 187, 120, 0.25);
+}
+
+.sa-hosp-edit-btn:hover {
+    background: #48bb78;
+    color: white;
+}
+
+.sa-hosp-delete-btn {
+    background: linear-gradient(135deg, rgba(245, 101, 101, 0.12) 0%, rgba(229, 62, 62, 0.06) 100%);
+    color: #f56565;
+    border: 1px solid rgba(245, 101, 101, 0.25);
+}
+
+.sa-hosp-delete-btn:hover {
+    background: #f56565;
+    color: white;
+}
+
+.sa-hosp-settings-btn {
+    background: linear-gradient(135deg, rgba(246, 187, 67, 0.12) 0%, rgba(237, 137, 54, 0.06) 100%);
+    color: #ed8936;
+    border: 1px solid rgba(246, 187, 67, 0.25);
+}
+
+.sa-hosp-settings-btn:hover {
+    background: #ed8936;
+    color: #1a202c;
+}
+
+.sa-hosp-users-btn {
+    background: linear-gradient(135deg, rgba(159, 122, 234, 0.12) 0%, rgba(128, 90, 213, 0.06) 100%);
+    color: #9f7aea;
+    border: 1px solid rgba(159, 122, 234, 0.25);
+}
+
+.sa-hosp-users-btn:hover {
+    background: #9f7aea;
+    color: white;
+}
+
+/* No Results */
+.sa-hosp-no-results {
+    text-align: center;
+    padding: 70px 24px;
+    color: #718096;
+    min-height: 300px;
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    justify-content: center;
+}
+
+.sa-hosp-no-results i {
+    color: #ffd700;
+    margin-bottom: 20px;
+    opacity: 0.6;
+    font-size: 48px;
+}
+
+.sa-hosp-no-results h4 {
+    color: #2d3748;
+    margin-bottom: 12px;
+    font-weight: 700;
+    font-size: 22px;
+}
+
+.sa-hosp-no-results p {
+    color: #718096;
+    margin-bottom: 24px;
+    font-size: 16px;
+    max-width: 400px;
+}
+
+/* Modal Styling */
+.sa-hosp-modal-overlay {
+    position: fixed;
+    top: 0;
+    left: 0;
+    right: 0;
+    bottom: 0;
+    background: rgba(26, 32, 44, 0.8);
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    z-index: 9999;
+    backdrop-filter: blur(8px);
+    padding: 24px;
+    animation: sa-hosp-fadeIn 0.3s ease;
+}
+
+@keyframes sa-hosp-fadeIn {
+    from {
+        opacity: 0;
+    }
+    to {
+        opacity: 1;
+    }
+}
+
+.sa-hosp-modal {
+    background: white;
+    border-radius: 20px;
+    width: 90%;
+    max-width: 850px;
+    max-height: 85vh;
+    overflow-y: auto;
+    box-shadow: 0 24px 72px rgba(0, 0, 0, 0.35);
+    animation: sa-hosp-modalSlideIn 0.4s ease;
+    border: 3px solid #ffd700;
+    position: relative;
+}
+
+@keyframes sa-hosp-modalSlideIn {
+    from {
+        opacity: 0;
+        transform: translateY(-60px) scale(0.95);
+    }
+    to {
+        opacity: 1;
+        transform: translateY(0) scale(1);
+    }
+}
+
+.sa-hosp-modal-header {
+    padding: 28px 32px;
+    border-bottom: 3px solid #ffd700;
+    background: linear-gradient(135deg, #f7fafc 0%, #edf2f7 100%);
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    position: sticky;
+    top: 0;
+    z-index: 10;
+    border-top-left-radius: 20px;
+    border-top-right-radius: 20px;
+}
+
+.sa-hosp-modal-title {
+    margin: 0;
+    color: #2d3748;
+    font-size: 26px;
+    font-weight: 800;
+    display: flex;
+    align-items: center;
+    font-family: 'Segoe UI', sans-serif;
+}
+
+.sa-hosp-modal-title i {
+    color: #ffd700;
+    font-size: 28px;
+}
+
+.sa-hosp-modal-close {
+    background: none;
+    border: none;
+    font-size: 22px;
+    color: #718096;
+    cursor: pointer;
+    width: 44px;
+    height: 44px;
+    border-radius: 50%;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    transition: all 0.3s ease;
+    flex-shrink: 0;
+}
+
+.sa-hosp-modal-close:hover {
+    background: #e2e8f0;
+    color: #4a5568;
+}
+
+.sa-hosp-modal-body {
+    padding: 32px;
+}
+
+.sa-hosp-modal-footer {
+    padding: 24px 32px;
+    border-top: 1px solid #e2e8f0;
+    display: flex;
+    justify-content: flex-end;
+    gap: 18px;
+    background: #f8fafc;
+    border-bottom-left-radius: 20px;
+    border-bottom-right-radius: 20px;
+}
+
+/* Form Grid */
+.sa-hosp-form-grid {
+    display: grid;
+    grid-template-columns: repeat(2, 1fr);
+    gap: 24px;
+}
+
+.sa-hosp-form-group {
+    margin-bottom: 18px;
+}
+
+.sa-hosp-form-label {
+    display: block;
+    margin-bottom: 10px;
+    color: #2d3748;
+    font-weight: 700;
+    font-size: 15px;
+    display: flex;
+    align-items: center;
+    font-family: 'Segoe UI', sans-serif;
+}
+
+.sa-hosp-form-label i {
+    color: #ffd700;
+    width: 22px;
+    font-size: 16px;
+}
+
+.sa-hosp-form-control {
+    width: 100%;
+    padding: 14px 18px;
+    border-radius: 10px;
+    border: 2px solid #e2e8f0;
+    background: white;
+    font-size: 15px;
+    transition: all 0.4s ease;
+    font-family: 'Segoe UI', sans-serif;
+}
+
+.sa-hosp-form-control:focus {
+    outline: none;
+    border-color: #ffd700;
+    box-shadow: 0 0 0 4px rgba(255, 215, 0, 0.25);
+}
+
+textarea.sa-hosp-form-control {
+    min-height: 90px;
+    resize: vertical;
+}
+
+/* View Modal Specific */
+.sa-hosp-view-modal {
+    max-width: 750px;
+}
+
+.sa-hosp-details-view {
+    display: flex;
+    flex-direction: column;
+    gap: 30px;
+}
+
+.sa-hosp-details-header {
+    display: flex;
+    align-items: center;
+    gap: 24px;
+    padding-bottom: 24px;
+    border-bottom: 3px solid #f1f5f9;
+}
+
+.sa-hosp-avatar-large {
+    width: 90px;
+    height: 90px;
+    border-radius: 22px;
+    background: linear-gradient(135deg, #ffd700 0%, #daa520 100%);
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    font-size: 40px;
+    color: #1a202c;
+    box-shadow: 0 6px 18px rgba(255, 215, 0, 0.3);
+    flex-shrink: 0;
+}
+
+.sa-hosp-details-title {
+    flex: 1;
+}
+
+.sa-hosp-details-title h3 {
+    margin: 0 0 12px 0;
+    color: #2d3748;
+    font-size: 30px;
+    font-weight: 900;
+    line-height: 1.2;
+    font-family: 'Segoe UI', sans-serif;
+}
+
+.sa-hosp-details-meta {
+    display: flex;
+    gap: 12px;
+    flex-wrap: wrap;
+}
+
+.sa-hosp-details-grid {
+    display: grid;
+    grid-template-columns: repeat(2, 1fr);
+    gap: 30px;
+}
+
+.sa-hosp-detail-section {
+    background: #f8fafc;
+    border-radius: 14px;
+    padding: 24px;
+    border-left: 5px solid #ffd700;
+}
+
+.sa-hosp-detail-section h4 {
+    margin: 0 0 18px 0;
+    color: #2d3748;
+    font-size: 17px;
+    font-weight: 800;
+    display: flex;
+    align-items: center;
+    font-family: 'Segoe UI', sans-serif;
+}
+
+.sa-hosp-detail-item {
+    display: flex;
+    justify-content: space-between;
+    align-items: flex-start;
+    padding: 12px 0;
+    border-bottom: 1px solid #e2e8f0;
+}
+
+.sa-hosp-detail-item:last-child {
+    border-bottom: none;
+}
+
+.sa-hosp-detail-label {
+    color: #718096;
+    font-weight: 600;
+    font-size: 15px;
+    min-width: 160px;
+    font-family: 'Segoe UI', sans-serif;
+}
+
+.sa-hosp-detail-value {
+    color: #2d3748;
+    font-weight: 700;
+    text-align: right;
+    font-size: 15px;
+    flex: 1;
+    font-family: 'Segoe UI', sans-serif;
+}
+
+.sa-hosp-detail-value a {
+    color: #4299e1;
+    text-decoration: none;
+    font-weight: 600;
+    transition: color 0.3s ease;
+}
+
+.sa-hosp-detail-value a:hover {
+    color: #3182ce;
+    text-decoration: underline;
+}
+
+.sa-hosp-stats-grid-small {
+    display: grid;
+    grid-template-columns: repeat(2, 1fr);
+    gap: 18px;
+    margin-top: 12px;
+}
+
+.sa-hosp-stat-item-small {
+    display: flex;
+    align-items: center;
+    gap: 14px;
+    padding: 14px;
+    background: white;
+    border-radius: 10px;
+    border: 1px solid #e2e8f0;
+    transition: transform 0.3s ease;
+}
+
+.sa-hosp-stat-item-small:hover {
+    transform: translateY(-2px);
+    box-shadow: 0 4px 12px rgba(0, 0, 0, 0.08);
+}
+
+.sa-hosp-stat-item-small i {
+    font-size: 22px;
+    color: #ffd700;
+    width: 34px;
+    text-align: center;
+}
+
+.sa-hosp-stat-number-small {
+    display: block;
+    font-size: 20px;
+    font-weight: 900;
+    color: #2d3748;
+    line-height: 1.2;
+}
+
+.sa-hosp-stat-label-small {
+    display: block;
+    font-size: 13px;
+    color: #718096;
+    text-transform: uppercase;
+    letter-spacing: 0.6px;
+    font-weight: 600;
+}
+
+.sa-hosp-specialties-list {
+    display: flex;
+    flex-wrap: wrap;
+    gap: 10px;
+    margin-top: 12px;
+}
+
+.sa-hosp-specialty-badge {
+    background: linear-gradient(135deg, #ebf8ff 0%, #bee3f8 100%);
+    color: #2b6cb0;
+    padding: 8px 14px;
+    border-radius: 22px;
+    font-size: 13px;
+    font-weight: 600;
+    border: 1px solid #90cdf4;
+    transition: transform 0.3s ease;
+}
+
+.sa-hosp-specialty-badge:hover {
+    transform: translateY(-2px);
+}
+
+/* Delete Modal Specific */
+.sa-hosp-delete-modal {
+    max-width: 550px;
+}
+
+.sa-hosp-delete-warning {
+    text-align: center;
+    padding: 24px 0;
+}
+
+.sa-hosp-delete-warning i {
+    font-size: 48px;
+    margin-bottom: 20px;
+}
+
+.sa-hosp-delete-warning h4 {
+    color: #2d3748;
+    font-size: 22px;
+    font-weight: 800;
+    margin-bottom: 16px;
+    line-height: 1.4;
+}
+
+.sa-hosp-text-muted {
+    color: #718096 !important;
+    font-size: 15px;
+    line-height: 1.6;
+    margin-bottom: 24px;
+}
+
+.sa-hosp-delete-info-card {
+    background: #f8fafc;
+    border-radius: 14px;
+    padding: 24px;
+    margin-top: 24px;
+    border-left: 5px solid #ffd700;
+    text-align: left;
+}
+
+.sa-hosp-delete-info-item {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    padding: 12px 0;
+    border-bottom: 1px solid #e2e8f0;
+}
+
+.sa-hosp-delete-info-item:last-child {
+    border-bottom: none;
+}
+
+.sa-hosp-delete-info-item span:first-child {
+    color: #718096;
+    font-weight: 600;
+    font-size: 15px;
+    font-family: 'Segoe UI', sans-serif;
+}
+
+.sa-hosp-delete-info-item strong {
+    color: #2d3748;
+    font-size: 15px;
+    font-weight: 700;
+    font-family: 'Segoe UI', sans-serif;
+}
+
+/* Text Colors */
+.sa-hosp-text-success {
+    color: #38a169 !important;
+}
+
+.sa-hosp-text-danger {
+    color: #e53e3e !important;
+}
+
+.sa-hosp-text-warning {
+    color: #ed8936 !important;
+}
+
+.sa-hosp-text-muted {
+    color: #718096 !important;
+}
+
+/* Scrollbar Styling */
+.sa-hosp-modal::-webkit-scrollbar {
+    width: 10px;
+}
+
+.sa-hosp-modal::-webkit-scrollbar-track {
+    background: #f1f5f9;
+    border-radius: 6px;
+}
+
+.sa-hosp-modal::-webkit-scrollbar-thumb {
+    background: linear-gradient(135deg, #ffd700 0%, #daa520 100%);
+    border-radius: 6px;
+    border: 2px solid #f1f5f9;
+}
+
+.sa-hosp-modal::-webkit-scrollbar-thumb:hover {
+    background: linear-gradient(135deg, #ffe44d 0%, #e6b800 100%);
+}
+
+.sa-hosp-table-wrapper::-webkit-scrollbar {
+    height: 10px;
+}
+
+.sa-hosp-table-wrapper::-webkit-scrollbar-track {
+    background: #f1f5f9;
+    border-radius: 6px;
+    margin: 0 20px;
+}
+
+.sa-hosp-table-wrapper::-webkit-scrollbar-thumb {
+    background: linear-gradient(135deg, #ffd700 0%, #daa520 100%);
+    border-radius: 6px;
+}
+
+.sa-hosp-table-wrapper::-webkit-scrollbar-thumb:hover {
+    background: linear-gradient(135deg, #ffe44d 0%, #e6b800 100%);
+}
+
+/* ===================== RESPONSIVE DESIGN ===================== */
+
+/* Large Desktop (1440px and above) */
+@media (min-width: 1440px) {
+    .sa-hospitals-content {
+       
+        margin: 0 auto;
+    }
+    
+    .sa-hosp-stats-grid {
+        grid-template-columns: repeat(4, 1fr);
+    }
+    
+    .sa-hosp-table {
+        min-width: auto;
+    }
+}
+
+/* Desktop (1024px to 1439px) */
+@media (max-width: 1439px) and (min-width: 1024px) {
+    .sa-hospitals-content {
+        padding: 28px;
+    }
+    
+    .sa-hosp-stats-grid {
+        grid-template-columns: repeat(2, 1fr);
+    }
+    
+    .sa-hosp-search-filter-bar {
+        flex-direction: column;
+        align-items: stretch;
+    }
+    
+    .sa-hosp-search-box {
+        min-width: 100%;
+    }
+}
+
+/* Tablet Landscape (768px to 1023px) */
+@media (max-width: 1023px) and (min-width: 768px) {
+    .sa-hospitals-content {
+        padding: 20px;
+    }
+    
+    .sa-hospitals-header {
+        padding: 24px;
+        flex-direction: column;
+        text-align: center;
+        gap: 24px;
+    }
+    
+    .sa-hosp-header-left {
+        text-align: center;
+    }
+    
+    .sa-hosp-title {
+        justify-content: center;
+        font-size: 28px;
+    }
+    
+    .sa-hosp-header-right {
+        width: 100%;
+        justify-content: center;
+    }
+    
+    .sa-hosp-stats-grid {
+        grid-template-columns: repeat(2, 1fr);
+        gap: 20px;
+    }
+    
+    .sa-hosp-stat-card {
+        padding: 24px;
+    }
+    
+    .sa-hosp-search-filter-bar {
+        flex-direction: column;
+        align-items: stretch;
+        gap: 20px;
+    }
+    
+    .sa-hosp-search-box {
+        min-width: 100%;
+    }
+    
+    .sa-hosp-filter-buttons {
+        justify-content: center;
+    }
+    
+    .sa-hosp-form-grid {
+        grid-template-columns: 1fr;
+        gap: 20px;
+    }
+    
+    .sa-hosp-details-grid {
+        grid-template-columns: 1fr;
+        gap: 24px;
+    }
+    
+    .sa-hosp-modal {
+        width: 95%;
+        max-width: 600px;
+    }
+}
+
+/* Tablet Portrait (576px to 767px) */
+@media (max-width: 767px) and (min-width: 576px) {
+    .sa-hospitals-content {
+        padding: 16px;
+    }
+    
+    .sa-hospitals-header {
+        padding: 20px;
+        border-radius: 16px;
+        margin-bottom: 24px;
+    }
+    
+    .sa-hosp-title {
+        font-size: 26px;
+    }
+    
+    .sa-hosp-subtitle {
+        font-size: 16px;
+    }
+    
+    .sa-hosp-btn {
+        padding: 12px 20px;
+        font-size: 14px;
+        min-height: 48px;
+    }
+    
+    .sa-hosp-stats-grid {
+        grid-template-columns: 1fr;
+        gap: 16px;
+        margin-bottom: 24px;
+    }
+    
+    .sa-hosp-stat-card {
+        padding: 20px;
+        flex-direction: row;
+        gap: 20px;
+    }
+    
+    .sa-hosp-stat-icon {
+        width: 60px;
+        height: 60px;
+        font-size: 28px;
+    }
+    
+    .sa-hosp-stat-value {
+        font-size: 32px;
+    }
+    
+    .sa-hosp-search-filter-bar {
+        margin-bottom: 20px;
+    }
+    
+    .sa-hosp-search-input {
+        padding: 14px 48px;
+    }
+    
+    .sa-hosp-filter-btn {
+        padding: 10px 16px;
+        font-size: 13px;
+    }
+    
+    .sa-hosp-type-filter {
+        padding: 10px 14px;
+        font-size: 13px;
+        min-width: 120px;
+    }
+    
+    .sa-hosp-table th,
+    .sa-hosp-table td {
+        padding: 14px 12px;
+    }
+    
+    .sa-hosp-avatar {
+        width: 48px;
+        height: 48px;
+        font-size: 20px;
+    }
+    
+    .sa-hosp-name {
+        font-size: 14px;
+    }
+    
+    .sa-hosp-contact {
+        font-size: 12px;
+    }
+    
+    .sa-hosp-action-btn {
+        width: 34px;
+        height: 34px;
+        font-size: 13px;
+    }
+    
+    .sa-hosp-modal-overlay {
+        padding: 16px;
+    }
+    
+    .sa-hosp-modal {
+        width: 95%;
+        max-height: 90vh;
+        border-radius: 16px;
+    }
+    
+    .sa-hosp-modal-header {
+        padding: 20px 24px;
+    }
+    
+    .sa-hosp-modal-title {
+        font-size: 22px;
+    }
+    
+    .sa-hosp-modal-body {
+        padding: 24px;
+    }
+    
+    .sa-hosp-modal-footer {
+        padding: 20px 24px;
+        flex-direction: column;
+        gap: 12px;
+    }
+    
+    .sa-hosp-modal-footer .sa-hosp-btn {
+        width: 100%;
+    }
+    
+    .sa-hosp-details-header {
+        flex-direction: column;
+        text-align: center;
+        gap: 16px;
+    }
+    
+    .sa-hosp-details-meta {
+        justify-content: center;
+    }
+}
+
+/* Mobile (480px to 575px) */
+@media (max-width: 575px) and (min-width: 480px) {
+    .sa-hospitals-content {
+        padding: 12px;
+    }
+    
+    .sa-hospitals-header {
+        padding: 18px;
+        border-radius: 14px;
+        margin-bottom: 20px;
+    }
+    
+    .sa-hosp-title {
+        font-size: 24px;
+        flex-direction: column;
+        gap: 8px;
+    }
+    
+    .sa-hosp-title i {
+        font-size: 28px;
+    }
+    
+    .sa-hosp-subtitle {
+        font-size: 15px;
+    }
+    
+    .sa-hosp-btn {
+        padding: 10px 16px;
+        font-size: 13px;
+        min-height: 44px;
+        width: 100%;
+    }
+    
+    .sa-hosp-stats-grid {
+        gap: 12px;
+    }
+    
+    .sa-hosp-stat-card {
+        padding: 18px;
+        flex-direction: column;
+        text-align: center;
+        gap: 16px;
+    }
+    
+    .sa-hosp-stat-icon {
+        width: 56px;
+        height: 56px;
+        font-size: 24px;
+    }
+    
+    .sa-hosp-stat-value {
+        font-size: 28px;
+    }
+    
+    .sa-hosp-stat-label {
+        font-size: 13px;
+    }
+    
+    .sa-hosp-search-box {
+        min-width: 100%;
+    }
+    
+    .sa-hosp-search-input {
+        padding: 12px 44px;
+        font-size: 14px;
+    }
+    
+    .sa-hosp-search-icon {
+        left: 14px;
+        font-size: 16px;
+    }
+    
+    .sa-hosp-clear-search {
+        right: 14px;
+    }
+    
+    .sa-hosp-filter-buttons {
+        justify-content: center;
+        width: 100%;
+    }
+    
+    .sa-hosp-filter-btn {
+        flex: 1;
+        min-width: 120px;
+        padding: 10px 12px;
+        font-size: 12px;
+        text-align: center;
+    }
+    
+    .sa-hosp-type-filter {
+        flex: 1;
+        min-width: 140px;
+        padding: 10px 12px;
+        font-size: 12px;
+    }
+    
+    .sa-hosp-action-buttons {
+        justify-content: center;
+        gap: 6px;
+    }
+    
+    .sa-hosp-action-btn {
+        width: 32px;
+        height: 32px;
+        font-size: 12px;
+    }
+    
+    .sa-hosp-no-results {
+        padding: 40px 16px;
+    }
+    
+    .sa-hosp-no-results i {
+        font-size: 36px;
+    }
+    
+    .sa-hosp-no-results h4 {
+        font-size: 18px;
+    }
+    
+    .sa-hosp-no-results p {
+        font-size: 14px;
+    }
+    
+    .sa-hosp-modal-overlay {
+        padding: 12px;
+    }
+    
+    .sa-hosp-modal {
+        width: 100%;
+        max-height: 95vh;
+        border-radius: 14px;
+    }
+    
+    .sa-hosp-form-grid {
+        gap: 16px;
+    }
+    
+    .sa-hosp-form-control {
+        padding: 12px 14px;
+        font-size: 14px;
+    }
+    
+    .sa-hosp-stats-grid-small {
+        grid-template-columns: 1fr;
+    }
+}
+
+/* Small Mobile (320px to 479px) */
+@media (max-width: 479px) {
+    .sa-hospitals-content {
+        padding: 10px;
+    }
+    
+    .sa-hospitals-header {
+        padding: 16px;
+        border-radius: 12px;
+        margin-bottom: 16px;
+    }
+    
+    .sa-hosp-title {
+        font-size: 22px;
+    }
+    
+    .sa-hosp-subtitle {
+        font-size: 14px;
+    }
+    
+    .sa-hosp-btn {
+        padding: 10px 14px;
+        font-size: 12px;
+        min-height: 42px;
+        border-radius: 10px;
+    }
+    
+    .sa-hosp-stat-card {
+        padding: 16px;
+        gap: 12px;
+    }
+    
+    .sa-hosp-stat-icon {
+        width: 50px;
+        height: 50px;
+        font-size: 22px;
+    }
+    
+    .sa-hosp-stat-value {
+        font-size: 24px;
+    }
+    
+    .sa-hosp-stat-label {
+        font-size: 12px;
+        letter-spacing: 0.8px;
+    }
+    
+    .sa-hosp-search-input {
+        padding: 10px 40px;
+        font-size: 13px;
+        border-radius: 10px;
+    }
+    
+    .sa-hosp-search-icon {
+        left: 12px;
+        font-size: 14px;
+    }
+    
+    .sa-hosp-filter-btn {
+        padding: 8px 10px;
+        font-size: 11px;
+        min-width: 100px;
+        border-radius: 8px;
+    }
+    
+    .sa-hosp-type-filter {
+        padding: 8px 10px;
+        font-size: 11px;
+        min-width: 120px;
+        border-radius: 8px;
+    }
+    
+    .sa-hosp-info {
+        flex-direction: column;
+        align-items: flex-start;
+        gap: 8px;
+    }
+    
+    .sa-hosp-avatar {
+        width: 42px;
+        height: 42px;
+        font-size: 18px;
+        border-radius: 10px;
+    }
+    
+    .sa-hosp-name {
+        font-size: 13px;
+    }
+    
+    .sa-hosp-contact {
+        font-size: 11px;
+    }
+    
+    .sa-hosp-badge {
+        padding: 5px 10px;
+        font-size: 10px;
+    }
+    
+    .sa-hosp-action-buttons {
+        gap: 4px;
+    }
+    
+    .sa-hosp-action-btn {
+        width: 30px;
+        height: 30px;
+        font-size: 11px;
+        border-radius: 8px;
+    }
+    
+    .sa-hosp-action-btn::after {
+        padding: 4px 8px;
+        font-size: 10px;
+    }
+    
+    .sa-hosp-modal-header {
+        padding: 16px 20px;
+        flex-direction: column;
+        gap: 12px;
+        text-align: center;
+    }
+    
+    .sa-hosp-modal-title {
+        font-size: 20px;
+        flex-direction: column;
+        gap: 8px;
+    }
+    
+    .sa-hosp-modal-body {
+        padding: 20px;
+    }
+    
+    .sa-hosp-modal-footer {
+        padding: 16px 20px;
+        flex-direction: column;
+        gap: 10px;
+    }
+    
+    .sa-hosp-details-header {
+        gap: 12px;
+    }
+    
+    .sa-hosp-avatar-large {
+        width: 70px;
+        height: 70px;
+        font-size: 32px;
+        border-radius: 16px;
+    }
+    
+    .sa-hosp-details-title h3 {
+        font-size: 22px;
+    }
+    
+    .sa-hosp-details-meta {
+        gap: 8px;
+    }
+    
+    .sa-hosp-detail-section {
+        padding: 16px;
+        border-radius: 10px;
+    }
+    
+    .sa-hosp-detail-item {
+        flex-direction: column;
+        gap: 4px;
+        padding: 8px 0;
+    }
+    
+    .sa-hosp-detail-label {
+        min-width: auto;
+        font-size: 13px;
+    }
+    
+    .sa-hosp-detail-value {
+        text-align: left;
+        font-size: 14px;
+    }
+    
+    .sa-hosp-specialty-badge {
+        padding: 6px 10px;
+        font-size: 11px;
+    }
+}
+
+/* Print Styles */
+@media print {
+    .sa-hospitals-container {
+        background: white !important;
+    }
+    
+    .sa-hosp-btn,
+    .sa-hosp-action-btn,
+    .sa-hosp-modal-overlay,
+    .sa-hosp-status-toggle-btn {
+        display: none !important;
+    }
+    
+    .sa-hospitals-content {
+        padding: 0 !important;
+    }
+    
+    .sa-hospitals-header,
+    .sa-hosp-stats-grid,
+    .sa-hosp-search-filter-bar {
+        box-shadow: none !important;
+        border: 1px solid #ddd !important;
+        background: white !important;
+    }
+    
+    .sa-hosp-table-wrapper {
+        overflow: visible !important;
+    }
+    
+    .sa-hosp-table {
+        min-width: 100% !important;
+        border: 1px solid #ddd !important;
+    }
+    
+    .sa-hosp-table th,
+    .sa-hosp-table td {
+        border: 1px solid #ddd !important;
+        padding: 8px !important;
+    }
+}
+
+/* Dark Mode Support */
+@media (prefers-color-scheme: dark) {
+    .sa-hospitals-container {
+        background: linear-gradient(135deg, #1a202c 0%, #2d3748 100%);
+    }
+    
+    .sa-hospitals-header,
+    .sa-hosp-stat-card,
+    .sa-hospitals-table-container,
+    .sa-hosp-modal,
+    .sa-hosp-detail-section,
+    .sa-hosp-delete-info-card {
+        background: #2d3748 !important;
+        color: #e2e8f0 !important;
+    }
+    
+    .sa-hosp-title,
+    .sa-hosp-name,
+    .sa-hosp-city-state,
+    .sa-hosp-stat-value,
+    .sa-hosp-rating-value,
+    .sa-hosp-modal-title,
+    .sa-hosp-detail-value,
+    .sa-hosp-stat-number-small,
+    .sa-hosp-delete-info-item strong {
+        color: #e2e8f0 !important;
+    }
+    
+    .sa-hosp-subtitle,
+    .sa-hosp-stat-label,
+    .sa-hosp-country,
+    .sa-hosp-users-count,
+    .sa-hosp-form-label,
+    .sa-hosp-detail-label,
+    .sa-hosp-stat-label-small,
+    .sa-hosp-text-muted,
+    .sa-hosp-delete-info-item span {
+        color: #a0aec0 !important;
+    }
+    
+    .sa-hosp-search-input,
+    .sa-hosp-form-control,
+    .sa-hosp-type-filter,
+    .sa-hosp-filter-btn {
+        background: #4a5568 !important;
+        border-color: #718096 !important;
+        color: #e2e8f0 !important;
+    }
+    
+    .sa-hosp-search-input::placeholder,
+    .sa-hosp-form-control::placeholder {
+        color: #a0aec0 !important;
+    }
+    
+    .sa-hosp-table thead {
+        background: #4a5568 !important;
+    }
+    
+    .sa-hosp-table th {
+        color: #e2e8f0 !important;
+        border-color: #ffd700 !important;
+    }
+    
+    .sa-hosp-table td {
+        border-color: #4a5568 !important;
+    }
+    
+    .sa-hosp-inactive-row {
+        background-color: rgba(113, 128, 150, 0.15) !important;
+    }
+    
+    .sa-hosp-action-btn::after {
+        background: #4a5568 !important;
+        color: #e2e8f0 !important;
+    }
+    
+    .sa-hosp-specialty-badge {
+        background: #4a5568 !important;
+        border-color: #718096 !important;
+        color: #e2e8f0 !important;
+    }
+}

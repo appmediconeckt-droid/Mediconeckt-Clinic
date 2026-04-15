@@ -1,0 +1,670 @@
+/* DentalClinic.css */
+
+/* Reset and Base Styles */
+* {
+  margin: 0;
+  padding: 0;
+  box-sizing: border-box;
+}
+
+body {
+  font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+  color: #333;
+  line-height: 1.6;
+}
+
+.dental-container {
+  max-width: 100%;
+  overflow-x: hidden;
+}
+
+/* Navigation Styles */
+.dental-navbar {
+  background-color: #ffffff;
+  box-shadow: 0 2px 15px rgba(0, 0, 0, 0.08);
+  position: sticky;
+  top: 0;
+  z-index: 1000;
+}
+
+.dental-navbar-inner {
+  max-width: 1200px;
+  margin: 0 auto;
+  padding: 1rem 2rem;
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+}
+
+.dental-logo {
+  display: flex;
+  align-items: center;
+  gap: 0.75rem;
+}
+
+.dental-logo-icon {
+  font-size: 2rem;
+}
+
+.dental-logo-text {
+  font-size: 1.5rem;
+  color: #0d9488;
+  font-weight: 700;
+}
+
+.dental-menu-toggle {
+  display: none;
+  flex-direction: column;
+  gap: 4px;
+  background: transparent;
+  border: none;
+  cursor: pointer;
+  padding: 0.5rem;
+}
+
+.dental-menu-icon {
+  width: 25px;
+  height: 3px;
+  background-color: #0d9488;
+  border-radius: 2px;
+  transition: all 0.3s ease;
+}
+
+.dental-nav-links {
+  display: flex;
+  list-style: none;
+  gap: 2rem;
+  align-items: center;
+}
+
+.dental-nav-item {
+  text-decoration: none;
+  color: #4b5563;
+  font-weight: 500;
+  padding: 0.5rem 0;
+  position: relative;
+  transition: color 0.3s ease;
+}
+
+.dental-nav-item:hover {
+  color: #0d9488;
+}
+
+.dental-nav-item::after {
+  content: '';
+  position: absolute;
+  width: 0;
+  height: 2px;
+  background-color: #0d9488;
+  bottom: 0;
+  left: 0;
+  transition: width 0.3s ease;
+}
+
+.dental-nav-item:hover::after {
+  width: 100%;
+}
+
+.dental-nav-cta {
+  background-color: #0d9488;
+  color: white !important;
+  padding: 0.6rem 1.5rem;
+  border-radius: 30px;
+  transition: background-color 0.3s ease;
+}
+
+.dental-nav-cta:hover {
+  background-color: #0f766e;
+}
+
+.dental-nav-cta::after {
+  display: none;
+}
+
+/* Hero Section */
+.dental-hero {
+  max-width: 1200px;
+  margin: 0 auto;
+  padding: 4rem 2rem;
+  display: flex;
+  align-items: center;
+  gap: 4rem;
+}
+
+.dental-hero-content {
+  flex: 1;
+}
+
+.dental-hero-title {
+  font-size: 3rem;
+  color: #0f766e;
+  margin-bottom: 1.5rem;
+  line-height: 1.2;
+}
+
+.dental-hero-subtitle {
+  font-size: 1.2rem;
+  color: #6b7280;
+  margin-bottom: 2rem;
+  max-width: 500px;
+}
+
+.dental-hero-buttons {
+  display: flex;
+  gap: 1rem;
+}
+
+.dental-btn {
+  padding: 0.9rem 2rem;
+  border-radius: 30px;
+  font-weight: 600;
+  text-decoration: none;
+  display: inline-block;
+  transition: all 0.3s ease;
+  border: none;
+  cursor: pointer;
+  font-size: 1rem;
+}
+
+.dental-btn-primary {
+  background-color: #0d9488;
+  color: white;
+}
+
+.dental-btn-primary:hover {
+  background-color: #0f766e;
+  transform: translateY(-3px);
+  box-shadow: 0 5px 15px rgba(13, 148, 136, 0.3);
+}
+
+.dental-btn-secondary {
+  background-color: transparent;
+  color: #0d9488;
+  border: 2px solid #0d9488;
+}
+
+.dental-btn-secondary:hover {
+  background-color: rgba(13, 148, 136, 0.1);
+  transform: translateY(-3px);
+}
+
+.dental-hero-image {
+  flex: 1;
+  display: flex;
+  justify-content: center;
+}
+
+.dental-hero-image-placeholder {
+  width: 100%;
+  max-width: 450px;
+  height: 350px;
+  background: linear-gradient(135deg, #ccfbf1, #99f6e4);
+  border-radius: 20px;
+  display: flex;
+  flex-direction: column;
+  justify-content: center;
+  align-items: center;
+  box-shadow: 0 10px 30px rgba(13, 148, 136, 0.15);
+}
+
+.dental-image-icon {
+  font-size: 6rem;
+  margin-bottom: 1rem;
+}
+
+.dental-image-text {
+  font-size: 1.2rem;
+  color: #0f766e;
+  font-weight: 600;
+}
+
+/* Services Section */
+.dental-services {
+  background-color: #f8fafc;
+  padding: 5rem 2rem;
+}
+
+.dental-section-header {
+  text-align: center;
+  max-width: 800px;
+  margin: 0 auto 4rem;
+}
+
+.dental-section-title {
+  font-size: 2.5rem;
+  color: #0f766e;
+  margin-bottom: 1rem;
+}
+
+.dental-section-subtitle {
+  font-size: 1.1rem;
+  color: #6b7280;
+}
+
+.dental-services-grid {
+  max-width: 1200px;
+  margin: 0 auto;
+  display: grid;
+  grid-template-columns: repeat(auto-fill, minmax(300px, 1fr));
+  gap: 2rem;
+}
+
+.dental-service-card {
+  background-color: white;
+  border-radius: 15px;
+  padding: 2rem;
+  box-shadow: 0 5px 15px rgba(0, 0, 0, 0.05);
+  transition: transform 0.3s ease, box-shadow 0.3s ease;
+  text-align: center;
+}
+
+.dental-service-card:hover {
+  transform: translateY(-10px);
+  box-shadow: 0 15px 30px rgba(0, 0, 0, 0.1);
+}
+
+.dental-service-icon {
+  font-size: 3rem;
+  margin-bottom: 1.5rem;
+}
+
+.dental-service-name {
+  font-size: 1.5rem;
+  color: #0f766e;
+  margin-bottom: 1rem;
+}
+
+.dental-service-desc {
+  color: #6b7280;
+  margin-bottom: 1.5rem;
+}
+
+.dental-service-link {
+  color: #0d9488;
+  text-decoration: none;
+  font-weight: 600;
+  display: inline-block;
+  transition: transform 0.3s ease;
+}
+
+.dental-service-link:hover {
+  transform: translateX(5px);
+}
+
+/* About Section */
+.dental-about {
+  max-width: 1200px;
+  margin: 5rem auto;
+  padding: 0 2rem;
+  display: flex;
+  align-items: center;
+  gap: 4rem;
+}
+
+.dental-about-content {
+  flex: 1;
+}
+
+.dental-about-title {
+  font-size: 2.5rem;
+  color: #0f766e;
+  margin-bottom: 1.5rem;
+}
+
+.dental-about-text {
+  font-size: 1.1rem;
+  color: #6b7280;
+  margin-bottom: 2.5rem;
+  line-height: 1.7;
+}
+
+.dental-about-features {
+  list-style: none;
+}
+
+.dental-about-feature {
+  display: flex;
+  align-items: center;
+  gap: 0.75rem;
+  margin-bottom: 1rem;
+}
+
+.dental-feature-icon {
+  color: #10b981;
+  font-size: 1.2rem;
+}
+
+.dental-feature-text {
+  font-size: 1.1rem;
+  color: #4b5563;
+}
+
+.dental-about-image {
+  flex: 1;
+  display: flex;
+  justify-content: center;
+}
+
+.dental-about-image-placeholder {
+  width: 100%;
+  max-width: 450px;
+  height: 350px;
+  background: linear-gradient(135deg, #dbeafe, #bfdbfe);
+  border-radius: 20px;
+  display: flex;
+  flex-direction: column;
+  justify-content: center;
+  align-items: center;
+  box-shadow: 0 10px 30px rgba(37, 99, 235, 0.15);
+}
+
+/* Testimonials */
+.dental-testimonials {
+  background-color: #f8fafc;
+  padding: 5rem 2rem;
+}
+
+.dental-testimonial-cards {
+  max-width: 1200px;
+  margin: 0 auto;
+  display: grid;
+  grid-template-columns: repeat(auto-fill, minmax(350px, 1fr));
+  gap: 2rem;
+}
+
+.dental-testimonial-card {
+  background-color: white;
+  border-radius: 15px;
+  padding: 2rem;
+  box-shadow: 0 5px 15px rgba(0, 0, 0, 0.05);
+}
+
+.dental-testimonial-rating {
+  color: #fbbf24;
+  font-size: 1.5rem;
+  margin-bottom: 1.5rem;
+}
+
+.dental-testimonial-text {
+  font-size: 1.1rem;
+  color: #4b5563;
+  margin-bottom: 1.5rem;
+  font-style: italic;
+  line-height: 1.7;
+}
+
+.dental-testimonial-author {
+  font-size: 1.2rem;
+  color: #0f766e;
+}
+
+/* Contact Section */
+.dental-contact {
+  padding: 5rem 2rem;
+  background-color: white;
+}
+
+.dental-contact-container {
+  max-width: 1200px;
+  margin: 0 auto;
+  display: flex;
+  gap: 4rem;
+}
+
+.dental-contact-info {
+  flex: 1;
+}
+
+.dental-contact-title {
+  font-size: 2.5rem;
+  color: #0f766e;
+  margin-bottom: 1.5rem;
+}
+
+.dental-contact-text {
+  font-size: 1.1rem;
+  color: #6b7280;
+  margin-bottom: 3rem;
+}
+
+.dental-contact-details {
+  display: flex;
+  flex-direction: column;
+  gap: 2rem;
+}
+
+.dental-contact-item {
+  display: flex;
+  gap: 1rem;
+  align-items: flex-start;
+}
+
+.dental-contact-icon {
+  font-size: 1.8rem;
+  color: #0d9488;
+}
+
+.dental-contact-item h4 {
+  font-size: 1.2rem;
+  color: #0f766e;
+  margin-bottom: 0.5rem;
+}
+
+.dental-contact-item p {
+  color: #6b7280;
+}
+
+.dental-appointment-form {
+  flex: 1;
+  background-color: #f8fafc;
+  padding: 2.5rem;
+  border-radius: 20px;
+  box-shadow: 0 10px 30px rgba(0, 0, 0, 0.08);
+}
+
+.dental-form-title {
+  font-size: 1.8rem;
+  color: #0f766e;
+  margin-bottom: 2rem;
+}
+
+.dental-form-group {
+  margin-bottom: 1.5rem;
+}
+
+.dental-form-input,
+.dental-form-select,
+.dental-form-textarea {
+  width: 100%;
+  padding: 1rem;
+  border: 1px solid #d1d5db;
+  border-radius: 10px;
+  font-size: 1rem;
+  transition: border-color 0.3s ease;
+}
+
+.dental-form-input:focus,
+.dental-form-select:focus,
+.dental-form-textarea:focus {
+  outline: none;
+  border-color: #0d9488;
+  box-shadow: 0 0 0 3px rgba(13, 148, 136, 0.1);
+}
+
+.dental-form-textarea {
+  resize: vertical;
+  min-height: 100px;
+}
+
+.dental-btn-submit {
+  width: 100%;
+  background-color: #0d9488;
+  color: white;
+  font-size: 1.1rem;
+  padding: 1rem;
+}
+
+.dental-btn-submit:hover {
+  background-color: #0f766e;
+}
+
+/* Footer */
+.dental-footer {
+  background-color: #0f766e;
+  color: white;
+  padding: 4rem 2rem 2rem;
+}
+
+.dental-footer-content {
+  max-width: 1200px;
+  margin: 0 auto;
+  text-align: center;
+}
+
+.dental-footer-logo {
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  gap: 1rem;
+  margin-bottom: 1.5rem;
+}
+
+.dental-footer-logo-text {
+  font-size: 1.8rem;
+  color: white;
+}
+
+.dental-footer-text {
+  max-width: 600px;
+  margin: 0 auto 2rem;
+  color: #d1fae5;
+  font-size: 1.1rem;
+  line-height: 1.7;
+}
+
+.dental-footer-social {
+  display: flex;
+  justify-content: center;
+  gap: 1.5rem;
+  margin-bottom: 2rem;
+}
+
+.dental-social-link {
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  width: 45px;
+  height: 45px;
+  background-color: rgba(255, 255, 255, 0.1);
+  border-radius: 50%;
+  color: white;
+  font-size: 1.3rem;
+  text-decoration: none;
+  transition: background-color 0.3s ease;
+}
+
+.dental-social-link:hover {
+  background-color: rgba(255, 255, 255, 0.2);
+}
+
+.dental-footer-copyright {
+  color: #a7f3d0;
+  font-size: 0.9rem;
+  padding-top: 2rem;
+  border-top: 1px solid rgba(255, 255, 255, 0.1);
+}
+
+/* Responsive Styles */
+@media (max-width: 1024px) {
+  .dental-hero,
+  .dental-about,
+  .dental-contact-container {
+    flex-direction: column;
+    gap: 3rem;
+  }
+  
+  .dental-hero-title {
+    font-size: 2.5rem;
+  }
+  
+  .dental-about-image-placeholder,
+  .dental-hero-image-placeholder {
+    max-width: 100%;
+  }
+}
+
+@media (max-width: 768px) {
+  .dental-menu-toggle {
+    display: flex;
+  }
+  
+  .dental-nav-links {
+    position: fixed;
+    top: 80px;
+    left: 0;
+    right: 0;
+    background-color: white;
+    flex-direction: column;
+    padding: 2rem;
+    box-shadow: 0 5px 15px rgba(0, 0, 0, 0.1);
+    transform: translateY(-100%);
+    opacity: 0;
+    visibility: hidden;
+    transition: all 0.3s ease;
+    z-index: 999;
+  }
+  
+  .dental-nav-active {
+    transform: translateY(0);
+    opacity: 1;
+    visibility: visible;
+  }
+  
+  .dental-hero-title {
+    font-size: 2rem;
+  }
+  
+  .dental-section-title,
+  .dental-about-title,
+  .dental-contact-title {
+    font-size: 2rem;
+  }
+  
+  .dental-services-grid,
+  .dental-testimonial-cards {
+    grid-template-columns: 1fr;
+  }
+  
+  .dental-hero-buttons {
+    flex-direction: column;
+    align-items: flex-start;
+  }
+}
+
+@media (max-width: 480px) {
+  .dental-hero,
+  .dental-services,
+  .dental-about,
+  .dental-testimonials,
+  .dental-contact {
+    padding-left: 1rem;
+    padding-right: 1rem;
+  }
+  
+  .dental-navbar-inner {
+    padding-left: 1rem;
+    padding-right: 1rem;
+  }
+  
+  .dental-logo-text {
+    font-size: 1.2rem;
+  }
+  
+  .dental-hero-title {
+    font-size: 1.8rem;
+  }
+  
+  .dental-section-title {
+    font-size: 1.8rem;
+  }
+}

@@ -1,0 +1,1491 @@
+/* Specimen Menu Styles with Technician Theme */
+
+/* Technician Theme Base */
+.tech-specimen-container {
+  background: linear-gradient(135deg, #fff5e6 0%, #ffe4c9 100%) !important;
+  font-family: 'Inter', -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, Oxygen, Ubuntu, sans-serif;
+  max-width: 1440px;
+  margin: 0 auto;
+  padding: 24px;
+  /* min-height: 100vh; */
+  color: #1a1a1a;
+}
+
+/* Header Styles with Technician Theme */
+.tech-specimen-header {
+  background: linear-gradient(135deg, #ff9500 0%, #ff7300 100%) !important;
+  color: #000000 !important;
+  padding: 32px 40px;
+  border-radius: 20px;
+  margin-bottom: 30px;
+  box-shadow: 0 10px 30px rgba(255, 149, 0, 0.2);
+  display: flex;
+  justify-content: space-between;
+  align-items: flex-start;
+  border-left: 6px solid #ffcc33;
+}
+
+.tech-specimen-header-content {
+  flex: 1;
+}
+
+.tech-specimen-title {
+  margin: 0;
+  font-size: 2.8rem;
+  font-weight: 800;
+  letter-spacing: -0.5px;
+  background: linear-gradient(135deg, #000000 0%, #333333 100%);
+  -webkit-background-clip: text;
+  -webkit-text-fill-color: transparent;
+  background-clip: text;
+  text-shadow: 0 2px 4px rgba(255, 255, 255, 0.3);
+}
+
+.tech-specimen-subtitle {
+  margin: 12px 0 0;
+  font-size: 1.2rem;
+  color: #333333 !important;
+  font-weight: 500;
+  opacity: 0.9;
+}
+
+.tech-specimen-header-actions {
+  display: flex;
+  gap: 16px;
+}
+
+.tech-specimen-btn {
+  padding: 14px 28px;
+  border: none;
+  border-radius: 12px;
+  font-size: 1rem;
+  font-weight: 600;
+  cursor: pointer;
+  transition: all 0.3s ease;
+  display: flex;
+  align-items: center;
+  gap: 10px;
+}
+
+.tech-specimen-btn-scan {
+  background: linear-gradient(135deg, #ff7300 0%, #cc6600 100%) !important;
+  color: white !important;
+  border: 2px solid #ffcc33;
+}
+
+.tech-specimen-btn-print {
+  background: rgba(0, 0, 0, 0.1) !important;
+  color: #000000 !important;
+  border: 2px solid rgba(0, 0, 0, 0.2);
+}
+
+.tech-specimen-btn:hover {
+  transform: translateY(-3px);
+  box-shadow: 0 8px 20px rgba(255, 149, 0, 0.4);
+}
+
+/* Dashboard Stats with Technician Theme */
+.tech-specimen-dashboard {
+  background: white !important;
+  border-radius: 20px;
+  padding: 32px;
+  margin-bottom: 30px;
+  box-shadow: 0 8px 25px rgba(255, 149, 0, 0.15);
+  border: 2px solid #ffcc99;
+}
+
+.tech-specimen-stats-grid {
+  display: grid;
+  grid-template-columns: repeat(auto-fit, minmax(240px, 1fr));
+  gap: 24px;
+  margin-bottom: 40px;
+}
+
+.tech-specimen-stat-card {
+  display: flex;
+  align-items: center;
+  padding: 28px;
+  border-radius: 16px;
+  transition: all 0.3s ease;
+  cursor: pointer;
+  border: 2px solid transparent;
+}
+
+.tech-specimen-stat-card:hover {
+  transform: translateY(-8px);
+  box-shadow: 0 15px 30px rgba(255, 149, 0, 0.2);
+  border-color: #ff9500;
+}
+
+.tech-stat-card-total {
+  background: linear-gradient(135deg, #ff9500 0%, #ff7300 100%) !important;
+}
+
+.tech-stat-card-collected {
+  background: linear-gradient(135deg, #ffa726 0%, #ff9800 100%) !important;
+}
+
+.tech-stat-card-processing {
+  background: linear-gradient(135deg, #ffb74d 0%, #ffa726 100%) !important;
+}
+
+.tech-stat-card-urgent {
+  background: linear-gradient(135deg, #ffcc80 0%, #ffb74d 100%) !important;
+}
+
+.tech-specimen-stat-icon {
+  font-size: 3rem;
+  margin-right: 24px;
+  opacity: 0.9;
+  color: white;
+}
+
+.tech-specimen-stat-info {
+  color: white;
+}
+
+.tech-specimen-stat-info h3 {
+  margin: 0 0 8px;
+  font-size: 1.1rem;
+  font-weight: 600;
+  opacity: 0.9;
+}
+
+.tech-specimen-stat-number {
+  margin: 0;
+  font-size: 2.8rem;
+  font-weight: 800;
+  line-height: 1;
+}
+
+/* Controls Section with Technician Theme */
+.tech-specimen-controls-section {
+  display: flex;
+  flex-direction: column;
+  gap: 30px;
+  border-top: 2px solid #ffcc99;
+  padding-top: 30px;
+}
+
+.tech-specimen-search-filters {
+  display: grid;
+  grid-template-columns: repeat(auto-fit, minmax(250px, 1fr));
+  gap: 24px;
+  align-items: end;
+}
+
+.tech-specimen-search-box {
+  position: relative;
+  grid-column: 1 / -1;
+}
+
+.tech-specimen-search-input {
+  width: 100%;
+  padding: 18px 24px 18px 56px;
+  border: 2px solid #ffcc99;
+  border-radius: 16px;
+  font-size: 1.1rem;
+  transition: all 0.3s ease;
+  background: white;
+  color: #333;
+}
+
+.tech-specimen-search-input:focus {
+  border-color: #ff9500;
+  outline: none;
+  box-shadow: 0 0 0 4px rgba(255, 149, 0, 0.2);
+}
+
+.tech-specimen-search-icon {
+  position: absolute;
+  left: 24px;
+  top: 50%;
+  transform: translateY(-50%);
+  font-size: 1.2rem;
+  color: #ff9500;
+}
+
+.tech-specimen-filter-group {
+  display: flex;
+  flex-direction: column;
+  gap: 10px;
+}
+
+.tech-specimen-filter-label {
+  font-weight: 600;
+  color: #ff7300 !important;
+  font-size: 0.95rem;
+}
+
+.tech-specimen-filter-select {
+  padding: 16px 20px;
+  border: 2px solid #ffcc99;
+  border-radius: 12px;
+  font-size: 1rem;
+  background: white;
+  cursor: pointer;
+  transition: all 0.3s ease;
+  color: #333;
+}
+
+.tech-specimen-filter-select:focus {
+  border-color: #ff9500;
+  outline: none;
+  box-shadow: 0 0 0 3px rgba(255, 149, 0, 0.2);
+}
+
+.tech-specimen-action-buttons {
+  display: flex;
+  gap: 16px;
+  justify-content: flex-end;
+}
+
+.tech-specimen-action-btn {
+  display: flex;
+  align-items: center;
+  gap: 12px;
+  padding: 18px 32px;
+  border: none;
+  border-radius: 14px;
+  font-size: 1.1rem;
+  font-weight: 600;
+  cursor: pointer;
+  transition: all 0.3s ease;
+  border: 2px solid transparent;
+}
+
+.tech-specimen-action-btn-primary {
+  background: linear-gradient(135deg, #ff9500 0%, #ff7300 100%) !important;
+  color: white !important;
+}
+
+.tech-specimen-action-btn-secondary {
+  background: #333333 !important;
+  color: white !important;
+}
+
+.tech-specimen-action-btn-tertiary {
+  background: #fff9f0 !important;
+  color: #333333 !important;
+  border: 2px solid #ffcc99;
+}
+
+.tech-specimen-action-btn:hover {
+  transform: translateY(-3px);
+  box-shadow: 0 10px 25px rgba(255, 149, 0, 0.2);
+}
+
+.tech-specimen-btn-icon {
+  font-size: 1.4rem;
+}
+
+/* Main Content with Technician Theme */
+.tech-specimen-main-content {
+  background: white !important;
+  border-radius: 20px;
+  padding: 32px;
+  margin-bottom: 30px;
+  box-shadow: 0 8px 25px rgba(255, 149, 0, 0.15);
+  border: 2px solid #ffcc99;
+}
+
+.tech-specimen-loading-state {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+  padding: 80px 20px;
+}
+
+.tech-specimen-loading-spinner {
+  width: 60px;
+  height: 60px;
+  border: 5px solid #ffebcc;
+  border-top: 5px solid #ff9500;
+  border-radius: 50%;
+  animation: specimen-spin 1s linear infinite;
+  margin-bottom: 24px;
+}
+
+@keyframes specimen-spin {
+  0% { transform: rotate(0deg); }
+  100% { transform: rotate(360deg); }
+}
+
+.tech-specimen-loading-text {
+  font-size: 1.2rem;
+  color: #ff9500;
+  font-weight: 500;
+}
+
+.tech-specimen-results-header {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  margin-bottom: 32px;
+  padding-bottom: 20px;
+  border-bottom: 2px solid #ffebcc;
+}
+
+.tech-specimen-results-title {
+  margin: 0;
+  font-size: 1.8rem;
+  font-weight: 700;
+  color: #333333;
+}
+
+.tech-specimen-results-count {
+  color: #ff9500 !important;
+  font-weight: 800;
+}
+
+.tech-specimen-view-options {
+  display: flex;
+  gap: 12px;
+}
+
+.tech-specimen-view-btn {
+  display: flex;
+  align-items: center;
+  gap: 10px;
+  padding: 14px 24px;
+  background: #fff9f0;
+  border: 2px solid #ffcc99;
+  border-radius: 12px;
+  font-size: 1rem;
+  font-weight: 600;
+  color: #333333;
+  cursor: pointer;
+  transition: all 0.3s ease;
+}
+
+.tech-specimen-view-btn-active {
+  background: #ff9500 !important;
+  color: white !important;
+  border-color: #ff9500;
+}
+
+.tech-specimen-view-icon {
+  font-size: 1.2rem;
+}
+
+/* Empty State with Technician Theme */
+.tech-specimen-empty-state {
+  text-align: center;
+  padding: 80px 20px;
+}
+
+.tech-specimen-empty-icon {
+  font-size: 4rem;
+  margin-bottom: 24px;
+  color: #ffcc99;
+  opacity: 0.5;
+}
+
+.tech-specimen-empty-title {
+  font-size: 1.8rem;
+  color: #333333;
+  margin-bottom: 12px;
+}
+
+.tech-specimen-empty-text {
+  font-size: 1.1rem;
+  color: #666666;
+  max-width: 500px;
+  margin: 0 auto;
+}
+
+/* Specimen Grid with Technician Theme */
+.tech-specimen-grid {
+  display: grid;
+  grid-template-columns: repeat(auto-fill, minmax(380px, 1fr));
+  gap: 28px;
+}
+
+.tech-specimen-card {
+  background: white;
+  border: 2px solid #ffcc99;
+  border-radius: 18px;
+  padding: 28px;
+  transition: all 0.3s ease;
+  position: relative;
+  overflow: hidden;
+}
+
+.tech-specimen-card:hover {
+  border-color: #ff9500;
+  transform: translateY(-8px);
+  box-shadow: 0 20px 40px rgba(255, 149, 0, 0.15);
+}
+
+.tech-specimen-card::before {
+  content: '';
+  position: absolute;
+  top: 0;
+  left: 0;
+  right: 0;
+  height: 6px;
+  background: linear-gradient(135deg, #ff9500 0%, #ff7300 100%);
+}
+
+/* Card Header */
+.tech-specimen-card-header {
+  display: flex;
+  justify-content: space-between;
+  align-items: flex-start;
+  margin-bottom: 20px;
+}
+
+.tech-specimen-card-id {
+  display: flex;
+  flex-direction: column;
+  gap: 8px;
+}
+
+.tech-specimen-id {
+  font-family: 'Roboto Mono', monospace;
+  font-size: 1.1rem;
+  font-weight: 700;
+  color: #ff9500 !important;
+  background: #fff9f0;
+  padding: 8px 16px;
+  border-radius: 10px;
+  border: 1px solid #ffcc99;
+}
+
+.tech-specimen-barcode {
+  font-family: 'Roboto Mono', monospace;
+  font-size: 0.9rem;
+  color: #666666;
+  background: #f8f9fa;
+  padding: 6px 12px;
+  border-radius: 8px;
+  border: 1px dashed #cccccc;
+}
+
+.tech-specimen-card-status {
+  display: flex;
+  flex-direction: column;
+  gap: 8px;
+  align-items: flex-end;
+}
+
+/* Badge Styles */
+.tech-specimen-status-badge,
+.tech-specimen-priority-badge,
+.tech-specimen-quality-badge {
+  padding: 8px 16px;
+  border-radius: 20px;
+  font-size: 0.85rem;
+  font-weight: 700;
+  text-transform: uppercase;
+  letter-spacing: 0.5px;
+  border: 1px solid transparent;
+}
+
+.tech-specimen-status-badge--collected {
+  background: #e6ffe6 !important;
+  color: #33cc33 !important;
+  border-color: #33cc33;
+}
+
+.tech-specimen-status-badge--processing {
+  background: #e8f4fc !important;
+  color: #3399ff !important;
+  border-color: #3399ff;
+}
+
+.tech-specimen-status-badge--stored {
+  background: #fff0cc !important;
+  color: #ff9900 !important;
+  border-color: #ff9900;
+}
+
+.tech-specimen-status-badge--processed {
+  background: #e6e6ff !important;
+  color: #6666ff !important;
+  border-color: #6666ff;
+}
+
+.tech-specimen-status-badge--transferred {
+  background: #f0e6ff !important;
+  color: #9966ff !important;
+  border-color: #9966ff;
+}
+
+.tech-specimen-status-badge--rejected {
+  background: #ffe6e6 !important;
+  color: #ff3333 !important;
+  border-color: #ff3333;
+}
+
+.tech-specimen-status-badge--pending {
+  background: #f0f3f8 !important;
+  color: #666666 !important;
+  border-color: #cccccc;
+}
+
+.tech-specimen-priority-badge--urgent {
+  background: #ffe6e6 !important;
+  color: #ff3333 !important;
+  border-color: #ff3333;
+}
+
+.tech-specimen-priority-badge--stat {
+  background: #ffcccc !important;
+  color: #cc0000 !important;
+  border-color: #cc0000;
+}
+
+.tech-specimen-priority-badge--routine {
+  background: #e6ffe6 !important;
+  color: #33cc33 !important;
+  border-color: #33cc33;
+}
+
+.tech-specimen-quality-badge--pass {
+  background: #e6ffe6 !important;
+  color: #33cc33 !important;
+  border-color: #33cc33;
+}
+
+.tech-specimen-quality-badge--fail {
+  background: #ffe6e6 !important;
+  color: #ff3333 !important;
+  border-color: #ff3333;
+}
+
+.tech-specimen-quality-badge--pending {
+  background: #fff0cc !important;
+  color: #ff9900 !important;
+  border-color: #ff9900;
+}
+
+/* Patient Info */
+.tech-specimen-patient-info {
+  margin-bottom: 20px;
+  padding-bottom: 20px;
+  border-bottom: 2px solid #ffebcc;
+}
+
+.tech-specimen-patient-name {
+  margin: 0 0 8px;
+  font-size: 1.5rem;
+  font-weight: 700;
+  color: #333333;
+}
+
+.tech-specimen-patient-details {
+  display: flex;
+  gap: 20px;
+  color: #666666;
+  font-size: 0.95rem;
+}
+
+.tech-specimen-patient-id {
+  color: #ff9500;
+  font-weight: 600;
+}
+
+/* Specimen Details */
+.tech-specimen-details {
+  margin-bottom: 20px;
+}
+
+.tech-specimen-type-section {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  margin-bottom: 16px;
+  padding: 16px;
+  background: #fff9f0;
+  border-radius: 12px;
+  border: 1px solid #ffebcc;
+}
+
+.tech-specimen-type, .tech-specimen-container {
+  display: flex;
+  flex-direction: column;
+  gap: 4px;
+}
+
+.tech-specimen-type-label, .tech-specimen-container-label {
+  font-size: 0.9rem;
+  color: #ff9500;
+  font-weight: 600;
+}
+
+.tech-specimen-type-value, .tech-specimen-container-value {
+  font-size: 1.1rem;
+  font-weight: 600;
+  color: #333333;
+}
+
+.tech-specimen-collection-info {
+  display: grid;
+  grid-template-columns: 2fr 1fr;
+  gap: 16px;
+  margin-bottom: 16px;
+  padding: 16px;
+  background: #fff9f0;
+  border-radius: 12px;
+  border: 1px solid #ffebcc;
+}
+
+.tech-specimen-collection-date, .tech-specimen-collected-by {
+  display: flex;
+  flex-direction: column;
+  gap: 4px;
+}
+
+.tech-specimen-collection-label, .tech-specimen-collected-label {
+  font-size: 0.9rem;
+  color: #ff9500;
+  font-weight: 600;
+}
+
+.tech-specimen-collection-value, .tech-specimen-collected-value {
+  font-size: 1rem;
+  font-weight: 500;
+  color: #333333;
+}
+
+.tech-specimen-storage-info {
+  display: grid;
+  grid-template-columns: repeat(3, 1fr);
+  gap: 16px;
+  padding: 16px;
+  background: #fff9f0;
+  border-radius: 12px;
+  border: 1px solid #ffebcc;
+}
+
+.tech-specimen-storage-location, .tech-specimen-temperature, .tech-specimen-volume {
+  display: flex;
+  flex-direction: column;
+  gap: 4px;
+}
+
+.tech-specimen-storage-label, .tech-specimen-temperature-label, .tech-specimen-volume-label {
+  font-size: 0.85rem;
+  color: #ff9500;
+  font-weight: 600;
+}
+
+.tech-specimen-storage-value, .tech-specimen-temperature-value, .tech-specimen-volume-value {
+  font-size: 1rem;
+  font-weight: 500;
+  color: #333333;
+}
+
+/* Tests Section */
+.tech-specimen-tests-section {
+  margin-bottom: 20px;
+  padding: 16px;
+  background: #fff9f0;
+  border-radius: 12px;
+  border: 1px solid #ffebcc;
+}
+
+.tech-specimen-tests-title {
+  margin: 0 0 12px;
+  font-size: 1.1rem;
+  color: #333333;
+  font-weight: 600;
+  color: #ff9500;
+}
+
+.tech-specimen-tests-list {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 8px;
+}
+
+.tech-specimen-test-tag {
+  background: #e8f4fc;
+  color: #3399ff;
+  padding: 6px 12px;
+  border-radius: 8px;
+  font-size: 0.85rem;
+  font-weight: 600;
+  border: 1px solid #3399ff;
+}
+
+/* Quality Section */
+.tech-specimen-quality-section {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  margin-bottom: 20px;
+  padding: 16px;
+  background: #fff9f0;
+  border-radius: 12px;
+  border: 1px solid #ffebcc;
+}
+
+.tech-specimen-quality-check, .tech-specimen-expiration {
+  display: flex;
+  align-items: center;
+  gap: 12px;
+}
+
+.tech-specimen-quality-label, .tech-specimen-expiration-label {
+  font-size: 0.9rem;
+  color: #ff9500;
+  font-weight: 600;
+}
+
+/* Card Footer */
+.tech-specimen-card-footer {
+  display: flex;
+  justify-content: space-between;
+  align-items: flex-start;
+  padding-top: 20px;
+  border-top: 2px solid #ffebcc;
+}
+
+.tech-specimen-technician-notes {
+  flex: 1;
+  display: flex;
+  flex-direction: column;
+  gap: 4px;
+}
+
+.tech-specimen-notes-label {
+  font-size: 0.85rem;
+  color: #ff9500;
+  font-weight: 600;
+}
+
+.tech-specimen-notes-value {
+  font-size: 0.9rem;
+  color: #666666;
+  font-style: italic;
+}
+
+.tech-specimen-card-actions {
+  display: flex;
+  gap: 12px;
+}
+
+.tech-specimen-action-btn-sm {
+  padding: 10px 20px;
+  border: none;
+  border-radius: 10px;
+  font-size: 0.9rem;
+  font-weight: 600;
+  cursor: pointer;
+  transition: all 0.3s ease;
+  border: 2px solid transparent;
+}
+
+.tech-specimen-action-btn-view {
+  background: #ff9500 !important;
+  color: white !important;
+}
+
+.tech-specimen-action-btn-label {
+  background: #3399ff !important;
+  color: white !important;
+}
+
+.tech-specimen-action-btn-sm:hover {
+  transform: translateY(-2px);
+  box-shadow: 0 4px 12px rgba(255, 149, 0, 0.2);
+}
+
+.tech-specimen-status-select-sm {
+  padding: 10px 16px;
+  border: 2px solid #ffcc99;
+  border-radius: 10px;
+  background: white;
+  font-size: 0.9rem;
+  cursor: pointer;
+  min-width: 120px;
+  color: #333333;
+}
+
+.tech-specimen-status-select-sm:focus {
+  border-color: #ff9500;
+  outline: none;
+}
+
+/* Collection Modal Styles */
+.tech-modal-overlay {
+  position: fixed;
+  top: 0;
+  left: 0;
+  right: 0;
+  bottom: 0;
+  background: rgba(0, 0, 0, 0.7);
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  z-index: 1000;
+  padding: 20px;
+}
+
+.tech-collection-modal {
+  background: white;
+  border-radius: 24px;
+  width: 100%;
+  max-width: 900px;
+  max-height: 90vh;
+  overflow-y: auto;
+  box-shadow: 0 25px 50px rgba(255, 149, 0, 0.3);
+  animation: specimen-modal-appear 0.3s ease;
+  border: 3px solid #ff9500;
+}
+
+@keyframes specimen-modal-appear {
+  from {
+    opacity: 0;
+    transform: translateY(30px);
+  }
+  to {
+    opacity: 1;
+    transform: translateY(0);
+  }
+}
+
+.tech-collection-modal-header {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  padding: 32px 40px;
+  border-bottom: 2px solid #ffebcc;
+  background: #fff9f0;
+}
+
+.tech-collection-modal-title {
+  margin: 0;
+  font-size: 2rem;
+  font-weight: 700;
+  color: #333333;
+}
+
+.tech-collection-modal-close {
+  background: none;
+  border: none;
+  font-size: 2.5rem;
+  color: #ff9500;
+  cursor: pointer;
+  transition: color 0.3s ease;
+  padding: 0;
+  width: 40px;
+  height: 40px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+}
+
+.tech-collection-modal-close:hover {
+  color: #ff3333;
+}
+
+/* Collection Form */
+.tech-collection-form {
+  padding: 40px;
+}
+
+.tech-collection-form-grid {
+  display: grid;
+  grid-template-columns: repeat(2, 1fr);
+  gap: 24px;
+  margin-bottom: 32px;
+}
+
+.tech-form-group {
+  display: flex;
+  flex-direction: column;
+  gap: 10px;
+}
+
+.tech-form-label {
+  font-weight: 600;
+  color: #ff9500 !important;
+  font-size: 0.95rem;
+}
+
+.tech-form-input, .tech-form-select, .tech-form-textarea {
+  padding: 16px 20px;
+  border: 2px solid #ffcc99;
+  border-radius: 12px;
+  font-size: 1rem;
+  background: white;
+  transition: all 0.3s ease;
+  color: #333333;
+}
+
+.tech-form-input:focus, .tech-form-select:focus, .tech-form-textarea:focus {
+  border-color: #ff9500;
+  outline: none;
+  box-shadow: 0 0 0 3px rgba(255, 149, 0, 0.2);
+}
+
+.tech-form-textarea {
+  resize: vertical;
+  min-height: 80px;
+}
+
+/* Tests Checkbox Grid */
+.tech-tests-grid {
+  display: grid;
+  grid-template-columns: repeat(3, 1fr);
+  gap: 12px;
+  padding: 16px;
+  background: #fff9f0;
+  border-radius: 12px;
+  border: 1px solid #ffebcc;
+}
+
+.tech-test-checkbox {
+  display: flex;
+  align-items: center;
+  gap: 8px;
+  padding: 12px;
+  background: white;
+  border: 2px solid #ffcc99;
+  border-radius: 8px;
+  cursor: pointer;
+  transition: all 0.3s ease;
+}
+
+.tech-test-checkbox:hover {
+  border-color: #ff9500;
+  background: #fff9f0;
+}
+
+.tech-test-checkbox input[type="checkbox"] {
+  width: 18px;
+  height: 18px;
+  accent-color: #ff9500;
+}
+
+.tech-test-checkbox span {
+  font-weight: 500;
+  color: #333333;
+}
+
+/* Form Actions */
+.tech-form-actions {
+  display: flex;
+  justify-content: flex-end;
+  gap: 16px;
+  padding-top: 32px;
+  border-top: 2px solid #ffebcc;
+}
+
+.tech-form-btn {
+  padding: 16px 32px;
+  border: none;
+  border-radius: 12px;
+  font-size: 1rem;
+  font-weight: 600;
+  cursor: pointer;
+  transition: all 0.3s ease;
+  border: 2px solid transparent;
+}
+
+.tech-form-btn-cancel {
+  background: #fff9f0;
+  color: #333333;
+  border: 2px solid #ffcc99;
+}
+
+.tech-form-btn-submit {
+  background: #ff9500;
+  color: white;
+}
+
+.tech-form-btn:hover {
+  transform: translateY(-2px);
+  box-shadow: 0 8px 20px rgba(255, 149, 0, 0.2);
+}
+
+/* Specimen Detail Modal */
+.tech-specimen-modal {
+  background: white;
+  border-radius: 24px;
+  width: 100%;
+  max-width: 900px;
+  max-height: 90vh;
+  overflow-y: auto;
+  box-shadow: 0 25px 50px rgba(255, 149, 0, 0.3);
+  animation: specimen-modal-appear 0.3s ease;
+  border: 3px solid #ff9500;
+}
+
+.tech-specimen-modal-header {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  padding: 32px 40px;
+  border-bottom: 2px solid #ffebcc;
+  background: #fff9f0;
+}
+
+.tech-specimen-modal-title {
+  margin: 0;
+  font-size: 2rem;
+  font-weight: 700;
+  color: #333333;
+}
+
+.tech-specimen-modal-close {
+  background: none;
+  border: none;
+  font-size: 2.5rem;
+  color: #ff9500;
+  cursor: pointer;
+  transition: color 0.3s ease;
+  padding: 0;
+  width: 40px;
+  height: 40px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+}
+
+.tech-specimen-modal-close:hover {
+  color: #ff3333;
+}
+
+.tech-specimen-modal-content {
+  padding: 40px;
+  background: white;
+}
+
+.tech-specimen-modal-section {
+  margin-bottom: 32px;
+  padding: 24px;
+  background: #fff9f0;
+  border-radius: 16px;
+  border: 1px solid #ffebcc;
+}
+
+.tech-specimen-modal-section:last-child {
+  margin-bottom: 0;
+}
+
+.tech-specimen-modal-section-title {
+  margin: 0 0 20px;
+  font-size: 1.4rem;
+  font-weight: 700;
+  color: #333333;
+  padding-bottom: 12px;
+  border-bottom: 2px solid #ffebcc;
+  color: #ff9500;
+}
+
+/* Modal Grids */
+.tech-specimen-modal-id-grid,
+.tech-specimen-modal-patient-grid,
+.tech-specimen-modal-collection-grid,
+.tech-specimen-modal-storage-grid,
+.tech-specimen-modal-quality-grid {
+  display: grid;
+  grid-template-columns: repeat(2, 1fr);
+  gap: 20px;
+}
+
+.tech-specimen-modal-id-item,
+.tech-specimen-modal-patient-item,
+.tech-specimen-modal-collection-item,
+.tech-specimen-modal-storage-item,
+.tech-specimen-modal-quality-item {
+  display: flex;
+  flex-direction: column;
+  gap: 6px;
+}
+
+.tech-specimen-modal-id-label,
+.tech-specimen-modal-patient-label,
+.tech-specimen-modal-collection-label,
+.tech-specimen-modal-storage-label,
+.tech-specimen-modal-quality-label {
+  font-size: 0.9rem;
+  color: #ff9500;
+  font-weight: 600;
+}
+
+.tech-specimen-modal-id-value,
+.tech-specimen-modal-patient-value,
+.tech-specimen-modal-collection-value,
+.tech-specimen-modal-storage-value,
+.tech-specimen-modal-quality-value {
+  font-size: 1.1rem;
+  font-weight: 600;
+  color: #333333;
+}
+
+/* Tests List in Modal */
+.tech-specimen-modal-tests-list {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 12px;
+}
+
+.tech-specimen-modal-test-item {
+  background: #e8f4fc;
+  color: #3399ff;
+  padding: 10px 16px;
+  border-radius: 8px;
+  font-size: 0.9rem;
+  font-weight: 600;
+  border: 1px solid #3399ff;
+}
+
+/* Instructions */
+.tech-specimen-modal-instructions {
+  padding: 20px;
+  background: white;
+  border-radius: 12px;
+  border: 1px solid #ffebcc;
+  font-size: 1rem;
+  line-height: 1.6;
+  color: #333333;
+}
+
+/* Attachments */
+.tech-specimen-modal-attachments {
+  display: flex;
+  flex-direction: column;
+  gap: 12px;
+}
+
+.tech-specimen-modal-attachment-item {
+  display: flex;
+  align-items: center;
+  gap: 16px;
+  padding: 16px;
+  background: white;
+  border-radius: 10px;
+  border: 2px solid #ffebcc;
+  transition: all 0.3s ease;
+}
+
+.tech-specimen-modal-attachment-item:hover {
+  border-color: #ff9500;
+  background: #fff9f0;
+}
+
+.tech-specimen-modal-attachment-icon {
+  font-size: 1.2rem;
+  color: #ff9500;
+}
+
+.tech-specimen-modal-attachment-name {
+  flex: 1;
+  font-weight: 500;
+  color: #333333;
+}
+
+.tech-specimen-modal-attachment-btn {
+  padding: 8px 20px;
+  background: #ff9500;
+  color: white;
+  border: none;
+  border-radius: 8px;
+  font-weight: 600;
+  cursor: pointer;
+  transition: all 0.3s ease;
+  border: 2px solid transparent;
+}
+
+.tech-specimen-modal-attachment-btn:hover {
+  background: #ff7300;
+  transform: translateY(-2px);
+  border-color: #ffcc33;
+}
+
+/* Modal Footer */
+.tech-specimen-modal-footer {
+  display: flex;
+  justify-content: flex-end;
+  gap: 16px;
+  padding: 32px 40px;
+  border-top: 2px solid #ffebcc;
+  background: #fff9f0;
+}
+
+.tech-specimen-modal-btn {
+  padding: 16px 32px;
+  border: none;
+  border-radius: 12px;
+  font-size: 1rem;
+  font-weight: 600;
+  cursor: pointer;
+  transition: all 0.3s ease;
+  border: 2px solid transparent;
+}
+
+.tech-specimen-modal-btn-secondary {
+  background: #fff9f0;
+  color: #333333;
+  border: 2px solid #ffcc99;
+}
+
+.tech-specimen-modal-btn-primary {
+  background: #ff9500;
+  color: white;
+}
+
+.tech-specimen-modal-quality-select,
+.tech-specimen-modal-status-select {
+  padding: 16px 32px;
+  border: 2px solid #ffcc99;
+  border-radius: 12px;
+  background: white;
+  font-size: 1rem;
+  cursor: pointer;
+  color: #333333;
+  min-width: 150px;
+}
+
+.tech-specimen-modal-quality-select:focus,
+.tech-specimen-modal-status-select:focus {
+  border-color: #ff9500;
+  outline: none;
+  box-shadow: 0 0 0 3px rgba(255, 149, 0, 0.2);
+}
+
+.tech-specimen-modal-btn:hover {
+  transform: translateY(-2px);
+  box-shadow: 0 8px 20px rgba(255, 149, 0, 0.2);
+}
+
+/* Footer with Technician Theme */
+.tech-specimen-footer {
+  text-align: center;
+  padding: 32px;
+  color: #333333;
+  font-size: 0.95rem;
+  background: #fff9f0;
+  border-radius: 20px;
+  border: 2px solid #ffcc99;
+}
+
+.tech-specimen-footer-content {
+  max-width: 600px;
+  margin: 0 auto;
+}
+
+.tech-specimen-footer-text {
+  margin: 0 0 12px;
+  font-weight: 600;
+  color: #333333;
+}
+
+.tech-specimen-footer-copyright {
+  margin: 0;
+  color: #666666;
+  opacity: 0.8;
+}
+
+/* Responsive Design */
+@media (max-width: 1200px) {
+  .tech-specimen-grid {
+    grid-template-columns: repeat(auto-fill, minmax(350px, 1fr));
+  }
+  
+  .tech-collection-form-grid,
+  .tech-tests-grid {
+    grid-template-columns: repeat(2, 1fr);
+  }
+}
+
+@media (max-width: 992px) {
+  .tech-specimen-header {
+    flex-direction: column;
+    gap: 24px;
+  }
+  
+  .tech-specimen-header-actions {
+    width: 100%;
+    justify-content: center;
+  }
+  
+  .tech-specimen-search-filters {
+    grid-template-columns: 1fr;
+  }
+  
+  .tech-specimen-action-buttons {
+    justify-content: center;
+  }
+  
+  .tech-specimen-modal-footer,
+  .tech-form-actions {
+    flex-direction: column;
+  }
+  
+  .tech-specimen-modal-btn,
+  .tech-form-btn {
+    width: 100%;
+  }
+}
+
+@media (max-width: 768px) {
+  .tech-specimen-container {
+    padding: 16px;
+  }
+  
+  .tech-specimen-title {
+    font-size: 2.2rem;
+  }
+  
+  .tech-specimen-stats-grid {
+    grid-template-columns: 1fr;
+  }
+  
+  .tech-specimen-grid {
+    grid-template-columns: 1fr;
+  }
+  
+  .tech-specimen-modal-content,
+  .tech-collection-form {
+    padding: 24px;
+  }
+  
+  .tech-specimen-card-footer {
+    flex-direction: column;
+    gap: 16px;
+    align-items: stretch;
+  }
+  
+  .tech-specimen-card-actions {
+    flex-direction: column;
+  }
+  
+  .tech-collection-form-grid,
+  .tech-tests-grid {
+    grid-template-columns: 1fr;
+  }
+  
+  .tech-specimen-modal-id-grid,
+  .tech-specimen-modal-patient-grid,
+  .tech-specimen-modal-collection-grid,
+  .tech-specimen-modal-storage-grid,
+  .tech-specimen-modal-quality-grid {
+    grid-template-columns: 1fr;
+  }
+}
+
+@media (max-width: 480px) {
+  .tech-specimen-header {
+    padding: 24px;
+  }
+  
+  .tech-specimen-title {
+    font-size: 1.8rem;
+  }
+  
+  .tech-specimen-dashboard,
+  .tech-specimen-main-content {
+    padding: 24px;
+  }
+  
+  .tech-specimen-storage-info {
+    grid-template-columns: 1fr;
+  }
+  
+  .tech-specimen-action-buttons {
+    flex-direction: column;
+  }
+  
+  .tech-specimen-action-btn {
+    width: 100%;
+    justify-content: center;
+  }
+  
+  .tech-specimen-collection-info {
+    grid-template-columns: 1fr;
+  }
+}
+
+/* Button Active States */
+.tech-specimen-btn:active,
+.tech-specimen-action-btn:active,
+.tech-specimen-action-btn-sm:active,
+.tech-specimen-modal-btn:active,
+.tech-form-btn:active,
+.tech-specimen-modal-attachment-btn:active {
+  transform: translateY(1px);
+}
+
+/* Scrollbar Styling */
+.tech-collection-modal::-webkit-scrollbar,
+.tech-specimen-modal::-webkit-scrollbar {
+  width: 10px;
+}
+
+.tech-collection-modal::-webkit-scrollbar-track,
+.tech-specimen-modal::-webkit-scrollbar-track {
+  background: #fff9f0;
+  border-radius: 5px;
+}
+
+.tech-collection-modal::-webkit-scrollbar-thumb,
+.tech-specimen-modal::-webkit-scrollbar-thumb {
+  background: #ff9500;
+  border-radius: 5px;
+}
+
+.tech-collection-modal::-webkit-scrollbar-thumb:hover,
+.tech-specimen-modal::-webkit-scrollbar-thumb:hover {
+  background: #ff7300;
+}
+
+/* Selection Color */
+.tech-specimen-container ::selection {
+  background-color: rgba(255, 149, 0, 0.3);
+  color: #000000;
+}
+
+/* Focus States */
+.tech-specimen-search-input:focus,
+.tech-specimen-filter-select:focus,
+.tech-specimen-status-select-sm:focus,
+.tech-form-input:focus,
+.tech-form-select:focus,
+.tech-form-textarea:focus,
+.tech-specimen-modal-quality-select:focus,
+.tech-specimen-modal-status-select:focus {
+  outline: 2px solid #ff9500;
+  outline-offset: 2px;
+}
+
+/* Hover Effects Enhancement */
+.tech-specimen-card:hover::before {
+  height: 8px;
+  transition: height 0.3s ease;
+}
+
+.tech-specimen-stat-card:hover .tech-specimen-stat-icon {
+  transform: scale(1.1);
+  transition: transform 0.3s ease;
+}
+
+/* Print Styles */
+@media print {
+  .tech-specimen-header-actions,
+  .tech-specimen-action-buttons,
+  .tech-specimen-card-actions,
+  .tech-specimen-view-options,
+  .tech-specimen-modal-footer,
+  .tech-specimen-modal-close,
+  .tech-form-actions {
+    display: none !important;
+  }
+  
+  .tech-specimen-dashboard,
+  .tech-specimen-main-content {
+    box-shadow: none !important;
+    border: 1px solid #ccc !important;
+  }
+  
+  .tech-specimen-header {
+    background: #ff9500 !important;
+    -webkit-print-color-adjust: exact;
+  }
+}
