@@ -1,11 +1,14 @@
 import React, { useState, useEffect, useRef } from 'react';
 import { useParams, useNavigate } from 'react-router-dom';
+import { useSelector } from 'react-redux';
 import './DoctorChat.css';
+import { getChatDoctors, getConversation, getCurrentUserId, sendMessage } from '../../../redux/chatApi';
 
 const DoctorChat = () => {
     const { doctorId } = useParams();
     const navigate = useNavigate();
     const messagesEndRef = useRef(null);
+    const authUser = useSelector((state) => state.auth?.user);
     const [appointmentType, setAppointmentType] = useState('in_clinic'); // 'video', 'voice', 'in_clinic'
     const [isVideoActive, setIsVideoActive] = useState(false);
     const [isVoiceActive, setIsVoiceActive] = useState(false);
@@ -238,17 +241,109 @@ const DoctorChat = () => {
     const [messages, setMessages] = useState([]);
     const [newMessage, setNewMessage] = useState("");
     const [isTyping, setIsTyping] = useState(false);
+    const [chatStatus, setChatStatus] = useState('loading');
+    const [chatError, setChatError] = useState('');
+    const [isSending, setIsSending] = useState(false);
 
-    // Find doctor by ID
-    useEffect(() => {
-        const doctor = doctorsData.find(d => d.id === parseInt(doctorId));
-        if (doctor) {
-            setActiveDoctor(doctor);
-            setMessages(messagesData[doctor.id] || []);
-        } else {
-            navigate('/doctor-sms');
+    const normalizeMessage = (msg, index) => {
+        const currentUserId = getCurrentUserId(authUser);
+        const senderId = msg.sender_id || msg.senderId || msg.from_user_id || msg.user_id;
+        const senderRole = msg.sender || msg.sender_role || msg.role;
+        const createdAt = msg.time || msg.created_at || msg.createdAt || new Date().toISOString();
+        const date = new Date(createdAt);
+
+        return {
+            id: msg.id || msg._id || index + 1,
+            text: msg.message || msg.text || msg.content || '',
+            time: Number.isNaN(date.getTime()) ? createdAt : date.toLocaleTimeString([], { hour: '2-digit', minute: '2-digit' }),
+            sender: senderRole || (String(senderId) === String(currentUserId) ? 'patient' : 'doctor'),
+            senderName: msg.sender_name || msg.senderName,
+            senderPhone: msg.sender_phone || msg.senderPhone || msg.phone || msg.phone_number,
+        };
+    };
+
+    const getSenderDetails = (message) => {
+        if (message.senderName || message.senderPhone) {
+            return {
+                name: message.senderName || (message.sender === 'patient' ? 'You' : 'Doctor'),
+                phone: message.senderPhone || '',
+            };
         }
-    }, [doctorId, navigate]);
+
+        if (message.sender === 'patient') {
+            return {
+                name: authUser?.full_name || authUser?.fullname || authUser?.name || 'You',
+                phone: authUser?.phone || authUser?.phone_number || '',
+            };
+        }
+
+        return {
+            name: activeDoctor?.name || 'Doctor',
+            phone: activeDoctor?.phone || '',
+        };
+    };
+
+    // Find doctor by ID and load conversation
+    useEffect(() => {
+        const loadChat = async () => {
+            try {
+                setChatStatus('loading');
+                setChatError('');
+
+                const [doctorList, conversation] = await Promise.all([
+                    getChatDoctors(),
+                    getConversation(doctorId),
+                ]);
+
+                const doctorItem = doctorList.find(item => {
+                    const d = item.doctor || item.user || item;
+                    return String(d.id || d._id || d.doctor_id || item.doctor_id || d.user_id) === String(doctorId);
+                });
+                const doctor = doctorItem?.doctor || doctorItem?.user || doctorItem;
+                const fallbackDoctor = doctorsData.find(d => d.id === parseInt(doctorId));
+                const firstDoctorMessage = conversation.find(message => String(message.sender_id) === String(doctorId)) || conversation[0];
+
+                setActiveDoctor(doctor ? {
+                    id: doctor.id || doctor._id || doctor.doctor_id || doctorItem?.doctor_id || doctor.user_id,
+                    name: doctor.full_name || doctor.fullname || doctor.name || doctor.doctor_name || doctorItem?.doctor_name || 'Doctor',
+                    specialty: doctor.speciality || doctor.specialization || doctor.specialty || doctorItem?.specialty || 'Doctor',
+                    lastMessage: doctorItem?.lastMessage || doctorItem?.last_message || doctor.lastMessage || doctor.last_message || '',
+                    time: doctorItem?.time || doctorItem?.last_message_time || doctor.time || doctor.last_message_time || '',
+                    unread: doctorItem?.unread || doctorItem?.unread_count || doctor.unread || doctor.unread_count || 0,
+                    avatarColor: "dc-avatar-green",
+                    online: Boolean(doctor.online || doctor.is_online),
+                    phone: doctor.phone || doctor.phone_number || '',
+                    email: doctor.email || '',
+                    rating: doctor.rating || 0,
+                } : fallbackDoctor || (firstDoctorMessage ? {
+                    id: doctorId,
+                    name: firstDoctorMessage.sender_name || firstDoctorMessage.receiver_name || 'Doctor',
+                    specialty: 'Doctor',
+                    lastMessage: firstDoctorMessage.message || '',
+                    time: firstDoctorMessage.created_at || '',
+                    unread: 0,
+                    avatarColor: "dc-avatar-green",
+                    online: false,
+                    phone: firstDoctorMessage.sender_phone || firstDoctorMessage.phone || '',
+                    email: '',
+                    rating: 0,
+                } : null));
+
+                setMessages(conversation.map(normalizeMessage));
+                setChatStatus('succeeded');
+            } catch (err) {
+                const fallbackDoctor = doctorsData.find(d => d.id === parseInt(doctorId));
+                setActiveDoctor(fallbackDoctor || null);
+                setMessages([]);
+                setChatError(err.response?.data?.message || err.message || 'Failed to load chat');
+                setChatStatus('failed');
+            }
+        };
+
+        if (doctorId) {
+            loadChat();
+        }
+    }, [doctorId, authUser]);
 
     // Scroll to bottom when messages change
     useEffect(() => {
@@ -269,12 +364,13 @@ const DoctorChat = () => {
     };
 
     // Handle sending a new message
-    const handleSendMessage = () => {
+    const handleSendMessage = async () => {
         if (newMessage.trim() === "" || !activeDoctor) return;
 
+        const messageText = newMessage.trim();
         const newMsg = {
-            id: messages.length + 1,
-            text: newMessage,
+            id: `local-${Date.now()}`,
+            text: messageText,
             time: new Date().toLocaleTimeString([], { hour: '2-digit', minute: '2-digit' }),
             sender: "patient"
         };
@@ -282,23 +378,17 @@ const DoctorChat = () => {
         const updatedMessages = [...messages, newMsg];
         setMessages(updatedMessages);
         setNewMessage("");
+        setIsSending(true);
+        setChatError('');
 
-        // Simulate doctor typing
-        setIsTyping(true);
-
-        // Simulate doctor reply after 1-2 seconds
-        setTimeout(() => {
+        try {
+            await sendMessage({ receiverId: doctorId, message: messageText });
+        } catch (err) {
+            setChatError(err.response?.data?.message || err.message || 'Failed to send message');
+        } finally {
+            setIsSending(false);
             setIsTyping(false);
-
-            const doctorReply = {
-                id: messages.length + 2,
-                text: getRandomDoctorResponse(),
-                time: new Date().toLocaleTimeString([], { hour: '2-digit', minute: '2-digit' }),
-                sender: "doctor"
-            };
-
-            setMessages(prev => [...prev, doctorReply]);
-        }, 1500 + Math.random() * 1000);
+        }
     };
 
     // Get random doctor response
@@ -352,7 +442,7 @@ const DoctorChat = () => {
         navigate('/doctor-sms');
     };
 
-    if (!activeDoctor) {
+    if (!activeDoctor && chatStatus === 'loading') {
         return (
             <div className="dc-loading">
                 <div className="dc-loading-spinner"></div>
@@ -481,6 +571,7 @@ const DoctorChat = () => {
                                         You have a scheduled {appointmentType} appointment
                                     </p>
                                 </div>
+                                {chatError && <p>{chatError}</p>}
                             </div>
                         ) : (
                             <div className="dc-messages-list">
@@ -501,6 +592,12 @@ const DoctorChat = () => {
 
                                         <div className="dc-message-content">
                                             <div className="dc-message-bubble">
+                                                <div className="dc-message-meta">
+                                                    <strong>{getSenderDetails(message).name}</strong>
+                                                    {getSenderDetails(message).phone && (
+                                                        <span> {getSenderDetails(message).phone}</span>
+                                                    )}
+                                                </div>
                                                 <p className="dc-message-text">{message.text}</p>
                                             </div>
                                             <div className="dc-message-footer">
@@ -594,7 +691,7 @@ const DoctorChat = () => {
                     <button
                         className="dc-send-btn"
                         onClick={handleSendMessage}
-                        disabled={!newMessage.trim()}
+                        disabled={!newMessage.trim() || isSending}
                     >
                         <i className="fas fa-paper-plane"></i>
                     </button>

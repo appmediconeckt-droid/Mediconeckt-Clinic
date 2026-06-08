@@ -1,9 +1,11 @@
 import React, { useState, useEffect, useRef } from 'react';
+import { useDispatch, useSelector } from 'react-redux';
 import { useNavigate, Link } from 'react-router-dom';
 import { FaHeartbeat, FaUser, FaVenusMars, FaCalendarAlt, FaMapMarkerAlt, FaTint, FaRulerVertical, FaAllergies, FaStethoscope, FaPills, FaPhone, FaEnvelope, FaLock, FaCheckCircle, FaArrowLeft, FaArrowRight, FaMobileAlt, FaShieldAlt, FaCheck, FaArrowLeft as FaLeftArrow, FaHospital, FaUserMd, FaStar } from 'react-icons/fa';
 import './PatientSignup.css';
 import { motion } from "framer-motion";
 import logo from '../image/Mediconect Logo-2.png';
+import { registerUser, clearAuthStatus } from '../redux/authSlice';
 
 const MedicalPatientSignup = () => {
   // Step state
@@ -49,6 +51,26 @@ const MedicalPatientSignup = () => {
 
   // Navigate hook
   const navigate = useNavigate();
+  const dispatch = useDispatch();
+  const { status, error } = useSelector((state) => state.auth);
+
+  const getPatientPayload = () => ({
+    role: 'patient',
+    full_name: formData.fullName,
+    email: formData.email,
+    contact_number: formData.phone,
+    password: formData.password,
+    gender: formData.gender,
+    dob: formData.dob,
+    age: formData.age,
+    address: formData.address,
+    blood_group: formData.bloodGroup,
+    height: formData.height,
+    weight: formData.weight,
+    allergies: formData.allergies,
+    conditions: formData.conditions,
+    medications: formData.medications,
+  });
 
   // Handle form input changes
   const handleChange = (e) => {
@@ -158,7 +180,10 @@ const MedicalPatientSignup = () => {
   };
 
   // Simulate sending OTPs
+  const STATIC_OTP = '123456';
+
   const sendOTPs = () => {
+    console.log('Static OTP for testing:', STATIC_OTP);
     console.log('Sending OTP to phone:', formData.phone);
     console.log('Sending OTP to email:', formData.email);
 
@@ -172,9 +197,11 @@ const MedicalPatientSignup = () => {
     if (type === 'phone' && phoneOTPTimer === 0) {
       console.log('Resending OTP to phone:', formData.phone);
       setPhoneOTPTimer(30);
+      alert(`Static OTP for testing is ${STATIC_OTP}`);
     } else if (type === 'email' && emailOTPTimer === 0) {
       console.log('Resending OTP to email:', formData.email);
       setEmailOTPTimer(30);
+      alert(`Static OTP for testing is ${STATIC_OTP}`);
     }
   };
 
@@ -182,44 +209,47 @@ const MedicalPatientSignup = () => {
   const handleVerifyOTP = (type) => {
     const otpValue = type === 'phone' ? formData.phoneOTP : formData.emailOTP;
 
-    if (otpValue.length === 6 && /^\d+$/.test(otpValue)) {
-      if (type === 'phone') {
-        setPhoneOTPVerified(true);
-      } else {
-        setEmailOTPVerified(true);
-      }
-
+    if (otpValue.trim() !== STATIC_OTP) {
       setErrors(prev => ({
         ...prev,
-        [`${type}OTP`]: ''
+        [`${type}OTP`]: `Enter the static OTP ${STATIC_OTP} for now`,
       }));
-    } else {
-      setErrors(prev => ({
-        ...prev,
-        [`${type}OTP`]: 'Please enter a valid 6-digit OTP'
-      }));
+      return;
     }
+
+    if (type === 'phone') {
+      setPhoneOTPVerified(true);
+    } else {
+      setEmailOTPVerified(true);
+    }
+
+    setErrors(prev => ({
+      ...prev,
+      [`${type}OTP`]: ''
+    }));
   };
 
   // Handle final submission
-  const handleFinalSubmit = (e) => {
+  const handleFinalSubmit = async (e) => {
     e.preventDefault();
 
-    // Check if both OTPs are verified
     if (!phoneOTPVerified || !emailOTPVerified) {
       alert('Please verify both phone and email OTPs before submitting');
       return;
     }
 
-    console.log('Form submitted successfully:', formData);
+    const payload = getPatientPayload();
+    const resultAction = await dispatch(registerUser(payload));
 
-    // Show success message
-    alert('Medical account created successfully!');
-
-    // Navigate to login page after 1 second
-    setTimeout(() => {
-      navigate('/login');
-    }, 1000);
+    if (registerUser.fulfilled.match(resultAction)) {
+      alert('Medical account created successfully!');
+      dispatch(clearAuthStatus());
+      setTimeout(() => {
+        navigate('/login');
+      }, 1000);
+    } else {
+      alert(`Signup failed: ${resultAction.payload || resultAction.error.message}`);
+    }
   };
 
   // Timer effect for OTP resend

@@ -1,9 +1,11 @@
 import { useState, useEffect } from "react";
+import { useDispatch, useSelector } from 'react-redux';
 import { Link, useNavigate } from "react-router-dom";
-import { FaEye, FaEyeSlash, FaUserMd, FaStethoscope, FaPhone, FaEnvelope, FaLock, FaUser,FaArrowLeft as FaLeftArrow} from "react-icons/fa";
+import { FaEye, FaEyeSlash, FaUserMd, FaStethoscope, FaPhone, FaEnvelope, FaLock, FaUser, FaArrowLeft as FaLeftArrow } from "react-icons/fa";
 import "./Signup.css";
 import { motion } from "framer-motion";
 import logo from '../image/Mediconect Logo-2.png';
+import { registerUser, clearAuthStatus } from '../redux/authSlice';
 
 export default function Signup() {
   const navigate = useNavigate();
@@ -66,6 +68,8 @@ export default function Signup() {
     return `${min}:${sec < 10 ? "0" : ""}${sec}`;
   };
 
+  const STATIC_OTP = "123456";
+
   const handleSubmit = () => {
     if (form.password !== form.confirmPassword) {
       alert("Password & Confirm Password do not match!");
@@ -84,33 +88,54 @@ export default function Signup() {
   };
 
   const handleEmailVerification = () => {
-    if (emailOtp === "") {
-      alert("Please enter email OTP");
+    if (emailOtp.trim() !== STATIC_OTP) {
+      alert(`Use the static OTP ${STATIC_OTP} for verification in this test mode.`);
       return;
     }
+
     setVerificationStep(2);
     setEmailOtp("");
   };
 
-  const handlePhoneVerification = () => {
+  const dispatch = useDispatch();
+  const { status, error } = useSelector((state) => state.auth);
+
+  const getDoctorPayload = () => ({
+    role: 'doctor',
+    full_name: form.fullname,
+    speciality: form.speciality,
+    email: form.email,
+    contact_number: form.phone,
+    password: form.password,
+  });
+
+  const handlePhoneVerification = async () => {
     if (timeLeft <= 0) {
       alert("OTP Expired! Please resend OTP.");
       return;
     }
 
-    if (phoneOtp === "") {
-      alert("Please enter phone OTP");
+    if (phoneOtp.trim() !== STATIC_OTP) {
+      alert(`Use the static OTP ${STATIC_OTP} for verification in this test mode.`);
       return;
     }
 
-    alert("Signup Successful!");
-    setModalOpen(false);
-    navigate("/login");
+    const payload = getDoctorPayload();
+    const resultAction = await dispatch(registerUser(payload));
+
+    if (registerUser.fulfilled.match(resultAction)) {
+      alert("Signup Successful!");
+      setModalOpen(false);
+      dispatch(clearAuthStatus());
+      navigate("/login");
+    } else {
+      alert(`Signup failed: ${resultAction.payload || resultAction.error.message}`);
+    }
   };
 
   const handleResendOtp = () => {
     setTimeLeft(300);
-    alert("New OTP sent to your email and phone!");
+    alert(`Static OTP for this test mode is ${STATIC_OTP}.`);
   };
 
   return (

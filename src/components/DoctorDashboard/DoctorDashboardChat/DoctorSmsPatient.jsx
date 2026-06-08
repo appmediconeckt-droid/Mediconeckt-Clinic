@@ -1,9 +1,10 @@
 // DoctorSmsPatient.js
-import React, { useState } from 'react';
+import React, { useEffect, useState } from 'react';
 import { useNavigate } from 'react-router-dom';
 import { FaPhone, FaCommentMedical, FaSearch } from 'react-icons/fa';
 import { format } from 'date-fns';
 import './DoctorSmsPatient.css';
+import { getChatList } from '../../../redux/chatApi';
 
 // Mock patient data
 const mockPatients = [
@@ -72,14 +73,71 @@ const mockPatients = [
 const PatientList = () => {
     const [searchTerm, setSearchTerm] = useState('');
     const [statusFilter, setStatusFilter] = useState('all');
-    const [unreadCounts] = useState({
-        1: 2,
-        2: 5,
-        3: 0,
-        4: 1,
-        5: 3
-    });
+    const [patients, setPatients] = useState([]);
+    const [status, setStatus] = useState('loading');
+    const [error, setError] = useState('');
     const navigate = useNavigate();
+
+    const formatChatTime = (value) => {
+        if (!value) return '';
+        const date = new Date(value);
+        if (Number.isNaN(date.getTime())) return value;
+        return date.toLocaleTimeString([], { hour: '2-digit', minute: '2-digit' });
+    };
+
+    const getLastMessageText = (item) => {
+        const lastMessage = item.lastMessage || item.last_message || item.latest_message;
+        if (typeof lastMessage === 'string') return lastMessage;
+        return lastMessage?.message || lastMessage?.text || item.message || item.content || 'No messages yet';
+    };
+
+    const getLastMessageTime = (item, patient) => {
+        const lastMessage = item.lastMessage || item.last_message || item.latest_message;
+        return formatChatTime(
+            lastMessage?.created_at ||
+            lastMessage?.createdAt ||
+            lastMessage?.time ||
+            item.last_message_time ||
+            item.created_at ||
+            item.updated_at ||
+            patient.last_message_time
+        );
+    };
+
+    useEffect(() => {
+        const loadPatients = async () => {
+            try {
+                setStatus('loading');
+                setError('');
+                const chatList = await getChatList();
+                setPatients(chatList.map((item, index) => {
+                    const patient = item.patient || item.user || item;
+                    return {
+                    id: patient.id || patient._id || patient.patient_id || item.patient_id || patient.user_id,
+                    name: patient.full_name || patient.fullname || patient.name || patient.patient_name || patientItem?.patient_name || 'Unknown Patient',
+                    age: patient.age || 'NA',
+                    gender: patient.gender || 'NA',
+                    condition: patient.condition || patient.diagnosis || item.condition || 'No condition',
+                    status: patient.status || item.status || 'Stable',
+                    lastVisit: patient.lastVisit || patient.last_visit || item.last_visit || patient.created_at || '',
+                    phone: patient.contact_number || patient.contact_number || '',
+                    avatarColor: ['#3498db', '#e74c3c', '#2ecc71', '#9b59b6', '#f39c12'][index % 5],
+                    bloodGroup: patient.bloodGroup || patient.blood_group || '',
+                    unread: item.unread || item.unread_count || patient.unread || patient.unread_count || 0,
+                    lastMessage: getLastMessageText(item),
+                    messageTime: getLastMessageTime(item, patient),
+                };
+                }));
+                setStatus('succeeded');
+            } catch (err) {
+                setError(err.response?.data?.message || err.message || 'Failed to load chat list');
+                setPatients([]);
+                setStatus('failed');
+            }
+        };
+
+        loadPatients();
+    }, []);
 
     const getStatusClass = (status) => {
         if (!status) return 'status-stable';
@@ -107,7 +165,7 @@ const PatientList = () => {
     };
 
     // ✅ Safe filtering
-    const filteredPatients = mockPatients.filter(patient => {
+    const filteredPatients = patients.filter(patient => {
         if (!patient) return false;
         
         const matchesSearch = (patient.name || '').toLowerCase().includes(searchTerm.toLowerCase()) ||
@@ -158,7 +216,15 @@ const PatientList = () => {
             </div>
 
             <div className="patient-list">
-                {filteredPatients.length === 0 ? (
+                {status === 'loading' ? (
+                    <div className="no-patients">
+                        <p>Loading patients...</p>
+                    </div>
+                ) : status === 'failed' ? (
+                    <div className="no-patients">
+                        <p>{error}</p>
+                    </div>
+                ) : filteredPatients.length === 0 ? (
                     <div className="no-patients">
                         <p>No patients found matching your criteria.</p>
                     </div>
@@ -192,6 +258,14 @@ const PatientList = () => {
 
                                     <div className="patient-meta">
                                         <span className="last-visit">
+                                            Message: {patient.lastMessage || 'No messages yet'}
+                                        </span>
+                                        {patient.messageTime && (
+                                            <span className="last-visit">
+                                                Time: {patient.messageTime}
+                                            </span>
+                                        )}
+                                        <span className="last-visit">
                                             Last visit: {patient.lastVisit ? 
                                                 format(new Date(patient.lastVisit), 'MMM d, yyyy') : 
                                                 'N/A'}
@@ -203,8 +277,8 @@ const PatientList = () => {
                                 </div>
 
                                 <div className="patient-actions">
-                                    {(unreadCounts[patient.id] || 0) > 0 && (
-                                        <div className="unread-badge">{unreadCounts[patient.id]}</div>
+                                    {(patient.unread || 0) > 0 && (
+                                        <div className="unread-badge">{patient.unread}</div>
                                     )}
                                     <button
                                         className="sms-btn"

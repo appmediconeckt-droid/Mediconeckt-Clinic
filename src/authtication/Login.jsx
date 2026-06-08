@@ -1,4 +1,5 @@
 import { useState, useEffect } from "react";
+import { useDispatch, useSelector } from 'react-redux';
 import { useNavigate, Link, useLocation } from "react-router-dom";
 import {
   FaEye,
@@ -21,6 +22,7 @@ import {
 import "./Login.css";
 import { motion } from "framer-motion";
 import logo from "../image/Mediconect Logo-2.png";
+import { loginUser } from '../redux/authSlice';
 
 export default function Login() {
   const navigate = useNavigate();
@@ -71,6 +73,9 @@ export default function Login() {
   const [loginSuccess, setLoginSuccess] = useState(false);
   const [isRoleDropdownOpen, setIsRoleDropdownOpen] = useState(false);
   const [roleFromSignup, setRoleFromSignup] = useState("");
+  const dispatch = useDispatch();
+  const { status, error } = useSelector((state) => state.auth);
+  
 
   // Check for role from URL query parameters or localStorage
   useEffect(() => {
@@ -140,12 +145,39 @@ export default function Login() {
       return;
     }
 
-    // Show success notification on right side only
-    setLoginSuccess(true);
-    setTimeout(() => {
-      setLoginSuccess(false);
-      navigate(rolePaths[userRole]);
-    }, 1500);
+    // gather device info
+    let deviceId = localStorage.getItem('deviceId');
+    if (!deviceId) {
+      deviceId = `web-${Date.now()}`;
+      localStorage.setItem('deviceId', deviceId);
+    }
+    const deviceName = typeof navigator !== 'undefined' ? (navigator.userAgent || navigator.platform || 'web') : 'web';
+
+    const payload = {
+      email: form.identifier,
+      password: form.password,
+      device_id: deviceId,
+      device_name: deviceName,
+      role: userRole,
+    };
+
+    // dispatch login
+    (async () => {
+      const resultAction = await dispatch(loginUser(payload));
+
+      if (loginUser.fulfilled.match(resultAction)) {
+        setLoginSuccess(true);
+        setTimeout(() => {
+          setLoginSuccess(false);
+          // navigate by role, prefer returned role if available
+          const returnedRole = resultAction.payload?.user?.role || userRole;
+          navigate(rolePaths[returnedRole] || '/');
+        }, 800);
+      } else {
+        const msg = resultAction.payload || resultAction.error?.message || 'Login failed';
+        showNotification('error', msg);
+      }
+    })();
   };
 
   // Get signup route based on role

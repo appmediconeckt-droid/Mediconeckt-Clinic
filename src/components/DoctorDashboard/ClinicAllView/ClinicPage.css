@@ -1,0 +1,206 @@
+.doctor-clinics-page {
+  padding: 24px;
+  min-height: 100vh;
+  background: #f5f5f5;
+}
+
+.doctor-clinics-grid {
+  display: grid;
+  grid-template-columns: 1fr;
+  gap: 24px;
+}
+
+.doctor-clinic-card {
+  overflow: hidden;
+  margin: auto;
+  width: 100%;
+  border-radius: 12px;
+  background: #ffffff;
+  border: none;
+  box-shadow: none;
+}
+
+.doctor-clinic-slider {
+  position: relative;
+  overflow: hidden;
+  background: #e5e7eb;
+}
+
+.doctor-clinic-image {
+  width: 100%;
+  height: 450px;
+  object-fit: cover;
+  display: block;
+  background: #e5e7eb;
+}
+
+.doctor-clinic-slider-btn {
+  position: absolute;
+  top: 50%;
+  transform: translateY(-50%);
+  width: 42px;
+  height: 42px;
+  border: none;
+  border-radius: 50%;
+  background: #ffffff;
+  color: #111827;
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  cursor: pointer;
+  box-shadow: 0 8px 20px rgba(15, 23, 42, 0.18);
+}
+
+.doctor-clinic-slider-btn.left {
+  left: 10px;
+}
+
+.doctor-clinic-slider-btn.right {
+  right: 10px;
+}
+
+.doctor-clinic-slider-btn:hover {
+  background: #f3f4f6;
+}
+
+.doctor-clinic-body,
+.doctor-clinic-edit {
+  padding: 20px;
+}
+
+.doctor-clinic-body h2 {
+  margin: 0 0 14px;
+  color: #111827;
+  font-size: 26px;
+  font-weight: 700;
+}
+
+.doctor-clinic-body p {
+  display: flex;
+  align-items: center;
+  gap: 8px;
+  margin: 10px 0;
+  color: #374151;
+  font-size: 16px;
+  line-height: 1.5;
+}
+
+.doctor-clinic-body p svg {
+  margin-top: 2px;
+  flex: 0 0 auto;
+  color: #2454d6;
+}
+
+.doctor-clinic-edit {
+  display: grid;
+  gap: 12px;
+}
+
+.doctor-clinic-edit input,
+.doctor-clinic-edit textarea {
+  width: 100%;
+  border: 1px solid #d0d5dd;
+  border-radius: 8px;
+  padding: 10px 12px;
+  color: #172033;
+  font-size: 14px;
+  outline: none;
+}
+
+.doctor-clinic-edit input:focus,
+.doctor-clinic-edit textarea:focus {
+  border-color: #84a9ff;
+  box-shadow: 0 0 0 3px rgba(36, 84, 214, 0.12);
+}
+
+.doctor-clinic-actions {
+  display: flex;
+  align-items: center;
+  flex-wrap: wrap;
+  gap: 10px;
+  margin-top: 18px;
+}
+
+.doctor-clinic-edit .doctor-clinic-actions {
+  margin-top: 4px;
+}
+
+.doctor-clinic-actions button {
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  gap: 7px;
+  min-height: 38px;
+  border: 1px solid #2454d6;
+  border-radius: 8px;
+  background: #2454d6;
+  color: #ffffff;
+  font-size: 14px;
+  font-weight: 700;
+  padding: 9px 13px;
+  cursor: pointer;
+  transition: background 0.2s ease, border-color 0.2s ease, color 0.2s ease;
+}
+
+.doctor-clinic-actions button:hover:not(:disabled) {
+  background: #163b8f;
+  border-color: #163b8f;
+}
+
+.doctor-clinic-actions button:disabled {
+  opacity: 0.65;
+  cursor: not-allowed;
+}
+
+.doctor-clinic-actions button.secondary {
+  background: #ffffff;
+  border-color: #c7d7fe;
+  color: #2454d6;
+}
+
+.doctor-clinic-actions button.secondary:hover:not(:disabled) {
+  background: #eef4ff;
+  border-color: #84a9ff;
+  color: #163b8f;
+}
+
+.doctor-clinic-actions button.danger {
+  background: #dc2626;
+  border-color: #dc2626;
+}
+
+.doctor-clinic-actions button.danger:hover:not(:disabled) {
+  background: #b91c1c;
+  border-color: #b91c1c;
+}
+
+.doctor-clinics-state,
+.doctor-clinics-error {
+  border-radius: 12px;
+  background: #ffffff;
+  border: none;
+  padding: 36px;
+  color: #667085;
+  text-align: center;
+}
+
+.doctor-clinics-error {
+  margin-bottom: 16px;
+  color: #b42318;
+  border-color: #fecdca;
+  background: #fffbfa;
+}
+
+@media (max-width: 768px) {
+  .doctor-clinics-page {
+    padding: 16px;
+  }
+
+  .doctor-clinic-image {
+    height: 280px;
+  }
+
+  .doctor-clinic-body h2 {
+    font-size: 22px;
+  }
+}

@@ -1,12 +1,16 @@
 // DoctorCalendar.jsx
-import React, { useEffect, useState } from "react";
+import { useEffect, useState } from "react";
+import { useSelector } from "react-redux";
+import axios from "axios";
 import "bootstrap/dist/css/bootstrap.min.css";
 import "./DoctorCalendar.css";
+import { API_BASE_URL, getAuthHeaders } from "../../../redux/apiConfig";
 
 
 const days = ["Sun", "Mon", "Tue", "Wed", "Thu", "Fri", "Sat"];
 const formatDateKey = (y, m, d) => `${y}-${m + 1}-${d}`;
-const STORAGE_KEY = "doctor_calendar_state_v1";
+const CLINICS_BASE_URL = `${API_BASE_URL}/clinics`;
+const AVAILABILITY_BASE_URL = `${API_BASE_URL}/availability`;
 
 const defaultDurations = [5, 10, 15, 20, 30];
 
@@ -19,7 +23,58 @@ const defaultClinics = [
   { id: 5, name: "East Facility", location: "East Side", color: "#6f42c1" },
 ];
 
+const getStoredAuthUser = () => {
+  try {
+    return JSON.parse(localStorage.getItem("authUser") || "null");
+  } catch {
+    return null;
+  }
+};
+
+const getDoctorId = (user = {}) => (
+  user.doctor_id ||
+  user.doctorId ||
+  user.id ||
+  user._id ||
+  user.user_id ||
+  user.userId ||
+  ""
+);
+
+const unwrapApiArray = (payload) => {
+  if (Array.isArray(payload)) return payload;
+  if (Array.isArray(payload?.data)) return payload.data;
+  if (Array.isArray(payload?.clinics)) return payload.clinics;
+  if (Array.isArray(payload?.ranges)) return payload.ranges;
+  if (Array.isArray(payload?.availableDates)) return payload.availableDates;
+  if (Array.isArray(payload?.data?.clinics)) return payload.data.clinics;
+  if (Array.isArray(payload?.data?.ranges)) return payload.data.ranges;
+  if (Array.isArray(payload?.data?.availableDates)) return payload.data.availableDates;
+  if (Array.isArray(payload?.results)) return payload.results;
+  return [];
+};
+
+const normalizeClinic = (clinic, index) => ({
+  id: clinic.id || clinic.clinic_id || clinic._id || index,
+  name: clinic.clinic_name || clinic.clinicName || clinic.name || "Unnamed Clinic",
+  location: clinic.location || clinic.address || clinic.clinic_address || "Address not available",
+  doctorId: clinic.doctor_id || clinic.doctorId || clinic.doctor?.id || clinic.doctor?._id || "",
+  color: defaultClinics[index % defaultClinics.length]?.color || "#007bff",
+});
+
+const normalizeRange = (range) => ({
+  id: range.id || range.range_id || range._id,
+  date: range.date || range.available_date || range.availability_date || range.specific_date || "",
+  weekday: range.weekday ?? range.day_of_week ?? range.week_day,
+  start: range.start || range.start_time || range.startTime || "",
+  end: range.end || range.end_time || range.endTime || "",
+  duration: Number(range.duration || range.slot_duration || range.slotDuration || 15),
+  clinicId: range.clinic_id || range.clinicId || "",
+  blocked: Boolean(range.blocked || range.is_unavailable || range.unavailable),
+});
+
 const DoctorCalendar = () => {
+  const authUser = useSelector((state) => state.auth?.user);
   const [currentDate, setCurrentDate] = useState(new Date());
   const [selectedDays, setSelectedDays] = useState([]);
   const [recurringWeekdays, setRecurringWeekdays] = useState([]);
@@ -39,6 +94,10 @@ const DoctorCalendar = () => {
   const [clinics, setClinics] = useState(defaultClinics);
   const [selectedClinic, setSelectedClinic] = useState(defaultClinics[0]);
   const [showClinicDropdown, setShowClinicDropdown] = useState(false);
+  const [apiStatus, setApiStatus] = useState("idle");
+  const [apiError, setApiError] = useState("");
+  const currentUser = authUser || getStoredAuthUser() || {};
+  const doctorId = getDoctorId(currentUser);
 
   const [additionalTime, setAdditionalTime] = useState({
     start: "",
@@ -47,6 +106,98 @@ const DoctorCalendar = () => {
     durationMode: "preset",
     customDuration: "none",
   });
+
+  const loadClinics = async () => {
+    if (!doctorId) {
+      setApiError("Doctor id not found. Please login again.");
+      return;
+    }
+
+    try {
+      setApiStatus("loading");
+      setApiError("");
+      const response = await axios.get(CLINICS_BASE_URL, {
+        headers: getAuthHeaders(),
+        params: { doctor_id: doctorId, role: "doctor" },
+      });
+
+      const doctorClinics = unwrapApiArray(response.data)
+        .map(normalizeClinic)
+        .filter((clinic) => !clinic.doctorId || String(clinic.doctorId) === String(doctorId));
+
+      setClinics(doctorClinics);
+      if (doctorClinics.length) {
+        setSelectedClinic(doctorClinics[0]);
+      }
+      setApiStatus("succeeded");
+    } catch (error) {
+      setApiStatus("failed");
+      setApiError(error.response?.data?.message || error.response?.data?.error || "Failed to load clinics");
+    }
+  };
+
+  const applyAvailabilityRanges = (ranges) => {
+    const nextDateMap = {};
+    const nextWeekdayMap = {};
+    const nextSelectedDays = new Set();
+    const nextWeekdays = new Set();
+    const month = currentDate.getMonth();
+    const year = currentDate.getFullYear();
+
+    ranges.map(normalizeRange).forEach((range) => {
+      if (range.clinicId && selectedClinic?.id && String(range.clinicId) !== String(selectedClinic.id)) return;
+
+      if (range.date) {
+        const date = new Date(range.date);
+        const dateKey = Number.isNaN(date.getTime())
+          ? range.date
+          : formatDateKey(date.getFullYear(), date.getMonth(), date.getDate());
+        const info = nextDateMap[dateKey] || { ranges: [], blocked: false };
+        nextDateMap[dateKey] = {
+          ...info,
+          blocked: info.blocked || range.blocked,
+          ranges: range.blocked ? info.ranges : [...info.ranges, range],
+        };
+
+        if (!Number.isNaN(date.getTime()) && date.getMonth() === month && date.getFullYear() === year) {
+          nextSelectedDays.add(date.getDate());
+        }
+      } else if (range.weekday !== undefined && range.weekday !== null && range.weekday !== "") {
+        const weekday = Number(range.weekday);
+        nextWeekdayMap[weekday] = [...(nextWeekdayMap[weekday] || []), range];
+        nextWeekdays.add(weekday);
+      }
+    });
+
+    setAvailabilityDateMap(nextDateMap);
+    setAvailabilityWeekdayMap(nextWeekdayMap);
+    setSelectedDays(Array.from(nextSelectedDays).sort((a, b) => a - b));
+    setRecurringWeekdays(Array.from(nextWeekdays).sort((a, b) => a - b));
+  };
+
+  const loadAvailabilityRanges = async () => {
+    if (!doctorId || !selectedClinic?.id) return;
+
+    try {
+      const response = await axios.get(`${AVAILABILITY_BASE_URL}/ranges`, {
+        headers: getAuthHeaders(),
+        params: { doctor_id: doctorId, clinic_id: selectedClinic.id },
+      });
+      applyAvailabilityRanges(unwrapApiArray(response.data));
+    } catch (error) {
+      setApiError(error.response?.data?.message || error.response?.data?.error || "Failed to load availability ranges");
+    }
+  };
+
+  useEffect(() => {
+    loadClinics();
+    // eslint-disable-next-line react-hooks/exhaustive-deps
+  }, [doctorId]);
+
+  useEffect(() => {
+    loadAvailabilityRanges();
+    // eslint-disable-next-line react-hooks/exhaustive-deps
+  }, [doctorId, selectedClinic?.id, currentDate.getMonth(), currentDate.getFullYear()]);
 
   // Check if a date is in the past
   const isPastDate = (year, month, day) => {
@@ -125,7 +276,7 @@ const DoctorCalendar = () => {
     }));
   };
 
-  const addQuickRangeToDate = (year, month, day, dateKey) => {
+  const addQuickRangeToDate = async (year, month, day, dateKey) => {
     const q = quickRanges[dateKey] || {};
     const start = q.start;
     const end = q.end;
@@ -151,12 +302,22 @@ const DoctorCalendar = () => {
       return alert("End time must be after Start time");
     if (!(duration > 0)) return alert("Duration must be a positive number");
 
+    let savedRange;
+    try {
+      savedRange = await persistRange(
+        { start, end, duration },
+        { type: "date", key: dateKey }
+      );
+    } catch (error) {
+      return alert(error.response?.data?.message || error.response?.data?.error || "Failed to save availability range");
+    }
+
     setAvailabilityDateMap((prev) => {
       const prevInfo = prev[dateKey]
         ? { ...prev[dateKey] }
         : { ranges: [], blocked: false };
       const arr = prevInfo.ranges ? [...prevInfo.ranges] : [];
-      arr.push({ start, end, duration, clinicId: selectedClinic.id });
+      arr.push(savedRange);
       return { ...prev, [dateKey]: { ...prevInfo, ranges: arr } };
     });
 
@@ -172,7 +333,7 @@ const DoctorCalendar = () => {
     }));
   };
 
-  const addAdditionalTiming = () => {
+  const addAdditionalTiming = async () => {
     const { start, end, durationMode, customDuration } = additionalTime;
     let duration = Number(additionalTime.duration || 0);
 
@@ -195,33 +356,34 @@ const DoctorCalendar = () => {
 
     const month = currentDate.getMonth();
     const year = currentDate.getFullYear();
+    const newAvailabilityDateMap = { ...availabilityDateMap };
 
-    setSelectedDays((prevSelectedDays) => {
-      const newAvailabilityDateMap = { ...availabilityDateMap };
+    for (const day of selectedDays) {
+      if (isPastDate(year, month, day)) continue;
+      if (isPastDateTime(year, month, day, sh, sm)) {
+        alert(`Cannot add time in the past for date ${day}`);
+        continue;
+      }
 
-      prevSelectedDays.forEach((day) => {
-        // Skip past dates
-        if (isPastDate(year, month, day)) return;
+      const dateKey = formatDateKey(year, month, day);
+      try {
+        const savedRange = await persistRange(
+          { start, end, duration },
+          { type: "date", key: dateKey }
+        );
 
-        // Check if start time is in the past
-        if (isPastDateTime(year, month, day, sh, sm)) {
-          alert(`Cannot add time in the past for date ${day}`);
-          return;
-        }
-
-        const dateKey = formatDateKey(year, month, day);
         const prevInfo = newAvailabilityDateMap[dateKey]
           ? { ...newAvailabilityDateMap[dateKey] }
           : { ranges: [], blocked: false };
         const arr = prevInfo.ranges ? [...prevInfo.ranges] : [];
-        arr.push({ start, end, duration, clinicId: selectedClinic.id });
+        arr.push(savedRange);
         newAvailabilityDateMap[dateKey] = { ...prevInfo, ranges: arr };
-      });
+      } catch (error) {
+        return alert(error.response?.data?.message || error.response?.data?.error || `Failed to save range for ${dateKey}`);
+      }
+    }
 
-      setAvailabilityDateMap(newAvailabilityDateMap);
-      return prevSelectedDays;
-    });
-
+    setAvailabilityDateMap(newAvailabilityDateMap);
     setAdditionalTime({
       start: "",
       end: "",
@@ -229,11 +391,10 @@ const DoctorCalendar = () => {
       durationMode: "preset",
       customDuration: "",
     });
-
     setShowAddTimeModal(false);
   };
 
-  const addAdditionalTimingToWeekdays = () => {
+  const addAdditionalTimingToWeekdays = async () => {
     const { start, end, durationMode, customDuration } = additionalTime;
     let duration = Number(additionalTime.duration || 0);
 
@@ -254,21 +415,26 @@ const DoctorCalendar = () => {
       return alert("End time must be after Start time");
     if (!(duration > 0)) return alert("Duration must be a positive number");
 
-    setRecurringWeekdays((prevRecurringWeekdays) => {
-      const newAvailabilityWeekdayMap = { ...availabilityWeekdayMap };
+    const newAvailabilityWeekdayMap = { ...availabilityWeekdayMap };
 
-      prevRecurringWeekdays.forEach((weekday) => {
+    for (const weekday of recurringWeekdays) {
+      try {
+        const savedRange = await persistRange(
+          { start, end, duration },
+          { type: "weekday", key: weekday }
+        );
+
         const arr = newAvailabilityWeekdayMap[weekday]
           ? [...newAvailabilityWeekdayMap[weekday]]
           : [];
-        arr.push({ start, end, duration, clinicId: selectedClinic.id });
+        arr.push(savedRange);
         newAvailabilityWeekdayMap[weekday] = arr;
-      });
+      } catch (error) {
+        return alert(error.response?.data?.message || error.response?.data?.error || `Failed to save range for weekday ${days[weekday]}`);
+      }
+    }
 
-      setAvailabilityWeekdayMap(newAvailabilityWeekdayMap);
-      return prevRecurringWeekdays;
-    });
-
+    setAvailabilityWeekdayMap(newAvailabilityWeekdayMap);
     setAdditionalTime({
       start: "",
       end: "",
@@ -278,26 +444,6 @@ const DoctorCalendar = () => {
     });
 
     setShowAddTimeModal(false);
-  };
-
-  // Clinic management functions
-  const handleDeleteClinic = (clinicId) => {
-    if (clinics.length <= 1) {
-      alert("You must have at least one clinic");
-      return;
-    }
-
-    if (!window.confirm("Are you sure you want to delete this clinic? This will remove all appointments for this clinic.")) {
-      return;
-    }
-
-    const updatedClinics = clinics.filter(clinic => clinic.id !== clinicId);
-    setClinics(updatedClinics);
-
-    // If the deleted clinic was selected, select the first one
-    if (selectedClinic.id === clinicId) {
-      setSelectedClinic(updatedClinics[0]);
-    }
   };
 
   const renderCalendar = () => {
@@ -640,7 +786,47 @@ const DoctorCalendar = () => {
     setNewRange({ start: "", end: "", duration: 15 });
   };
 
-  const saveRange = () => {
+  const createRangePayload = (range, target = editingTarget) => ({
+    doctor_id: doctorId,
+    doctorId: doctorId,
+    clinic_id: selectedClinic.id,
+    clinicId: selectedClinic.id,
+    ...(target?.type === "date"
+      ? {
+          date: target.key,
+          available_date: target.key,
+          availability_date: target.key,
+          specific_date: target.key,
+        }
+      : {
+          weekday: target?.key,
+          day_of_week: target?.key,
+          week_day: target?.key,
+        }),
+    start_time: range.start,
+    end_time: range.end,
+    start: range.start,
+    end: range.end,
+    startTime: range.start,
+    endTime: range.end,
+    start_date: range.start,
+    end_date: range.end,
+    startDate: range.start,
+    endDate: range.end,
+    duration: range.duration || 15,
+  });
+
+  const persistRange = async (range, target = editingTarget) => {
+    const response = await axios.post(
+      `${AVAILABILITY_BASE_URL}/ranges`,
+      createRangePayload(range, target),
+      { headers: getAuthHeaders() }
+    );
+    const created = response.data?.range || response.data?.data?.range || response.data?.data || response.data || {};
+    return normalizeRange({ ...range, ...created, clinic_id: selectedClinic.id });
+  };
+
+  const saveRange = async () => {
     if (!newRange.start || !newRange.end)
       return alert("Start and End time required");
 
@@ -668,42 +854,38 @@ const DoctorCalendar = () => {
     if (!(eMinutes > sMinutes))
       return alert("End time must be after Start time");
 
-    if (editingTarget.type === "date") {
+    try {
+      const savedRange = await persistRange(newRange);
+
+      if (editingTarget.type === "date") {
       setAvailabilityDateMap((prev) => {
         const prevInfo = prev[editingTarget.key]
           ? { ...prev[editingTarget.key] }
           : { ranges: [], blocked: false };
         const arr = prevInfo.ranges ? [...prevInfo.ranges] : [];
-        arr.push({
-          start: newRange.start,
-          end: newRange.end,
-          duration: newRange.duration || 15,
-          clinicId: selectedClinic.id,
-        });
+        arr.push(savedRange);
         return { ...prev, [editingTarget.key]: { ...prevInfo, ranges: arr } };
       });
     } else {
       const w = editingTarget.key;
       setAvailabilityWeekdayMap((prev) => {
         const arr = prev[w] ? [...prev[w]] : [];
-        arr.push({
-          start: newRange.start,
-          end: newRange.end,
-          duration: newRange.duration || 15,
-          clinicId: selectedClinic.id,
-        });
+        arr.push(savedRange);
         return { ...prev, [w]: arr };
       });
     }
     // Don't clear the form, allow adding multiple ranges
     setNewRange({ start: "", end: "", duration: 15 });
+    } catch (error) {
+      alert(error.response?.data?.message || error.response?.data?.error || "Failed to save availability range");
+    }
   };
 
   const saveAndClose = () => {
     setEditingTarget(null);
   };
 
-  const removeRange = (index) => {
+  const removeRange = async (index) => {
     if (!editingTarget) return;
 
     if (editingTarget.type === "date") {
@@ -712,6 +894,16 @@ const DoctorCalendar = () => {
         isPastDate(editingTarget.year, editingTarget.month, editingTarget.day)
       ) {
         return alert("Cannot modify past dates");
+      }
+
+      const info = availabilityDateMap[editingTarget.key] || { ranges: [], blocked: false };
+      const range = (info.ranges || [])[index];
+      if (range?.id) {
+        try {
+          await axios.delete(`${AVAILABILITY_BASE_URL}/ranges/${range.id}`, { headers: getAuthHeaders() });
+        } catch (error) {
+          return alert(error.response?.data?.message || error.response?.data?.error || "Failed to delete range");
+        }
       }
 
       setAvailabilityDateMap((prev) => {
@@ -724,6 +916,15 @@ const DoctorCalendar = () => {
       });
     } else {
       const w = editingTarget.key;
+      const range = (availabilityWeekdayMap[w] || [])[index];
+      if (range?.id) {
+        try {
+          await axios.delete(`${AVAILABILITY_BASE_URL}/ranges/${range.id}`, { headers: getAuthHeaders() });
+        } catch (error) {
+          return alert(error.response?.data?.message || error.response?.data?.error || "Failed to delete range");
+        }
+      }
+
       setAvailabilityWeekdayMap((prev) => {
         const arr = (prev[w] || []).filter((_, i) => i !== index);
         return { ...prev, [w]: arr };
@@ -731,10 +932,28 @@ const DoctorCalendar = () => {
     }
   };
 
-  const toggleBlockDate = (dateKey, year, month, day) => {
+  const toggleBlockDate = async (dateKey, year, month, day) => {
     if (isPastDate(year, month, day)) {
       alert("Cannot modify past dates");
       return;
+    }
+
+    const currentlyBlocked = Boolean(availabilityDateMap[dateKey]?.blocked);
+    try {
+      if (currentlyBlocked) {
+        await axios.delete(`${AVAILABILITY_BASE_URL}/clear-date`, {
+          headers: getAuthHeaders(),
+          data: { doctor_id: doctorId, clinic_id: selectedClinic.id, date: dateKey },
+        });
+      } else {
+        await axios.post(
+          `${AVAILABILITY_BASE_URL}/unavailable`,
+          { doctor_id: doctorId, clinic_id: selectedClinic.id, date: dateKey },
+          { headers: getAuthHeaders() }
+        );
+      }
+    } catch (error) {
+      return alert(error.response?.data?.message || error.response?.data?.error || "Failed to update unavailable date");
     }
 
     setAvailabilityDateMap((prev) => {
@@ -745,10 +964,19 @@ const DoctorCalendar = () => {
     });
   };
 
-  const removeAllRangesForDate = (dateKey, year, month, day) => {
+  const removeAllRangesForDate = async (dateKey, year, month, day) => {
     if (isPastDate(year, month, day)) {
       alert("Cannot modify past dates");
       return;
+    }
+
+    try {
+      await axios.delete(`${AVAILABILITY_BASE_URL}/clear-date`, {
+        headers: getAuthHeaders(),
+        data: { doctor_id: doctorId, clinic_id: selectedClinic.id, date: dateKey },
+      });
+    } catch (error) {
+      return alert(error.response?.data?.message || error.response?.data?.error || "Failed to clear date ranges");
     }
 
     setAvailabilityDateMap((prev) => {
@@ -769,7 +997,7 @@ const DoctorCalendar = () => {
     while (start < end) {
       const hh = String(start.getHours()).padStart(2, "0");
       const mm = String(start.getMinutes()).padStart(2, "0");
-      const clinic = clinics.find(c => c.id === range.clinicId) || selectedClinic;
+      const clinic = clinics.find(c => String(c.id) === String(range.clinicId)) || selectedClinic;
       res.push({
         time: `${hh}:${mm}`,
         clinicId: clinic.id,
@@ -781,7 +1009,7 @@ const DoctorCalendar = () => {
     return res;
   };
 
-  const generateAllSlots = () => {
+  const buildLocalSlotPreview = () => {
     const month = currentDate.getMonth();
     const year = currentDate.getFullYear();
     const totalDays = getDaysInMonth(month, year);
@@ -812,7 +1040,7 @@ const DoctorCalendar = () => {
             : availabilityWeekdayMap[new Date(year, month, d).getDay()] || [];
 
         // Filter ranges to only include slots for the selected clinic
-        const filteredRanges = ranges.filter(range => range.clinicId === selectedClinic.id);
+        const filteredRanges = ranges.filter(range => String(range.clinicId) === String(selectedClinic.id));
 
         const slots = [];
         filteredRanges.forEach((r) => {
@@ -822,12 +1050,46 @@ const DoctorCalendar = () => {
         final.push({ date: dateKey, slots });
       });
 
-    setSlotPreview(final);
+    return final;
   };
 
-  const clearAll = () => {
+  const generateAllSlots = async () => {
+    try {
+      const response = await axios.get(`${AVAILABILITY_BASE_URL}/available`, {
+        headers: getAuthHeaders(),
+        params: {
+          doctor_id: doctorId,
+          clinic_id: selectedClinic.id,
+          month: currentDate.getMonth() + 1,
+          year: currentDate.getFullYear(),
+        },
+      });
+
+      const apiSlots = unwrapApiArray(response.data);
+      if (apiSlots.length) {
+        setSlotPreview(apiSlots);
+        return;
+      }
+    } catch {
+      // Fall back to local preview if the API returns a shape the UI cannot render yet.
+    }
+
+    setSlotPreview(buildLocalSlotPreview());
+  };
+
+  const clearAll = async () => {
     if (!window.confirm("Clear selected days, weekdays and availability?"))
       return;
+
+    try {
+      await axios.delete(`${AVAILABILITY_BASE_URL}/clear-all`, {
+        headers: getAuthHeaders(),
+        data: { doctor_id: doctorId, clinic_id: selectedClinic.id },
+      });
+    } catch (error) {
+      return alert(error.response?.data?.message || error.response?.data?.error || "Failed to clear availability");
+    }
+
     setSelectedDays([]);
     setRecurringWeekdays([]);
     setAvailabilityDateMap({});
@@ -958,6 +1220,13 @@ const DoctorCalendar = () => {
           </div>
         </div>
       </div>
+
+      {apiStatus === "loading" && (
+        <div className="alert alert-info py-2">Loading clinics and availability...</div>
+      )}
+      {apiError && (
+        <div className="alert alert-danger py-2">{apiError}</div>
+      )}
 
       <div className="weekday-bar d-flex justify-content-between gap-2 mb-2">
         {days.map((d, i) => (
@@ -1314,9 +1583,9 @@ const DoctorCalendar = () => {
 
                 <button
                   className="btn btn-secondary"
-                  onClick={() => {
-                    addAdditionalTiming();
-                    addAdditionalTimingToWeekdays();
+                  onClick={async () => {
+                    if (selectedDays.length > 0) await addAdditionalTiming();
+                    if (recurringWeekdays.length > 0) await addAdditionalTimingToWeekdays();
                   }}
                   disabled={
                     !additionalTime.start ||
@@ -1348,10 +1617,10 @@ const DoctorCalendar = () => {
               <div className="d-flex gap-2">
                 <button
                   className="btn btn-success"
-                  onClick={() => {
-                    if (selectedDays.length > 0) addAdditionalTiming();
+                  onClick={async () => {
+                    if (selectedDays.length > 0) await addAdditionalTiming();
                     if (recurringWeekdays.length > 0)
-                      addAdditionalTimingToWeekdays();
+                      await addAdditionalTimingToWeekdays();
                   }}
                   disabled={
                     !additionalTime.start ||
@@ -1425,7 +1694,7 @@ const DoctorCalendar = () => {
                         availabilityDateMap[editingTarget.key].ranges) ||
                       []
                     ).map((r, idx) => {
-                      const clinic = clinics.find(c => c.id === r.clinicId) || selectedClinic;
+                      const clinic = clinics.find(c => String(c.id) === String(r.clinicId)) || selectedClinic;
                       return (
                         <li
                           key={idx}
@@ -1460,7 +1729,7 @@ const DoctorCalendar = () => {
                     })
                     : (availabilityWeekdayMap[editingTarget.key] || []).map(
                       (r, idx) => {
-                        const clinic = clinics.find(c => c.id === r.clinicId) || selectedClinic;
+                        const clinic = clinics.find(c => String(c.id) === String(r.clinicId)) || selectedClinic;
                         return (
                           <li
                             key={idx}
@@ -1614,7 +1883,7 @@ const DoctorCalendar = () => {
                 </div>
                 <div className="mt-2">
                   <small className="text-muted">
-                    Click "Add" to add multiple ranges. Click "Save & Close"
+                    Click Add to add multiple ranges. Click Save & Close
                     when done.
                   </small>
                   {editingTarget.type === "date" && (

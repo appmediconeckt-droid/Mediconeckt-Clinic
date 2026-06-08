@@ -1,11 +1,23 @@
-import React, { useState } from 'react';
+import React, { useState, useEffect } from 'react';
 import './PatientAppointment.css';
-import { Link } from 'react-router-dom';
+import { useDispatch, useSelector } from 'react-redux';
+import { fetchDoctors } from '../../../redux/doctorsSlice';
+import AppointmentBooking from './AppointmentBookingModal';
 
 const PatientAppointment = () => {
+  const dispatch = useDispatch();
+  const { list: doctorsFromStore, status: doctorsStatus, error: doctorsError } = useSelector((state) => state.doctors || { list: [], status: 'idle', error: null });
+
   const [searchTerm, setSearchTerm] = useState('');
   const [selectedSpecialty, setSelectedSpecialty] = useState('');
   const [selectedLocation, setSelectedLocation] = useState('');
+  const [showBookingModal, setShowBookingModal] = useState(false);
+  const [selectedDoctor, setSelectedDoctor] = useState(null);
+
+  useEffect(() => {
+    // Always fetch doctors when this page mounts so navigation triggers the API call
+    dispatch(fetchDoctors());
+  }, [dispatch]);
 
   const specialties = [
     'Cardiologist',
@@ -27,68 +39,19 @@ const PatientAppointment = () => {
     'Boston'
   ];
 
-  const doctors = [
-    {
-      id: 1,
-      name: 'Dr. Sarah Johnson',
-      specialty: 'Cardiologist',
-      location: 'New York',
-      experience: '12 years',
-      rating: 4.8,
-      availableToday: true,
-      imageColor: '#4CAF50'
-    },
-    {
-      id: 2,
-      name: 'Dr. Michael Chen',
-      specialty: 'Neurologist',
-      location: 'Los Angeles',
-      experience: '15 years',
-      rating: 4.9,
-      availableToday: true,
-      imageColor: '#2196F3'
-    },
-    {
-      id: 3,
-      name: 'Dr. Emily Wilson',
-      specialty: 'Dermatologist',
-      location: 'Chicago',
-      experience: '8 years',
-      rating: 4.7,
-      availableToday: false,
-      imageColor: '#FF9800'
-    },
-    {
-      id: 4,
-      name: 'Dr. Robert Davis',
-      specialty: 'Pediatrician',
-      location: 'Houston',
-      experience: '10 years',
-      rating: 4.6,
-      availableToday: true,
-      imageColor: '#9C27B0'
-    },
-    {
-      id: 5,
-      name: 'Dr. Jennifer Lee',
-      specialty: 'Orthopedist',
-      location: 'Phoenix',
-      experience: '14 years',
-      rating: 4.9,
-      availableToday: true,
-      imageColor: '#F44336'
-    },
-    {
-      id: 6,
-      name: 'Dr. James Miller',
-      specialty: 'Gynecologist',
-      location: 'Miami',
-      experience: '11 years',
-      rating: 4.8,
-      availableToday: false,
-      imageColor: '#3F51B5'
-    },
-  ];
+  // Use API-provided doctors; fallback to empty list until API responds
+  const doctors = (doctorsFromStore && doctorsFromStore.length > 0)
+    ? doctorsFromStore.map(d => ({
+        id: d._id || d.id,
+        name: d.full_name || d.fullname || d.name,
+        specialty: d.speciality || d.specialization || d.specialty,
+        location: d.location || d.city || '',
+        experience: d.experience || d.years || '',
+        rating: d.rating || 4.5,
+        availableToday: true,
+        imageColor: '#4CAF50',
+      }))
+    : [];
 
   const filteredDoctors = doctors.filter(doctor => {
     const matchesSearch = doctor.name.toLowerCase().includes(searchTerm.toLowerCase()) ||
@@ -99,10 +62,30 @@ const PatientAppointment = () => {
     return matchesSearch && matchesSpecialty && matchesLocation;
   });
 
-  const handleBookAppointment = (doctorId) => {
-    alert(`Booking appointment with doctor ID: ${doctorId}`);
-    // In a real app, this would navigate to a booking page or open a modal
+  const handleBookAppointment = (doctor) => {
+    setSelectedDoctor(doctor);
+    setShowBookingModal(true);
   };
+
+  const closeBookingModal = () => {
+    setShowBookingModal(false);
+    setSelectedDoctor(null);
+  };
+
+  if (showBookingModal && selectedDoctor) {
+    return (
+      <AppointmentBooking 
+        doctorId={selectedDoctor.id} 
+        doctorData={{
+          name: selectedDoctor.name,
+          specialty: selectedDoctor.specialty,
+          experience: selectedDoctor.experience,
+          id: selectedDoctor.id,
+        }}
+        onClose={closeBookingModal}
+      />
+    );
+  }
 
   return (
     <div className="doctor-appointment p-4">
@@ -170,7 +153,8 @@ const PatientAppointment = () => {
 
       <div className="results-info">
         <h2>Available Doctors</h2>
-        <p>{filteredDoctors.length} doctors found</p>
+        {doctorsStatus === 'loading' ? <p>Loading doctors...</p> : <p>{filteredDoctors.length} doctors found</p>}
+        {doctorsStatus === 'failed' && <p className="text-danger">Error: {doctorsError}</p>}
       </div>
 
       <div className="doctor-profiles">
@@ -211,11 +195,12 @@ const PatientAppointment = () => {
               </div>
 
               <div className="appointment-card-footer">
-                <Link to="/patient-appointment" style={{ textDecorationLine: "none" }}>
-                  <button className="book-btn">
-                    <i className="fas fa-calendar-check"></i> Book Appointment
-                  </button>
-                </Link>
+                <button 
+                  className="book-btn"
+                  onClick={() => handleBookAppointment(doctor)}
+                >
+                  <i className="fas fa-calendar-check"></i> Book Appointment
+                </button>
                 <button className="view-profile-btn">
                   <i className="fas fa-user"></i> View Profile
                 </button>

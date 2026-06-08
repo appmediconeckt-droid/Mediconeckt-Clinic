@@ -1,4 +1,7 @@
 import React, { useState } from "react";
+import { useSelector } from "react-redux";
+import axios from "axios";
+import { API_BASE_URL, getAuthToken } from "../../../../redux/apiConfig";
 import "./ClinicSettings.css";
 
 export default function ClinicSettings() {
@@ -8,6 +11,43 @@ export default function ClinicSettings() {
   const [location, setLocation] = useState({ lat: null, lng: null });
   const [photos, setPhotos] = useState([]);
   const [previewUrls, setPreviewUrls] = useState([]);
+  const [status, setStatus] = useState('idle');
+  const [message, setMessage] = useState('');
+
+  const authUser = useSelector((state) => state.auth.user);
+  const storedUser = typeof window !== 'undefined' ? JSON.parse(localStorage.getItem('authUser') || 'null') : null;
+  const user = authUser || storedUser;
+  
+  // Try to extract doctor ID from multiple possible field names
+  const extractDoctorId = (userObj) => {
+    if (!userObj) return '';
+    return (
+      userObj.id ||
+      userObj.user_id ||
+      userObj.doctor_id ||
+      userObj._id ||
+      userObj.userId ||
+      userObj.doctorId ||
+      userObj.Id ||
+      ''
+    );
+  };
+  
+  const doctorId = extractDoctorId(user);
+
+  // Debug: log user and doctor ID to console
+  React.useEffect(() => {
+    console.log('=== ClinicUpload Debug ===');
+    console.log('authUser:', authUser);
+    console.log('storedUser:', storedUser);
+    console.log('user:', user);
+    console.log('doctorId:', doctorId);
+    if (user) {
+      console.log('User object keys:', Object.keys(user));
+      console.log('Full user object:', JSON.stringify(user, null, 2));
+    }
+    console.log('========================');
+  }, [authUser, storedUser, user, doctorId]);
 
   // 📍 Get Current Location
   const getCurrentLocation = () => {
@@ -37,17 +77,53 @@ export default function ClinicSettings() {
   };
 
   // 💾 Save Data
-  const handleSave = () => {
-    const payload = {
-      clinicName,
-      phone,
-      address,
-      location,
-      photos,
-    };
+  const handleSave = async () => {
+    const token = getAuthToken();
+    console.log('Form validation:', { clinicName, phone, address, doctorId, token, hasToken: !!token });
 
-    console.log("Saved Data:", payload);
-    alert("Clinic Details Saved!");
+    if (!clinicName || !phone || !address || !doctorId) {
+      const missingFields = [];
+      if (!clinicName) missingFields.push('Clinic Name');
+      if (!phone) missingFields.push('Phone');
+      if (!address) missingFields.push('Address');
+      if (!doctorId) missingFields.push('Doctor ID (not logged in or ID missing)');
+      
+      const errorMsg = `Missing: ${missingFields.join(', ')}. Doctor ID: "${doctorId}"`;
+      setMessage(errorMsg);
+      setStatus('failed');
+      console.log('Validation failed:', errorMsg);
+      return;
+    }
+
+    const formData = new FormData();
+    formData.append('doctor_id', doctorId);
+    formData.append('clinic_name', clinicName);
+    formData.append('phone_number', phone);
+    formData.append('location', address);
+
+    photos.forEach((photo) => {
+      formData.append('clinic_photo', photo);
+    });
+
+    try {
+      setStatus('loading');
+      setMessage('Creating clinic...');
+
+      const response = await axios.post(`${API_BASE_URL}/clinics`, formData, {
+        headers: {
+          Authorization: `Bearer ${token}`,
+        },
+      });
+
+      setStatus('succeeded');
+      setMessage('Clinic created successfully.');
+      console.log('Clinic creation response:', response.data);
+    } catch (error) {
+      setStatus('failed');
+      const errorMessage = error.response?.data || error.message || 'Failed to create clinic';
+      setMessage(errorMessage);
+      console.error('Clinic creation error:', error);
+    }
   };
 
   // ❌ Cancel
@@ -58,6 +134,8 @@ export default function ClinicSettings() {
     setLocation({ lat: null, lng: null });
     setPhotos([]);
     setPreviewUrls([]);
+    setStatus('idle');
+    setMessage('');
   };
 
   return (
@@ -124,6 +202,12 @@ export default function ClinicSettings() {
           </div>
         ))}
       </div>
+
+      {message && (
+        <div className={`clinic-message ${status}`}>
+          {message}
+        </div>
+      )}
 
       {/* Save / Cancel */}
       <div className="button-row">

@@ -1,10 +1,13 @@
 // ===============================
 // PatientDetailsPage.jsx (ReactJS)
 // ===============================
-import React, { useState } from "react";
+import React, { useEffect, useState } from "react";
+import { useSelector } from "react-redux";
+import axios from "axios";
 import { Search, User, Phone, Calendar, Clock, Heart, Pill, Stethoscope, ChevronLeft, FileText, Download } from "lucide-react";
 import "./PatientDetailsPage.css";
 import { generatePrescriptionPDF } from "./pdfGenerator";
+import { API_BASE_URL, getAuthHeaders } from "../../../redux/apiConfig";
 
 const patientData = [
   {
@@ -129,16 +132,159 @@ const patientData = [
 ];
 
 export default function PatientDetailsPage() {
+  const authUser = useSelector((state) => state.auth?.user);
   const [search, setSearch] = useState("");
   const [selectedPatient, setSelectedPatient] = useState(null);
   const [selectedRecord, setSelectedRecord] = useState(null);
   const [showPatientList, setShowPatientList] = useState(true);
   const [isDownloading, setIsDownloading] = useState(false);
+  const [patients, setPatients] = useState([]);
+  const [status, setStatus] = useState("loading");
+  const [error, setError] = useState("");
 
-  const filteredPatients = patientData.filter(
+  const getStoredAuthUser = () => {
+    try {
+      return JSON.parse(localStorage.getItem("authUser") || "null");
+    } catch (error) {
+      return null;
+    }
+  };
+
+  const extractDoctorId = (user) => {
+    if (!user) return "";
+    return user.doctor_id || user.doctorId || user.id || user._id || user.user_id || user.userId || "";
+  };
+
+  const doctorId = extractDoctorId(authUser || getStoredAuthUser());
+
+  const unwrapApiArray = (payload) => {
+    if (Array.isArray(payload)) return payload;
+    if (Array.isArray(payload?.data)) return payload.data;
+    if (Array.isArray(payload?.data?.data)) return payload.data.data;
+    if (Array.isArray(payload?.appointments)) return payload.appointments;
+    return [];
+  };
+
+  const formatDate = (value) => {
+    if (!value) return "N/A";
+    const date = new Date(value);
+    if (Number.isNaN(date.getTime())) return value;
+    return date.toLocaleDateString();
+  };
+
+  const formatTime = (value) => {
+    if (!value) return "N/A";
+    const date = new Date(value);
+    if (Number.isNaN(date.getTime())) return value;
+    return date.toLocaleTimeString([], { hour: "2-digit", minute: "2-digit" });
+  };
+
+  const getPatientFromAppointment = (appointment) => {
+    return appointment.patient || appointment.patient_data || appointment.user || {};
+  };
+
+  const getPatientId = (appointment) => {
+    const patient = getPatientFromAppointment(appointment);
+    return appointment.patient_id || appointment.patientId || patient.id || patient._id || patient.user_id || appointment.id;
+  };
+
+  const getProblem = (appointment) => {
+    return appointment.problem ||
+      appointment.symptoms ||
+      appointment.reason ||
+      appointment.issue ||
+      appointment.health_issue ||
+      appointment.healthIssue ||
+      appointment.description ||
+      appointment.consultation_reason ||
+      "General consultation";
+  };
+
+  const normalizeRecord = (appointment) => {
+    const createdAt = appointment.appointment_date || appointment.date || appointment.created_at || appointment.createdAt;
+    const appointmentTime = appointment.appointment_time || appointment.time || createdAt;
+    return {
+      id: appointment.id || appointment._id,
+      date: formatDate(createdAt),
+      time: formatTime(appointmentTime),
+      bp: appointment.bp || appointment.blood_pressure || "N/A",
+      pulse: appointment.pulse || "N/A",
+      temperature: appointment.temperature || "N/A",
+      problem: getProblem(appointment),
+      diagnosis: appointment.diagnosis || appointment.status || "N/A",
+      tablets: appointment.tablets || appointment.medicine || appointment.medication || "N/A",
+      days: appointment.days || appointment.duration || "N/A",
+      doctor: appointment.doctor_name || appointment.doctor?.name || authUser?.full_name || authUser?.name || "Doctor",
+      prescription: appointment.prescription || appointment.advice || appointment.notes || "N/A",
+      followUp: appointment.follow_up || appointment.followUp || "N/A",
+    };
+  };
+
+  const buildPatientsFromAppointments = (appointments) => {
+    const byPatient = new Map();
+
+    appointments.forEach((appointment) => {
+      const patient = getPatientFromAppointment(appointment);
+      const patientId = getPatientId(appointment);
+      const record = normalizeRecord(appointment);
+      const existing = byPatient.get(patientId);
+
+      const patientDetails = existing || {
+        id: patientId,
+        name: patient.full_name || patient.fullname || patient.name || appointment.patient_name || appointment.name || "Unknown Patient",
+        age: patient.age || appointment.patient_age || appointment.age || "N/A",
+        gender: patient.patient_gender || appointment.patient_gender || "N/A",
+        phone: patient.patient_phone || patient.patient_phone || appointment.patient_phone || appointment.patient_phone || "N/A",
+        bloodGroup: patient.patient_blood_group || patient.patient_blood_group || appointment.patient_blood_group || "N/A",
+        lastVisit: record.date,
+        records: [],
+      };
+
+      patientDetails.records.push(record);
+      patientDetails.records.sort((a, b) => new Date(b.date) - new Date(a.date));
+      patientDetails.lastVisit = patientDetails.records[0]?.date || record.date;
+      byPatient.set(patientId, patientDetails);
+    });
+
+    return Array.from(byPatient.values());
+  };
+
+  useEffect(() => {
+    const loadPatients = async () => {
+      if (!doctorId) {
+        setStatus("failed");
+        setError("Doctor ID not found. Please login again.");
+        setPatients([]);
+        return;
+      }
+
+      try {
+        setStatus("loading");
+        setError("");
+        const response = await axios.get(`${API_BASE_URL}/appointments`, {
+          headers: getAuthHeaders(),
+          params: { doctor_id: doctorId },
+        });
+        const appointments = unwrapApiArray(response.data).filter((appointment) => {
+          const appointmentDoctorId = appointment.doctor_id || appointment.doctorId || appointment.doctor?.id || appointment.doctor?._id;
+          return !appointmentDoctorId || String(appointmentDoctorId) === String(doctorId);
+        });
+        setPatients(buildPatientsFromAppointments(appointments));
+        setStatus("succeeded");
+      } catch (error) {
+        setStatus("failed");
+        setError(error.response?.data?.message || error.response?.data?.error || error.message || "Failed to load patient details");
+        setPatients([]);
+      }
+    };
+
+    loadPatients();
+  }, [doctorId]);
+
+  const filteredPatients = patients.filter(
     (p) =>
       p.name.toLowerCase().includes(search.toLowerCase()) ||
-      p.phone.includes(search)
+      String(p.phone).includes(search)
   );
 
   const handlePatientClick = (patient) => {
@@ -184,7 +330,7 @@ export default function PatientDetailsPage() {
         </div>
         <div className="pd-stats">
           <div className="pd-stat-card">
-            <span className="pd-stat-number">{patientData.length}</span>
+            <span className="pd-stat-number">{patients.length}</span>
             <span className="pd-stat-label">Total Patients</span>
           </div>
         </div>
@@ -209,8 +355,24 @@ export default function PatientDetailsPage() {
             <h3 className="pd-section-title">
               <User size={20} /> Patient Directory
             </h3>
-            <div className="pd-patient-grid">
-              {filteredPatients.map((patient) => (
+            {status === "loading" ? (
+              <div className="pd-empty-state">
+                <FileText size={48} />
+                <p>Loading patients...</p>
+              </div>
+            ) : status === "failed" ? (
+              <div className="pd-empty-state">
+                <FileText size={48} />
+                <p>{error}</p>
+              </div>
+            ) : filteredPatients.length === 0 ? (
+              <div className="pd-empty-state">
+                <FileText size={48} />
+                <p>No patients found for this doctor</p>
+              </div>
+            ) : (
+              <div className="pd-patient-grid">
+                {filteredPatients.map((patient) => (
                 <div
                   key={patient.id}
                   className="pd-patient-card"
@@ -241,8 +403,9 @@ export default function PatientDetailsPage() {
                     </span>
                   </div>
                 </div>
-              ))}
-            </div>
+                ))}
+              </div>
+            )}
           </div>
         )}
 
@@ -269,7 +432,7 @@ export default function PatientDetailsPage() {
             </div>
 
             <h3 className="pd-section-title">
-              <Calendar size={20} /> Visit History
+              <Calendar size={20} /> Visit History ({selectedPatient.records.length} appointments)
             </h3>
             
             {selectedPatient.records.length === 0 ? (

@@ -1,8 +1,10 @@
 // DoctorChat.js
 import React, { useState, useEffect, useRef } from 'react';
 import { useParams, useNavigate } from 'react-router-dom';
+import { useSelector } from 'react-redux';
 import { FaArrowLeft, FaPaperPlane, FaPhone, FaUserMd, FaStethoscope, FaFile, FaPaperclip, FaImage, FaFilePdf, FaFileMedical } from 'react-icons/fa';
 import './DoctorChat.css';
+import { getChatList, getConversation, getCurrentUserId, sendMessage } from '../../../redux/chatApi';
 
 // Mock patient data
 const mockPatients = [
@@ -71,16 +73,18 @@ const mockPatients = [
 const PatientChat = () => {
   const { patientId } = useParams();
   const navigate = useNavigate();
+  const authUser = useSelector((state) => state.auth?.user);
   const [message, setMessage] = useState('');
   const [messages, setMessages] = useState([]);
+  const [currentPatient, setCurrentPatient] = useState(null);
+  const [chatStatus, setChatStatus] = useState('loading');
+  const [chatError, setChatError] = useState('');
+  const [isSending, setIsSending] = useState(false);
   const [showFileOptions, setShowFileOptions] = useState(false);
   const fileInputRef = useRef(null);
 
   // Ref for auto-scrolling to latest message
   const messagesEndRef = useRef(null);
-
-  // Find current patient
-  const currentPatient = mockPatients.find(p => p.id === parseInt(patientId));
 
   // Mock chat messages with file examples
   const mockChats = {
@@ -141,12 +145,103 @@ const PatientChat = () => {
     ]
   };
 
-  useEffect(() => {
-    // Load chat messages for this patient
-    if (patientId && mockChats[patientId]) {
-      setMessages(mockChats[patientId]);
+  const normalizeMessage = (msg, index) => {
+    const currentUserId = getCurrentUserId(authUser);
+    const senderId = msg.sender_id || msg.senderId || msg.from_user_id || msg.user_id;
+    const senderRole = msg.sender || msg.sender_role || msg.role;
+    const createdAt = msg.time || msg.created_at || msg.createdAt || new Date().toISOString();
+    const date = new Date(createdAt);
+
+    return {
+      id: msg.id || msg._id || index + 1,
+      text: msg.message || msg.text || msg.content || '',
+      sender: senderRole || (String(senderId) === String(currentUserId) ? 'doctor' : 'patient'),
+      time: Number.isNaN(date.getTime()) ? createdAt : date.toLocaleTimeString([], { hour: '2-digit', minute: '2-digit' }),
+      file: msg.file,
+      senderName: msg.sender_name || msg.senderName,
+      senderPhone: msg.sender_phone || msg.senderPhone || msg.phone || msg.phone_number,
+    };
+  };
+
+  const getSenderDetails = (message) => {
+    if (message.senderName || message.senderPhone) {
+      return {
+        name: message.senderName || (message.sender === 'doctor' ? 'You' : 'Patient'),
+        phone: message.senderPhone || '',
+      };
     }
-  }, [patientId]);
+
+    if (message.sender === 'doctor') {
+      return {
+        name: authUser?.full_name || authUser?.fullname || authUser?.name || 'You',
+        phone: authUser?.phone || authUser?.phone_number || '',
+      };
+    }
+
+    return {
+      name: currentPatient?.name || 'Patient',
+      phone: currentPatient?.phone || '',
+    };
+  };
+
+  useEffect(() => {
+    const loadChat = async () => {
+      try {
+        setChatStatus('loading');
+        setChatError('');
+
+        const [chatList, conversation] = await Promise.all([
+          getChatList(),
+          getConversation(patientId),
+        ]);
+
+        const patientItem = chatList.find(item => {
+          const p = item.patient || item.user || item;
+          return String(p.id || p._id || p.patient_id || item.patient_id || p.user_id) === String(patientId);
+        });
+        const patient = patientItem?.patient || patientItem?.user || patientItem;
+        const fallbackPatient = mockPatients.find(p => p.id === parseInt(patientId));
+        const firstPatientMessage = conversation.find(message => String(message.sender_id) === String(patientId)) || conversation[0];
+
+        setCurrentPatient(patient ? {
+          id: patient.id || patient._id || patient.patient_id || patientItem?.patient_id || patient.user_id,
+          name: patient.full_name || patient.fullname || patient.name || patient.patient_name || patientItem?.patient_name || 'Unknown Patient',
+          age: patient.age || 'NA',
+          gender: patient.gender || 'NA',
+          condition: patient.condition || patient.diagnosis || patientItem?.condition || 'No condition',
+          status: patient.status || patientItem?.status || 'Stable',
+          lastVisit: patient.lastVisit || patient.last_visit || patientItem?.last_visit || patient.created_at || '',
+          phone: patient.phone || patient.phone_number || '',
+          avatarColor: '#3498db',
+          bloodGroup: patient.bloodGroup || patient.blood_group || '',
+        } : fallbackPatient || (firstPatientMessage ? {
+          id: patientId,
+          name: firstPatientMessage.sender_name || firstPatientMessage.receiver_name || 'Unknown Patient',
+          age: 'NA',
+          gender: 'NA',
+          condition: 'No condition',
+          status: 'Stable',
+          lastVisit: firstPatientMessage.created_at || '',
+          phone: firstPatientMessage.sender_phone || firstPatientMessage.phone || '',
+          avatarColor: '#3498db',
+          bloodGroup: '',
+        } : null));
+
+        setMessages(conversation.map(normalizeMessage));
+        setChatStatus('succeeded');
+      } catch (err) {
+        const fallbackPatient = mockPatients.find(p => p.id === parseInt(patientId));
+        setCurrentPatient(fallbackPatient || null);
+        setMessages([]);
+        setChatError(err.response?.data?.message || err.message || 'Failed to load chat');
+        setChatStatus('failed');
+      }
+    };
+
+    if (patientId) {
+      loadChat();
+    }
+  }, [patientId, authUser]);
 
   // Auto-scroll to bottom when messages change
   useEffect(() => {
@@ -157,18 +252,29 @@ const PatientChat = () => {
     messagesEndRef.current?.scrollIntoView({ behavior: "smooth" });
   };
 
-  const handleSendMessage = (e) => {
+  const handleSendMessage = async (e) => {
     e.preventDefault();
     if (message.trim()) {
+      const messageText = message.trim();
       const newMessage = {
-        id: messages.length + 1,
-        text: message,
+        id: `local-${Date.now()}`,
+        text: messageText,
         sender: 'doctor',
         time: new Date().toLocaleTimeString([], { hour: '2-digit', minute: '2-digit' })
       };
       setMessages([...messages, newMessage]);
       setMessage('');
       setShowFileOptions(false);
+      setIsSending(true);
+      setChatError('');
+
+      try {
+        await sendMessage({ receiverId: patientId, message: messageText });
+      } catch (err) {
+        setChatError(err.response?.data?.message || err.message || 'Failed to send message');
+      } finally {
+        setIsSending(false);
+      }
     }
   };
 
@@ -205,6 +311,8 @@ const PatientChat = () => {
   const formatTime = (timeString) => {
     const now = new Date();
 
+    if (!timeString) return '';
+
     if (timeString.toLowerCase() === 'today') {
       return new Date().toLocaleTimeString([], { hour: '2-digit', minute: '2-digit' });
     }
@@ -240,6 +348,14 @@ const PatientChat = () => {
       default: return '#2ecc71';
     }
   };
+
+  if (!currentPatient && chatStatus === 'loading') {
+    return (
+      <div className="patient-not-found">
+        <h2>Loading chat...</h2>
+      </div>
+    );
+  }
 
   if (!currentPatient) {
     return (
@@ -302,6 +418,7 @@ const PatientChat = () => {
                 <FaStethoscope />
               </div>
               <p>No messages yet. Start the conversation!</p>
+              {chatError && <small className="empty-chat-hint">{chatError}</small>}
               <small className="empty-chat-hint">Your messages will appear here</small>
             </div>
           ) : (
@@ -313,6 +430,12 @@ const PatientChat = () => {
                   style={{ '--message-index': index }}
                 >
                   <div className="message-content">
+                    <div className="message-sender-meta">
+                      <strong>{getSenderDetails(msg).name}</strong>
+                      {getSenderDetails(msg).phone && (
+                        <span> {getSenderDetails(msg).phone}</span>
+                      )}
+                    </div>
                     <p>{msg.text}</p>
 
                     {msg.file && (
@@ -388,7 +511,7 @@ const PatientChat = () => {
         <button
           type="submit"
           className="send-btn"
-          disabled={!message.trim()}
+          disabled={!message.trim() || isSending}
           aria-label="Send message"
         >
           <FaPaperPlane />

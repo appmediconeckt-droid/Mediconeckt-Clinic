@@ -98,6 +98,12 @@
   border: 2px solid #6bc48a;
 }
 
+.patient-notification-action-btn:disabled {
+  opacity: 0.6;
+  cursor: not-allowed;
+  transform: none;
+}
+
 .mark-all-btn:hover {
   background: linear-gradient(135deg, #6bc48a 0%, #2d7a4d 100%);
   color: white;
@@ -146,6 +152,16 @@
 .patient-notification-empty p {
   margin-bottom: 25px;
   font-size: 1.1rem;
+}
+
+.patient-notification-error {
+  margin: 16px;
+  padding: 14px 16px;
+  border: 1px solid #fecdca;
+  border-radius: 8px;
+  background: #fffbfa;
+  color: #b42318;
+  font-size: 14px;
 }
 
 /* Notification List */
@@ -214,6 +230,11 @@
 
 .notification-icon.payment {
   background: linear-gradient(135deg, #9C27B0 0%, #6A1B9A 100%);
+  color: white;
+}
+
+.notification-icon.notification {
+  background: linear-gradient(135deg, #64748b 0%, #334155 100%);
   color: white;
 }
 
@@ -291,6 +312,11 @@
 .patient-notification-item-type.payment {
   background: #f3e5f5;
   color: #6A1B9A;
+}
+
+.patient-notification-item-type.notification {
+  background: #f1f5f9;
+  color: #334155;
 }
 
 /* Notification Actions */

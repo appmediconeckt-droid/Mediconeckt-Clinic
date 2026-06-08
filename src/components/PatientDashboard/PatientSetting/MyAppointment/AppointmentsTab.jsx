@@ -1,9 +1,17 @@
-import React, { useState } from "react";
+import React, { useState, useEffect } from "react";
 import { appointments } from "../../BookAppointment/data";
 import { Link } from "react-router-dom";
+import { useDispatch, useSelector } from 'react-redux';
+import { fetchDoctors } from '../../../../redux/doctorsSlice';
 
 export default function AppointmentsTab() {
   const [showEmergencyModal, setShowEmergencyModal] = useState(false);
+  const dispatch = useDispatch();
+  const { list: doctors, status: doctorsStatus, error: doctorsError } = useSelector((state) => state.doctors || { list: [], status: 'idle', error: null });
+
+  useEffect(() => {
+    if (doctorsStatus === 'idle') dispatch(fetchDoctors());
+  }, [dispatch, doctorsStatus]);
 
   const handleEmergencyClick = () => {
     setShowEmergencyModal(true);
@@ -68,6 +76,29 @@ export default function AppointmentsTab() {
             </div>
           ))}
         </div>
+        
+        <h4 className="mt-4">Available Doctors</h4>
+        {doctorsStatus === 'loading' && <p>Loading doctors...</p>}
+        {doctorsStatus === 'failed' && <p className="text-danger">Error: {doctorsError}</p>}
+        {doctorsStatus === 'succeeded' && (
+          <div className="doctor-list">
+            {doctors.length === 0 && <p>No doctors found.</p>}
+            {doctors.map((d) => (
+              <div key={d._id || d.id} className="doctor-card p-2 mb-2 border rounded">
+                <div className="d-flex justify-content-between">
+                  <div>
+                    <h5 className="mb-1">{d.full_name || d.fullname || d.name}</h5>
+                    <div className="text-muted">{d.speciality || d.speciality || d.specialization}</div>
+                    <div className="text-muted">{d.email}</div>
+                  </div>
+                  <div>
+                    <Link to={`/doctor-details/${d._id || d.id}`} className="btn btn-sm btn-outline-primary">View</Link>
+                  </div>
+                </div>
+              </div>
+            ))}
+          </div>
+        )}
         <button className="btn btn-primary mt-3">Book New Appointment</button>
       </div>
 

@@ -1,18 +1,23 @@
 import React, { useState, useEffect } from 'react';
+import axios from 'axios';
 import { 
   FaUserNurse, FaUsers, 
   FaMicroscope, FaBroom, FaUserTie, FaFileInvoiceDollar,
   FaPlus, FaEdit, FaTrash, FaSearch, FaFilter,
-  FaUserAlt, FaIdCard, FaCalendarCheck,
-  FaEnvelope, FaPhone, FaCalendarAlt, FaMapMarkerAlt,
+  FaIdCard,
+  FaEnvelope, FaPhone, FaCalendarAlt,
   FaGraduationCap, FaBriefcase, FaCertificate, FaMoneyBillWave,
-  FaBuilding, FaUsersCog, FaStar, FaUserCircle,
+  FaBuilding, FaUserCircle,
   FaSave, FaTimes, FaEye, FaEyeSlash, FaLock, FaUnlock,
-  FaChevronDown, FaChevronUp, FaSort, FaSortUp, FaSortDown,
+  FaChevronDown, FaChevronUp, FaSortUp, FaSortDown,
   FaCheck, FaTimesCircle, FaChevronRight, FaHospitalUser,
   FaInfoCircle, FaKey, FaStethoscope
 } from 'react-icons/fa';
 import './DoctorUserManagement.css';
+import { API_BASE_URL, getAuthHeaders } from '../../../redux/apiConfig';
+
+const USERS_BASE_URL = `${API_BASE_URL}/users`;
+const MASKED_PASSWORD = '********';
 
 const DoctorUserManagement = () => {
   const [users, setUsers] = useState([]);
@@ -39,6 +44,8 @@ const DoctorUserManagement = () => {
   const [showEmailVerification, setShowEmailVerification] = useState(false);
   const [showPhoneVerification, setShowPhoneVerification] = useState(false);
   const [notification, setNotification] = useState({ show: false, message: '', type: '' });
+  const [apiStatus, setApiStatus] = useState('idle');
+  const [isSaving, setIsSaving] = useState(false);
 
   // ID generation counters for each role
   const [idCounters, setIdCounters] = useState({
@@ -60,6 +67,158 @@ const DoctorUserManagement = () => {
     { value: "manager", label: "Department Manager", icon: <FaUserTie />, color: "#8e44ad", idPrefix: "MGR" },
     { value: "billing", label: "Billing Staff", icon: <FaFileInvoiceDollar />, color: "#27ae60", idPrefix: "BILL" },
   ];
+
+  const roleAliases = {
+    nurse: 'nurse',
+    assistant: 'assistant',
+    medical_assistant: 'assistant',
+    'medical assistant': 'assistant',
+    technician: 'technician',
+    lab_technician: 'technician',
+    'lab technician': 'technician',
+    housekeeping: 'housekeeping',
+    housekeeping_staff: 'housekeeping',
+    'housekeeping staff': 'housekeeping',
+    supervisor: 'supervisor',
+    manager: 'manager',
+    department_manager: 'manager',
+    'department manager': 'manager',
+    billing: 'billing',
+    billing_staff: 'billing',
+    'billing staff': 'billing',
+  };
+
+  const normalizeRole = (role) => {
+    const normalized = String(role || '').trim().toLowerCase();
+    return roleAliases[normalized] || normalized;
+  };
+
+  const unwrapApiArray = (payload) => {
+    if (Array.isArray(payload)) return payload;
+    if (Array.isArray(payload?.data)) return payload.data;
+    if (Array.isArray(payload?.users)) return payload.users;
+    if (Array.isArray(payload?.data?.users)) return payload.data.users;
+    if (Array.isArray(payload?.results)) return payload.results;
+    return [];
+  };
+
+  const unwrapApiObject = (payload) => payload?.user || payload?.data?.user || payload?.data || payload || {};
+
+  const getStaffIdField = (role) => {
+    switch (role) {
+      case 'nurse': return 'nurseId';
+      case 'assistant': return 'assistantId';
+      case 'technician': return 'technicianId';
+      case 'housekeeping': return 'staffId';
+      case 'supervisor': return 'supervisorId';
+      case 'manager': return 'managerId';
+      case 'billing': return 'billingId';
+      default: return '';
+    }
+  };
+
+  const getStaffIdFromUser = (user, role) => (
+    user.nurseId || user.nurse_id ||
+    user.assistantId || user.assistant_id ||
+    user.technicianId || user.technician_id ||
+    user.staffId || user.staff_id ||
+    user.supervisorId || user.supervisor_id ||
+    user.managerId || user.manager_id ||
+    user.billingId || user.billing_id ||
+    user.employeeId || user.employee_id ||
+    user.staff_code ||
+    (role ? '' : user.id)
+  );
+
+  const normalizeUser = (user) => {
+    const role = normalizeRole(user.role || user.user_role);
+    const staffIdField = getStaffIdField(role);
+    const staffId = getStaffIdFromUser(user, role);
+
+    return {
+      ...user,
+      id: user.id || user._id || user.user_id || user.userId,
+      fullName: user.fullName || user.full_name || user.fullname || user.name || '',
+      email: user.email || '',
+      phone: user.phone || user.contact_number || user.phone_number || user.mobile || '',
+      emailVerified: Boolean(user.emailVerified ?? user.email_verified ?? user.is_email_verified ?? false),
+      phoneVerified: Boolean(user.phoneVerified ?? user.phone_verified ?? user.is_phone_verified ?? false),
+      role,
+      status: String(user.status || (user.is_active === false ? 'inactive' : 'active')).toLowerCase(),
+      password: MASKED_PASSWORD,
+      createdAt: user.createdAt || user.created_at || user.created_date || '',
+      lastLogin: user.lastLogin || user.last_login || '',
+      nurseId: user.nurseId || user.nurse_id || (staffIdField === 'nurseId' ? staffId : ''),
+      assistantId: user.assistantId || user.assistant_id || (staffIdField === 'assistantId' ? staffId : ''),
+      technicianId: user.technicianId || user.technician_id || (staffIdField === 'technicianId' ? staffId : ''),
+      staffId: user.staffId || user.staff_id || (staffIdField === 'staffId' ? staffId : ''),
+      supervisorId: user.supervisorId || user.supervisor_id || (staffIdField === 'supervisorId' ? staffId : ''),
+      managerId: user.managerId || user.manager_id || (staffIdField === 'managerId' ? staffId : ''),
+      billingId: user.billingId || user.billing_id || (staffIdField === 'billingId' ? staffId : ''),
+      licenseNumber: user.licenseNumber || user.license_number || '',
+      labType: user.labType || user.lab_type || '',
+      assignedArea: user.assignedArea || user.assigned_area || '',
+      teamSize: user.teamSize || user.team_size || '',
+      employeesUnder: user.employeesUnder || user.employees_under || '',
+      budgetResponsibility: user.budgetResponsibility || user.budget_responsibility || '',
+      softwareExpertise: user.softwareExpertise || user.software_expertise || '',
+    };
+  };
+
+  const buildUserPayload = (data, role) => {
+    const staffIdField = getStaffIdField(role);
+    const payload = {
+      ...data,
+      role,
+      full_name: data.fullName,
+      fullname: data.fullName,
+      name: data.fullName,
+      contact_number: data.phone,
+      phone_number: data.phone,
+      email_verified: data.emailVerified,
+      phone_verified: data.phoneVerified,
+      employee_id: staffIdField ? data[staffIdField] : undefined,
+      license_number: data.licenseNumber,
+      lab_type: data.labType,
+      assigned_area: data.assignedArea,
+      team_size: data.teamSize,
+      employees_under: data.employeesUnder,
+      budget_responsibility: data.budgetResponsibility,
+      software_expertise: data.softwareExpertise,
+    };
+
+    if (!payload.password || payload.password === MASKED_PASSWORD) {
+      delete payload.password;
+    }
+
+    delete payload.confirmPassword;
+    return payload;
+  };
+
+  const syncCountersFromUsers = (userList) => {
+    const nextCounters = {
+      nurse: 1,
+      assistant: 1,
+      technician: 1,
+      housekeeping: 1,
+      supervisor: 1,
+      manager: 1,
+      billing: 1
+    };
+
+    userList.forEach((user) => {
+      const roleInfo = allRoles.find((role) => role.value === user.role);
+      const staffId = getStaffIdFromUser(user, user.role);
+      if (!roleInfo || !staffId) return;
+
+      const number = Number(String(staffId).replace(roleInfo.idPrefix, '').replace(/\D/g, ''));
+      if (!Number.isNaN(number)) {
+        nextCounters[user.role] = Math.max(nextCounters[user.role], number + 1);
+      }
+    });
+
+    setIdCounters(nextCounters);
+  };
 
   const roleFormTemplates = {
     nurse: {
@@ -249,93 +408,26 @@ const DoctorUserManagement = () => {
     return newId;
   };
 
+  const loadUsers = async () => {
+    try {
+      setApiStatus('loading');
+      const response = await axios.get(USERS_BASE_URL, { headers: getAuthHeaders() });
+      const staffUsers = unwrapApiArray(response.data)
+        .map(normalizeUser)
+        .filter((user) => allRoles.some((role) => role.value === user.role));
+
+      setUsers(staffUsers);
+      syncCountersFromUsers(staffUsers);
+      setApiStatus('succeeded');
+    } catch (error) {
+      setApiStatus('failed');
+      showNotification(error.response?.data?.message || error.response?.data?.error || 'Failed to load users', 'error');
+    }
+  };
+
   useEffect(() => {
-    const mockUsers = [
-      { 
-        id: 2, 
-        fullName: 'Jane Wilson', 
-        email: 'jane.wilson@hospital.com', 
-        phone: '9876543211',
-        emailVerified: true,
-        phoneVerified: true,
-        role: 'nurse', 
-        status: 'active',
-        nurseId: 'NUR001',
-        licenseNumber: 'NUR123456',
-        shift: 'Morning',
-        ward: 'ICU',
-        experience: 8,
-        password: '********',
-        createdAt: '2023-02-20',
-        lastLogin: '2024-01-19'
-      },
-      { 
-        id: 6, 
-        fullName: 'Emma Davis', 
-        email: 'emma.davis@hospital.com', 
-        phone: '9876543216',
-        emailVerified: true,
-        phoneVerified: false,
-        role: 'nurse', 
-        status: 'inactive',
-        nurseId: 'NUR002',
-        licenseNumber: 'NUR123457',
-        shift: 'Night',
-        ward: 'Emergency',
-        experience: 5,
-        password: '********',
-        createdAt: '2023-05-20',
-        lastLogin: '2024-01-15'
-      },
-      { 
-        id: 9, 
-        fullName: 'Robert Chen', 
-        email: 'robert.chen@lab.com', 
-        phone: '9876543220',
-        emailVerified: true,
-        phoneVerified: true,
-        role: 'technician', 
-        status: 'active',
-        technicianId: 'LT001',
-        labType: 'Pathology',
-        certifications: 'Certified Lab Technician',
-        shift: 'Morning',
-        experience: 7,
-        password: '********',
-        createdAt: '2023-03-15',
-        lastLogin: '2024-01-18'
-      },
-      { 
-        id: 10, 
-        fullName: 'Lisa Garcia', 
-        email: 'lisa.garcia@billing.com', 
-        phone: '9876543221',
-        emailVerified: false,
-        phoneVerified: true,
-        role: 'billing', 
-        status: 'active',
-        billingId: 'BILL001',
-        department: 'Finance',
-        shift: 'Morning',
-        softwareExpertise: 'MediSoft, QuickBooks',
-        password: '********',
-        createdAt: '2023-04-10',
-        lastLogin: '2024-01-17'
-      }
-    ];
-    setUsers(mockUsers);
-    
-    // Initialize counters based on existing users
-    const counters = {
-      nurse: 3, // We already have NUR001 and NUR002
-      assistant: 1,
-      technician: 2, // We have LT001
-      housekeeping: 1,
-      supervisor: 1,
-      manager: 1,
-      billing: 2 // We have BILL001
-    };
-    setIdCounters(counters);
+    loadUsers();
+    // eslint-disable-next-line react-hooks/exhaustive-deps
   }, []);
 
   const showNotification = (message, type = 'success') => {
@@ -359,7 +451,7 @@ const DoctorUserManagement = () => {
     
     Object.values(template).forEach(section => {
       section.forEach(field => {
-        if (!initialData.hasOwnProperty(field.name)) {
+        if (!Object.prototype.hasOwnProperty.call(initialData, field.name)) {
           // Generate ID for fields that should have auto-generated IDs
           if (field.readOnly && field.description === "Auto-generated ID") {
             initialData[field.name] = generateIdForRole(roleValue);
@@ -415,11 +507,21 @@ const DoctorUserManagement = () => {
     setShowEmailVerification(true);
   };
 
+  const isValidPhoneNumber = (phone) => /^\d{10}$/.test(String(phone || '').trim());
+
   const handleSendPhoneVerification = () => {
     if (!formData.phone) {
       showNotification('Please enter phone number first', 'error');
       return;
     }
+
+    if (!isValidPhoneNumber(formData.phone)) {
+      showNotification('Please enter a valid 10-digit phone number', 'error');
+      setShowPhoneVerification(false);
+      setPhoneVerificationCode('');
+      return;
+    }
+
     // Generate random 6-digit code
     const code = Math.floor(100000 + Math.random() * 900000);
     showNotification(`SMS verification code sent to ${formData.phone}\nCode: ${code} (for demo purposes)`, 'info');
@@ -438,6 +540,12 @@ const DoctorUserManagement = () => {
   };
 
   const handleVerifyPhone = () => {
+    if (!isValidPhoneNumber(formData.phone)) {
+      showNotification('Please enter a valid 10-digit phone number', 'error');
+      setFormData(prev => ({ ...prev, phoneVerified: false }));
+      return;
+    }
+
     if (phoneVerificationCode === '123456') { // Demo code
       setFormData(prev => ({ ...prev, phoneVerified: true }));
       setShowPhoneVerification(false);
@@ -449,13 +557,22 @@ const DoctorUserManagement = () => {
   };
 
   const validateForm = () => {
-    if (formData.password !== formData.confirmPassword) {
-      showNotification('Passwords do not match!', 'error');
-      return false;
+    const isPasswordChanged = formData.password && formData.password !== MASKED_PASSWORD;
+
+    if (!isEditing || isPasswordChanged) {
+      if (formData.password !== formData.confirmPassword) {
+        showNotification('Passwords do not match!', 'error');
+        return false;
+      }
+
+      if (!formData.password || formData.password.length < 6) {
+        showNotification('Password must be at least 6 characters long', 'error');
+        return false;
+      }
     }
-    
-    if (formData.password.length < 6) {
-      showNotification('Password must be at least 6 characters long', 'error');
+
+    if (isEditing && formData.confirmPassword && formData.confirmPassword !== MASKED_PASSWORD && formData.password !== formData.confirmPassword) {
+      showNotification('Passwords do not match!', 'error');
       return false;
     }
 
@@ -467,8 +584,7 @@ const DoctorUserManagement = () => {
     }
 
     // Phone number validation (basic)
-    const phoneRegex = /^\d{10}$/;
-    if (!phoneRegex.test(formData.phone)) {
+    if (!isValidPhoneNumber(formData.phone)) {
       showNotification('Please enter a valid 10-digit phone number', 'error');
       return false;
     }
@@ -476,56 +592,81 @@ const DoctorUserManagement = () => {
     return true;
   };
 
-  const handleSubmit = (e) => {
+  const handleSubmit = async (e) => {
     e.preventDefault();
     
     if (!validateForm()) {
       return;
     }
 
-    // Remove confirmPassword from data to be saved
-    const { confirmPassword, ...userData } = formData;
-    
-    if (isEditing) {
-      setUsers(prev => prev.map(user => 
-        user.id === editingUserId 
-          ? { ...user, ...userData }
-          : user
-      ));
-      showNotification('User updated successfully!');
-    } else {
-      const newUser = {
-        id: users.length + 1,
-        ...userData,
-        role: selectedRole,
-        status: 'active',
-        password: '********',
-        createdAt: new Date().toISOString().split('T')[0],
-        lastLogin: new Date().toISOString().split('T')[0]
-      };
-      
-      setUsers(prev => [...prev, newUser]);
-      showNotification(`${allRoles.find(r => r.value === selectedRole)?.label} created successfully!`);
+    const payload = buildUserPayload(formData, selectedRole);
+
+    try {
+      setIsSaving(true);
+
+      if (isEditing) {
+        const response = await axios.patch(`${USERS_BASE_URL}/${editingUserId}`, payload, {
+          headers: getAuthHeaders(),
+        });
+        const updatedUser = normalizeUser({ ...formData, ...unwrapApiObject(response.data), id: editingUserId, role: selectedRole });
+
+        setUsers(prev => prev.map(user => 
+          user.id === editingUserId 
+            ? { ...user, ...updatedUser, password: MASKED_PASSWORD }
+            : user
+        ));
+        showNotification('User updated successfully!');
+      } else {
+        const response = await axios.post(`${USERS_BASE_URL}/register`, payload, {
+          headers: getAuthHeaders(),
+        });
+        const createdUser = normalizeUser({
+          ...formData,
+          ...unwrapApiObject(response.data),
+          role: selectedRole,
+          status: unwrapApiObject(response.data).status || 'active',
+        });
+
+        setUsers(prev => {
+          const nextUsers = [...prev, createdUser];
+          syncCountersFromUsers(nextUsers);
+          return nextUsers;
+        });
+        showNotification(`${allRoles.find(r => r.value === selectedRole)?.label} created successfully!`);
+      }
+
+      handleCancel();
+    } catch (error) {
+      showNotification(error.response?.data?.message || error.response?.data?.error || 'Failed to save user', 'error');
+    } finally {
+      setIsSaving(false);
     }
-    
-    handleCancel();
   };
 
   const handleEdit = (user) => {
     setSelectedRole(user.role);
     setFormData({
       ...user,
-      confirmPassword: user.password
+      password: MASKED_PASSWORD,
+      confirmPassword: MASKED_PASSWORD
     });
     setIsEditing(true);
     setEditingUserId(user.id);
     setShowForm(true);
   };
 
-  const handleDelete = (userId) => {
+  const handleDelete = async (userId) => {
     if (window.confirm('Are you sure you want to delete this user?')) {
+      const previousUsers = users;
       setUsers(prev => prev.filter(user => user.id !== userId));
-      showNotification('User deleted successfully!');
+
+      try {
+        await axios.delete(`${USERS_BASE_URL}/${userId}`, { headers: getAuthHeaders() });
+        showNotification('User deleted successfully!');
+      } catch (error) {
+        setUsers(previousUsers);
+        showNotification(error.response?.data?.message || error.response?.data?.error || 'Failed to delete user', 'error');
+      }
     }
   };
 
@@ -657,7 +798,14 @@ const DoctorUserManagement = () => {
         </div>
       </div>
 
-      {showForm ? (
+      {apiStatus === 'loading' && !showForm && (
+        <div className="doctor-empty-state">
+          <FaUsers size={42} />
+          <h3>Loading staff members...</h3>
+        </div>
+      )}
+
+      {apiStatus === 'loading' && !showForm ? null : showForm ? (
         <div className="doctor-user-form-container">
           <div className="doctor-form-header">
             <h2>{isEditing ? 'Edit User' : 'Create New Staff Member'}</h2>
@@ -963,10 +1111,10 @@ const DoctorUserManagement = () => {
               </div>
 
               <div className="doctor-form-actions">
-                <button type="submit" className="doctor-submit-btn">
-                  <FaSave /> {isEditing ? 'Update Staff' : 'Create Staff'}
+                <button type="submit" className="doctor-submit-btn" disabled={isSaving}>
+                  <FaSave /> {isSaving ? 'Saving...' : isEditing ? 'Update Staff' : 'Create Staff'}
                 </button>
-                <button type="button" className="doctor-cancel-btn" onClick={handleCancel}>
+                <button type="button" className="doctor-cancel-btn" onClick={handleCancel} disabled={isSaving}>
                   <FaTimes /> Cancel
                 </button>
               </div>

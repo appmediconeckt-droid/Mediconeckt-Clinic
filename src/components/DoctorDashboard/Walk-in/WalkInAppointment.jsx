@@ -1,10 +1,19 @@
-import React, { useState } from "react";
+import React, { useEffect, useState } from "react";
+import { useSelector } from "react-redux";
+import axios from "axios";
 import { CheckCircle, Clock, XCircle, Trash2, Plus } from "lucide-react";
+import { API_BASE_URL, getAuthHeaders } from "../../../redux/apiConfig";
 import "./WalkInAppointment.css";
 
+const WALKIN_BASE_URL = `${API_BASE_URL}/walkin-appointments`;
+
 export default function WalkInAppointment() {
+  const authUser = useSelector((state) => state.auth?.user);
   const [appointments, setAppointments] = useState([]);
   const [showModal, setShowModal] = useState(false);
+  const [status, setStatus] = useState("idle");
+  const [apiError, setApiError] = useState("");
+  const [submitting, setSubmitting] = useState(false);
   const [formData, setFormData] = useState({
     name: "",
     phone: "",
@@ -12,6 +21,86 @@ export default function WalkInAppointment() {
     problem: ""
   });
   const [errors, setErrors] = useState({});
+
+  const getStoredAuthUser = () => {
+    try {
+      return JSON.parse(localStorage.getItem("authUser") || "null");
+    } catch (error) {
+      return null;
+    }
+  };
+
+  const extractDoctorId = (user) => {
+    if (!user) return "";
+    return user.doctor_id || user.doctorId || user.id || user._id || user.user_id || user.userId || "";
+  };
+
+  const doctorId = extractDoctorId(authUser || getStoredAuthUser());
+
+  const unwrapApiArray = (payload) => {
+    if (Array.isArray(payload)) return payload;
+    if (Array.isArray(payload?.data)) return payload.data;
+    if (Array.isArray(payload?.data?.data)) return payload.data.data;
+    if (Array.isArray(payload?.appointments)) return payload.appointments;
+    if (Array.isArray(payload?.walkins)) return payload.walkins;
+    return [];
+  };
+
+  const formatAppointmentDate = (value) => {
+    if (!value) return new Date().toLocaleDateString();
+    const date = new Date(value);
+    if (Number.isNaN(date.getTime())) return value;
+    return date.toLocaleDateString();
+  };
+
+  const formatAppointmentTime = (value) => {
+    if (!value) return "";
+    const date = new Date(value);
+    if (Number.isNaN(date.getTime())) return value;
+    return date.toLocaleTimeString([], { hour: "2-digit", minute: "2-digit" });
+  };
+
+  const normalizeAppointment = (item) => {
+    const createdAt = item.created_at || item.createdAt || item.date || item.appointment_date;
+    return {
+      id: item.id || item._id,
+      name: item.name || item.patient_name || item.patientName || item.full_name || "",
+      phone: item.phone || item.contact_number || item.contact_number || "",
+      gender: item.gender || "Not specified",
+      problem: item.problem || item.symptoms || item.reason || item.description || "",
+      type: item.type || "WALK_IN",
+      status: (item.status || "BOOKED").toUpperCase(),
+      date: formatAppointmentDate(createdAt),
+      time: item.time || item.appointment_time || formatAppointmentTime(createdAt),
+    };
+  };
+
+  const loadAppointments = async () => {
+    if (!doctorId) {
+      setApiError("Doctor ID not found. Please login again.");
+      setAppointments([]);
+      return;
+    }
+
+    try {
+      setStatus("loading");
+      setApiError("");
+      const response = await axios.get(WALKIN_BASE_URL, {
+        headers: getAuthHeaders(),
+        params: { doctor_id: doctorId },
+      });
+      setAppointments(unwrapApiArray(response.data).map(normalizeAppointment));
+      setStatus("succeeded");
+    } catch (error) {
+      setApiError(error.response?.data?.message || error.response?.data?.error || error.message || "Failed to load walk-in appointments");
+      setAppointments([]);
+      setStatus("failed");
+    }
+  };
+
+  useEffect(() => {
+    loadAppointments();
+  }, [doctorId]);
 
   const openModal = () => {
     setShowModal(true);
@@ -65,36 +154,69 @@ export default function WalkInAppointment() {
     return Object.keys(newErrors).length === 0;
   };
 
-  const submitRequest = () => {
+  const submitRequest = async () => {
     if (!validateForm()) {
       return;
     }
 
-    const newAppointment = {
-      id: Date.now(),
-      name: formData.name,
-      phone: formData.phone,
+    if (!doctorId) {
+      setApiError("Doctor ID not found. Please login again.");
+      return;
+    }
+
+    const payload = {
+      patient_name: formData.name,
+      contact_number: formData.phone,
       gender: formData.gender || "Not specified",
-      problem: formData.problem,
-      type: "WALK_IN",
-      status: "BOOKED", // Changed from "PENDING" to "BOOKED"
-      date: new Date().toLocaleDateString(),
-      time: new Date().toLocaleTimeString([], { hour: '2-digit', minute: '2-digit' })
+      symptoms: formData.problem,
+      status: "booked",
     };
 
-    setAppointments([newAppointment, ...appointments]);
-    closeModal();
+    try {
+      setSubmitting(true);
+      setApiError("");
+      const response = await axios.post(WALKIN_BASE_URL, payload, {
+        headers: getAuthHeaders(),
+      });
+      closeModal();
+      await loadAppointments();
+    } catch (error) {
+      setApiError(error.response?.data?.message || error.response?.data?.error || error.message || "Failed to create walk-in appointment");
+    } finally {
+      setSubmitting(false);
+    }
   };
 
-  const cancelAppointment = (id) => {
-    setAppointments(appointments.map(apt => 
-      apt.id === id ? { ...apt, status: "CANCELLED" } : apt
-    ));
+  const cancelAppointment = async (id) => {
+    try {
+      setApiError("");
+      const response = await axios.patch(`${WALKIN_BASE_URL}/${id}`, {
+        status: "CANCELLED",
+        doctor_id: doctorId,
+      }, {
+        headers: getAuthHeaders(),
+      });
+      const updatedAppointment = response.data?.data || response.data?.appointment || response.data;
+      setAppointments(appointments.map(apt =>
+        apt.id === id ? normalizeAppointment({ ...apt, ...updatedAppointment, status: "CANCELLED" }) : apt
+      ));
+    } catch (error) {
+      setApiError(error.response?.data?.message || error.response?.data?.error || error.message || "Failed to cancel appointment");
+    }
   };
 
-  const deleteAppointment = (id) => {
+  const deleteAppointment = async (id) => {
     if (window.confirm("Are you sure you want to delete this appointment?")) {
-      setAppointments(appointments.filter(apt => apt.id !== id));
+      try {
+        setApiError("");
+        await axios.delete(`${WALKIN_BASE_URL}/${id}`, {
+          headers: getAuthHeaders(),
+          data: { doctor_id: doctorId },
+        });
+        setAppointments(appointments.filter(apt => apt.id !== id));
+      } catch (error) {
+        setApiError(error.response?.data?.message || error.response?.data?.error || error.message || "Failed to delete appointment");
+      }
     }
   };
 
@@ -199,8 +321,8 @@ export default function WalkInAppointment() {
               <button className="walkin-btn-secondary" onClick={closeModal}>
                 Cancel
               </button>
-              <button className="walkin-primary-btn" onClick={submitRequest}>
-                <CheckCircle size={18} /> Create Appointment
+              <button className="walkin-primary-btn" onClick={submitRequest} disabled={submitting}>
+                <CheckCircle size={18} /> {submitting ? "Creating..." : "Create Appointment"}
               </button>
             </div>
           </div>
@@ -211,6 +333,12 @@ export default function WalkInAppointment() {
         <div className="header d-flex flex-column flex-md-row justify-content-between align-items-start align-items-md-center mb-3 gap-3">
           <h2 className="walkin-title"> Walk-in Appointment</h2>
         </div>
+
+        {apiError && (
+          <div className="walkin-error-message mb-3">
+            {apiError}
+          </div>
+        )}
        
         <div className="walkin-stats-container">
           <div className="walkin-stat-card walkin-stat-total">
@@ -249,7 +377,12 @@ export default function WalkInAppointment() {
               Appointments List ({appointments.length})
             </h2>
             
-            {appointments.length === 0 ? (
+            {status === "loading" ? (
+              <div className="walkin-empty-state">
+                <Clock size={48} />
+                <p>Loading appointments...</p>
+              </div>
+            ) : appointments.length === 0 ? (
               <div className="walkin-empty-state">
                 <Clock size={48} />
                 <p>No appointments yet</p>

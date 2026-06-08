@@ -1,6 +1,7 @@
 import React, { useState, useEffect, useRef } from "react";
 import { messages } from "./messages";
 import "./chatbot.css";
+import { sendAiMessage } from "../../../redux/chatApi";
 
 const MentalHealthChatbot = () => {
   const [chatHistory, setChatHistory] = useState([
@@ -17,6 +18,7 @@ const MentalHealthChatbot = () => {
   const [isBotTyping, setIsBotTyping] = useState(false);
   const [showSafetyResources, setShowSafetyResources] = useState(false);
   const [showTypingIndicator, setShowTypingIndicator] = useState(false);
+  const [isAiSending, setIsAiSending] = useState(false);
   const messagesEndRef = useRef(null);
   const chatContainerRef = useRef(null);
   const textInputRef = useRef(null);
@@ -55,6 +57,34 @@ const MentalHealthChatbot = () => {
         resolve();
       }, delay);
     });
+  };
+
+  const getAiResponseText = (payload) => {
+    return payload?.data?.ai_message?.message ||
+      payload?.data?.aiMessage?.message ||
+      payload?.ai_message?.message ||
+      payload?.aiMessage?.message ||
+      payload?.reply ||
+      payload?.response ||
+      payload?.data?.reply ||
+      payload?.data?.response ||
+      payload?.data?.message ||
+      payload?.message;
+  };
+
+  const sendMessageToAi = async (messageText, fallbackText) => {
+    setShowTypingIndicator(true);
+    setIsAiSending(true);
+    try {
+      const response = await sendAiMessage(messageText);
+      addChatMessage("bot", getAiResponseText(response) || fallbackText);
+    } catch (error) {
+      const errorText = error.response?.data?.message || error.response?.data?.error || fallbackText || "I am having trouble connecting right now. Please try again.";
+      addChatMessage("bot", typeof errorText === "string" ? errorText : "I am having trouble connecting right now. Please try again.");
+    } finally {
+      setShowTypingIndicator(false);
+      setIsAiSending(false);
+    }
   };
 
   const handleMoodInput = async (inputValue) => {
@@ -156,13 +186,12 @@ const MentalHealthChatbot = () => {
   const handleTextMessageSubmit = () => {
     if (!userMessage.trim()) return;
 
-    if (currentStep === "welcome") {
-      addChatMessage("user", userMessage);
+    if (currentStep === "welcome" || currentStep === "aiChat") {
+      const messageText = userMessage;
+      addChatMessage("user", messageText);
       setUserMessage("");
-      setTimeout(async () => {
-        await simulateBotResponse(messages.mood.text);
-        setCurrentStep("mood");
-      }, 800);
+      setCurrentStep("aiChat");
+      sendMessageToAi(messageText, "Thank you for reaching out. I am here with you.");
     } 
     else if (currentStep === "mood") {
       handleMoodInput(userMessage);
@@ -170,21 +199,20 @@ const MentalHealthChatbot = () => {
       handleYesNoResponse(userMessage);
     } else {
       // Free text conversation
-      addChatMessage("user", userMessage);
+      const messageText = userMessage;
+      addChatMessage("user", messageText);
       setUserMessage("");
 
-      setTimeout(() => {
-        const responses = [
-          "Thank you for sharing that with me. How does expressing that make you feel?",
-          "I hear what you're saying. Would you like to explore that feeling more?",
-          "That sounds significant. Tell me more about what that's like for you.",
-          "I'm listening. What's the most challenging part of that for you?",
-          "Thank you for being open with me. How have you been coping with this?",
-          "I appreciate you sharing this. Remember that your feelings are always valid."
-        ];
-        const randomResponse = responses[Math.floor(Math.random() * responses.length)];
-        addChatMessage("bot", randomResponse);
-      }, 1000);
+      const responses = [
+        "Thank you for sharing that with me. How does expressing that make you feel?",
+        "I hear what you're saying. Would you like to explore that feeling more?",
+        "That sounds significant. Tell me more about what that's like for you.",
+        "I'm listening. What's the most challenging part of that for you?",
+        "Thank you for being open with me. How have you been coping with this?",
+        "I appreciate you sharing this. Remember that your feelings are always valid."
+      ];
+      const randomResponse = responses[Math.floor(Math.random() * responses.length)];
+      sendMessageToAi(messageText, randomResponse);
     }
   };
 
@@ -199,12 +227,14 @@ const MentalHealthChatbot = () => {
     setUserMood(null);
     setShowSafetyResources(false);
     setUserMessage("");
+    setIsAiSending(false);
     messageIdCounter.current = 2;
   };
 
   const getInputPlaceholder = () => {
     switch (currentStep) {
       case "welcome":
+      case "aiChat":
         return "Type your response here...";
       case "mood":
         return "Enter a number from 0-10 (0=Distressed, 10=At Peace)...";
@@ -393,7 +423,7 @@ const MentalHealthChatbot = () => {
               value={userMessage}
               onChange={(e) => setUserMessage(e.target.value)}
               onKeyDown={(e) => {
-                if (e.key === "Enter" && userMessage.trim()) {
+                if (e.key === "Enter" && userMessage.trim() && !isAiSending) {
                   handleTextMessageSubmit();
                 }
               }}
@@ -403,10 +433,10 @@ const MentalHealthChatbot = () => {
             <button
               className="mindchat-send-button"
               onClick={handleTextMessageSubmit}
-              disabled={!userMessage.trim()}
+              disabled={!userMessage.trim() || isAiSending}
             >
               <span className="mindchat-send-icon">📤</span>
-              Send
+              {isAiSending ? "Sending..." : "Send"}
             </button>
           </div>
 

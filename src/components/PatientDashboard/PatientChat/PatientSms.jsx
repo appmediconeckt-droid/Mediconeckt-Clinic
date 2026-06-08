@@ -1,119 +1,73 @@
-import React, { useState } from 'react';
+import React, { useEffect, useState } from 'react';
 import { useNavigate } from 'react-router-dom';
 import './PatientSms.css';
+import { getChatDoctors } from '../../../redux/chatApi';
 
 const PatientSms = () => {
   const navigate = useNavigate();
-  
-  // State for doctors list
-  const [doctors] = useState([
-    {
-      id: 1,
-      name: "Dr. Sarah Johnson",
-      specialty: "Cardiologist",
-      lastMessage: "Your test results are normal.",
-      time: "10:30 AM",
-      unread: 2,
-      avatarColor: "doctor-avatar-green",
-      online: true,
-      phone: "+1 (555) 123-4567",
-      email: "sarah.johnson@hospital.com",
-      rating: 4.8
-    },
-    {
-      id: 2,
-      name: "Dr. Michael Chen",
-      specialty: "Neurologist",
-      lastMessage: "Please schedule a follow-up appointment.",
-      time: "Yesterday",
-      unread: 0,
-      avatarColor: "doctor-avatar-blue",
-      online: true,
-      phone: "+1 (555) 234-5678",
-      email: "michael.chen@hospital.com",
-      rating: 4.9
-    },
-    {
-      id: 3,
-      name: "Dr. Priya Sharma",
-      specialty: "Dermatologist",
-      lastMessage: "The medication should be applied twice daily.",
-      time: "Wednesday",
-      unread: 1,
-      avatarColor: "doctor-avatar-purple",
-      online: false,
-      phone: "+1 (555) 345-6789",
-      email: "priya.sharma@hospital.com",
-      rating: 4.7
-    },
-    {
-      id: 4,
-      name: "Dr. Robert Wilson",
-      specialty: "Orthopedic Surgeon",
-      lastMessage: "X-ray shows improvement in healing.",
-      time: "Monday",
-      unread: 0,
-      avatarColor: "doctor-avatar-orange",
-      online: true,
-      phone: "+1 (555) 456-7890",
-      email: "robert.wilson@hospital.com",
-      rating: 4.6
-    },
-    {
-      id: 5,
-      name: "Dr. Emily Davis",
-      specialty: "Pediatrician",
-      lastMessage: "Vaccination schedule updated.",
-      time: "Last week",
-      unread: 0,
-      avatarColor: "doctor-avatar-teal",
-      online: false,
-      phone: "+1 (555) 567-8901",
-      email: "emily.davis@hospital.com",
-      rating: 4.9
-    },
-    {
-      id: 6,
-      name: "Dr. James Miller",
-      specialty: "Oncologist",
-      lastMessage: "Treatment plan has been adjusted.",
-      time: "2 days ago",
-      unread: 3,
-      avatarColor: "doctor-avatar-green",
-      online: true,
-      phone: "+1 (555) 678-9012",
-      email: "james.miller@hospital.com",
-      rating: 4.7
-    },
-    {
-      id: 7,
-      name: "Dr. Lisa Anderson",
-      specialty: "Psychiatrist",
-      lastMessage: "Let's discuss the therapy progress.",
-      time: "Tuesday",
-      unread: 0,
-      avatarColor: "doctor-avatar-blue",
-      online: false,
-      phone: "+1 (555) 789-0123",
-      email: "lisa.anderson@hospital.com",
-      rating: 4.9
-    },
-    {
-      id: 8,
-      name: "Dr. David Martinez",
-      specialty: "Gastroenterologist",
-      lastMessage: "Endoscopy results are ready.",
-      time: "Today",
-      unread: 1,
-      avatarColor: "doctor-avatar-purple",
-      online: true,
-      phone: "+1 (555) 890-1234",
-      email: "david.martinez@hospital.com",
-      rating: 4.8
-    }
-  ]);
-
+  const [doctors, setDoctors] = useState([]);
   const [searchTerm, setSearchTerm] = useState("");
+  const [status, setStatus] = useState('loading');
+  const [error, setError] = useState('');
+
+  const formatChatTime = (value) => {
+    if (!value) return '';
+    const date = new Date(value);
+    if (Number.isNaN(date.getTime())) return value;
+    return date.toLocaleTimeString([], { hour: '2-digit', minute: '2-digit' });
+  };
+
+  const getLastMessageText = (item) => {
+    const lastMessage = item.lastMessage || item.last_message || item.latest_message;
+    if (typeof lastMessage === 'string') return lastMessage;
+    return lastMessage?.message || lastMessage?.text || item.message || item.content || 'No messages yet';
+  };
+
+  const getLastMessageTime = (item, doctor) => {
+    const lastMessage = item.lastMessage || item.last_message || item.latest_message;
+    return formatChatTime(
+      lastMessage?.created_at ||
+      lastMessage?.createdAt ||
+      lastMessage?.time ||
+      item.last_message_time ||
+      item.created_at ||
+      item.updated_at ||
+      doctor.time ||
+      doctor.last_message_time
+    );
+  };
+
+  useEffect(() => {
+    const loadDoctors = async () => {
+      try {
+        setStatus('loading');
+        setError('');
+        const doctorsData = await getChatDoctors();
+        setDoctors(doctorsData.map((item, index) => {
+          const doctor = item.doctor || item.user || item;
+          return {
+          id: doctor.id || doctor._id || doctor.doctor_id || item.doctor_id || doctor.user_id,
+          name: doctor.full_name || doctor.fullname || doctor.name || doctor.doctor_name || item.doctor_name || 'Doctor',
+          specialty: doctor.speciality || doctor.specialization || doctor.specialty || item.specialty || 'Doctor',
+          lastMessage: getLastMessageText(item),
+          time: getLastMessageTime(item, doctor),
+          unread: item.unread || item.unread_count || doctor.unread || doctor.unread_count || 0,
+          avatarColor: ['doctor-avatar-green', 'doctor-avatar-blue', 'doctor-avatar-purple', 'doctor-avatar-orange', 'doctor-avatar-teal'][index % 5],
+          online: Boolean(doctor.online || doctor.is_online),
+          phone: doctor.phone || doctor.phone_number || '',
+          email: doctor.email || '',
+          rating: doctor.rating || 0,
+        };
+        }));
+        setStatus('succeeded');
+      } catch (err) {
+        setError(err.response?.data?.message || err.message || 'Failed to load doctors');
+        setStatus('failed');
+      }
+    };
+
+    loadDoctors();
+  }, []);
 
   // Handle selecting a doctor - Navigate to chat page
   const handleSelectDoctor = (doctor) => {
@@ -162,7 +116,18 @@ const PatientSms = () => {
           </div>
 
           <div className="doctors-list-wrapper">
-            {filteredDoctors.length === 0 ? (
+            {status === 'loading' ? (
+              <div className="no-doctors-found">
+                <i className="fas fa-spinner no-doctor-icon"></i>
+                <h3>Loading doctors...</h3>
+              </div>
+            ) : status === 'failed' ? (
+              <div className="no-doctors-found">
+                <i className="fas fa-exclamation-circle no-doctor-icon"></i>
+                <h3>Unable to load doctors</h3>
+                <p>{error}</p>
+              </div>
+            ) : filteredDoctors.length === 0 ? (
               <div className="no-doctors-found">
                 <i className="fas fa-user-md no-doctor-icon"></i>
                 <h3>No doctors found</h3>

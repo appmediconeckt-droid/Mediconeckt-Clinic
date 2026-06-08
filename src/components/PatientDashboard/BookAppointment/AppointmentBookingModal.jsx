@@ -1,8 +1,16 @@
 import React, { useState, useEffect } from 'react';
+import { useDispatch, useSelector } from 'react-redux';
+import axios from 'axios';
 import './AppointmentBookingModal.css';
 import { patientData } from "./data";
+import { fetchClinicsByDoctor } from '../../../redux/clinicsSlice';
+import { API_BASE_URL, getAuthHeaders } from '../../../redux/apiConfig';
 
-const AppointmentBooking = ({ userData }) => {
+const AppointmentBooking = ({ userData, doctorId, doctorData }) => {
+  const dispatch = useDispatch();
+  const { list: reduxClinics, status: clinicsStatus, error: clinicsError } = useSelector((state) => state.clinics || { list: [], status: 'idle', error: null });
+  const authUser = useSelector((state) => state.auth?.user);
+
   const [selectedDate, setSelectedDate] = useState('');
   const [selectedTime, setSelectedTime] = useState('');
   const [selectedPayment, setSelectedPayment] = useState('');
@@ -13,6 +21,54 @@ const AppointmentBooking = ({ userData }) => {
   const [selectedClinic, setSelectedClinic] = useState(null);
   const [showConsultationModeDropdown, setShowConsultationModeDropdown] = useState(false);
   const [selectedConsultationMode, setSelectedConsultationMode] = useState('in-clinic');
+  const [isBookingAppointment, setIsBookingAppointment] = useState(false);
+  const [bookingError, setBookingError] = useState('');
+
+  const getClinicAvailableDays = (clinic) => {
+    const days = clinic.available_days || clinic.availableDays;
+    if (Array.isArray(days)) return days;
+    if (typeof days === 'string') {
+      return days.split(',').map(day => day.trim()).filter(Boolean);
+    }
+    return ['Mon', 'Tue', 'Wed', 'Thu', 'Fri'];
+  };
+
+  // Fetch clinics for the selected doctor on component mount
+  useEffect(() => {
+    if (doctorId) {
+      dispatch(fetchClinicsByDoctor(doctorId));
+    }
+  }, [doctorId, dispatch]);
+
+  // Set first clinic as selected when clinics are fetched
+  useEffect(() => {
+    if (reduxClinics && reduxClinics.length > 0) {
+      // Map API response to clinic object format
+      const firstClinic = reduxClinics[0];
+      const mappedClinic = {
+        id: firstClinic.id || firstClinic._id,
+        name: firstClinic.clinic_name,
+        location: firstClinic.location || '',
+        color: '#007bff',
+        consultationFee: firstClinic.consultation_fee || firstClinic.consultationFee || 150,
+        availableDays: getClinicAvailableDays(firstClinic),
+        timings: firstClinic.timings || '9:00 AM - 5:00 PM',
+        supportsVideoCall: firstClinic.supports_video_call ?? firstClinic.supportsVideoCall ?? true,
+        supportsVoiceCall: firstClinic.supports_voice_call ?? firstClinic.supportsVoiceCall ?? true,
+        phone_number: firstClinic.phone_number,
+      };
+      setSelectedClinic(mappedClinic);
+    }
+  }, [reduxClinics]);
+
+  // Use doctorData prop if provided, otherwise use empty object
+  const doctorInfo = doctorData || {
+    name: "Select Doctor",
+    specialty: "Speciality",
+    experience: "N/A",
+    languages: "English",
+    id: doctorId,
+  };
 
   // Consultation mode options
   const consultationModes = [
@@ -23,7 +79,7 @@ const AppointmentBooking = ({ userData }) => {
       icon: 'fas fa-hospital',
       color: '#007bff',
       available: true,
-      additionalFee: 0
+      additionalFee: 0,
     },
     {
       id: 'video-call',
@@ -32,7 +88,7 @@ const AppointmentBooking = ({ userData }) => {
       icon: 'fas fa-video',
       color: '#28a745',
       available: true,
-      additionalFee: 10
+      additionalFee: 10,
     },
     {
       id: 'voice-call',
@@ -41,72 +97,9 @@ const AppointmentBooking = ({ userData }) => {
       icon: 'fas fa-phone-alt',
       color: '#6f42c1',
       available: true,
-      additionalFee: 5
-    }
+      additionalFee: 5,
+    },
   ];
-
-  // Simulated doctor data with multiple clinics
-  const doctorInfo = {
-    name: "Dr. Sarah Johnson",
-    specialty: "Cardiologist",
-    experience: "15 years",
-    languages: "English, Spanish",
-    clinics: [
-      {
-        id: 1,
-        name: "City Medical Clinic",
-        location: "456 North Ave, Healthcare Complex",
-        color: "#007bff",
-        consultationFee: 150,
-        availableDays: ["Mon", "Tue", "Wed", "Thu", "Fri"],
-        timings: "9:00 AM - 5:00 PM",
-        supportsVideoCall: true,
-        supportsVoiceCall: true
-      },
-      {
-        id: 2,
-        name: "Northside Hospital",
-        location: "456 North Ave, Healthcare Complex",
-        color: "#28a745",
-        consultationFee: 180,
-        availableDays: ["Mon", "Wed", "Fri", "Sat"],
-        timings: "10:00 AM - 6:00 PM",
-        supportsVideoCall: true,
-        supportsVoiceCall: true
-      },
-      {
-        id: 3,
-        name: "West End Clinic",
-        location: "789 West Blvd, Medical Plaza",
-        color: "#dc3545",
-        consultationFee: 130,
-        availableDays: ["Tue", "Thu", "Sat"],
-        timings: "8:00 AM - 4:00 PM",
-        supportsVideoCall: false,
-        supportsVoiceCall: true
-      },
-      {
-        id: 4,
-        name: "East Medical Center",
-        location: "321 East Road, Health District",
-        color: "#ffc107",
-        consultationFee: 200,
-        availableDays: ["Mon", "Tue", "Wed", "Thu", "Fri", "Sat"],
-        timings: "7:00 AM - 7:00 PM",
-        supportsVideoCall: true,
-        supportsVoiceCall: true
-      }
-    ]
-  };
-
-  // Initialize selected clinic on component mount
-  useEffect(() => {
-    if (doctorInfo.clinics.length > 0) {
-      setSelectedClinic(doctorInfo.clinics[0]);
-      // Check if selected clinic supports video/voice calls
-      updateConsultationModeAvailability(doctorInfo.clinics[0]);
-    }
-  }, []);
 
   // Update consultation mode availability based on selected clinic
   const updateConsultationModeAvailability = (clinic) => {
@@ -211,6 +204,7 @@ const AppointmentBooking = ({ userData }) => {
 
   const handlePaymentSelect = (payment) => {
     setSelectedPayment(payment);
+    setBookingError('');
   };
 
   const handleClinicSelect = (clinic) => {
@@ -221,6 +215,7 @@ const AppointmentBooking = ({ userData }) => {
     setSelectedTime('');
     setSelectedPayment('');
     setTokenNumber(null);
+    setBookingError('');
 
     // Update consultation mode based on clinic support
     if (!clinic.supportsVideoCall && selectedConsultationMode === 'video-call') {
@@ -253,9 +248,40 @@ const AppointmentBooking = ({ userData }) => {
     return clinicFee + additionalFee;
   };
 
-  const handleBookAppointment = () => {
+  const getStoredAuthUser = () => {
+    try {
+      return JSON.parse(localStorage.getItem('authUser') || 'null');
+    } catch (error) {
+      return null;
+    }
+  };
+
+  const getPatientId = () => {
+    const user = authUser || userData || getStoredAuthUser();
+    return user?.patient_id || user?.patientId || user?.id || user?._id || user?.user_id;
+  };
+
+  const getConsultationModeForApi = () => {
+    return selectedConsultationMode === 'in-clinic' ? 'offline' : 'online';
+  };
+
+  const formatTimeForApi = (time) => {
+    return time && time.length === 5 ? `${time}:00` : time;
+  };
+
+  const handleBookAppointment = async () => {
     if (!selectedClinic) {
       alert('Please select a clinic first');
+      return;
+    }
+    if (!selectedDate || !selectedTime || !selectedPayment) {
+      setBookingError('Please select date, time and payment method.');
+      return;
+    }
+
+    const patientId = getPatientId();
+    if (!patientId) {
+      setBookingError('Patient id not found. Please login again.');
       return;
     }
 
@@ -263,28 +289,34 @@ const AppointmentBooking = ({ userData }) => {
     const totalFee = calculateTotalFee();
 
     const appointmentData = {
-      patient: patientData,
-      doctor: doctorInfo.name,
-      clinic: selectedClinic.name,
-      clinicLocation: selectedClinic.location,
-      consultationMode: selectedConsultationMode,
-      consultationModeName: modeDetails?.name,
-      date: selectedDate,
-      time: selectedTime,
-      tokenNumber: tokenNumber,
-      paymentMethod: selectedPayment,
-      consultationFee: selectedClinic.consultationFee,
-      additionalFee: modeDetails?.additionalFee,
-      totalFee: totalFee,
-      timestamp: new Date().toISOString()
+      patient_id: patientId,
+      doctor_id: doctorId || doctorInfo.id,
+      clinic_id: selectedClinic.id,
+      consultation_mode: getConsultationModeForApi(),
+      appointment_date: selectedDate,
+      appointment_time: formatTimeForApi(selectedTime),
+      consultation_fee: totalFee,
+      payment_method: selectedPayment,
     };
 
-    console.log('Booking appointment:', appointmentData);
-    setIsBooked(true);
+    try {
+      setIsBookingAppointment(true);
+      setBookingError('');
+      console.log('Booking appointment:', appointmentData, modeDetails);
+      await axios.post(`${API_BASE_URL}/appointments`, appointmentData, {
+        headers: getAuthHeaders(),
+      });
+      setIsBooked(true);
 
-    setTimeout(() => {
-      resetForm();
-    }, 5000);
+      setTimeout(() => {
+        resetForm();
+      }, 5000);
+    } catch (error) {
+      const message = error.response?.data?.message || error.response?.data?.error || error.message || 'Failed to book appointment';
+      setBookingError(typeof message === 'string' ? message : 'Failed to book appointment');
+    } finally {
+      setIsBookingAppointment(false);
+    }
   };
 
   const resetForm = () => {
@@ -294,6 +326,7 @@ const AppointmentBooking = ({ userData }) => {
     setTokenNumber(null);
     setBookingStep(1);
     setIsBooked(false);
+    setBookingError('');
   };
 
   const formatDisplayDate = (dateStr) => {
@@ -384,9 +417,13 @@ const AppointmentBooking = ({ userData }) => {
             {/* Clinic Selection Column */}
             <div className="apt-col" style={{ flex: '0 0 50%', maxWidth: '50%', padding: '0 10px' }}>
               <div className="apt-clinic-selection-container apt-mb-3">
-                {doctorInfo.clinics.length === 1 ? (
+                {clinicsStatus === 'loading' ? (
+                  <div className="apt-loading-message">Loading clinics...</div>
+                ) : clinicsStatus === 'failed' ? (
+                  <div className="apt-error-message">{clinicsError}</div>
+                ) : reduxClinics.length === 1 ? (
                   <div className="apt-single-clinic-display">
-                    <h2 className="apt-clinic-name">{doctorInfo.clinics[0].name}</h2>
+                    <h2 className="apt-clinic-name">{reduxClinics[0].clinic_name || 'Clinic'}</h2>
                     <div className="apt-clinic-badge apt-single">
                       <i className="fas fa-hospital"></i>
                       <span>Only Clinic</span>
@@ -463,69 +500,87 @@ const AppointmentBooking = ({ userData }) => {
                             Select Clinic for {doctorInfo.name}
                           </h6>
                           <div className="apt-clinic-options-list">
-                            {doctorInfo.clinics.map(clinic => (
-                              <div
-                                key={clinic.id}
-                                className={`apt-clinic-option apt-p-3 apt-mb-2 apt-rounded ${selectedClinic?.id === clinic.id ? 'selected' : ''}`}
-                                onClick={() => handleClinicSelect(clinic)}
-                                style={{
-                                  cursor: "pointer",
-                                  backgroundColor: selectedClinic?.id === clinic.id ? clinic.color + "20" : "#f8f9fa",
-                                  border: selectedClinic?.id === clinic.id ? `2px solid ${clinic.color}` : "1px solid #dee2e6",
-                                  transition: "all 0.2s"
-                                }}
-                              >
-                                <div className="apt-d-flex apt-justify-content-between apt-align-items-start">
-                                  <div className="apt-d-flex apt-align-items-start apt-gap-3">
+                            {reduxClinics.length === 0 ? (
+                              <div className="apt-small apt-text-muted apt-p-3">
+                                No clinics available
+                              </div>
+                            ) : reduxClinics.map(clinic => {
+                              const mappedClinic = {
+                                id: clinic.id || clinic._id,
+                                name: clinic.clinic_name,
+                                location: clinic.location || '',
+                                color: '#007bff',
+                                consultationFee: clinic.consultation_fee || clinic.consultationFee || 150,
+                                availableDays: getClinicAvailableDays(clinic),
+                                timings: clinic.timings || '9:00 AM - 5:00 PM',
+                                supportsVideoCall: clinic.supports_video_call ?? clinic.supportsVideoCall ?? true,
+                                supportsVoiceCall: clinic.supports_voice_call ?? clinic.supportsVoiceCall ?? true,
+                              };
+                              return (
+                                <React.Fragment key={mappedClinic.id}>
+                                <div
+                                  className={`apt-clinic-option apt-p-3 apt-mb-2 apt-rounded ${selectedClinic?.id === mappedClinic.id ? 'selected' : ''}`}
+                                  onClick={() => handleClinicSelect(mappedClinic)}
+                                  style={{
+                                    cursor: "pointer",
+                                    backgroundColor: selectedClinic?.id === mappedClinic.id ? mappedClinic.color + "20" : "#f8f9fa",
+                                    border: selectedClinic?.id === mappedClinic.id ? `2px solid ${mappedClinic.color}` : "1px solid #dee2e6",
+                                    transition: "all 0.2s"
+                                  }}
+                                >
+                                  <div className="apt-d-flex apt-justify-content-between apt-align-items-start">
+                                    <div className="apt-d-flex apt-align-items-start apt-gap-3">
                                     <div
                                       className="apt-rounded-circle apt-mt-2"
                                       style={{
                                         width: "12px",
                                         height: "12px",
-                                        backgroundColor: clinic.color
+                                        backgroundColor: mappedClinic.color
                                       }}
                                     />
                                     <div>
-                                      <strong style={{ color: clinic.color }}>{clinic.name}</strong>
-                                      <div className="apt-small apt-text-muted apt-mb-1">{clinic.location}</div>
+                                      <strong style={{ color: mappedClinic.color }}>{mappedClinic.name}</strong>
+                                      <div className="apt-small apt-text-muted apt-mb-1">{mappedClinic.location}</div>
                                       <div className="apt-mt-2">
                                         <div className="apt-d-flex apt-flex-wrap apt-gap-2">
-                                          <span className="apt-badge" style={{ backgroundColor: clinic.color, color: 'white' }}>
+                                          <span className="apt-badge" style={{ backgroundColor: mappedClinic.color, color: 'white' }}>
                                             <i className="fas fa-calendar me-1"></i>
-                                            {clinic.availableDays.join(', ')}
+                                            {mappedClinic.availableDays.join(', ')}
                                           </span>
                                           <span className="apt-badge apt-bg-secondary">
                                             <i className="fas fa-clock me-1"></i>
-                                            {clinic.timings}
+                                            {mappedClinic.timings}
                                           </span>
                                           <span className="apt-badge apt-bg-success">
                                             <i className="fas fa-money-bill-wave me-1"></i>
-                                            ${clinic.consultationFee}
+                                            ${mappedClinic.consultationFee}
                                           </span>
                                         </div>
                                       </div>
                                     </div>
                                   </div>
-                                  {selectedClinic?.id === clinic.id && (
-                                    <span className="apt-badge" style={{ backgroundColor: clinic.color }}>
+                                  {selectedClinic?.id === mappedClinic.id && (
+                                    <span className="apt-badge" style={{ backgroundColor: mappedClinic.color }}>
                                       <i className="fas fa-check"></i> Selected
                                     </span>
                                   )}
                                 </div>
                                 <div className="apt-mt-2 apt-pt-2 apt-border-top">
                                   <div className="apt-d-flex apt-gap-3">
-                                    <span className={`apt-small ${clinic.supportsVideoCall ? 'apt-text-success' : 'apt-text-muted'}`}>
+                                    <span className={`apt-small ${mappedClinic.supportsVideoCall ? 'apt-text-success' : 'apt-text-muted'}`}>
                                       <i className="fas fa-video me-1"></i>
-                                      Video Call {clinic.supportsVideoCall ? '✓' : '✗'}
+                                      Video Call {mappedClinic.supportsVideoCall ? '✓' : '✗'}
                                     </span>
-                                    <span className={`apt-small ${clinic.supportsVoiceCall ? 'apt-text-success' : 'apt-text-muted'}`}>
+                                    <span className={`apt-small ${mappedClinic.supportsVoiceCall ? 'apt-text-success' : 'apt-text-muted'}`}>
                                       <i className="fas fa-phone-alt me-1"></i>
-                                      Voice Call {clinic.supportsVoiceCall ? '✓' : '✗'}
+                                      Voice Call {mappedClinic.supportsVoiceCall ? '✓' : '✗'}
                                     </span>
                                   </div>
                                 </div>
                               </div>
-                            ))}
+                                </React.Fragment>
+                              );
+                            })}
                           </div>
                         </div>
                       )}
@@ -1036,6 +1091,12 @@ const AppointmentBooking = ({ userData }) => {
       </div>
 
       {/* Navigation Buttons */}
+      {bookingError && (
+        <div className="apt-error-message apt-mt-3">
+          {bookingError}
+        </div>
+      )}
+
       <div className="apt-booking-actions">
         {bookingStep > 1 && (
           <button className="apt-btn-back" onClick={prevStep}>
@@ -1061,12 +1122,12 @@ const AppointmentBooking = ({ userData }) => {
           </button>
         ) : (
           <button
-            className={`apt-btn-book ${!selectedPayment ? 'disabled' : ''}`}
+            className={`apt-btn-book ${(!selectedPayment || isBookingAppointment) ? 'disabled' : ''}`}
             onClick={handleBookAppointment}
-            disabled={!selectedPayment}
+            disabled={!selectedPayment || isBookingAppointment}
           >
             <i className="fas fa-calendar-check"></i>
-            Confirm & Book Appointment (${calculateTotalFee()})
+            {isBookingAppointment ? 'Booking...' : `Confirm & Book Appointment ($${calculateTotalFee()})`}
           </button>
         )}
       </div>
