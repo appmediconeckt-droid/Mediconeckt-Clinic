@@ -1,8 +1,8 @@
-import React from 'react';
 import './PatientDashboard.css';
 
 
 const PatientDashboard = ({
+  patientId = "P-1024",
   fullName = "Arun Kumar",
   phoneNo = "Not Provided",
   bloodGroup = "Not Provided",
@@ -47,14 +47,18 @@ const PatientDashboard = ({
   };
 
   const patientStatus = getPatientStatus();
+  const valueWithUnit = (value, unit) =>
+    value === "Not Provided" ? value : `${value}${unit}`;
 
   return (
-    <div className={`patient-dashboard patient-status-${patientStatus} p-2`}>
+    <div className={`patient-dashboard patient-status-${patientStatus}`}>
 
       <header className="patient-app-header">
-        <div className=" d-flex flex-column flex-md-row justify-content-between align-items-start align-items-md-center  gap-3">
-          <h2>Dashboard</h2>
-          </div>
+        <div>
+          <span className="patient-app-eyebrow">Health overview</span>
+          <h2>Patient Dashboard</h2>
+          <p>Your profile and latest vital signs in one place.</p>
+        </div>
       </header>
       <div className="dashboard-header">
 
@@ -62,16 +66,26 @@ const PatientDashboard = ({
           <div className={`status-dot ${patientStatus}`}></div>
           <span className="status-text">Status: {patientStatus.charAt(0).toUpperCase() + patientStatus.slice(1)}</span>
         </div>
-        <div className="patient-id">ID: P-{Math.floor(Math.random() * 10000).toString().padStart(4, '0')}</div>
+        <div className="patient-id">Patient ID: {patientId}</div>
       </div>
 
       <div className="patient-info-section">
         <div className={`info-card full-name-card patient-${patientStatus}`}>
           <div className="patient-header">
-            <h2>{fullName}</h2>
-            <div className="patient-age-gender">
-              <span className="patient-age">Age: {age}</span>
-              <span className="patient-gender"> | {gender}</span>
+            <div className="patient-profile-avatar" aria-hidden="true">
+              {fullName
+                .split(" ")
+                .map((name) => name.charAt(0))
+                .slice(0, 2)
+                .join("")}
+            </div>
+            <div className="patient-profile-copy">
+              <span className="patient-profile-label">Patient profile</span>
+              <h2>{fullName}</h2>
+              <div className="patient-age-gender">
+                <span className="patient-age">Age: {age}</span>
+                <span className="patient-gender">{gender}</span>
+              </div>
             </div>
           </div>
         </div>
@@ -119,13 +133,13 @@ const PatientDashboard = ({
               <div className="info-subitem">
                 <span className="sub-label"><i className="icon-sugar"></i> Sugar</span>
                 <span className={`sub-value ${sugar !== "Not Provided" ? (parseInt(sugar) > 140 ? 'warning-value' : 'normal-value') : ''}`}>
-                  {sugar} mg/dL
+                  {valueWithUnit(sugar, " mg/dL")}
                 </span>
               </div>
               <div className="info-subitem">
                 <span className="sub-label"><i className="icon-spo2"></i> SpO2</span>
                 <span className={`sub-value ${spO2 !== "Not Provided" ? (parseInt(spO2) < 95 ? 'warning-value' : 'normal-value') : ''}`}>
-                  {spO2}%
+                  {valueWithUnit(spO2, "%")}
                 </span>
               </div>
             </div>
@@ -141,12 +155,12 @@ const PatientDashboard = ({
               <div className="info-subitem">
                 <span className="sub-label"><i className="icon-temp"></i> Temperature</span>
                 <span className={`sub-value ${temperature !== "Not Provided" ? (parseFloat(temperature) > 99.5 ? 'warning-value' : 'normal-value') : ''}`}>
-                  {temperature}°F
+                  {valueWithUnit(temperature, "°F")}
                 </span>
               </div>
               <div className="info-subitem">
                 <span className="sub-label"><i className="icon-weight"></i> Weight</span>
-                <span className="sub-value">{weight} lbs</span>
+                <span className="sub-value">{valueWithUnit(weight, " lbs")}</span>
               </div>
             </div>
           </div>
@@ -174,7 +188,7 @@ const PatientDashboard = ({
           </div>
           <div className={`vital-item ${sugar !== "Not Provided" ? (parseInt(sugar) > 140 ? 'warning' : 'normal') : 'normal'}`}>
             <span className="vital-label">Blood Sugar</span>
-            <span className="vital-value">{sugar} mg/dL</span>
+            <span className="vital-value">{valueWithUnit(sugar, " mg/dL")}</span>
             <span className="vital-status">
               {sugar !== "Not Provided" ?
                 (parseInt(sugar) > 140 ? '⚠️ High' : '✅ Normal') :
@@ -183,7 +197,7 @@ const PatientDashboard = ({
           </div>
           <div className={`vital-item ${spO2 !== "Not Provided" ? (parseInt(spO2) < 95 ? 'warning' : 'normal') : 'normal'}`}>
             <span className="vital-label">SpO2</span>
-            <span className="vital-value">{spO2}%</span>
+            <span className="vital-value">{valueWithUnit(spO2, "%")}</span>
             <span className="vital-status">
               {spO2 !== "Not Provided" ?
                 (parseInt(spO2) < 95 ? '⚠️ Low' : '✅ Normal') :
@@ -192,7 +206,7 @@ const PatientDashboard = ({
           </div>
           <div className={`vital-item ${temperature !== "Not Provided" ? (parseFloat(temperature) > 99.5 ? 'warning' : 'normal') : 'normal'}`}>
             <span className="vital-label">Temperature</span>
-            <span className="vital-value">{temperature}°F</span>
+            <span className="vital-value">{valueWithUnit(temperature, "°F")}</span>
             <span className="vital-status">
               {temperature !== "Not Provided" ?
                 (parseFloat(temperature) > 99.5 ? '⚠️ High' : '✅ Normal') :

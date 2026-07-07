@@ -5,7 +5,6 @@ import {
   Form,
   FormControl,
   InputGroup,
-  ProgressBar,
   Spinner,
   Modal,
   Row,
@@ -243,8 +242,8 @@ const CompleteModal = ({ show, onHide, form, setForm, onSave, patientName, patie
       medicines: formattedMedicines,
       // Include patient data
       patientId: patientData?.patientId || '',
-      patientGender: patientData?.patientGender || '',
-      patientAddress: patientData?.patientAddress || '',
+      patientGender: patientData?.gender || '',
+      patientAddress: patientData?.address || '',
       patientName: patientName || '',
       patientAge: patientData?.age || '',
       // Other fields
@@ -835,7 +834,7 @@ const EditCompletedModal = ({ show, onHide, appointment, onSave }) => {
 };
 
 // Enhanced Medical Prescription Modal Component
-const SummaryModal = ({ show, onHide, appointmentData, onPrint, onCompleteWithoutPrint, prescriptionData }) => {
+const SummaryModal = ({ show, onHide, appointmentData, onCompleteWithoutPrint, prescriptionData }) => {
   const [selectedTheme, setSelectedTheme] = useState(COLOR_THEMES[0]);
   const [customTheme, setCustomTheme] = useState({
     primary: '#1e40af',
@@ -851,7 +850,7 @@ const SummaryModal = ({ show, onHide, appointmentData, onPrint, onCompleteWithou
   const [showCustomTheme, setShowCustomTheme] = useState(false);
 
   // Use prescriptionData passed from CompleteModal
-  const [prescriptionDataState] = useState({
+  const prescriptionDataState = {
     doctorName: "Dr. Onkar Bhave",
     doctorQualifications: "M.B.B.S., M.D., M.S.",
     registrationNo: "270988",
@@ -863,11 +862,11 @@ const SummaryModal = ({ show, onHide, appointmentData, onPrint, onCompleteWithou
     clinicClosed: "Thursday",
 
     // Dynamic data from CompleteModal
-    patientId: prescriptionData?.patientId || "266",
-    patientName: prescriptionData?.patientName || "DEMO PATIENT",
-    patientGender: prescriptionData?.patientGender || "Male",
-    patientAddress: prescriptionData?.patientAddress || "PUNE",
-    patientAge: prescriptionData?.patientAge || "30",
+    patientId: prescriptionData?.patientId || "N/A",
+    patientName: prescriptionData?.patientName || "Patient",
+    patientGender: prescriptionData?.patientGender || "N/A",
+    patientAddress: prescriptionData?.patientAddress || "Not provided",
+    patientAge: prescriptionData?.patientAge || "N/A",
     temperature: prescriptionData?.temperature || "36",
     bloodPressure: prescriptionData?.bloodPressure || "120/80 mmHg",
     diagnosis: prescriptionData?.diagnosis || "Sample diagnosis text",
@@ -884,9 +883,9 @@ const SummaryModal = ({ show, onHide, appointmentData, onPrint, onCompleteWithou
       }
     ],
     advice: prescriptionData?.advice || "AVOID OILY AND SPICY FOOD. DRINK PLENTY OF WATER. TAKE PROPER REST.",
-    followUpDate: prescriptionData?.formattedFollowUpDate || "12-05-2020",
+    followUpDate: prescriptionData?.formattedFollowUpDate || "",
     additionalNotes: prescriptionData?.additionalNotes || "Return if symptoms persist or worsen."
-  });
+  };
 
   if (!appointmentData) return null;
 
@@ -920,7 +919,7 @@ const SummaryModal = ({ show, onHide, appointmentData, onPrint, onCompleteWithou
 
   const currentTheme = selectedTheme.id === 'custom-theme' ? selectedTheme : selectedTheme;
 
-  const handlePrint = async () => {
+  const handleDownloadPdf = async () => {
     try {
       const element = document.getElementById('docfix-printable-prescription');
       const canvas = await html2canvas(element, {
@@ -957,6 +956,10 @@ const SummaryModal = ({ show, onHide, appointmentData, onPrint, onCompleteWithou
       console.error('Error generating PDF:', error);
       alert('Error generating PDF. Please try again.');
     }
+  };
+
+  const handlePrint = () => {
+    window.print();
   };
 
   return (
@@ -1371,6 +1374,15 @@ const SummaryModal = ({ show, onHide, appointmentData, onPrint, onCompleteWithou
               Mark as Complete
             </Button>
             <Button
+              variant="outline-primary"
+              onClick={handleDownloadPdf}
+              size="sm"
+              className="docfix-btn-sm docfix-btn-download"
+            >
+              <i className="bi bi-file-earmark-pdf me-1"></i>
+              Download PDF
+            </Button>
+            <Button
               variant="primary"
               onClick={handlePrint}
               size="sm"
@@ -1405,6 +1417,7 @@ const DoctorDashboard = () => {
   const [showEditModal, setShowEditModal] = useState(false);
   const [editingAppointment, setEditingAppointment] = useState(null);
   const [lastCompletedAppointment, setLastCompletedAppointment] = useState(null);
+  const [lastPrescriptionData, setLastPrescriptionData] = useState(null);
   const [completeForm, setCompleteForm] = useState({
     diagnosis: "",
     medicine: "",
@@ -1645,6 +1658,7 @@ const DoctorDashboard = () => {
     );
 
     setLastCompletedAppointment(completedRecord);
+    setLastPrescriptionData(formData);
     setActiveSession(null);
     setShowCompleteModal(false);
     setShowSummaryModal(true);
@@ -1989,12 +2003,12 @@ const DoctorDashboard = () => {
               <tbody>
                 {appointments.map((a, idx) => (
                   <tr key={a.id} className="docfix-table-row">
-                    <td className="docfix-table-td  d-md-table-cell">
+                    <td className="docfix-table-td d-md-table-cell" data-label="No.">
                       <span className="docfix-table-index">
                         {idx + 1}
                       </span>
                     </td>
-                    <td className="docfix-table-td">
+                    <td className="docfix-table-td" data-label="Patient">
                       <div className="docfix-patient-cell">
                         <div className="docfix-table-avatar">
                           {a.name
@@ -2018,42 +2032,42 @@ const DoctorDashboard = () => {
                         </div>
                       </div>
                     </td>
-                    <td className="docfix-table-td  d-md-table-cell">
+                    <td className="docfix-table-td d-md-table-cell" data-label="Gender">
                       <Badge bg={a.gender === "Male" ? "primary" : "danger"} className="docfix-badge">
                         {a.gender}
                       </Badge>
                     </td>
-                    <td className="docfix-table-td  d-lg-table-cell">
+                    <td className="docfix-table-td d-lg-table-cell" data-label="Issue">
                       <div className="docfix-table-issue">
                         {a.issue}
                       </div>
                     </td>
-                    <td className="docfix-table-td  d-lg-table-cell">
+                    <td className="docfix-table-td d-lg-table-cell" data-label="Phone">
                       <a href={`tel:${a.phone}`} className="docfix-phone-link">
                         <i className="bi bi-telephone me-1"></i>
                         {a.phone}
                       </a>
                     </td>
-                    <td className="docfix-table-td  d-lg-table-cell">
+                    <td className="docfix-table-td d-lg-table-cell" data-label="Blood pressure">
                       <Badge bg="info" className="docfix-badge">
                         {a.bp || 'N/A'}
                       </Badge>
                     </td>
-                    <td className="docfix-table-td  d-lg-table-cell">
+                    <td className="docfix-table-td d-lg-table-cell" data-label="Blood group">
                       <Badge bg="danger" className="docfix-badge">
                         {a.bloodGroup || 'N/A'}
                       </Badge>
                     </td>
-                    <td className="docfix-table-td">
+                    <td className="docfix-table-td" data-label="Time">
                       <div className="docfix-time-cell">
                         <i className="bi bi-clock me-1"></i>
                         {a.scheduledTime}
                       </div>
                     </td>
-                    <td className="docfix-table-td">
+                    <td className="docfix-table-td" data-label="Status">
                       <StatusBadge status={a.status} />
                     </td>
-                    <td className="docfix-table-td">
+                    <td className="docfix-table-td" data-label="Action">
                       {(!activeSession?.appt || activeSession?.appt?.id === a.id) &&
                         a.status === "pending" && (
                           <Button
@@ -2131,12 +2145,12 @@ const DoctorDashboard = () => {
               <tbody>
                 {completed.map((c, i) => (
                   <tr key={c.id} className="docfix-table-row">
-                    <td className="docfix-table-td  d-md-table-cell">
+                    <td className="docfix-table-td d-md-table-cell" data-label="No.">
                       <span className="docfix-table-index">
                         {i + 1}
                       </span>
                     </td>
-                    <td className="docfix-table-td">
+                    <td className="docfix-table-td" data-label="Patient">
                       <div className="docfix-patient-cell">
                         <div className="docfix-table-avatar docfix-avatar-completed">
                           {c.name
@@ -2156,43 +2170,43 @@ const DoctorDashboard = () => {
                         </div>
                       </div>
                     </td>
-                    <td className="docfix-table-td  d-md-table-cell">
+                    <td className="docfix-table-td d-md-table-cell" data-label="Gender">
                       <Badge bg={c.gender === "Male" ? "primary" : "danger"} className="docfix-badge">
                         {c.gender}
                       </Badge>
                     </td>
-                    <td className="docfix-table-td  d-lg-table-cell">
+                    <td className="docfix-table-td d-lg-table-cell" data-label="Issue">
                       <div className="docfix-table-issue">
                         {c.issue}
                       </div>
                     </td>
-                    <td className="docfix-table-td d-lg-table-cell">
+                    <td className="docfix-table-td d-lg-table-cell" data-label="Phone">
                       <a href={`tel:${c.phone}`} className="docfix-phone-link">
                         <i className="bi bi-telephone me-1"></i>
                         {c.phone}
                       </a>
                     </td>
-                    <td className="docfix-table-td">
+                    <td className="docfix-table-td" data-label="Duration">
                       <Badge bg="info" className="docfix-badge docfix-duration-badge">
                         {formatDuration(c.durationMs)}
                       </Badge>
                     </td>
-                    <td className="docfix-table-td  d-lg-table-cell">
+                    <td className="docfix-table-td d-lg-table-cell" data-label="Diagnosis">
                       <div className="docfix-table-diagnosis">
                         {c.diagnosis}
                       </div>
                     </td>
-                    <td className="docfix-table-td  d-xl-table-cell">
+                    <td className="docfix-table-td d-xl-table-cell" data-label="Medicine">
                       <div className="docfix-table-medicine">
                         {c.medicine}
                       </div>
                     </td>
-                    <td className="docfix-table-td  d-xl-table-cell">
+                    <td className="docfix-table-td d-xl-table-cell" data-label="Advice">
                       <div className="docfix-table-advice">
                         {c.advice}
                       </div>
                     </td>
-                    <td className="docfix-table-td">
+                    <td className="docfix-table-td" data-label="Follow-up">
                       {c.followUpRequired && c.followUpDate ? (
                         <Badge bg="warning" className="docfix-badge docfix-followup-badge">
                           <i className="bi bi-calendar-check me-1"></i>
@@ -2208,7 +2222,7 @@ const DoctorDashboard = () => {
                         <span className="docfix-no-followup">No</span>
                       )}
                     </td>
-                    <td className="docfix-table-td">
+                    <td className="docfix-table-td" data-label="Edit">
                       <Button
                         variant="outline-primary"
                         size="sm"
@@ -2382,16 +2396,8 @@ const DoctorDashboard = () => {
         show={showSummaryModal}
         onHide={() => setShowSummaryModal(false)}
         appointmentData={lastCompletedAppointment}
-        onPrint={() => { }}
         onCompleteWithoutPrint={handleCompleteWithoutPrint}
-        prescriptionData={{
-          ...completeForm,
-          patientName: activeAppt?.name,
-          patientId: activeAppt?.patientId,
-          patientGender: activeAppt?.gender,
-          patientAddress: activeAppt?.address,
-          patientAge: activeAppt?.age
-        }}
+        prescriptionData={lastPrescriptionData}
       />
     </Container>
   );

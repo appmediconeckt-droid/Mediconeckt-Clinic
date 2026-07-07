@@ -1,4 +1,4 @@
-import React, { useState, useMemo } from "react";
+import { useState } from "react";
 import "./Appointment List.css";
 import "./Appointment List.responsive.css";
 
@@ -118,9 +118,13 @@ export default function AppointmentList() {
   ];
 
   return (
-    <div className="p-4">
-      <div className="header d-flex flex-column flex-md-row justify-content-between align-items-start align-items-md-center mb-3 gap-3">
-        <h2 className="mb-3">Appointment List</h2>
+    <div className="appointment-list-page">
+      <div className="appointment-list-header">
+        <div>
+          <span className="appointment-list-eyebrow">Schedule</span>
+          <h2>Appointment List</h2>
+          <p>Review patient names, times, visit type and status.</p>
+        </div>
 
         <div className="search-container">
           <input
@@ -136,16 +140,16 @@ export default function AppointmentList() {
 
 
       <div className="table-responsive">
-        <table className="table responsive-table table-hover shadow-sm " style={{ background: "#ffe6e6", borderRadius: "10px" }}>
-        <thead className="" style={{ background: "#ff7b7b" }}>
+        <table className="table responsive-table table-hover">
+        <thead>
           <tr>
-            <th style={{color:"white"}}>Patient</th>
-            <th style={{color:"white"}}>Clinic Name</th>
-            <th style={{color:"white"}}>Phone</th>
-            <th style={{color:"white"}}>Date</th>
-            <th style={{color:"white"}}>Time</th>
-            <th style={{color:"white"}}>Type</th>
-            <th style={{color:"white"}}>Status</th>
+            <th>Patient</th>
+            <th>Clinic Name</th>
+            <th>Phone</th>
+            <th>Date</th>
+            <th>Time</th>
+            <th>Type</th>
+            <th>Status</th>
           </tr>
         </thead>
 
@@ -160,7 +164,6 @@ export default function AppointmentList() {
             <tr
               key={a.id}
               className="table-row-animation"
-              style={{ cursor: "pointer", transition: "0.3s" }}
             >
               <td data-label="Patient">{a.patientName}</td>
 
@@ -193,15 +196,6 @@ export default function AppointmentList() {
       </table>
       </div>
 
-      {/* Row Hover Animation */}
-      <style>
-        {`
-          .table-row-animation:hover {
-            background-color: #ffd1d1;
-            transform: scale(1.01);
-          }
-        `}
-      </style>
     </div>
   );
 }

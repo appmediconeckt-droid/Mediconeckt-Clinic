@@ -11,7 +11,6 @@ import Signup from "./authtication/Signup";
 import DoctorDashboard from "./components/DoctorDashboard/Dashboard/DoctorDashboard";
 import DoctorCalendar from "./components/DoctorDashboard/Calendar/Calendar";
 import DoctorProfileFlow from "./components/DoctorDashboard/DoctorProfile/ActivateProfile";
-import DoctorProfile from "./components/DoctorDashboard/Setting/Profile/DoctorProfile";
 import QRcode from "./components/DoctorDashboard/AppointmentQR/AllQRcode";
 import AppointmentList from "./components/DoctorDashboard/AppointmentList/Appointment List";
 import SettingsPage from "./components/DoctorDashboard/Setting/Setting";

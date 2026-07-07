@@ -1,0 +1,730 @@
+/* Shared doctor/patient dashboard polish. Imported after App.css. */
+:root {
+  --clinic-blue: #1769e0;
+  --clinic-blue-dark: #0f3f92;
+  --clinic-green: #0d9f6e;
+  --clinic-green-dark: #087552;
+  --clinic-ink: #172033;
+  --clinic-muted: #667085;
+  --clinic-line: #dfe7f1;
+  --clinic-surface: #ffffff;
+  --clinic-page: #f4f7fb;
+}
+
+html,
+body,
+#root {
+  width: 100%;
+  min-width: 0;
+}
+
+body {
+  overflow-x: hidden;
+  color: var(--clinic-ink);
+}
+
+.right-side-content {
+  min-width: 0;
+  overflow-x: clip;
+  background: var(--clinic-page);
+}
+
+/* Patient dashboard */
+.patient-dashboard {
+  width: min(100%, 1440px);
+  padding: clamp(14px, 2.4vw, 32px);
+  color-scheme: light;
+}
+
+.patient-dashboard .patient-app-header {
+  padding: clamp(20px, 4vw, 36px);
+  margin-bottom: 16px;
+  border-radius: 22px;
+  color: white;
+  background:
+    radial-gradient(circle at 90% 10%, rgba(255, 255, 255, 0.22), transparent 32%),
+    linear-gradient(135deg, var(--clinic-green-dark), #16b981);
+  box-shadow: 0 16px 34px rgba(8, 117, 82, 0.2);
+}
+
+.patient-dashboard .patient-app-eyebrow,
+.appointment-list-eyebrow {
+  display: block;
+  margin-bottom: 5px;
+  font-size: 0.75rem;
+  font-weight: 800;
+  letter-spacing: 0.12em;
+  text-transform: uppercase;
+  opacity: 0.8;
+}
+
+.patient-dashboard .patient-app-header h2 {
+  margin: 0;
+  color: white;
+  font-size: clamp(1.55rem, 4vw, 2.25rem);
+}
+
+.patient-dashboard .patient-app-header p {
+  margin: 7px 0 0;
+  color: rgba(255, 255, 255, 0.86);
+  font-size: clamp(0.88rem, 2vw, 1rem);
+}
+
+.patient-dashboard .dashboard-header {
+  margin: 0 0 16px;
+  padding: 14px 16px;
+  border: 1px solid #dcefe8;
+  border-radius: 14px;
+  background: white;
+}
+
+.patient-dashboard .patient-info-section,
+.patient-dashboard .vital-signs-summary {
+  padding: clamp(16px, 3vw, 26px);
+  border: 1px solid #dcefe8;
+  border-radius: 18px;
+  box-shadow: 0 10px 28px rgba(21, 50, 43, 0.07);
+}
+
+.patient-dashboard .full-name-card {
+  padding: clamp(18px, 3vw, 26px);
+  margin-bottom: clamp(20px, 3vw, 28px);
+  border-radius: 16px;
+  color: white;
+}
+
+.patient-dashboard .full-name-card.patient-stable {
+  background:
+    radial-gradient(circle at 94% 15%, rgba(255, 255, 255, 0.3), transparent 28%),
+    linear-gradient(135deg, #087552, #19b77f);
+}
+
+.patient-dashboard .patient-header {
+  display: flex;
+  flex-direction: row;
+  align-items: center;
+  gap: 16px;
+  padding: 0;
+  margin: 0;
+  color: white;
+  background: transparent;
+  box-shadow: none;
+}
+
+.patient-dashboard .patient-profile-avatar {
+  display: grid;
+  width: 64px;
+  height: 64px;
+  flex: 0 0 64px;
+  place-items: center;
+  border: 2px solid rgba(255, 255, 255, 0.7);
+  border-radius: 18px;
+  color: var(--clinic-green-dark);
+  background: white;
+  font-size: 1.15rem;
+  font-weight: 800;
+  box-shadow: 0 8px 20px rgba(5, 80, 55, 0.18);
+}
+
+.patient-dashboard .patient-profile-copy {
+  min-width: 0;
+}
+
+.patient-dashboard .patient-profile-label {
+  font-size: 0.76rem;
+  font-weight: 700;
+  letter-spacing: 0.08em;
+  text-transform: uppercase;
+  opacity: 0.78;
+}
+
+.patient-dashboard .full-name-card h2 {
+  margin: 3px 0 7px;
+  color: white;
+  font-size: clamp(1.45rem, 4vw, 2.15rem);
+  overflow-wrap: anywhere;
+}
+
+.patient-dashboard .patient-age-gender {
+  gap: 8px;
+  font-size: 0.95rem;
+}
+
+.patient-dashboard .patient-age,
+.patient-dashboard .patient-gender {
+  padding: 4px 10px;
+  border: 1px solid rgba(255, 255, 255, 0.3);
+  border-radius: 999px;
+  background: rgba(255, 255, 255, 0.13);
+}
+
+.patient-dashboard .patient-info-grid {
+  grid-template-columns: repeat(3, minmax(0, 1fr));
+  gap: clamp(16px, 2.5vw, 28px);
+}
+
+.patient-dashboard .info-value,
+.patient-dashboard .info-subitem,
+.patient-dashboard .vital-item {
+  min-width: 0;
+  overflow-wrap: anywhere;
+}
+
+.patient-dashboard .info-subitem {
+  gap: 12px;
+}
+
+.patient-dashboard .sub-value {
+  max-width: 58%;
+  text-align: right;
+  overflow-wrap: anywhere;
+}
+
+.patient-dashboard .vitals-grid {
+  grid-template-columns: repeat(4, minmax(0, 1fr));
+}
+
+/* Standalone appointment list */
+.appointment-list-page {
+  width: min(100%, 1440px);
+  padding: clamp(14px, 2.4vw, 30px);
+}
+
+.appointment-list-header {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: 20px;
+  padding: clamp(18px, 3vw, 28px);
+  margin-bottom: 18px;
+  border-radius: 18px;
+  color: white;
+  background: linear-gradient(135deg, #123b80, #2477e8);
+  box-shadow: 0 14px 30px rgba(23, 105, 224, 0.2);
+}
+
+.appointment-list-header h2 {
+  margin: 0;
+  color: white;
+  font-size: clamp(1.45rem, 3vw, 2rem);
+}
+
+.appointment-list-header p {
+  margin: 6px 0 0;
+  color: rgba(255, 255, 255, 0.82);
+}
+
+.appointment-list-header .search-container {
+  flex: 0 1 390px;
+}
+
+.appointment-list-header .search-input {
+  min-width: 0;
+  min-height: 46px;
+  border-color: rgba(255, 255, 255, 0.4);
+}
+
+.appointment-list-page > .table-responsive {
+  border: 1px solid var(--clinic-line);
+  border-radius: 16px;
+  background: white;
+  box-shadow: 0 10px 28px rgba(21, 39, 67, 0.08);
+}
+
+.appointment-list-page .responsive-table {
+  margin: 0;
+  background: white;
+}
+
+.appointment-list-page .responsive-table thead {
+  background: #123b80;
+}
+
+.appointment-list-page .responsive-table thead th {
+  color: white;
+  background: transparent;
+}
+
+.appointment-list-page .table-row-animation {
+  cursor: pointer;
+}
+
+.appointment-list-page .table-row-animation:hover {
+  background: #edf5ff;
+}
+
+/* Doctor dashboard and prescription preview */
+.docfix-container {
+  width: min(100%, 1600px);
+}
+
+.docfix-prescription-body {
+  background: #eef3f9;
+}
+
+#docfix-printable-prescription {
+  width: min(100%, 210mm);
+  min-height: 297mm;
+  margin: 20px auto;
+  padding-bottom: 24px;
+  background: white;
+  box-shadow: 0 12px 34px rgba(15, 37, 68, 0.14);
+}
+
+.docfix-prescription-footer .docfix-btn-sm {
+  min-height: 42px;
+}
+
+.docfix-btn-download {
+  color: var(--clinic-blue) !important;
+  border: 1px solid var(--clinic-blue) !important;
+  background: white !important;
+}
+
+@media (max-width: 991.98px) {
+  .patient-dashboard .patient-info-grid {
+    grid-template-columns: 1fr;
+  }
+
+  .patient-dashboard .vitals-grid {
+    grid-template-columns: repeat(2, minmax(0, 1fr));
+  }
+}
+
+@media (max-width: 767.98px) {
+  .right-side-content,
+  .right-side-content.collapsed,
+  body.sidebar-collapsed .right-side-content {
+    width: 100%;
+    padding-left: 0 !important;
+  }
+
+  .patient-dashboard,
+  .appointment-list-page {
+    padding: 12px;
+  }
+
+  .appointment-list-header {
+    align-items: stretch;
+    flex-direction: column;
+  }
+
+  .appointment-list-header .search-container {
+    flex-basis: auto;
+    width: 100%;
+  }
+
+  .appointment-list-header .search-input {
+    max-width: none;
+  }
+
+  .docfix-container {
+    padding: 12px !important;
+  }
+
+  .docfix-header {
+    padding: 18px;
+    border-radius: 16px;
+    color: white;
+    background: linear-gradient(135deg, var(--clinic-blue-dark), var(--clinic-blue));
+  }
+
+  .docfix-title,
+  .docfix-date,
+  .docfix-time {
+    color: white;
+    -webkit-text-fill-color: currentColor;
+  }
+
+  .docfix-date {
+    opacity: 0.84;
+    white-space: normal;
+  }
+
+  .docfix-card-body {
+    padding: 15px !important;
+  }
+
+  .docfix-active-session-content,
+  .docfix-patient-avatar-section {
+    min-width: 0;
+  }
+
+  .docfix-patient-avatar-section {
+    gap: 12px;
+  }
+
+  .docfix-patient-avatar {
+    width: 52px;
+    height: 52px;
+    font-size: 1rem;
+  }
+
+  .docfix-session-stats {
+    grid-template-columns: repeat(3, minmax(0, 1fr));
+    gap: 8px;
+    padding: 10px;
+  }
+
+  .docfix-session-stat {
+    min-width: 0;
+    padding: 8px 4px;
+  }
+
+  .docfix-stat-value {
+    overflow-wrap: anywhere;
+  }
+
+  .docfix-table-responsive {
+    overflow: visible;
+    border: 0;
+    background: transparent;
+  }
+
+  .docfix-table,
+  .docfix-table tbody {
+    display: block;
+    width: 100%;
+  }
+
+  .docfix-table thead {
+    display: none;
+  }
+
+  .docfix-table .docfix-table-row {
+    display: grid;
+    grid-template-columns: 1fr 1fr;
+    gap: 0;
+    width: 100%;
+    margin-bottom: 14px;
+    overflow: hidden;
+    border: 1px solid var(--clinic-line);
+    border-radius: 14px;
+    background: white;
+    box-shadow: 0 5px 16px rgba(20, 43, 76, 0.07);
+  }
+
+  .docfix-table .docfix-table-td,
+  .docfix-appointments-table .docfix-table-td:nth-child(n),
+  .docfix-completed-table .docfix-table-td:nth-child(n) {
+    display: flex !important;
+    min-width: 0;
+    padding: 10px 12px !important;
+    flex-direction: column;
+    align-items: flex-start;
+    justify-content: center;
+    border-bottom: 1px solid #edf1f6 !important;
+    overflow-wrap: anywhere;
+  }
+
+  .docfix-table .docfix-table-td::before {
+    content: attr(data-label);
+    display: block;
+    margin-bottom: 4px;
+    color: var(--clinic-muted);
+    font-size: 0.68rem;
+    font-weight: 800;
+    letter-spacing: 0.05em;
+    text-transform: uppercase;
+  }
+
+  .docfix-table .docfix-table-td[data-label="Patient"] {
+    grid-column: 1 / -1;
+    padding: 14px !important;
+    background: #f5f9ff;
+  }
+
+  .docfix-table .docfix-table-td[data-label="Patient"]::before {
+    display: none;
+  }
+
+  .docfix-table .docfix-table-td[data-label="Action"],
+  .docfix-table .docfix-table-td[data-label="Edit"] {
+    align-items: stretch;
+  }
+
+  .docfix-table .docfix-table-td[data-label="Action"] .docfix-btn-sm,
+  .docfix-table .docfix-table-td[data-label="Edit"] .docfix-btn-sm {
+    width: 100%;
+  }
+
+  .docfix-table .docfix-patient-name {
+    white-space: normal;
+  }
+
+  .docfix-table .docfix-table-issue,
+  .docfix-table .docfix-table-diagnosis,
+  .docfix-table .docfix-table-medicine,
+  .docfix-table .docfix-table-advice {
+    max-width: 100%;
+    white-space: normal;
+  }
+
+  .docfix-table .docfix-empty-state {
+    display: block !important;
+    grid-column: 1 / -1;
+  }
+
+  .docfix-summary-modal .modal-dialog {
+    width: calc(100% - 16px);
+    max-width: none;
+    margin: 8px auto;
+  }
+
+  .docfix-summary-modal .modal-content {
+    overflow: hidden;
+    border: 0;
+    border-radius: 16px;
+  }
+
+  .docfix-prescription-header {
+    padding: 14px !important;
+  }
+
+  .docfix-prescription-header-content {
+    align-items: stretch !important;
+  }
+
+  .docfix-theme-dropdown-container,
+  .docfix-theme-dropdown-container .dropdown,
+  .docfix-theme-toggle {
+    width: 100%;
+  }
+
+  .docfix-theme-toggle {
+    justify-content: center;
+  }
+
+  .docfix-prescription-body {
+    max-height: calc(100dvh - 220px);
+    overflow: auto;
+  }
+
+  #docfix-printable-prescription {
+    min-height: 0;
+    margin: 0;
+    padding: 0 0 18px;
+    box-shadow: none;
+  }
+
+  #docfix-printable-prescription .px-4 {
+    padding-right: 16px !important;
+    padding-left: 16px !important;
+  }
+
+  .docfix-doctor-name {
+    font-size: 1.4rem !important;
+  }
+
+  .docfix-clinic-info {
+    padding-top: 14px;
+    border-top: 1px solid var(--clinic-line);
+  }
+
+  .docfix-patient-id {
+    line-height: 1.55;
+  }
+
+  .docfix-patient-section .docfix-patient-name {
+    display: block;
+    margin: 5px 0 0 !important;
+    white-space: normal;
+  }
+
+  .docfix-patient-details .d-flex {
+    align-items: flex-start !important;
+    flex-wrap: wrap;
+  }
+
+  .docfix-medicines-section .table-responsive {
+    border: 1px solid var(--clinic-line);
+    border-radius: 10px;
+  }
+
+  .docfix-medicine-table {
+    min-width: 620px;
+  }
+
+  .docfix-doctor-signature {
+    width: 100%;
+    margin-top: 12px;
+  }
+
+  .docfix-signature-line {
+    margin-right: auto;
+    margin-left: auto;
+  }
+
+  .docfix-prescription-footer {
+    padding: 12px !important;
+  }
+
+  .docfix-prescription-footer > div > div:first-child {
+    display: none;
+  }
+
+  .docfix-prescription-buttons {
+    display: grid !important;
+    grid-template-columns: 1fr 1fr;
+    width: 100%;
+  }
+
+  .docfix-prescription-buttons .docfix-btn-sm {
+    width: 100%;
+  }
+
+  .docfix-prescription-buttons .docfix-btn-print {
+    grid-column: 1 / -1;
+  }
+}
+
+@media (max-width: 480px) {
+  .patient-dashboard .patient-app-header {
+    padding: 20px 18px;
+    border-radius: 16px;
+  }
+
+  .patient-dashboard .dashboard-header {
+    align-items: stretch;
+  }
+
+  .patient-dashboard .patient-status-indicator,
+  .patient-dashboard .patient-id {
+    justify-content: center;
+    width: 100%;
+    text-align: center;
+  }
+
+  .patient-dashboard .patient-header {
+    align-items: flex-start;
+  }
+
+  .patient-dashboard .patient-profile-avatar {
+    width: 52px;
+    height: 52px;
+    flex-basis: 52px;
+    border-radius: 14px;
+  }
+
+  .patient-dashboard .patient-info-section,
+  .patient-dashboard .vital-signs-summary {
+    padding: 14px;
+  }
+
+  .patient-dashboard .patient-info-grid {
+    gap: 6px;
+  }
+
+  .patient-dashboard .info-item {
+    margin-bottom: 14px;
+  }
+
+  .patient-dashboard .info-subitem {
+    align-items: flex-start;
+    flex-direction: column;
+  }
+
+  .patient-dashboard .sub-value {
+    width: 100%;
+    max-width: none;
+    text-align: left;
+  }
+
+  .patient-dashboard .vitals-grid {
+    grid-template-columns: 1fr;
+    gap: 12px;
+  }
+
+  .patient-dashboard .vital-item {
+    padding: 16px;
+  }
+
+  .appointment-list-page .responsive-table tr {
+    padding: 0;
+    overflow: hidden;
+    border: 1px solid var(--clinic-line);
+    border-radius: 14px;
+    box-shadow: 0 5px 16px rgba(20, 43, 76, 0.07);
+  }
+
+  .appointment-list-page .responsive-table td {
+    min-height: 46px;
+    padding: 11px 12px 11px 48% !important;
+    border-bottom: 1px solid #edf1f6;
+    text-align: left;
+  }
+
+  .appointment-list-page .responsive-table td::before {
+    left: 12px;
+    width: 42%;
+    color: var(--clinic-muted);
+    font-size: 0.73rem;
+    letter-spacing: 0.04em;
+    text-transform: uppercase;
+  }
+
+  .docfix-session-stats {
+    grid-template-columns: 1fr;
+  }
+
+  .docfix-table .docfix-table-row {
+    grid-template-columns: 1fr;
+  }
+
+  .docfix-table .docfix-table-td[data-label="Patient"] {
+    grid-column: auto;
+  }
+
+  .docfix-prescription-buttons {
+    grid-template-columns: 1fr;
+  }
+
+  .docfix-prescription-buttons .docfix-btn-print {
+    grid-column: auto;
+  }
+}
+
+@page {
+  size: A4;
+  margin: 10mm;
+}
+
+@media print {
+  body * {
+    visibility: hidden !important;
+  }
+
+  #docfix-printable-prescription,
+  #docfix-printable-prescription * {
+    visibility: visible !important;
+  }
+
+  #docfix-printable-prescription {
+    position: absolute;
+    inset: 0 auto auto 0;
+    width: 100% !important;
+    min-height: 0;
+    margin: 0 !important;
+    padding: 0 !important;
+    box-shadow: none !important;
+    print-color-adjust: exact;
+    -webkit-print-color-adjust: exact;
+  }
+
+  #docfix-printable-prescription .table-responsive {
+    overflow: visible !important;
+  }
+
+  #docfix-printable-prescription .docfix-medicine-table {
+    min-width: 0 !important;
+    font-size: 10pt;
+  }
+
+  #docfix-printable-prescription .docfix-prescription-header-section,
+  #docfix-printable-prescription .docfix-patient-section,
+  #docfix-printable-prescription .docfix-medicines-section,
+  #docfix-printable-prescription .docfix-advice-section,
+  #docfix-printable-prescription .docfix-followup-section {
+    break-inside: avoid;
+  }
+}
