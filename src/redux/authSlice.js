@@ -10,12 +10,24 @@ export const registerUser = createAsyncThunk(
         `${API_BASE_URL}/users/register`,
         payload,
         {
-          headers: getAuthHeaders(),
+          headers: {
+            'Content-Type': 'application/json',
+          },
         }
       );
       return response.data;
     } catch (error) {
-      const message = error.response?.data || error.message || 'Registration failed';
+      const errorData = error.response?.data;
+      let message = 'Registration failed';
+
+      if (typeof errorData === 'string') {
+        message = errorData;
+      } else if (errorData?.message) {
+        message = errorData.message;
+      } else if (error.message) {
+        message = error.message;
+      }
+
       return thunkAPI.rejectWithValue(message);
     }
   }
@@ -29,7 +41,9 @@ export const loginUser = createAsyncThunk(
         `${API_BASE_URL}/users/login`,
         payload,
         {
-          headers: getAuthHeaders(),
+          headers: {
+            'Content-Type': 'application/json',
+          },
         }
       );
 
@@ -41,7 +55,17 @@ export const loginUser = createAsyncThunk(
 
       return response.data;
     } catch (error) {
-      const message = error.response?.data || error.message || 'Login failed';
+      const errorData = error.response?.data;
+
+      let message = 'Login failed';
+      if (typeof errorData === 'string') {
+        message = errorData;
+      } else if (errorData?.message) {
+        message = errorData.message;
+      } else if (error.message) {
+        message = error.message;
+      }
+
       return thunkAPI.rejectWithValue(message);
     }
   }

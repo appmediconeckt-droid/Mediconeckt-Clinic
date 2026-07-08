@@ -361,24 +361,43 @@ select.form-input {
   min-height: calc(100vh - 60px);
 }
 
+body.patient-theme-navbar .main-content {
+  min-height: calc(100vh - 79px);
+}
+
 /* maindashbord end */
 /* navbar start */
 .navbar {
-  height: 60px;
-  background-color: #41a0f8;
-  border-bottom: 1px solid #cbd5e0;
   position: fixed;
   z-index: 1000;
   width: 100%;
   color: #2d3748;
   flex-wrap: nowrap;
-  box-shadow: 0 2px 10px rgba(0, 0, 0, 0.05);
   transition: all 0.3s ease;
 }
 
+/* Patient Navbar - White Theme */
+body.patient-theme-navbar .navbar {
+  background-color: #FFFFFF !important;
+  height: 79px;
+  border-bottom: 1px solid #C3C6D7;
+  box-shadow: 0px 1px 2px 0px rgba(0, 0, 0, 0.05);
+}
+
+body.patient-theme-navbar .nav-brand {
+  margin-bottom: 0 !important;
+}
+
+body.patient-theme-navbar .nav-main-icon {
+  margin-bottom: 0 !important;
+}
+
 .nav-conte {
-  margin: 0px 30px;
+  padding: 0px 25px;
   width: 100%;
+  display: flex;
+  align-items: center;
+  height: 100%;
 }
 
 .nav-brand {

@@ -174,7 +174,14 @@ export default function Login() {
           navigate(rolePaths[returnedRole] || '/');
         }, 800);
       } else {
-        const msg = resultAction.payload || resultAction.error?.message || 'Login failed';
+        let msg = 'Login failed';
+        if (typeof resultAction.payload === 'string') {
+          msg = resultAction.payload;
+        } else if (resultAction.payload?.message) {
+          msg = resultAction.payload.message;
+        } else if (resultAction.error?.message) {
+          msg = resultAction.error.message;
+        }
         showNotification('error', msg);
       }
     })();
@@ -200,6 +207,7 @@ export default function Login() {
     }
     return userRoles[0]; // Return "Select Role"
   };
+
 
   return (
     <div className="med-login-container">

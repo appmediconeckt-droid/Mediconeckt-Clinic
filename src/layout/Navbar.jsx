@@ -10,6 +10,7 @@ const Navbar = ({ toggleSidebar }) => {
   const [showVolumeControl, setShowVolumeControl] = useState(false);
   const [userRole, setUserRole] = useState(null);
   const [hospitalDept, setHospitalDept] = useState(null);
+  const [userName, setUserName] = useState("");
   const alarmSoundRef = useRef(null);
   const [profileImage, setProfileImage] = useState(
     "https://www.w3schools.com/howto/img_avatar.png"
@@ -20,8 +21,10 @@ const Navbar = ({ toggleSidebar }) => {
   useEffect(() => {
     const role = localStorage.getItem("userRole");
     const dept = localStorage.getItem("hospitalDept");
+    const name = localStorage.getItem("userName");
     setUserRole(role);
     setHospitalDept(dept);
+    setUserName(name || "Arun Kumar");
   }, []);
 
   // Get theme colors based on user role - ADDED SUPER ADMIN
@@ -36,9 +39,9 @@ const Navbar = ({ toggleSidebar }) => {
       };
     } else if (userRole === "patient") {
       return {
-        navbarBg: "#8af5aaff",
-        notificationColor: "#191515ff",
-        brandColor: "#991b1b"
+        navbarBg: "#FFFFFF",
+        notificationColor: "#4b5563",
+        brandColor: "#006B2C"
       };
     } else if (userRole === "nurse") {
       return {
@@ -260,11 +263,11 @@ const Navbar = ({ toggleSidebar }) => {
           position: "fixed",
           width: "100%",
           zIndex: 999,
-          backgroundColor: themeColors.navbarBg,
+          backgroundColor: userRole === "patient" ? "#FFFFFF" : themeColors.navbarBg,
           transition: "background-color 0.3s ease",
-          height: "60px",
-          borderBottom: userRole === "superadmin" ? "3px solid #ffd700" : "none",
-          boxShadow: userRole === "superadmin" ? "0 4px 15px rgba(255, 215, 0, 0.3)" : "0 2px 4px rgba(0,0,0,0.1)"
+          height: userRole === "patient" ? "79px" : "60px",
+          borderBottom: userRole === "patient" ? "1px solid #C3C6D7" : userRole === "superadmin" ? "3px solid #ffd700" : "none",
+          boxShadow: userRole === "patient" ? "0px 1px 2px 0px rgba(0, 0, 0, 0.05)" : userRole === "superadmin" ? "0 4px 15px rgba(255, 215, 0, 0.3)" : "0 2px 4px rgba(0,0,0,0.1)"
         }}
       >
         <div className="nav-conte">
@@ -273,8 +276,8 @@ const Navbar = ({ toggleSidebar }) => {
               <motion.img
                 src={logo}
                 alt="Mediconect Logo"
-                width={220}
-                height={35}
+                width={userRole === "patient" ? 238 : 220}
+                height={userRole === "patient" ? 37 : 35}
                 className="me-2"
                 initial={{ opacity: 0, scale: 0.8 }}
                 animate={{ opacity: 1, scale: 1 }}
@@ -286,6 +289,48 @@ const Navbar = ({ toggleSidebar }) => {
 
             </div>
 
+            {userRole === "patient" ? (
+              /* ===== PATIENT NAVBAR — exact layout ===== */
+              <div className="patient-nav-actions d-flex align-items-center">
+
+                {/* Notification Bell */}
+                <button
+                  className="patient-nav-icon-btn"
+                  onClick={handleNotificationClick}
+                  aria-label="Notifications"
+                >
+                  <i className="fa-regular fa-bell"></i>
+                  <span className="patient-nav-dot"></span>
+                </button>
+
+                {/* Help / Settings */}
+                <button
+                  className="patient-nav-icon-btn"
+                  onClick={() => navigate("/patient-settings")}
+                  aria-label="Help"
+                >
+                  <i className="fa-regular fa-circle-question"></i>
+                </button>
+
+                {/* Profile */}
+                <div
+                  className="patient-nav-profile"
+                  onClick={handleProfileClick}
+                >
+                  <img
+                    src={profileImage}
+                    alt="profile"
+                    className="patient-nav-avatar"
+                  />
+                  <div className="patient-nav-userinfo">
+                    <span className="patient-nav-name">{userName}</span>
+                    <span className="patient-nav-role">Patient</span>
+                  </div>
+                  <i className="fa-solid fa-chevron-down patient-nav-chevron"></i>
+                </div>
+
+              </div>
+            ) : (
             <div className="nav-main-icon d-flex align-items-center">
               {/* Emergency Icon - Only for DOCTOR and SUPER ADMIN roles */}
               {(userRole === "doctor") && (
@@ -327,7 +372,7 @@ const Navbar = ({ toggleSidebar }) => {
                 className="me-3"
                 onClick={handleNotificationClick}
                 style={{
-                  color: themeColors.notificationColor,
+                  color: userRole === "patient" ? "#333333" : themeColors.notificationColor,
                   marginBottom: "20px",
                   textDecoration: "none",
                   position: "relative",
@@ -367,7 +412,8 @@ const Navbar = ({ toggleSidebar }) => {
                         width: "40px",
                         height: "40px",
                         marginTop: "-20px",
-                        border: userRole === "superadmin" ?
+                        border: userRole === "patient" ?
+                          "2px solid #006B2C" : userRole === "superadmin" ?
                           "3px solid #ffd700" :
                           `2px solid ${themeColors.notificationColor}`,
                         boxShadow: userRole === "superadmin" ?
@@ -394,9 +440,10 @@ const Navbar = ({ toggleSidebar }) => {
                       </div>
                     )}
                   </div>
-                </div>               
+                </div>
               </div>
             </div>
+            )}
           </div>
         </div>
       </nav>
@@ -411,7 +458,98 @@ const Navbar = ({ toggleSidebar }) => {
           transition: background-color 0.3s ease;
           height: 60px;
         }
-        
+
+        /* ===== PATIENT NAVBAR — exact layout ===== */
+        .patient-nav-actions {
+          gap: 22px;
+        }
+
+        .patient-nav-icon-btn {
+          position: relative;
+          background: transparent;
+          border: none;
+          cursor: pointer;
+          width: 40px;
+          height: 40px;
+          display: flex;
+          align-items: center;
+          justify-content: center;
+          border-radius: 50%;
+          color: #4b5563;
+          font-size: 20px;
+          transition: background 0.2s ease, color 0.2s ease;
+        }
+
+        .patient-nav-icon-btn:hover {
+          background: #f3f4f6;
+          color: #006b2c;
+        }
+
+        .patient-nav-dot {
+          position: absolute;
+          top: 9px;
+          right: 10px;
+          width: 8px;
+          height: 8px;
+          background: #dc2626;
+          border: 2px solid #ffffff;
+          border-radius: 50%;
+        }
+
+        .patient-nav-profile {
+          display: flex;
+          align-items: center;
+          gap: 10px;
+          cursor: pointer;
+          padding: 4px 8px 4px 4px;
+          border-radius: 30px;
+          transition: background 0.2s ease;
+        }
+
+        .patient-nav-profile:hover {
+          background: #f3f4f6;
+        }
+
+        .patient-nav-avatar {
+          width: 40px;
+          height: 40px;
+          border-radius: 50%;
+          object-fit: cover;
+          border: 1px solid #e8e7e7;
+        }
+
+        .patient-nav-userinfo {
+          display: flex;
+          flex-direction: column;
+          line-height: 1.2;
+        }
+
+        .patient-nav-name {
+          font-size: 14px;
+          font-weight: 600;
+          color: #111827;
+        }
+
+        .patient-nav-role {
+          font-size: 12px;
+          color: #6b7280;
+        }
+
+        .patient-nav-chevron {
+          font-size: 12px;
+          color: #6b7280;
+          margin-left: 2px;
+        }
+
+        @media (max-width: 576px) {
+          .patient-nav-userinfo {
+            display: none;
+          }
+          .patient-nav-actions {
+            gap: 12px;
+          }
+        }
+
         @keyframes pulse {
           0% { transform: scale(1); opacity: 1; }
           50% { transform: scale(1.2); opacity: 0.7; }
@@ -441,13 +579,16 @@ const Navbar = ({ toggleSidebar }) => {
           color: #dc2626 !important;
         }
         
-        /* ========== PATIENT THEME NAVBAR (Light Green) ========== */
+        /* ========== PATIENT THEME NAVBAR (White) ========== */
         body.patient-theme-navbar .navbar {
-          background-color: #8af5aaff !important;
+          background-color: #FFFFFF !important;
+          height: 79px !important;
+          border-bottom: 1px solid #C3C6D7 !important;
+          box-shadow: 0px 1px 2px 0px rgba(0, 0, 0, 0.05) !important;
         }
-        
+
         body.patient-theme-navbar .fa-bell {
-          color: #191515ff !important;
+          color: #4b5563 !important;
         }
         
         /* ========== NURSE THEME NAVBAR (Light Pink) ========== */
