@@ -216,6 +216,7 @@ export default function Login() {
     return selectedRole || userRoles[0]; // Return "Select Role" if unknown
   };
 
+
   return (
     <div className="med-login-container">
       {/* LEFT LOGO SECTION */}

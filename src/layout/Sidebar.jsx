@@ -76,13 +76,16 @@ const Sidebar = ({ menuItemClick }) => {
     location.pathname.startsWith("/patient-chat/");
   const effectiveRole = isDoctorRoute ? "doctor" : userRole;
 
-  // Patient Menu Items
+  // Patient Menu Items — top section (matches screenshot)
+  // `img` uses an image file from public/ as the icon instead of a Font Awesome icon.
   const patientMenuItems = [
-    { path: "/patientdashboard", icon: "fa-gauge-high", text: "Dashboard" },
-    { path: "/patientappointment", icon: "fa-calendar-days", text: "My Appointments" },
-    { path: "/doctor-sms", icon: "fa-message", text: "Doctor SMS" },
-    { path: "/chatbot", icon: "fa-robot", text: "Chat Bot" },
-    { path: "/patient-notifications", icon: "fa-bell", text: "Notifications" },
+    { path: "/patientdashboard", img: "/Vector.png", text: "Dashboard" },
+    { path: "/patientappointment", icon: "fa-calendar", text: "My Appointments" },
+    { path: "/doctor-sms", img: "/Vector%20(1).png", text: "Doctor SMS" },
+  ];
+
+  // Patient bottom item — pinned above logout
+  const patientBottomItems = [
     { path: "/patient-settings", icon: "fa-gear", text: "Settings" },
   ];
 
@@ -188,7 +191,11 @@ const Sidebar = ({ menuItemClick }) => {
             handleMenuNavigate(item.path);
           }}
         >
-          <i className={`fa-solid ${item.icon}`}></i>
+          {item.img ? (
+            <img src={item.img} alt={item.text} className="menu-icon-img" />
+          ) : (
+            <i className={`fa-solid ${item.icon}`}></i>
+          )}
           <span className="menu-text">{item.text}</span>
         </div>
       </li>
@@ -309,16 +316,18 @@ const Sidebar = ({ menuItemClick }) => {
         <ul className="menu">
           {getMenuItems()}
 
-          {isDoctorRail && (
-            <li className={`menu-item doctor-setting-item ${isActive("/setting") ? "active" : ""}`}>
+          {/* Patient bottom items (Settings) pinned above logout */}
+          {userRole === "patient" && (
+            <li className="menu-item patient-bottom-settings">
               <div
                 className="menu-link menu-i"
                 onClick={() => {
-                  handleMenuNavigate("/setting");
+                  navigate(patientBottomItems[0].path);
+                  if (menuItemClick) menuItemClick();
                 }}
               >
-                <i className="fa-solid fa-gear"></i>
-                <span className="menu-text">Setting</span>
+                <i className={`fa-solid ${patientBottomItems[0].icon}`}></i>
+                <span className="menu-text">{patientBottomItems[0].text}</span>
               </div>
             </li>
           )}

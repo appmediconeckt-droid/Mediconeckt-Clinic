@@ -1,196 +1,242 @@
-import React, { useEffect, useState } from 'react';
-import { useNavigate } from 'react-router-dom';
+import React, { useState } from 'react';
 import './PatientSms.css';
-import { getChatDoctors } from '../../../redux/chatApi';
 
 const PatientSms = () => {
-  const navigate = useNavigate();
-  const [doctors, setDoctors] = useState([]);
-  const [searchTerm, setSearchTerm] = useState("");
-  const [status, setStatus] = useState('loading');
-  const [error, setError] = useState('');
+  const [activeTab, setActiveTab] = useState('All');
+  const [searchTerm, setSearchTerm] = useState('');
+  const [selectedId, setSelectedId] = useState(1);
+  const [messageText, setMessageText] = useState('');
 
-  const formatChatTime = (value) => {
-    if (!value) return '';
-    const date = new Date(value);
-    if (Number.isNaN(date.getTime())) return value;
-    return date.toLocaleTimeString([], { hour: '2-digit', minute: '2-digit' });
+  // --- Mock conversations (static, matches screenshot) ---
+  const conversations = [
+    {
+      id: 1,
+      name: 'Dr. Sarah Mitchell',
+      initials: 'SM',
+      color: '#0d9488',
+      role: 'Cardiology',
+      preview: "Hello! I've reviewed your latest bloo...",
+      time: '10:42 AM',
+      unread: 1,
+      online: true,
+      type: 'Appointments',
+    },
+    {
+      id: 2,
+      name: 'Dr. James Cl',
+      initials: 'JC',
+      color: '#2563eb',
+      role: 'General Practice',
+      preview: 'Your prescription has been sent to the...',
+      time: 'Yesterday',
+      unread: 0,
+      online: false,
+      type: 'Appointments',
+    },
+    {
+      id: 3,
+      name: 'Lab Results',
+      initials: '',
+      color: '#e5e7eb',
+      isLab: true,
+      role: "St. Mary's Diagnostics",
+      preview: 'Automated: Your recent lipid panel re...',
+      time: 'Mon',
+      unread: 0,
+      online: false,
+      type: 'Reports',
+    },
+  ];
+
+  // --- Mock messages for the selected conversation ---
+  const [messages, setMessages] = useState([
+    {
+      id: 1,
+      from: 'doctor',
+      name: 'Dr. Sarah Mitchell',
+      time: '10:42 AM',
+      text: "Hello! I've reviewed your latest blood reports. Everything looks normal. The cholesterol levels have significantly improved since our last visit.",
+    },
+    {
+      id: 2,
+      from: 'me',
+      time: '10:45 AM',
+      text: "That's great news, thank you doctor. Do I need to continue the current medication at the same dosage?",
+    },
+  ]);
+
+  const tabs = ['All', 'Unread', 'Appointments', 'Reports'];
+
+  const filteredConversations = conversations.filter((c) => {
+    const matchesSearch =
+      c.name.toLowerCase().includes(searchTerm.toLowerCase()) ||
+      c.role.toLowerCase().includes(searchTerm.toLowerCase());
+    let matchesTab = true;
+    if (activeTab === 'Unread') matchesTab = c.unread > 0;
+    else if (activeTab === 'Appointments') matchesTab = c.type === 'Appointments';
+    else if (activeTab === 'Reports') matchesTab = c.type === 'Reports';
+    return matchesSearch && matchesTab;
+  });
+
+  const activeConv = conversations.find((c) => c.id === selectedId) || conversations[0];
+
+  const handleSend = () => {
+    if (!messageText.trim()) return;
+    setMessages((prev) => [
+      ...prev,
+      {
+        id: prev.length + 1,
+        from: 'me',
+        time: new Date().toLocaleTimeString([], { hour: '2-digit', minute: '2-digit' }),
+        text: messageText.trim(),
+      },
+    ]);
+    setMessageText('');
   };
 
-  const getLastMessageText = (item) => {
-    const lastMessage = item.lastMessage || item.last_message || item.latest_message;
-    if (typeof lastMessage === 'string') return lastMessage;
-    return lastMessage?.message || lastMessage?.text || item.message || item.content || 'No messages yet';
-  };
-
-  const getLastMessageTime = (item, doctor) => {
-    const lastMessage = item.lastMessage || item.last_message || item.latest_message;
-    return formatChatTime(
-      lastMessage?.created_at ||
-      lastMessage?.createdAt ||
-      lastMessage?.time ||
-      item.last_message_time ||
-      item.created_at ||
-      item.updated_at ||
-      doctor.time ||
-      doctor.last_message_time
-    );
-  };
-
-  useEffect(() => {
-    const loadDoctors = async () => {
-      try {
-        setStatus('loading');
-        setError('');
-        const doctorsData = await getChatDoctors();
-        setDoctors(doctorsData.map((item, index) => {
-          const doctor = item.doctor || item.user || item;
-          return {
-          id: doctor.id || doctor._id || doctor.doctor_id || item.doctor_id || doctor.user_id,
-          name: doctor.full_name || doctor.fullname || doctor.name || doctor.doctor_name || item.doctor_name || 'Doctor',
-          specialty: doctor.speciality || doctor.specialization || doctor.specialty || item.specialty || 'Doctor',
-          lastMessage: getLastMessageText(item),
-          time: getLastMessageTime(item, doctor),
-          unread: item.unread || item.unread_count || doctor.unread || doctor.unread_count || 0,
-          avatarColor: ['doctor-avatar-green', 'doctor-avatar-blue', 'doctor-avatar-purple', 'doctor-avatar-orange', 'doctor-avatar-teal'][index % 5],
-          online: Boolean(doctor.online || doctor.is_online),
-          phone: doctor.phone || doctor.phone_number || '',
-          email: doctor.email || '',
-          rating: doctor.rating || 0,
-        };
-        }));
-        setStatus('succeeded');
-      } catch (err) {
-        setError(err.response?.data?.message || err.message || 'Failed to load doctors');
-        setStatus('failed');
-      }
-    };
-
-    loadDoctors();
-  }, []);
-
-  // Handle selecting a doctor - Navigate to chat page
-  const handleSelectDoctor = (doctor) => {
-    navigate(`/doctor-chat/${doctor.id}`);
-  };
-
-  // Filter doctors based on search term
-  const filteredDoctors = doctors.filter(doctor =>
-    doctor.name.toLowerCase().includes(searchTerm.toLowerCase()) ||
-    doctor.specialty.toLowerCase().includes(searchTerm.toLowerCase())
+  const renderAvatar = (c, size) => (
+    c.isLab ? (
+      <div className={`msg-avatar msg-avatar-lab ${size}`}><i className="fa-solid fa-flask-vial"></i></div>
+    ) : (
+      <div className={`msg-avatar ${size}`} style={{ background: c.color }}>{c.initials}</div>
+    )
   );
 
-  // Get initials from name
-  const getInitials = (name) => {
-    return name
-      .split(' ')
-      .map(word => word[0])
-      .join('')
-      .toUpperCase()
-      .substring(0, 2);
-  };
-
   return (
-    <div className="patient-sms-container">
-      <div className="patient-sms-wrapper">
-        
-        {/* Doctor List Section */}
-        <div className="doctor-list-section">
-          
-          <div className="doctor-list-header mt-3">
-             <header className="app-header  d-flex flex-column flex-md-row justify-content-between align-items-start align-items-md-center mb-3 gap-3">
-        <h1 >Messages</h1>
+    <div className="msg-page">
 
-      </header>
-            <div className="search-container">
-              
-              <i className="fas fa-search search-icon"></i>
-              <input
-                type="text"
-                className="search-input"
-                placeholder="Search doctors by name or specialty..."
-                value={searchTerm}
-                onChange={(e) => setSearchTerm(e.target.value)}
-              />
+      {/* ===== Top bar ===== */}
+      <div className="msg-topbar">
+        <div className="msg-topbar-left">
+          <h1 className="msg-title">Messages</h1>
+          <p className="msg-subtitle">Securely communicate with your healthcare providers.</p>
+        </div>
+        <div className="msg-topbar-actions">
+          <button className="msg-filter-btn" aria-label="Filter"><i className="fa-solid fa-filter"></i></button>
+          <button className="msg-new-btn"><i className="fa-regular fa-pen-to-square"></i> New Message</button>
+        </div>
+      </div>
+
+      {/* ===== Split layout ===== */}
+      <div className="msg-layout">
+
+        {/* ---- Left: conversation list ---- */}
+        <div className="msg-list-panel">
+          <div className="msg-search">
+            <i className="fa-solid fa-magnifying-glass"></i>
+            <input
+              type="text"
+              placeholder="Search doctors or conversations..."
+              value={searchTerm}
+              onChange={(e) => setSearchTerm(e.target.value)}
+            />
+          </div>
+
+          <div className="msg-tabs">
+            {tabs.map((t) => (
+              <button
+                key={t}
+                className={`msg-tab ${activeTab === t ? 'active' : ''}`}
+                onClick={() => setActiveTab(t)}
+              >
+                {t}
+              </button>
+            ))}
+          </div>
+
+          <div className="msg-conversations">
+            {filteredConversations.map((c) => (
+              <div
+                key={c.id}
+                className={`msg-conv ${selectedId === c.id ? 'active' : ''}`}
+                onClick={() => setSelectedId(c.id)}
+              >
+                <div className="msg-conv-avatar">
+                  {renderAvatar(c, 'md')}
+                  {c.online && <span className="msg-online-dot"></span>}
+                </div>
+                <div className="msg-conv-body">
+                  <div className="msg-conv-top">
+                    <span className="msg-conv-name">{c.name}</span>
+                    <span className="msg-conv-right">
+                      <span className="msg-conv-time">{c.time}</span>
+                      {c.unread > 0 && <span className="msg-unread">{c.unread}</span>}
+                    </span>
+                  </div>
+                  <div className="msg-conv-role">{c.role}</div>
+                  <div className="msg-conv-preview">{c.preview}</div>
+                </div>
+              </div>
+            ))}
+          </div>
+        </div>
+
+        {/* ---- Right: chat ---- */}
+        <div className="msg-chat-panel">
+          <div className="msg-chat-header">
+            <div className="msg-chat-doctor">
+              {renderAvatar(activeConv, 'md')}
+              <div className="msg-chat-doctor-info">
+                <div className="msg-chat-name">
+                  {activeConv.name}
+                  {!activeConv.isLab && <i className="fa-solid fa-circle-check msg-verified"></i>}
+                </div>
+                <div className="msg-chat-meta">
+                  {activeConv.role} • St. Mary's Hospital • <i className="fa-solid fa-star"></i> 4.9
+                </div>
+              </div>
+            </div>
+            <div className="msg-chat-actions">
+              <button className="msg-chat-btn"><i className="fa-regular fa-user"></i> View Profile</button>
+              <button className="msg-chat-btn"><i className="fa-solid fa-video"></i> Video Consult</button>
+              <button className="msg-chat-btn msg-chat-btn-primary"><i className="fa-regular fa-calendar-check"></i> Book Appointment</button>
             </div>
           </div>
 
-          <div className="doctors-list-wrapper">
-            {status === 'loading' ? (
-              <div className="no-doctors-found">
-                <i className="fas fa-spinner no-doctor-icon"></i>
-                <h3>Loading doctors...</h3>
-              </div>
-            ) : status === 'failed' ? (
-              <div className="no-doctors-found">
-                <i className="fas fa-exclamation-circle no-doctor-icon"></i>
-                <h3>Unable to load doctors</h3>
-                <p>{error}</p>
-              </div>
-            ) : filteredDoctors.length === 0 ? (
-              <div className="no-doctors-found">
-                <i className="fas fa-user-md no-doctor-icon"></i>
-                <h3>No doctors found</h3>
-                <p>Try adjusting your search terms</p>
-              </div>
-            ) : (
-              <div className="doctors-list-scrollable">
-                {filteredDoctors.map(doctor => (
-                  <div
-                    key={doctor.id}
-                    className="patient-doctor-card"
-                    onClick={() => handleSelectDoctor(doctor)}
-                  >
-                    <div className="doctor-avatar-container">
-                      <div className={`doctor-avatar ${doctor.avatarColor}`}>
-                        {getInitials(doctor.name)}
-                        {doctor.online && <span className="online-status"></span>}
-                      </div>
-                    </div>
-                    
-                    <div className="doctor-info">
-                      <div className="doctor-name-container">
-                        <h3 className="doctor-name">{doctor.name}</h3>
-                        <span className="message-time">{doctor.time}</span>
-                      </div>
-                      
-                      <div className="doctor-specialty-container">
-                        <span className="doctor-specialty">{doctor.specialty}</span>
-                        <div className="doctor-rating">
-                          <div className="star-rating">
-                            {[...Array(5)].map((_, i) => (
-                              <i 
-                                key={i} 
-                                className={`fas fa-star ${i < Math.floor(doctor.rating) ? 'filled' : 'empty'}`}
-                              ></i>
-                            ))}
-                          </div>
-                          <span className="rating-value">{doctor.rating}</span>
-                        </div>
-                      </div>
-                      
-                      <div className="doctor-message-preview">
-                        <p className="last-message">{doctor.lastMessage}</p>
-                        {doctor.unread > 0 && (
-                          <span className="unread-badge">{doctor.unread}</span>
-                        )}
-                      </div>
-                      
-                      <div className="doctor-contact">
-                        <span className="contact-item">
-                          <i className="fas fa-phone"></i>
-                          {doctor.phone}
-                        </span>
-                        <span className="contact-item">
-                          <i className="fas fa-envelope"></i>
-                          {doctor.email}
-                        </span>
-                      </div>
-                    </div>
+          <div className="msg-chat-body">
+            <div className="msg-day"><span>Today</span></div>
+
+            {messages.map((m) => (
+              m.from === 'doctor' ? (
+                <div className="msg-row msg-row-in" key={m.id}>
+                  {renderAvatar(activeConv, 'sm')}
+                  <div className="msg-bubble-wrap">
+                    <div className="msg-bubble-meta">{m.name} • {m.time}</div>
+                    <div className="msg-bubble msg-bubble-in">{m.text}</div>
                   </div>
-                ))}
+                </div>
+              ) : (
+                <div className="msg-row msg-row-out" key={m.id}>
+                  <div className="msg-bubble-wrap">
+                    <div className="msg-bubble-meta">You • {m.time}</div>
+                    <div className="msg-bubble msg-bubble-out">{m.text}</div>
+                  </div>
+                </div>
+              )
+            ))}
+
+            <div className="msg-row msg-row-in">
+              {renderAvatar(activeConv, 'sm')}
+              <div className="msg-typing">
+                {activeConv.name} is typing <span className="msg-dots"><i></i><i></i><i></i></span>
               </div>
-            )}
+            </div>
+          </div>
+
+          <div className="msg-input">
+            <button className="msg-input-icon"><i className="fa-regular fa-face-smile"></i></button>
+            <button className="msg-input-icon"><i className="fa-solid fa-paperclip"></i></button>
+            <button className="msg-input-icon"><i className="fa-regular fa-file"></i></button>
+            <button className="msg-input-icon"><i className="fa-solid fa-camera"></i></button>
+            <input
+              type="text"
+              placeholder="Type a message..."
+              value={messageText}
+              onChange={(e) => setMessageText(e.target.value)}
+              onKeyDown={(e) => e.key === 'Enter' && handleSend()}
+            />
+            <button className="msg-input-icon"><i className="fa-solid fa-microphone"></i></button>
+            <button className="msg-send" onClick={handleSend}><i className="fa-solid fa-paper-plane"></i></button>
           </div>
         </div>
       </div>
