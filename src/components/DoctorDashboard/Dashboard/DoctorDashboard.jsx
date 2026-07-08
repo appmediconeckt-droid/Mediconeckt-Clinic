@@ -2900,6 +2900,7 @@ const DoctorDashboard = () => {
   const [showEditModal, setShowEditModal] = useState(false);
   const [editingAppointment, setEditingAppointment] = useState(null);
   const [lastCompletedAppointment, setLastCompletedAppointment] = useState(null);
+  const [activeQueueTab, setActiveQueueTab] = useState("pending");
   const [completeForm, setCompleteForm] = useState({
     diagnosis: "",
     medicine: "",
@@ -2909,8 +2910,13 @@ const DoctorDashboard = () => {
     followUpDate: ""
   });
 
+  const authUser = localStorage.getItem('authUser')
+    ? JSON.parse(localStorage.getItem('authUser'))
+    : null;
+
   // Get doctor ID from localStorage or URL params
-  const doctorId = localStorage.getItem('doctor_id') || '3';
+  const doctorId = authUser?.id || '3';
+  const doctorName = authUser?.name || 'Doctor';
 
   // Fetch appointments from API
   const fetchAppointments = async () => {
@@ -2926,7 +2932,9 @@ const DoctorDashboard = () => {
         const today = new Date().toISOString().split('T')[0];
         const todayAppointments = response.data.filter(apt => {
           const aptDate = new Date(apt.appointment_date || apt.date).toISOString().split('T')[0];
-          return aptDate === today && (apt.status === 'pending' || apt.status === 'confirmed');
+          const rawStatus = (apt.status || '').toLowerCase();
+          const status = rawStatus || 'pending';
+          return aptDate === today && ['pending', 'confirmed', 'in-progress'].includes(status);
         });
         
         // Transform API data to match component format
@@ -2936,7 +2944,7 @@ const DoctorDashboard = () => {
           gender: apt.gender || apt.patient_gender || 'Not specified',
           issue: apt.reason || apt.issue || 'General Checkup',
           scheduledTime: apt.time || apt.scheduled_time || new Date(apt.appointment_date).toLocaleTimeString([], { hour: '2-digit', minute: '2-digit' }),
-          status: 'pending',
+          status: (apt.status || 'pending').toLowerCase(),
           phone: apt.phone || apt.mobile || 'N/A',
           bp: apt.blood_pressure || apt.bp || 'Not recorded',
           bloodGroup: apt.blood_group || apt.bloodGroup || 'Not recorded',
@@ -2946,7 +2954,7 @@ const DoctorDashboard = () => {
         setAppointments(formattedAppointments);
         
         // Fetch completed appointments
-        const completedResponse = await axios.get(`${API_BASE_URL}/api/appointments/completed?doctor_id=${doctorId}`);
+        const completedResponse = await axios.get(`${API_BASE_URL}/appointments?doctor_id=${doctorId}&status=completed`);
         
         if (completedResponse.data && completedResponse.data.length >= 0) {
           const formattedCompleted = completedResponse.data.map(apt => ({
@@ -3030,7 +3038,7 @@ const DoctorDashboard = () => {
 
     // Update appointment status in API
     try {
-      await axios.put(`${API_BASE_URL}/api/appointments/${selectedAppointment.id}/status`, {
+      await axios.put(`${API_BASE_URL}/appointments/${selectedAppointment.id}/status`, {
         status: 'in-progress',
         start_time: startTime,
         doctor_id: doctorId
@@ -3176,6 +3184,7 @@ const DoctorDashboard = () => {
 
     const completedRecord = {
       ...activeSession.appt,
+      status: "completed",
       startTime: activeSession.startTime,
       endTime,
       durationMs: totalTreatmentMs,
@@ -3196,7 +3205,7 @@ const DoctorDashboard = () => {
 
     // Update appointment status in API
     try {
-      await axios.put(`${API_BASE_URL}/api/appointments/${activeSession.appt.id}/complete`, {
+      await axios.put(`${API_BASE_URL}/appointments/${activeSession.appt.id}/complete`, {
         end_time: endTime,
         duration_ms: totalTreatmentMs,
         diagnosis: "Not specified",
@@ -3228,6 +3237,7 @@ const DoctorDashboard = () => {
 
     const completedRecord = {
       ...activeSession.appt,
+      status: "completed",
       startTime: activeSession.startTime,
       endTime,
       durationMs: totalTreatmentMs,
@@ -3251,7 +3261,7 @@ const DoctorDashboard = () => {
 
     // Update appointment status in API
     try {
-      await axios.put(`${API_BASE_URL}/api/appointments/${activeSession.appt.id}/complete`, {
+      await axios.put(`${API_BASE_URL}/appointments/${activeSession.appt.id}/complete`, {
         end_time: endTime,
         duration_ms: totalTreatmentMs,
         diagnosis: formData.diagnosis,
@@ -3391,6 +3401,35 @@ const DoctorDashboard = () => {
   const activeAppt = activeSession?.appt || null;
   const elapsedMs = computeElapsedMs();
   const breakRemainingMs = getBreakRemainingMs();
+  const pendingAppointments = appointments.filter((appt) => appt.status !== "in-progress");
+  const inProgressAppointments = [
+    ...(activeAppt ? [activeAppt] : []),
+    ...appointments.filter((appt) => appt.status === "in-progress" && appt.id !== activeAppt?.id),
+  ];
+  const visibleQueue =
+    activeQueueTab === "completed"
+      ? completed
+      : activeQueueTab === "in-progress"
+        ? inProgressAppointments
+        : pendingAppointments;
+  const nextPatient = activeAppt || pendingAppointments[0] || appointments[0] || null;
+  const totalToday = appointments.length + completed.length;
+  const completionPercent = totalToday ? Math.round((completed.length / totalToday) * 100) : 0;
+  const dateParts = new Date(now).toLocaleDateString("en-US", {
+    weekday: "long",
+    month: "long",
+    day: "numeric",
+    year: "numeric",
+  }).split(", ");
+  const averageConsultMin = completed.length
+    ? Math.max(1, Math.round(completed.reduce((sum, appt) => sum + (appt.durationMs || 0), 0) / completed.length / 60000))
+    : 15;
+  const statCards = [
+    { label: "Today's Appointments", value: totalToday || appointments.length, icon: "bi-calendar-event" },
+    { label: "Pending Consultations", value: pendingAppointments.length, icon: "bi-hourglass-split" },
+    { label: "Completed Today", value: completed.length, icon: "bi-check-circle" },
+    { label: "Avg. Consult Time", value: averageConsultMin, suffix: "min", icon: "bi-stopwatch" },
+  ];
 
   const StatusBadge = ({ status }) => {
     if (status === "pending") return <Badge bg="danger">Pending</Badge>;
@@ -3401,7 +3440,7 @@ const DoctorDashboard = () => {
 
   if (loading) {
     return (
-      <div className="dd-loading-container d-flex justify-content-center align-items-center" style={{ minHeight: '400vh' }}>
+      <div className="dd-loading-container d-flex justify-content-center align-items-center" style={{ minHeight: '100vh' }}>
         <Spinner animation="border" variant="primary" />
         <span className="ms-3">Loading appointments...</span>
       </div>
@@ -3423,494 +3462,226 @@ const DoctorDashboard = () => {
   }
 
   return (
-    <div className="dd-main-container p-3">
-      {/* HEADER */}
-      <div className="header d-flex flex-column flex-md-row justify-content-between align-items-start align-items-md-center mb-3 gap-3">
-        <h2 className="dd-dashboard-title">Doctor Dashboard</h2>
-        <div className="dd-dashboard-time-info text-end">
-          <div className="dd-current-date-display">
-            {new Date(now).toLocaleDateString('en-US', {
-              weekday: 'long',
-              year: 'numeric',
-              month: 'long',
-              day: 'numeric'
-            })}
+    <div className="dd-main-container dd-screenshot-shell">
+      <div className="dd-dashboard-content">
+          <div className="dd-hero-row">
+            <div>
+              <h1>Good evening, Dr. {doctorName.replace(/^Dr\.?\s*/i, "")}</h1>
+              <p>
+                You have {pendingAppointments.length} appointments today.
+                {nextPatient ? ` Next appointment at ${nextPatient.scheduledTime}.` : " No pending appointment right now."}
+              </p>
+            </div>
+            <div className="dd-date-block">
+              <strong>{dateParts[0]}</strong>
+              <span>{dateParts[1]}</span>
+              <span>{dateParts[2]}</span>
+            </div>
           </div>
-          <div className="dd-current-time-display">
-            {new Date(now).toLocaleTimeString()}
-          </div>
-        </div>
-      </div>
 
-      {/* BREAK CONTROLS */}
-      <div className="dd-break-controls-card card shadow-sm mb-4">
-        <div className="card-body p-3">
-          <h5 className="dd-break-controls-title mb-3">Break Controls</h5>
-          <div className="d-flex gap-2 align-items-center flex-wrap">
-            <Form.Select
-              size="sm"
-              value={selectedBreakMin}
-              onChange={(e) => setSelectedBreakMin(Number(e.target.value))}
-              className="dd-break-duration-select"
-              style={{ width: "120px" }}
-            >
-              {BREAK_OPTIONS_MIN.map((m) => (
-                <option key={m} value={m}>
-                  {m} minutes
-                </option>
+          <section className="dd-primary-column">
+            <div className="dd-stat-grid">
+              {statCards.map((card) => (
+                <div className="dd-stat-card" key={card.label}>
+                  <div>
+                    <span>{card.label}</span>
+                    <strong>
+                      {card.value}
+                      {card.suffix && <small>{card.suffix}</small>}
+                    </strong>
+                  </div>
+                  <i className={`bi ${card.icon}`}></i>
+                </div>
               ))}
-            </Form.Select>
-
-            <InputGroup size="sm" className="dd-custom-break-input-group" style={{ width: "150px" }}>
-              <FormControl
-                placeholder="Custom minutes"
-                style={{height:"45px", marginTop:"0px"}}
-                value={customBreakMin}
-                onChange={(e) =>
-                  setCustomBreakMin(e.target.value.replace(/\D/g, ""))
-                }
-              />
-              <InputGroup.Text>min</InputGroup.Text>
-            </InputGroup>
-
-            <Button
-              variant="info"
-              size="sm"
-              onClick={handleBreak}
-              className="dd-take-break-btn"
-            >
-              <i className="bi bi-cup-hot me-1" style={{color:"white"}}></i>
-              Take Break
-            </Button>
-            
-            <Button
-              variant={
-                activeSession?.status === "paused" ? "success" : "warning"
-              }
-              className="dd-pause-resume-btn"
-              onClick={handlePause}
-              size="sm"
-              disabled={!activeSession?.appt || activeSession?.status === "break"}
-            >
-              {activeSession?.status === "paused" ? (
-                <>
-                  <i className="bi bi-play-circle me-1" style={{color:"white"}}></i>
-                  Resume
-                </>
-              ) : (
-                <>
-                  <i className="bi bi-pause-circle me-1" style={{color:"white"}}></i>
-                  Pause
-                </>
-              )}
-            </Button>
-          </div>
-
-          {activeSession?.status === "break" && (
-            <div className="dd-break-timer-section mt-3 p-3 border rounded bg-light">
-              <div className="dd-break-remaining-label fw-bold mb-2">
-                {activeSession.appt ? `Break for ${activeSession.appt.name}` : "On Break"}
-              </div>
-              <div className="d-flex gap-3 align-items-center">
-                <div className="dd-break-time-remaining fw-bold text-primary fs-5">
-                  {formatDuration(breakRemainingMs)}
-                </div>
-                <ProgressBar
-                  animated
-                  now={
-                    ((activeSession.breakDurationMs - breakRemainingMs) /
-                      (activeSession.breakDurationMs || 1)) *
-                    100
-                  }
-                  className="dd-break-progress-bar flex-grow-1"
-                />
-              </div>
-
-              <Button
-                variant="outline-secondary"
-                size="sm"
-                className="mt-2 dd-end-break-btn"
-                onClick={handleEndBreakAndResume}
-              >
-                <i className="bi bi-stop-circle me-1"></i>
-                End Break Early
-              </Button>
             </div>
-          )}
-        </div>
-      </div>
 
-      {/* ACTIVE SESSION CARD */}
-      {activeSession && activeSession.appt ? (
-        <div className={`dd-active-session-card card mb-4 shadow-sm dd-active`}>
-          <div className="card-body p-4">
-            <div className="d-flex flex-column flex-md-row justify-content-between align-items-start align-items-md-center">
-              <div className="d-flex gap-3 align-items-start mb-3 mb-md-0">
-                <div className="dd-patient-avatar bg-primary text-white rounded-circle d-flex align-items-center justify-content-center" 
-                     style={{ width: '60px', height: '60px', fontSize: '1.5rem' }}>
-                  {activeAppt.name
-                    .split(" ")
-                    .map((n) => n[0])
-                    .slice(0, 2)
-                    .join("")}
+            {activeAppt && (
+              <section className="dd-live-consult">
+                <div>
+                  <span>Currently with</span>
+                  <strong>{activeAppt.name}</strong>
+                  <small>{activeAppt.issue} - {formatDuration(elapsedMs)}</small>
                 </div>
-
-                <div className="dd-patient-details">
-                  <div className="dd-patient-label text-muted mb-1">Currently with</div>
-                  <h5 className="dd-patient-name mb-1">
-                    {activeAppt.name}
-                    <small className="dd-patient-gender text-muted ms-2">({activeAppt.gender})</small>
-                  </h5>
-                  <div className="dd-patient-issue mb-2">
-                    <Badge bg="light" text="dark" className="border">
-                      <i className="bi bi-clipboard-plus me-1"></i>
-                      {activeAppt.issue}
-                    </Badge>
-                  </div>
-
-                  <div className="dd-patient-vitals d-flex gap-2 mb-2">
-                    <Badge bg="info" className="dd-vital-badge">
-                      <i className="bi bi-heart me-1"></i>
-                      BP: {activeAppt.bp || 'N/A'}
-                    </Badge>
-                    <Badge bg="info" className="dd-vital-badge">
-                      <i className="bi bi-droplet me-1"></i>
-                      BG: {activeAppt.bloodGroup || 'N/A'}
-                    </Badge>
-                  </div>
-
-                  <div className="d-flex gap-4 dd-session-info">
-                    <div>
-                      <div className="dd-info-label text-muted small">Started</div>
-                      <div className="dd-info-value fw-bold">
-                        {formatTimeOfDay(activeSession.startTime)}
-                      </div>
-                    </div>
-
-                    <div>
-                      <div className="dd-info-label text-muted small">Elapsed</div>
-                      <div className="dd-info-value fw-bold text-success">
-                        {formatDuration(elapsedMs)}
-                      </div>
-                    </div>
-
-                    <div>
-                      <div className="dd-info-label text-muted small">Status</div>
-                      <div>
-                        {activeSession.status === "started" && (
-                          <Badge bg="success" className="dd-session-status">
-                            <Spinner animation="border" size="sm" className="me-1" />
-                            Active
-                          </Badge>
-                        )}
-                        {activeSession.status === "paused" && (
-                          <Badge bg="warning" className="dd-session-status">
-                            <i className="bi bi-pause me-1"></i>
-                            Paused
-                          </Badge>
-                        )}
-                        {activeSession.status === "break" && (
-                          <Badge bg="info" className="dd-session-status">
-                            <i className="bi bi-cup-hot me-1"></i>
-                            On Break
-                          </Badge>
-                        )}
-                      </div>
-                    </div>
-                  </div>
-                </div>
-              </div>
-
-              <div className="dd-session-controls mt-3 mt-md-0">
-                <div className="d-flex gap-2">
-                  <Button
-                    variant="primary"
-                    onClick={handleChecked}
-                    size="sm"
-                    className="dd-checked-btn"
-                    disabled={activeSession.status === "break"}
-                  >
-                    <i className="bi bi-clipboard-check me-1"></i>
+                <div className="dd-live-actions">
+                  <button type="button" onClick={handlePause} disabled={activeSession?.status === "break"}>
+                    <i className={`bi ${activeSession?.status === "paused" ? "bi-play-fill" : "bi-pause-fill"}`}></i>
+                    {activeSession?.status === "paused" ? "Resume" : "Pause"}
+                  </button>
+                  <button type="button" onClick={handleChecked} disabled={activeSession?.status === "break"}>
+                    <i className="bi bi-clipboard-check"></i>
                     Checked
-                  </Button>
-                  <Button
-                    variant="success"
-                    onClick={handleCompleteNow}
-                    size="sm"
-                    className="dd-complete-now-btn"
-                    disabled={activeSession.status === "break"}
-                  >
-                    <i className="bi bi-check-circle me-1"></i>
+                  </button>
+                  <button type="button" onClick={handleCompleteNow} disabled={activeSession?.status === "break"}>
+                    <i className="bi bi-check-circle"></i>
                     Complete
-                  </Button>
+                  </button>
+                </div>
+              </section>
+            )}
+
+            <section className="dd-queue-card">
+              <h2>Today's Appointment Queue</h2>
+              <div className="dd-tabs">
+                {["pending", "in-progress", "completed"].map((tab) => (
+                  <button
+                    type="button"
+                    key={tab}
+                    className={activeQueueTab === tab ? "active" : ""}
+                    onClick={() => setActiveQueueTab(tab)}
+                  >
+                    {tab === "in-progress" ? "In Progress" : tab[0].toUpperCase() + tab.slice(1)}
+                  </button>
+                ))}
+              </div>
+
+              <div className="dd-queue-list">
+                {visibleQueue.map((appt, index) => {
+                  const isActive = activeAppt?.id === appt.id;
+                  const initials = appt.name
+                    .split(" ")
+                    .map((name) => name[0])
+                    .slice(0, 2)
+                    .join("");
+
+                  return (
+                    <article className={`dd-queue-row ${isActive || index === 0 ? "highlight" : ""}`} key={`${activeQueueTab}-${appt.id}`}>
+                      <div className="dd-patient-avatar-img">{initials}</div>
+                      <div className="dd-queue-info">
+                        <div className="dd-queue-title">
+                          <strong>{appt.name}</strong>
+                          <span>P{String(appt.id).padStart(3, "0").slice(-3)}</span>
+                          <em className={appt.status === "completed" ? "complete" : ""}>
+                            {appt.status === "completed" ? "Completed" : appt.status === "in-progress" || isActive ? "In Progress" : "Pending"}
+                          </em>
+                        </div>
+                        <div className="dd-queue-meta">
+                          <span>{appt.gender}</span>
+                          <span className="issue">{appt.issue}</span>
+                          <span><i className="bi bi-clock"></i>{appt.scheduledTime || (appt.endTime ? formatTimeOfDay(appt.endTime) : "Today")}</span>
+                        </div>
+                        <div className="dd-vital-tags">
+                          <span>BP: {appt.bp || "N/A"}</span>
+                          <span>BG: {appt.bloodGroup || "N/A"}</span>
+                        </div>
+                      </div>
+                      <div className="dd-row-actions">
+                        {appt.status === "completed" ? (
+                          <button type="button" className="ghost" onClick={() => handleEditCompleted(appt)}>
+                            View
+                          </button>
+                        ) : isActive ? (
+                          <button type="button" onClick={handleChecked} disabled={activeSession?.status === "break"}>
+                            Continue
+                          </button>
+                        ) : (
+                          <button
+                            type="button"
+                            className={index === 0 && activeQueueTab === "pending" ? "" : "ghost"}
+                            onClick={() => handleConsentClick(appt)}
+                            disabled={!!activeSession?.appt || activeSession?.status === "break"}
+                          >
+                            {index === 0 && activeQueueTab === "pending" ? "Start Consultation" : "View"}
+                          </button>
+                        )}
+                      </div>
+                    </article>
+                  );
+                })}
+
+                {visibleQueue.length === 0 && (
+                  <div className="dd-empty-queue">
+                    <i className="bi bi-calendar-check"></i>
+                    <span>No appointments in this queue</span>
+                  </div>
+                )}
+              </div>
+            </section>
+          </section>
+
+          <aside className="dd-right-panel">
+            <section className="dd-next-patient-card">
+              <div className="dd-next-top">
+                <span><i className="bi bi-dot"></i> Next Patient</span>
+                <strong>{nextPatient?.scheduledTime || "--:--"}</strong>
+              </div>
+              <div className="dd-next-body">
+                <div className="dd-next-avatar">
+                  {nextPatient
+                    ? nextPatient.name.split(" ").map((name) => name[0]).slice(0, 2).join("")
+                    : "NA"}
+                </div>
+                <div>
+                  <h3>{nextPatient?.name || "No Patient"}</h3>
+                  <p>{nextPatient?.issue || "Queue is clear"}</p>
                 </div>
               </div>
-            </div>
-          </div>
-        </div>
-      ) : activeSession?.status === "break" ? (
-        <div className="dd-break-only-card card mb-4 shadow-sm">
-          <div className="card-body p-4 text-center">
-            <div className="dd-no-patient-break py-3">
-              <i className="bi bi-cup-hot fs-1 text-info mb-3"></i>
-              <div className="dd-break-message fs-5 fw-bold mb-2">Currently on break</div>
-              <h5 className="dd-break-instruction text-muted">
-                No active patient appointment
-              </h5>
-            </div>
-          </div>
-        </div>
-      ) : null}
+              <button
+                type="button"
+                onClick={() => nextPatient && (activeAppt ? handleChecked() : handleConsentClick(nextPatient))}
+                disabled={!nextPatient || activeSession?.status === "break"}
+              >
+                <i className="bi bi-clipboard2-pulse"></i>
+                Start Consultation
+              </button>
+            </section>
 
-      {/* TODAY'S APPOINTMENTS TABLE */}
-      <div className="dd-appointments-table-card card shadow-sm mb-4">
-        <div className="card-body p-4">
-          <div className="d-flex justify-content-between align-items-center mb-3">
-            <h5 className="dd-table-heading mb-0">
-              <i className="bi bi-calendar-check me-2"></i>
-              Today's Appointments
-            </h5>
-            <Badge bg="secondary" className="dd-appointment-count">
-              {appointments.length} appointments
-            </Badge>
-          </div>
-          
-          <div className="table-responsive">
-            <table className="table dd-appointments-table align-middle mb-0">
-              <thead className="dd-table-header">
-                <tr>
-                  <th className="dd-serial-col">S No.</th>
-                  <th className="dd-patient-col">Patient</th>
-                  <th className="dd-gender-col">Gender</th>
-                  <th className="dd-issue-col">Issue</th>
-                  <th className="dd-phone-col">Phone</th>
-                  <th className="dd-bp-col">BP</th>
-                  <th className="dd-blood-group-col">BG</th>
-                  <th className="dd-scheduled-col">Time</th>
-                  <th className="dd-status-col">Status</th>
-                  <th className="dd-action-col">Action</th>
-                </tr>
-              </thead>
-
-              <tbody>
-                {appointments.map((a, idx) => (
-                  <tr key={a.id} className="dd-appointment-row">
-                    <td className="dd-serial-number text-center">
-                      <span className="dd-serial-badge">{idx + 1}</span>
-                    </td>
-                    <td className="dd-patient-name-cell">
-                      <div className="d-flex align-items-center">
-                        <div className="dd-patient-avatar-small bg-primary text-white rounded-circle d-flex align-items-center justify-content-center me-2" 
-                             style={{ width: '32px', height: '32px', fontSize: '0.8rem' }}>
-                          {a.name
-                            .split(" ")
-                            .map((n) => n[0])
-                            .slice(0, 2)
-                            .join("")}
-                        </div>
-                        <span className="dd-patient-name fw-bold">{a.name}</span>
-                      </div>
-                    </td>
-                    <td className="dd-patient-gender-cell">
-                      <Badge bg={a.gender === "Male" ? "primary" : "danger"} className="dd-gender-badge">
-                        {a.gender}
-                      </Badge>
-                    </td>
-                    <td className="dd-patient-issue-cell">
-                      <span className="dd-issue-text">{a.issue}</span>
-                    </td>
-                    <td className="dd-patient-phone-cell">
-                      <a href={`tel:${a.phone}`} className="dd-phone-link text-decoration-none">
-                        <i className="bi bi-telephone me-1"></i>
-                        {a.phone}
-                      </a>
-                    </td>
-                    <td className="dd-bp-cell">
-                      <Badge bg="info" className="dd-bp-badge">
-                        {a.bp || 'N/A'}
-                      </Badge>
-                    </td>
-                    <td className="dd-blood-group-cell">
-                      <Badge bg="danger" className="dd-blood-group-badge">
-                        {a.bloodGroup || 'N/A'}
-                      </Badge>
-                    </td>
-                    <td className="dd-scheduled-time-cell">
-                      <div className="dd-time-display">
-                        <i className="bi bi-clock me-1"></i>
-                        {a.scheduledTime}
-                      </div>
-                    </td>
-                    <td className="dd-status-cell">
-                      <StatusBadge status={a.status} />
-                    </td>
-                    <td className="dd-action-cell">
-                      {(!activeSession?.appt || activeSession?.appt?.id === a.id) &&
-                        a.status === "pending" && (
-                          <Button
-                            variant="primary"
-                            size="sm"
-                            onClick={() => handleConsentClick(a)}
-                            className="dd-consent-btn"
-                            disabled={activeSession?.status === "break"}
-                          >
-                            <i className="bi bi-person-check me-1"></i>
-                            Consultation
-                          </Button>
-                        )}
-
-                      {activeSession?.appt?.id === a.id &&
-                        a.status === "in-progress" && (
-                          <Badge bg="info" className="dd-active-badge">
-                            <Spinner animation="border" size="sm" className="me-1" />
-                            Active
-                          </Badge>
-                        )}
-                    </td>
-                  </tr>
+            <section className="dd-break-widget">
+              <div className="dd-widget-title">
+                <h3>Break Control</h3>
+                <span>{activeSession?.status === "break" ? "On Break" : "On Duty"}</span>
+              </div>
+              <div className="dd-break-options">
+                {[10, 15, 30].map((min) => (
+                  <button
+                    type="button"
+                    key={min}
+                    onClick={() => {
+                      setSelectedBreakMin(min);
+                      setCustomBreakMin("");
+                    }}
+                    className={selectedBreakMin === min && !customBreakMin ? "active" : ""}
+                  >
+                    {min} min
+                  </button>
                 ))}
+                <InputGroup size="sm" className="dd-custom-break-input-group">
+                  <FormControl
+                    placeholder="Custom"
+                    value={customBreakMin}
+                    onChange={(e) => setCustomBreakMin(e.target.value.replace(/\D/g, ""))}
+                  />
+                </InputGroup>
+              </div>
+              {activeSession?.status === "break" ? (
+                <div className="dd-break-active">
+                  <strong>{formatDuration(breakRemainingMs)}</strong>
+                  <ProgressBar
+                    animated
+                    now={((activeSession.breakDurationMs - breakRemainingMs) / (activeSession.breakDurationMs || 1)) * 100}
+                  />
+                  <button type="button" onClick={handleEndBreakAndResume}>End Break</button>
+                </div>
+              ) : (
+                <button type="button" className="dd-start-break" onClick={handleBreak}>
+                  Start Break
+                </button>
+              )}
+            </section>
 
-                {appointments.length === 0 && (
-                  <tr className="dd-no-appointments-row">
-                    <td colSpan="10" className="text-center py-4">
-                      <div className="dd-empty-state">
-                        <i className="bi bi-check-circle-fill fs-1 text-success mb-3"></i>
-                        <h6 className="text-muted mb-0">All appointments completed</h6>
-                        <p className="text-muted small mt-1">No pending appointments for today</p>
-                      </div>
-                    </td>
-                  </tr>
-                )}
-              </tbody>
-            </table>
-          </div>
-        </div>
-      </div>
-
-      {/* COMPLETED APPOINTMENTS TABLE */}
-      <div className="dd-completed-table-card card shadow-sm">
-        <div className="card-body p-4">
-          <div className="d-flex justify-content-between align-items-center mb-3">
-            <h5 className="dd-table-heading mb-0">
-              <i className="bi bi-check-circle me-2"></i>
-              Completed Appointments
-            </h5>
-            <Badge bg="success" className="dd-completed-count">
-              {completed.length} completed
-            </Badge>
-          </div>
-          
-          <div className="table-responsive">
-            <table className="table dd-completed-appointments-table align-middle mb-0">
-              <thead className="dd-table-header">
-                <tr>
-                  <th className="dd-serial-col">S No.</th>
-                  <th className="dd-patient-col">Patient</th>
-                  <th className="dd-gender-col">Gender</th>
-                  <th className="dd-issue-col">Issue</th>
-                  <th className="dd-phone-col">Phone</th>
-                  <th className="dd-duration-col">Duration</th>
-                  <th className="dd-diagnosis-col">Diagnosis</th>
-                  <th className="dd-medicine-col">Medicine</th>
-                  <th className="dd-advice-col">Advice</th>
-                  <th className="dd-followup-col">Follow-up</th>
-                  <th className="dd-edit-col">Edit</th>
-                </tr>
-              </thead>
-
-              <tbody>
-                {completed.map((c, i) => (
-                  <tr key={c.id} className="dd-completed-row">
-                    <td className="dd-serial-number text-center">
-                      <span className="dd-serial-badge">{i + 1}</span>
-                    </td>
-                    <td className="dd-patient-name-cell">
-                      <div className="d-flex align-items-center">
-                        <div className="dd-patient-avatar-small bg-success text-white rounded-circle d-flex align-items-center justify-content-center me-2" 
-                             style={{ width: '32px', height: '32px', fontSize: '0.8rem' }}>
-                          {c.name
-                            .split(" ")
-                            .map((n) => n[0])
-                            .slice(0, 2)
-                            .join("")}
-                        </div>
-                        <div>
-                          <div className="dd-patient-name fw-bold">{c.name}</div>
-                          <small className="dd-completed-time text-muted">
-                            {formatTimeOfDay(c.endTime)}
-                          </small>
-                        </div>
-                      </div>
-                    </td>
-                    <td className="dd-patient-gender-cell">
-                      <Badge bg={c.gender === "Male" ? "primary" : "danger"} className="dd-gender-badge">
-                        {c.gender}
-                      </Badge>
-                    </td>
-                    <td className="dd-patient-issue-cell">
-                      <span className="dd-issue-text">{c.issue}</span>
-                    </td>
-                    <td className="dd-patient-phone-cell">
-                      <a href={`tel:${c.phone}`} className="dd-phone-link text-decoration-none">
-                        <i className="bi bi-telephone me-1"></i>
-                        {c.phone}
-                      </a>
-                    </td>
-                    <td className="dd-duration-cell">
-                      <Badge bg="info" className="dd-duration-badge">
-                        {formatDuration(c.durationMs)}
-                      </Badge>
-                    </td>
-                    <td className="dd-diagnosis-cell">
-                      <div className="dd-diagnosis-text">{c.diagnosis}</div>
-                    </td>
-                    <td className="dd-medicine-cell">
-                      <div className="dd-medicine-text">{c.medicine}</div>
-                    </td>
-                    <td className="dd-advice-cell">
-                      <div className="dd-advice-text">{c.advice}</div>
-                    </td>
-                    <td className="dd-followup-cell">
-                      {c.followUpRequired && c.followUpDate ? (
-                        <Badge bg="warning" className="dd-follow-up-badge">
-                          <i className="bi bi-calendar-check me-1"></i>
-                          {new Date(c.followUpDate).toLocaleDateString('en-US', {
-                            day: '2-digit',
-                            month: 'short'
-                          })}
-                        </Badge>
-                      ) : (
-                        <span className="text-muted dd-no-followup">No</span>
-                      )}
-                    </td>
-                    <td className="dd-edit-cell">
-                      <Button
-                        variant="outline-primary"
-                        size="sm"
-                        onClick={() => handleEditCompleted(c)}
-                        className="dd-edit-btn"
-                      >
-                        <i className="bi bi-pencil"></i>
-                      </Button>
-                    </td>
-                  </tr>
-                ))}
-
-                {completed.length === 0 && (
-                  <tr className="dd-no-completed-row">
-                    <td colSpan="11" className="text-center py-4">
-                      <div className="dd-empty-state">
-                        <i className="bi bi-calendar-x fs-1 text-muted mb-3"></i>
-                        <h6 className="text-muted mb-0">No completed appointments</h6>
-                        <p className="text-muted small mt-1">Completed appointments will appear here</p>
-                      </div>
-                    </td>
-                  </tr>
-                )}
-              </tbody>
-            </table>
-          </div>
-        </div>
+            <section className="dd-overview-card">
+              <h3>Today Overview</h3>
+              <div
+                className="dd-progress-ring"
+                style={{ "--progress": `${completionPercent * 3.6}deg` }}
+              >
+                <div>
+                  <strong>{completionPercent}%</strong>
+                  <span>Complete</span>
+                </div>
+              </div>
+              <p>{completed.length} of {totalToday || appointments.length} appointments completed</p>
+            </section>
+          </aside>
       </div>
 
       {/* CONSENT MODAL */}

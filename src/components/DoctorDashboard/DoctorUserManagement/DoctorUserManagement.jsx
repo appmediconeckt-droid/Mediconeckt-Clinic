@@ -1,1418 +1,1436 @@
-import React, { useState, useEffect } from 'react';
-import axios from 'axios';
-import { 
-  FaUserNurse, FaUsers, 
-  FaMicroscope, FaBroom, FaUserTie, FaFileInvoiceDollar,
-  FaPlus, FaEdit, FaTrash, FaSearch, FaFilter,
-  FaIdCard,
-  FaEnvelope, FaPhone, FaCalendarAlt,
-  FaGraduationCap, FaBriefcase, FaCertificate, FaMoneyBillWave,
-  FaBuilding, FaUserCircle,
-  FaSave, FaTimes, FaEye, FaEyeSlash, FaLock, FaUnlock,
-  FaChevronDown, FaChevronUp, FaSortUp, FaSortDown,
-  FaCheck, FaTimesCircle, FaChevronRight, FaHospitalUser,
-  FaInfoCircle, FaKey, FaStethoscope
-} from 'react-icons/fa';
-import './DoctorUserManagement.css';
-import { API_BASE_URL, getAuthHeaders } from '../../../redux/apiConfig';
+import React, { useEffect, useMemo, useState } from "react";
+import axios from "axios";
+import { useSelector } from "react-redux";
+import {
+  Building2,
+  CalendarClock,
+  CheckCircle2,
+  ClipboardClock,
+  Download,
+  Eye,
+  Filter,
+  FlaskConical,
+  ListFilter,
+  MoreVertical,
+  Pencil,
+  Plus,
+  RotateCcw,
+  Search,
+  ShieldCheck,
+  Trash2,
+  Users,
+  X,
+} from "lucide-react";
+import { API_BASE_URL, getAuthHeaders } from "../../../redux/apiConfig";
+import "./DoctorUserManagement.css";
 
-const USERS_BASE_URL = `${API_BASE_URL}/users`;
-const MASKED_PASSWORD = '********';
+const docStaffScreenRows = [
+  {
+    id: "#MC-4002",
+    name: "Jane Cooper",
+    email: "jane.c@mediconeckt.com",
+    department: "Emergency",
+    role: "Nurse",
+    shift: "Morning",
+    verification: "Verified",
+    status: "Active",
+    lastLogin: "Today, 08:42 AM",
+    avatar: "JC",
+    avatarTone: "teal",
+    profilePhoto: "https://i.pravatar.cc/120?img=47",
+    joinDate: "15 Jan 2021",
+    manager: "Dr. Sarah Jenkins",
+    shiftTime: "06:00 - 14:00",
+    permissions: ["Patient Records (View)", "Appointments (Update)", "Messages (Send)"],
+  },
+  {
+    id: "#MC-4105",
+    name: "Robert Fox",
+    email: "robert.f@mediconeckt.com",
+    department: "Pathology",
+    role: "Lab Technician",
+    shift: "Night",
+    verification: "Pending Docs",
+    status: "Active",
+    lastLogin: "Yesterday, 10:15 PM",
+    avatar: "RF",
+    avatarTone: "blue",
+    profilePhoto: "https://i.pravatar.cc/120?img=12",
+    joinDate: "04 Mar 2022",
+    manager: "Dr. Sarah Jenkins",
+    shiftTime: "22:00 - 06:00",
+    permissions: ["Lab Requests (View)", "Test Results (Update)", "Messages (Send)"],
+  },
+  {
+    id: "#MC-3890",
+    name: "Cameron Williamson",
+    email: "cameron.w@mediconeckt.com",
+    department: "Finance",
+    role: "Billing",
+    shift: "Morning",
+    verification: "Verified",
+    status: "On Leave",
+    lastLogin: "Oct 12, 2023",
+    avatar: "CW",
+    avatarTone: "amber",
+    profilePhoto: "https://i.pravatar.cc/120?img=32",
+    joinDate: "19 Aug 2020",
+    manager: "Dr. Sarah Jenkins",
+    shiftTime: "06:00 - 14:00",
+    permissions: ["Billing Records (View)", "Invoices (Update)", "Reports (Export)"],
+  },
+  {
+    id: "#MC-4211",
+    name: "Jerome Bell",
+    email: "jerome.b@mediconeckt.com",
+    department: "Admin",
+    role: "Receptionist",
+    shift: "Evening",
+    verification: "Verified",
+    status: "Active",
+    lastLogin: "Today, 02:30 PM",
+    avatar: "JB",
+    avatarTone: "green",
+    profilePhoto: "https://i.pravatar.cc/120?img=5",
+    joinDate: "28 Nov 2021",
+    manager: "Dr. Sarah Jenkins",
+    shiftTime: "14:00 - 22:00",
+    permissions: ["Front Desk (View)", "Appointments (Create)", "Messages (Send)"],
+  },
+];
+
+const docStaffScreenStats = [
+  {
+    label: "Total Staff",
+    value: "126",
+    note: "+ 8 this month",
+    type: "total",
+    icon: Users,
+  },
+  {
+    label: "Active Staff",
+    value: "118",
+    note: "(94%)",
+    type: "active",
+    icon: CheckCircle2,
+  },
+  {
+    label: "Pending Verification",
+    value: "6",
+    note: "Requires attention",
+    type: "pending",
+    icon: ClipboardClock,
+  },
+  {
+    label: "Departments",
+    value: "12",
+    note: "Across hospital",
+    type: "departments",
+    icon: Building2,
+  },
+];
+
+const docStaffRoleCards = [
+  {
+    id: "nurse",
+    title: "Nurse",
+    description: "Provides direct patient care, administers medication, and assists doctors.",
+    count: 42,
+    code: "NUR-###",
+    department: "Clinical",
+    category: "Care Team",
+    icon: Plus,
+  },
+  {
+    id: "assistant",
+    title: "Medical Assistant",
+    description: "Supports clinical operations by preparing patients, recording vitals, and scheduling.",
+    count: 18,
+    code: "MA-###",
+    department: "Clinical",
+    category: "Care Team",
+    icon: ClipboardClock,
+  },
+  {
+    id: "technician",
+    title: "Lab Technician",
+    description: "Performs laboratory tests, analyzes samples, and manages clinical reports.",
+    count: 12,
+    code: "LAB-###",
+    department: "Pathology",
+    category: "Diagnostics",
+    icon: FlaskConical,
+  },
+  {
+    id: "billing",
+    title: "Billing Staff",
+    description: "Manages patient invoicing, insurance claims, payment processing, and receipts.",
+    count: 8,
+    code: "BIL-###",
+    department: "Finance",
+    category: "Administration",
+    icon: Building2,
+  },
+  {
+    id: "housekeeping",
+    title: "Housekeeping",
+    description: "Ensures facility cleanliness, sanitizes patient rooms, and maintains hygiene.",
+    count: 15,
+    code: "HSK-###",
+    department: "Operations",
+    category: "Support",
+    icon: Building2,
+  },
+  {
+    id: "supervisor",
+    title: "Supervisor",
+    description: "Oversees departmental operations, manages staff schedules, and ensures compliance.",
+    count: 6,
+    code: "SUP-###",
+    department: "Operations",
+    category: "Leadership",
+    icon: ShieldCheck,
+  },
+];
+
+const staffRoleValues = ["nurse", "assistant", "technician", "housekeeping", "supervisor", "manager", "billing"];
+
+const roleLabels = {
+  nurse: "Nurse",
+  assistant: "Medical Assistant",
+  technician: "Lab Technician",
+  housekeeping: "Housekeeping",
+  supervisor: "Supervisor",
+  manager: "Department Manager",
+  billing: "Billing",
+  receptionist: "Receptionist",
+};
+
+const avatarTones = ["teal", "blue", "amber", "green"];
+
+const getStoredAuthUser = () => {
+  try {
+    return JSON.parse(localStorage.getItem("authUser") || "null");
+  } catch {
+    return null;
+  }
+};
+
+const getDoctorId = (user = {}) =>
+  user.doctor_id || user.doctorId || user.id || user._id || user.user_id || user.userId || "";
+
+const toTitleCase = (value = "") =>
+  String(value)
+    .replace(/[_-]+/g, " ")
+    .replace(/\s+/g, " ")
+    .trim()
+    .replace(/\b\w/g, (char) => char.toUpperCase());
+
+const getInitials = (name = "") =>
+  String(name)
+    .split(" ")
+    .filter(Boolean)
+    .map((word) => word[0])
+    .join("")
+    .slice(0, 2)
+    .toUpperCase() || "ST";
+
+const normalizeStatus = (value) => {
+  const status = String(value || "active").toLowerCase();
+  if (status.includes("suspend") || status.includes("block") || status === "inactive") return "Suspended";
+  if (status.includes("leave") || status.includes("off")) return "On Leave";
+  return "Active";
+};
+
+const normalizeVerification = (value) => {
+  const verification = String(value || "").toLowerCase();
+  if (verification.includes("pending") || verification.includes("unverified") || verification === "false") {
+    return "Pending Docs";
+  }
+  return "Verified";
+};
+
+const normalizeShift = (value) => {
+  const shift = toTitleCase(value || "Morning");
+  if (["Morning", "Evening", "Night"].includes(shift)) return shift;
+  return shift || "Morning";
+};
+
+const formatDate = (value, fallback = "Not available") => {
+  if (!value) return fallback;
+  const date = new Date(value);
+  if (Number.isNaN(date.getTime())) return String(value);
+  return date.toLocaleDateString("en-IN", { day: "2-digit", month: "short", year: "numeric" });
+};
+
+const getNestedArray = (payload) => {
+  if (Array.isArray(payload)) return payload;
+  const possibleArrays = [
+    payload?.data,
+    payload?.users,
+    payload?.staff,
+    payload?.members,
+    payload?.results,
+    payload?.data?.users,
+    payload?.data?.staff,
+    payload?.data?.members,
+    payload?.data?.results,
+  ];
+  return possibleArrays.find(Array.isArray) || [];
+};
+
+const normalizeStaffRow = (staff, index = 0) => {
+  const rawRole = String(staff.role || staff.user_role || staff.staff_role || staff.designation || "").toLowerCase();
+  const role = roleLabels[rawRole] || toTitleCase(staff.role_name || staff.role || staff.designation || "Staff");
+  const fullName =
+    staff.full_name ||
+    staff.fullName ||
+    staff.name ||
+    [staff.first_name || staff.firstName, staff.last_name || staff.lastName].filter(Boolean).join(" ") ||
+    "Staff Member";
+  const rawId = staff.id || staff._id || staff.user_id || staff.staff_id || staff.employee_id || staff.employeeId;
+  const department =
+    staff.department ||
+    staff.department_name ||
+    staff.ward ||
+    staff.lab_type ||
+    staff.assigned_area ||
+    staff.role_department ||
+    "General";
+
+  return {
+    raw: staff,
+    rawId,
+    id: staff.employee_id || staff.employeeId || staff.staff_code || staff.code || (rawId ? `#MC-${rawId}` : `#MC-${4000 + index}`),
+    name: fullName,
+    email: staff.email || staff.email_address || "No email",
+    department: toTitleCase(department),
+    role,
+    shift: normalizeShift(staff.shift || staff.shift_preference),
+    verification: normalizeVerification(staff.verification || staff.emailVerified || staff.is_verified || staff.verified),
+    status: normalizeStatus(staff.status || staff.account_status),
+    lastLogin: staff.lastLogin || staff.last_login || staff.last_seen || "Not logged in",
+    avatar: getInitials(fullName),
+    avatarTone: avatarTones[index % avatarTones.length],
+    profilePhoto: staff.profilePhoto || staff.profile_photo || staff.avatar || staff.image || `https://i.pravatar.cc/120?u=${encodeURIComponent(fullName)}`,
+    joinDate: formatDate(staff.joinDate || staff.join_date || staff.hireDate || staff.hire_date || staff.createdAt),
+    manager: staff.manager || staff.supervisor || staff.created_by_name || "Doctor",
+    shiftTime: staff.shiftTime || staff.shift_time || "06:00 - 14:00",
+    permissions: Array.isArray(staff.permissions) && staff.permissions.length ? staff.permissions : ["Patient Records (View)", "Messages (Send)"],
+  };
+};
 
 const DoctorUserManagement = () => {
-  const [users, setUsers] = useState([]);
-  const [showForm, setShowForm] = useState(false);
-  const [selectedRole, setSelectedRole] = useState('');
-  const [formData, setFormData] = useState({
-    email: '',
-    phone: '',
-    emailVerified: false,
-    phoneVerified: false,
-    password: '',
-    confirmPassword: ''
-  });
-  const [isEditing, setIsEditing] = useState(false);
-  const [editingUserId, setEditingUserId] = useState(null);
-  const [searchTerm, setSearchTerm] = useState('');
-  const [filterRole, setFilterRole] = useState('all');
-  const [sortConfig, setSortConfig] = useState({ key: 'id', direction: 'ascending' });
-  const [showDetails, setShowDetails] = useState({});
-  const [passwordVisible, setPasswordVisible] = useState(false);
-  const [confirmPasswordVisible, setConfirmPasswordVisible] = useState(false);
-  const [emailVerificationCode, setEmailVerificationCode] = useState('');
-  const [phoneVerificationCode, setPhoneVerificationCode] = useState('');
-  const [showEmailVerification, setShowEmailVerification] = useState(false);
-  const [showPhoneVerification, setShowPhoneVerification] = useState(false);
-  const [notification, setNotification] = useState({ show: false, message: '', type: '' });
-  const [apiStatus, setApiStatus] = useState('idle');
-  const [isSaving, setIsSaving] = useState(false);
-
-  // ID generation counters for each role
-  const [idCounters, setIdCounters] = useState({
-    nurse: 1,
-    assistant: 1,
-    technician: 1,
-    housekeeping: 1,
-    supervisor: 1,
-    manager: 1,
-    billing: 1
+  const authUser = useSelector((state) => state.auth?.user);
+  const user = useMemo(() => authUser || getStoredAuthUser() || {}, [authUser]);
+  const doctorId = useMemo(() => getDoctorId(user), [user]);
+  const [staffRows, setStaffRows] = useState([]);
+  const [isLoadingStaff, setIsLoadingStaff] = useState(false);
+  const [staffError, setStaffError] = useState("");
+  const [searchTerm, setSearchTerm] = useState("");
+  const [roleFilter, setRoleFilter] = useState("All");
+  const [deptFilter, setDeptFilter] = useState("All");
+  const [statusFilter, setStatusFilter] = useState("All");
+  const [shiftFilter, setShiftFilter] = useState("All");
+  const [openActionId, setOpenActionId] = useState(null);
+  const [viewStaff, setViewStaff] = useState(null);
+  const [editingStaff, setEditingStaff] = useState(null);
+  const [editForm, setEditForm] = useState(null);
+  const [showAddStaffModal, setShowAddStaffModal] = useState(false);
+  const [selectedNewRole, setSelectedNewRole] = useState("nurse");
+  const [roleSearchTerm, setRoleSearchTerm] = useState("");
+  const [roleDepartmentFilter, setRoleDepartmentFilter] = useState("All");
+  const [roleCategoryFilter, setRoleCategoryFilter] = useState("All");
+  const [addStaffStep, setAddStaffStep] = useState(1);
+  const [newStaffForm, setNewStaffForm] = useState({
+    firstName: "",
+    lastName: "",
+    email: "",
+    phone: "",
+    dateOfBirth: "",
+    gender: "",
+    department: "Nursing",
+    hireDate: "",
+    shift: "Morning",
   });
 
-  const allRoles = [
-    { value: "nurse", label: "Nurse", icon: <FaUserNurse />, color: "#8e44ad", idPrefix: "NUR" },
-    { value: "assistant", label: "Medical Assistant", icon: <FaUsers />, color: "#f39c12", idPrefix: "MA" },
-    { value: "technician", label: "Lab Technician", icon: <FaMicroscope />, color: "#d35400", idPrefix: "LT" },
-    { value: "housekeeping", label: "Housekeeping Staff", icon: <FaBroom />, color: "#34495e", idPrefix: "HS" },
-    { value: "supervisor", label: "Supervisor", icon: <FaUserTie />, color: "#c0392b", idPrefix: "SUP" },
-    { value: "manager", label: "Department Manager", icon: <FaUserTie />, color: "#8e44ad", idPrefix: "MGR" },
-    { value: "billing", label: "Billing Staff", icon: <FaFileInvoiceDollar />, color: "#27ae60", idPrefix: "BILL" },
-  ];
+  const loadStaffRows = async () => {
+    setIsLoadingStaff(true);
+    setStaffError("");
 
-  const roleAliases = {
-    nurse: 'nurse',
-    assistant: 'assistant',
-    medical_assistant: 'assistant',
-    'medical assistant': 'assistant',
-    technician: 'technician',
-    lab_technician: 'technician',
-    'lab technician': 'technician',
-    housekeeping: 'housekeeping',
-    housekeeping_staff: 'housekeeping',
-    'housekeeping staff': 'housekeeping',
-    supervisor: 'supervisor',
-    manager: 'manager',
-    department_manager: 'manager',
-    'department manager': 'manager',
-    billing: 'billing',
-    billing_staff: 'billing',
-    'billing staff': 'billing',
-  };
-
-  const normalizeRole = (role) => {
-    const normalized = String(role || '').trim().toLowerCase();
-    return roleAliases[normalized] || normalized;
-  };
-
-  const unwrapApiArray = (payload) => {
-    if (Array.isArray(payload)) return payload;
-    if (Array.isArray(payload?.data)) return payload.data;
-    if (Array.isArray(payload?.users)) return payload.users;
-    if (Array.isArray(payload?.data?.users)) return payload.data.users;
-    if (Array.isArray(payload?.results)) return payload.results;
-    return [];
-  };
-
-  const unwrapApiObject = (payload) => payload?.user || payload?.data?.user || payload?.data || payload || {};
-
-  const getStaffIdField = (role) => {
-    switch (role) {
-      case 'nurse': return 'nurseId';
-      case 'assistant': return 'assistantId';
-      case 'technician': return 'technicianId';
-      case 'housekeeping': return 'staffId';
-      case 'supervisor': return 'supervisorId';
-      case 'manager': return 'managerId';
-      case 'billing': return 'billingId';
-      default: return '';
-    }
-  };
-
-  const getStaffIdFromUser = (user, role) => (
-    user.nurseId || user.nurse_id ||
-    user.assistantId || user.assistant_id ||
-    user.technicianId || user.technician_id ||
-    user.staffId || user.staff_id ||
-    user.supervisorId || user.supervisor_id ||
-    user.managerId || user.manager_id ||
-    user.billingId || user.billing_id ||
-    user.employeeId || user.employee_id ||
-    user.staff_code ||
-    (role ? '' : user.id)
-  );
-
-  const normalizeUser = (user) => {
-    const role = normalizeRole(user.role || user.user_role);
-    const staffIdField = getStaffIdField(role);
-    const staffId = getStaffIdFromUser(user, role);
-
-    return {
-      ...user,
-      id: user.id || user._id || user.user_id || user.userId,
-      fullName: user.fullName || user.full_name || user.fullname || user.name || '',
-      email: user.email || '',
-      phone: user.phone || user.contact_number || user.phone_number || user.mobile || '',
-      emailVerified: Boolean(user.emailVerified ?? user.email_verified ?? user.is_email_verified ?? false),
-      phoneVerified: Boolean(user.phoneVerified ?? user.phone_verified ?? user.is_phone_verified ?? false),
-      role,
-      status: String(user.status || (user.is_active === false ? 'inactive' : 'active')).toLowerCase(),
-      password: MASKED_PASSWORD,
-      createdAt: user.createdAt || user.created_at || user.created_date || '',
-      lastLogin: user.lastLogin || user.last_login || '',
-      nurseId: user.nurseId || user.nurse_id || (staffIdField === 'nurseId' ? staffId : ''),
-      assistantId: user.assistantId || user.assistant_id || (staffIdField === 'assistantId' ? staffId : ''),
-      technicianId: user.technicianId || user.technician_id || (staffIdField === 'technicianId' ? staffId : ''),
-      staffId: user.staffId || user.staff_id || (staffIdField === 'staffId' ? staffId : ''),
-      supervisorId: user.supervisorId || user.supervisor_id || (staffIdField === 'supervisorId' ? staffId : ''),
-      managerId: user.managerId || user.manager_id || (staffIdField === 'managerId' ? staffId : ''),
-      billingId: user.billingId || user.billing_id || (staffIdField === 'billingId' ? staffId : ''),
-      licenseNumber: user.licenseNumber || user.license_number || '',
-      labType: user.labType || user.lab_type || '',
-      assignedArea: user.assignedArea || user.assigned_area || '',
-      teamSize: user.teamSize || user.team_size || '',
-      employeesUnder: user.employeesUnder || user.employees_under || '',
-      budgetResponsibility: user.budgetResponsibility || user.budget_responsibility || '',
-      softwareExpertise: user.softwareExpertise || user.software_expertise || '',
-    };
-  };
-
-  const buildUserPayload = (data, role) => {
-    const staffIdField = getStaffIdField(role);
-    const payload = {
-      ...data,
-      role,
-      full_name: data.fullName,
-      fullname: data.fullName,
-      name: data.fullName,
-      contact_number: data.phone,
-      phone_number: data.phone,
-      email_verified: data.emailVerified,
-      phone_verified: data.phoneVerified,
-      employee_id: staffIdField ? data[staffIdField] : undefined,
-      license_number: data.licenseNumber,
-      lab_type: data.labType,
-      assigned_area: data.assignedArea,
-      team_size: data.teamSize,
-      employees_under: data.employeesUnder,
-      budget_responsibility: data.budgetResponsibility,
-      software_expertise: data.softwareExpertise,
-    };
-
-    if (!payload.password || payload.password === MASKED_PASSWORD) {
-      delete payload.password;
-    }
-
-    delete payload.confirmPassword;
-    return payload;
-  };
-
-  const syncCountersFromUsers = (userList) => {
-    const nextCounters = {
-      nurse: 1,
-      assistant: 1,
-      technician: 1,
-      housekeeping: 1,
-      supervisor: 1,
-      manager: 1,
-      billing: 1
-    };
-
-    userList.forEach((user) => {
-      const roleInfo = allRoles.find((role) => role.value === user.role);
-      const staffId = getStaffIdFromUser(user, user.role);
-      if (!roleInfo || !staffId) return;
-
-      const number = Number(String(staffId).replace(roleInfo.idPrefix, '').replace(/\D/g, ''));
-      if (!Number.isNaN(number)) {
-        nextCounters[user.role] = Math.max(nextCounters[user.role], number + 1);
-      }
-    });
-
-    setIdCounters(nextCounters);
-  };
-
-  const roleFormTemplates = {
-    nurse: {
-      basic: [
-        { name: "fullName", label: "Full Name", type: "text", required: true, icon: <FaUserCircle /> },
-        { name: "email", label: "Email", type: "email", required: true, icon: <FaEnvelope /> },
-        { name: "phone", label: "Phone Number", type: "tel", required: true, icon: <FaPhone /> },
-        { name: "password", label: "Password", type: "password", required: true, icon: <FaLock /> },
-        { name: "confirmPassword", label: "Confirm Password", type: "password", required: true, icon: <FaLock /> },
-      ],
-      professional: [
-        { 
-          name: "nurseId", 
-          label: "Nurse ID", 
-          type: "text", 
-          required: true, 
-          icon: <FaIdCard />,
-          readOnly: true,
-          description: "Auto-generated ID"
-        },
-        { name: "licenseNumber", label: "Nursing License", type: "text", required: true, icon: <FaCertificate /> },
-        { name: "shift", label: "Shift", type: "select", options: ["Morning", "Evening", "Night"], required: true, icon: <FaCalendarAlt /> },
-        { name: "ward", label: "Assigned Ward", type: "text", icon: <FaBuilding /> },
-        { name: "experience", label: "Years of Experience", type: "number", icon: <FaBriefcase /> },
-        { name: "qualifications", label: "Qualifications", type: "textarea", icon: <FaGraduationCap /> },
-      ]
-    },
-    assistant: {
-      basic: [
-        { name: "fullName", label: "Full Name", type: "text", required: true, icon: <FaUserCircle /> },
-        { name: "email", label: "Email", type: "email", required: true, icon: <FaEnvelope /> },
-        { name: "phone", label: "Phone Number", type: "tel", required: true, icon: <FaPhone /> },
-        { name: "password", label: "Password", type: "password", required: true, icon: <FaLock /> },
-        { name: "confirmPassword", label: "Confirm Password", type: "password", required: true, icon: <FaLock /> },
-      ],
-      professional: [
-        { 
-          name: "assistantId", 
-          label: "Assistant ID", 
-          type: "text", 
-          required: true, 
-          icon: <FaIdCard />,
-          readOnly: true,
-          description: "Auto-generated ID"
-        },
-        { name: "department", label: "Department", type: "text", required: true, icon: <FaBuilding /> },
-        { name: "shift", label: "Shift", type: "select", options: ["Morning", "Evening", "Night"], required: true, icon: <FaCalendarAlt /> },
-        { name: "supervisor", label: "Supervisor", type: "text", icon: <FaUserTie /> },
-        { name: "experience", label: "Years of Experience", type: "number", icon: <FaBriefcase /> },
-      ]
-    },
-    technician: {
-      basic: [
-        { name: "fullName", label: "Full Name", type: "text", required: true, icon: <FaUserCircle /> },
-        { name: "email", label: "Email", type: "email", required: true, icon: <FaEnvelope /> },
-        { name: "phone", label: "Phone Number", type: "tel", required: true, icon: <FaPhone /> },
-        { name: "password", label: "Password", type: "password", required: true, icon: <FaLock /> },
-        { name: "confirmPassword", label: "Confirm Password", type: "password", required: true, icon: <FaLock /> },
-      ],
-      professional: [
-        { 
-          name: "technicianId", 
-          label: "Technician ID", 
-          type: "text", 
-          required: true, 
-          icon: <FaIdCard />,
-          readOnly: true,
-          description: "Auto-generated ID"
-        },
-        { name: "labType", label: "Lab Type", type: "text", required: true, icon: <FaMicroscope /> },
-        { name: "certifications", label: "Certifications", type: "textarea", required: true, icon: <FaCertificate /> },
-        { name: "shift", label: "Shift", type: "select", options: ["Morning", "Evening", "Night"], required: true, icon: <FaCalendarAlt /> },
-        { name: "experience", label: "Years of Experience", type: "number", icon: <FaBriefcase /> },
-      ]
-    },
-    housekeeping: {
-      basic: [
-        { name: "fullName", label: "Full Name", type: "text", required: true, icon: <FaUserCircle /> },
-        { name: "email", label: "Email", type: "email", required: true, icon: <FaEnvelope /> },
-        { name: "phone", label: "Phone Number", type: "tel", required: true, icon: <FaPhone /> },
-        { name: "password", label: "Password", type: "password", required: true, icon: <FaLock /> },
-        { name: "confirmPassword", label: "Confirm Password", type: "password", required: true, icon: <FaLock /> },
-      ],
-      professional: [
-        { 
-          name: "staffId", 
-          label: "Staff ID", 
-          type: "text", 
-          required: true, 
-          icon: <FaIdCard />,
-          readOnly: true,
-          description: "Auto-generated ID"
-        },
-        { name: "assignedArea", label: "Assigned Area", type: "text", required: true, icon: <FaBuilding /> },
-        { name: "shift", label: "Shift", type: "select", options: ["Morning", "Evening", "Night"], required: true, icon: <FaCalendarAlt /> },
-        { name: "supervisor", label: "Supervisor", type: "text", icon: <FaUserTie /> },
-      ]
-    },
-    supervisor: {
-      basic: [
-        { name: "fullName", label: "Full Name", type: "text", required: true, icon: <FaUserCircle /> },
-        { name: "email", label: "Email", type: "email", required: true, icon: <FaEnvelope /> },
-        { name: "phone", label: "Phone Number", type: "tel", required: true, icon: <FaPhone /> },
-        { name: "password", label: "Password", type: "password", required: true, icon: <FaLock /> },
-        { name: "confirmPassword", label: "Confirm Password", type: "password", required: true, icon: <FaLock /> },
-      ],
-      professional: [
-        { 
-          name: "supervisorId", 
-          label: "Supervisor ID", 
-          type: "text", 
-          required: true, 
-          icon: <FaIdCard />,
-          readOnly: true,
-          description: "Auto-generated ID"
-        },
-        { name: "department", label: "Department", type: "text", required: true, icon: <FaBuilding /> },
-        { name: "teamSize", label: "Team Size", type: "number", icon: <FaUsers /> },
-        { name: "experience", label: "Years of Experience", type: "number", icon: <FaBriefcase /> },
-        { name: "responsibilities", label: "Responsibilities", type: "textarea", icon: <FaUserTie /> },
-      ]
-    },
-    manager: {
-      basic: [
-        { name: "fullName", label: "Full Name", type: "text", required: true, icon: <FaUserCircle /> },
-        { name: "email", label: "Email", type: "email", required: true, icon: <FaEnvelope /> },
-        { name: "phone", label: "Phone Number", type: "tel", required: true, icon: <FaPhone /> },
-        { name: "password", label: "Password", type: "password", required: true, icon: <FaLock /> },
-        { name: "confirmPassword", label: "Confirm Password", type: "password", required: true, icon: <FaLock /> },
-      ],
-      professional: [
-        { 
-          name: "managerId", 
-          label: "Manager ID", 
-          type: "text", 
-          required: true, 
-          icon: <FaIdCard />,
-          readOnly: true,
-          description: "Auto-generated ID"
-        },
-        { name: "department", label: "Department", type: "text", required: true, icon: <FaBuilding /> },
-        { name: "employeesUnder", label: "Employees Under", type: "number", icon: <FaUsers /> },
-        { name: "experience", label: "Years of Experience", type: "number", icon: <FaBriefcase /> },
-        { name: "budgetResponsibility", label: "Budget Responsibility", type: "textarea", icon: <FaMoneyBillWave /> },
-      ]
-    },
-    billing: {
-      basic: [
-        { name: "fullName", label: "Full Name", type: "text", required: true, icon: <FaUserCircle /> },
-        { name: "email", label: "Email", type: "email", required: true, icon: <FaEnvelope /> },
-        { name: "phone", label: "Phone Number", type: "tel", required: true, icon: <FaPhone /> },
-        { name: "password", label: "Password", type: "password", required: true, icon: <FaLock /> },
-        { name: "confirmPassword", label: "Confirm Password", type: "password", required: true, icon: <FaLock /> },
-      ],
-      professional: [
-        { 
-          name: "billingId", 
-          label: "Billing ID", 
-          type: "text", 
-          required: true, 
-          icon: <FaIdCard />,
-          readOnly: true,
-          description: "Auto-generated ID"
-        },
-        { name: "department", label: "Department", type: "text", required: true, icon: <FaFileInvoiceDollar /> },
-        { name: "shift", label: "Shift", type: "select", options: ["Morning", "Evening"], required: true, icon: <FaCalendarAlt /> },
-        { name: "softwareExpertise", label: "Software Expertise", type: "textarea", icon: <FaFileInvoiceDollar /> },
-      ]
-    }
-  };
-
-  // Generate ID for a role
-  const generateIdForRole = (role) => {
-    const roleInfo = allRoles.find(r => r.value === role);
-    if (!roleInfo) return '';
-    
-    const currentCounter = idCounters[role];
-    const paddedCounter = currentCounter.toString().padStart(3, '0');
-    const newId = `${roleInfo.idPrefix}${paddedCounter}`;
-    
-    // Increment counter for next use
-    setIdCounters(prev => ({
-      ...prev,
-      [role]: currentCounter + 1
-    }));
-    
-    return newId;
-  };
-
-  const loadUsers = async () => {
     try {
-      setApiStatus('loading');
-      const response = await axios.get(USERS_BASE_URL, { headers: getAuthHeaders() });
-      const staffUsers = unwrapApiArray(response.data)
-        .map(normalizeUser)
-        .filter((user) => allRoles.some((role) => role.value === user.role));
+      const mainResponse = await axios.get(`${API_BASE_URL}/users`, {
+        headers: getAuthHeaders(),
+        params: {
+          doctor_id: doctorId || undefined,
+        },
+      });
+      let apiRows = getNestedArray(mainResponse.data);
 
-      setUsers(staffUsers);
-      syncCountersFromUsers(staffUsers);
-      setApiStatus('succeeded');
+      if (!apiRows.length) {
+        const roleResponses = await Promise.allSettled(
+          staffRoleValues.map((role) =>
+            axios.get(`${API_BASE_URL}/users`, {
+              headers: getAuthHeaders(),
+              params: {
+                role,
+                doctor_id: doctorId || undefined,
+              },
+            })
+          )
+        );
+
+        apiRows = roleResponses.flatMap((result) =>
+          result.status === "fulfilled" ? getNestedArray(result.value.data) : []
+        );
+      }
+
+      const doctorStaffRows = apiRows
+        .filter((staff) => {
+          const role = String(staff.role || staff.user_role || staff.staff_role || staff.designation || "").toLowerCase();
+          return !role || staffRoleValues.includes(role) || roleLabels[role];
+        })
+        .map(normalizeStaffRow);
+
+      setStaffRows(doctorStaffRows);
     } catch (error) {
-      setApiStatus('failed');
-      showNotification(error.response?.data?.message || error.response?.data?.error || 'Failed to load users', 'error');
+      setStaffRows([]);
+      setStaffError(error.response?.data?.message || error.response?.data?.error || "Staff data load nahi ho paya.");
+    } finally {
+      setIsLoadingStaff(false);
     }
   };
 
   useEffect(() => {
-    loadUsers();
-    // eslint-disable-next-line react-hooks/exhaustive-deps
-  }, []);
+    loadStaffRows();
+  }, [doctorId]);
 
-  const showNotification = (message, type = 'success') => {
-    setNotification({ show: true, message, type });
-    setTimeout(() => {
-      setNotification({ show: false, message: '', type: '' });
-    }, 3000);
-  };
+  const filteredRows = useMemo(() => {
+    return staffRows.filter((staff) => {
+      const query = `${staff.name} ${staff.email} ${staff.id}`.toLowerCase();
 
-  const handleRoleSelect = (roleValue) => {
-    setSelectedRole(roleValue);
-    const template = roleFormTemplates[roleValue] || {};
-    const initialData = {
-      email: '',
-      phone: '',
-      emailVerified: false,
-      phoneVerified: false,
-      password: '',
-      confirmPassword: ''
-    };
-    
-    Object.values(template).forEach(section => {
-      section.forEach(field => {
-        if (!Object.prototype.hasOwnProperty.call(initialData, field.name)) {
-          // Generate ID for fields that should have auto-generated IDs
-          if (field.readOnly && field.description === "Auto-generated ID") {
-            initialData[field.name] = generateIdForRole(roleValue);
-          } else {
-            initialData[field.name] = '';
-          }
-        }
-      });
+      return (
+        query.includes(searchTerm.toLowerCase()) &&
+        (roleFilter === "All" || staff.role === roleFilter) &&
+        (deptFilter === "All" || staff.department === deptFilter) &&
+        (statusFilter === "All" || staff.status === statusFilter) &&
+        (shiftFilter === "All" || staff.shift === shiftFilter)
+      );
     });
-    
-    setFormData(initialData);
-    setShowForm(true);
-    setIsEditing(false);
-    setEditingUserId(null);
-    setShowEmailVerification(false);
-    setShowPhoneVerification(false);
+  }, [staffRows, searchTerm, roleFilter, deptFilter, statusFilter, shiftFilter]);
+
+  const filteredRoleCards = useMemo(() => {
+    const roleCounts = staffRows.reduce((counts, staff) => {
+      const key = String(staff.role || "").toLowerCase().replace(/\s+/g, "");
+      const roleKey = key.includes("medicalassistant") ? "assistant" : key.includes("labtechnician") ? "technician" : key;
+      counts[roleKey] = (counts[roleKey] || 0) + 1;
+      return counts;
+    }, {});
+
+    return docStaffRoleCards.map((role) => ({ ...role, count: roleCounts[role.id] || 0 })).filter((role) => {
+      const matchesSearch = `${role.title} ${role.description} ${role.code}`
+        .toLowerCase()
+        .includes(roleSearchTerm.toLowerCase());
+      const matchesDepartment = roleDepartmentFilter === "All" || role.department === roleDepartmentFilter;
+      const matchesCategory = roleCategoryFilter === "All" || role.category === roleCategoryFilter;
+
+      return matchesSearch && matchesDepartment && matchesCategory;
+    });
+  }, [staffRows, roleSearchTerm, roleDepartmentFilter, roleCategoryFilter]);
+
+  const dynamicStats = useMemo(() => {
+    const total = staffRows.length;
+    const active = staffRows.filter((staff) => staff.status === "Active").length;
+    const pending = staffRows.filter((staff) => staff.verification !== "Verified").length;
+    const departments = new Set(staffRows.map((staff) => staff.department).filter(Boolean)).size;
+
+    return [
+      { ...docStaffScreenStats[0], value: String(total), note: total ? "From API" : "No staff found" },
+      { ...docStaffScreenStats[1], value: String(active), note: total ? `(${Math.round((active / total) * 100)}%)` : "(0%)" },
+      { ...docStaffScreenStats[2], value: String(pending), note: pending ? "Requires attention" : "All verified" },
+      { ...docStaffScreenStats[3], value: String(departments), note: "Across clinic" },
+    ];
+  }, [staffRows]);
+
+  const roleFilterOptions = useMemo(
+    () => ["All", ...new Set([...docStaffRoleCards.map((role) => role.title), "Receptionist", ...staffRows.map((staff) => staff.role)].filter(Boolean))],
+    [staffRows]
+  );
+
+  const departmentFilterOptions = useMemo(
+    () => ["All", ...new Set(["Emergency", "Pathology", "Finance", "Admin", ...staffRows.map((staff) => staff.department)].filter(Boolean))],
+    [staffRows]
+  );
+
+  const statusFilterOptions = useMemo(
+    () => ["All", ...new Set(["Active", "On Leave", "Suspended", ...staffRows.map((staff) => staff.status)].filter(Boolean))],
+    [staffRows]
+  );
+
+  const shiftFilterOptions = useMemo(
+    () => ["All", ...new Set(["Morning", "Night", "Evening", ...staffRows.map((staff) => staff.shift)].filter(Boolean))],
+    [staffRows]
+  );
+
+  const handleViewStaff = (staff) => {
+    setViewStaff(staff);
+    setOpenActionId(null);
   };
 
-  const handleInputChange = (e) => {
-    const { name, value, type } = e.target;
-    
-    // Prevent editing of auto-generated ID fields
-    const fieldConfig = Object.values(roleFormTemplates[selectedRole] || {})
-      .flat()
-      .find(field => field.name === name);
-    
-    if (fieldConfig?.readOnly && fieldConfig?.description === "Auto-generated ID") {
-      return; // Do not allow editing of auto-generated IDs
-    }
-    
-    setFormData(prev => ({
-      ...prev,
-      [name]: type === 'number' ? parseInt(value) || '' : value
-    }));
-
-    // If email or phone is changed, reset verification status
-    if (name === 'email') {
-      setFormData(prev => ({ ...prev, emailVerified: false }));
-    }
-    if (name === 'phone') {
-      setFormData(prev => ({ ...prev, phoneVerified: false }));
-    }
+  const handleUpdateStaff = (staff) => {
+    setEditingStaff(staff);
+    setEditForm({ ...staff });
+    setOpenActionId(null);
+    setViewStaff(null);
   };
 
-  const handleSendEmailVerification = () => {
-    if (!formData.email) {
-      showNotification('Please enter email first', 'error');
-      return;
-    }
-    // Generate random 6-digit code
-    const code = Math.floor(100000 + Math.random() * 900000);
-    showNotification(`Email verification code sent to ${formData.email}\nCode: ${code} (for demo purposes)`, 'info');
-    setShowEmailVerification(true);
-  };
+  const handleDeleteStaff = async (staff) => {
+    const shouldDelete = window.confirm(`Delete ${staff.name}?`);
+    setOpenActionId(null);
 
-  const isValidPhoneNumber = (phone) => /^\d{10}$/.test(String(phone || '').trim());
-
-  const handleSendPhoneVerification = () => {
-    if (!formData.phone) {
-      showNotification('Please enter phone number first', 'error');
-      return;
-    }
-
-    if (!isValidPhoneNumber(formData.phone)) {
-      showNotification('Please enter a valid 10-digit phone number', 'error');
-      setShowPhoneVerification(false);
-      setPhoneVerificationCode('');
-      return;
-    }
-
-    // Generate random 6-digit code
-    const code = Math.floor(100000 + Math.random() * 900000);
-    showNotification(`SMS verification code sent to ${formData.phone}\nCode: ${code} (for demo purposes)`, 'info');
-    setShowPhoneVerification(true);
-  };
-
-  const handleVerifyEmail = () => {
-    if (emailVerificationCode === '123456') { // Demo code
-      setFormData(prev => ({ ...prev, emailVerified: true }));
-      setShowEmailVerification(false);
-      setEmailVerificationCode('');
-      showNotification('Email verified successfully!');
-    } else {
-      showNotification('Invalid verification code. Please try again.', 'error');
-    }
-  };
-
-  const handleVerifyPhone = () => {
-    if (!isValidPhoneNumber(formData.phone)) {
-      showNotification('Please enter a valid 10-digit phone number', 'error');
-      setFormData(prev => ({ ...prev, phoneVerified: false }));
-      return;
-    }
-
-    if (phoneVerificationCode === '123456') { // Demo code
-      setFormData(prev => ({ ...prev, phoneVerified: true }));
-      setShowPhoneVerification(false);
-      setPhoneVerificationCode('');
-      showNotification('Phone number verified successfully!');
-    } else {
-      showNotification('Invalid verification code. Please try again.', 'error');
-    }
-  };
-
-  const validateForm = () => {
-    const isPasswordChanged = formData.password && formData.password !== MASKED_PASSWORD;
-
-    if (!isEditing || isPasswordChanged) {
-      if (formData.password !== formData.confirmPassword) {
-        showNotification('Passwords do not match!', 'error');
-        return false;
-      }
-
-      if (!formData.password || formData.password.length < 6) {
-        showNotification('Password must be at least 6 characters long', 'error');
-        return false;
-      }
-    }
-
-    if (isEditing && formData.confirmPassword && formData.confirmPassword !== MASKED_PASSWORD && formData.password !== formData.confirmPassword) {
-      showNotification('Passwords do not match!', 'error');
-      return false;
-    }
-
-    // Email format validation
-    const emailRegex = /^[^\s@]+@[^\s@]+\.[^\s@]+$/;
-    if (!emailRegex.test(formData.email)) {
-      showNotification('Please enter a valid email address', 'error');
-      return false;
-    }
-
-    // Phone number validation (basic)
-    if (!isValidPhoneNumber(formData.phone)) {
-      showNotification('Please enter a valid 10-digit phone number', 'error');
-      return false;
-    }
-
-    return true;
-  };
-
-  const handleSubmit = async (e) => {
-    e.preventDefault();
-    
-    if (!validateForm()) {
-      return;
-    }
-
-    const payload = buildUserPayload(formData, selectedRole);
+    if (!shouldDelete) return;
 
     try {
-      setIsSaving(true);
-
-      if (isEditing) {
-        const response = await axios.patch(`${USERS_BASE_URL}/${editingUserId}`, payload, {
-          headers: getAuthHeaders(),
-        });
-        const updatedUser = normalizeUser({ ...formData, ...unwrapApiObject(response.data), id: editingUserId, role: selectedRole });
-
-        setUsers(prev => prev.map(user => 
-          user.id === editingUserId 
-            ? { ...user, ...updatedUser, password: MASKED_PASSWORD }
-            : user
-        ));
-        showNotification('User updated successfully!');
-      } else {
-        const response = await axios.post(`${USERS_BASE_URL}/register`, payload, {
-          headers: getAuthHeaders(),
-        });
-        const createdUser = normalizeUser({
-          ...formData,
-          ...unwrapApiObject(response.data),
-          role: selectedRole,
-          status: unwrapApiObject(response.data).status || 'active',
-        });
-
-        setUsers(prev => {
-          const nextUsers = [...prev, createdUser];
-          syncCountersFromUsers(nextUsers);
-          return nextUsers;
-        });
-        showNotification(`${allRoles.find(r => r.value === selectedRole)?.label} created successfully!`);
+      if (staff.rawId) {
+        await axios.delete(`${API_BASE_URL}/users/${staff.rawId}`, { headers: getAuthHeaders() });
       }
-
-      handleCancel();
+      setStaffRows((currentRows) => currentRows.filter((row) => row.id !== staff.id));
     } catch (error) {
-      showNotification(error.response?.data?.message || error.response?.data?.error || 'Failed to save user', 'error');
-    } finally {
-      setIsSaving(false);
+      alert(error.response?.data?.message || "Staff delete nahi ho paya.");
     }
   };
 
-  const handleEdit = (user) => {
-    setSelectedRole(user.role);
-    setFormData({
-      ...user,
-      password: MASKED_PASSWORD,
-      confirmPassword: MASKED_PASSWORD
-    });
-    setIsEditing(true);
-    setEditingUserId(user.id);
-    setShowForm(true);
-  };
+  const handleSuspendStaff = async (staff) => {
+    const updatedStaff = { ...staff, status: "Suspended" };
 
-  const handleDelete = async (userId) => {
-    if (window.confirm('Are you sure you want to delete this user?')) {
-      const previousUsers = users;
-      setUsers(prev => prev.filter(user => user.id !== userId));
-
-      try {
-        await axios.delete(`${USERS_BASE_URL}/${userId}`, { headers: getAuthHeaders() });
-        showNotification('User deleted successfully!');
-      } catch (error) {
-        setUsers(previousUsers);
-        showNotification(error.response?.data?.message || error.response?.data?.error || 'Failed to delete user', 'error');
+    try {
+      if (staff.rawId) {
+        await axios.put(`${API_BASE_URL}/users/${staff.rawId}`, { status: "Suspended" }, { headers: getAuthHeaders() });
       }
+    } catch (error) {
+      alert(error.response?.data?.message || "Staff suspend nahi ho paya.");
+      return;
     }
+
+    setStaffRows((currentRows) =>
+      currentRows.map((row) => (row.id === staff.id ? updatedStaff : row))
+    );
+    setViewStaff((currentStaff) => (currentStaff?.id === staff.id ? updatedStaff : currentStaff));
   };
 
-  const handleCancel = () => {
-    setShowForm(false);
-    setSelectedRole('');
-    setFormData({
-      email: '',
-      phone: '',
-      emailVerified: false,
-      phoneVerified: false,
-      password: '',
-      confirmPassword: ''
-    });
-    setIsEditing(false);
-    setEditingUserId(null);
-    setShowEmailVerification(false);
-    setShowPhoneVerification(false);
-    setEmailVerificationCode('');
-    setPhoneVerificationCode('');
-  };
-
-  const toggleDetails = (userId) => {
-    setShowDetails(prev => ({
-      ...prev,
-      [userId]: !prev[userId]
+  const handleEditFormChange = (field, value) => {
+    setEditForm((currentForm) => ({
+      ...currentForm,
+      [field]: value,
     }));
   };
 
-  const togglePasswordVisibility = () => {
-    setPasswordVisible(!passwordVisible);
-  };
+  const handleSaveStaffUpdate = async (event) => {
+    event.preventDefault();
 
-  const toggleConfirmPasswordVisibility = () => {
-    setConfirmPasswordVisible(!confirmPasswordVisible);
-  };
-
-  const handleSort = (key) => {
-    let direction = 'ascending';
-    if (sortConfig.key === key && sortConfig.direction === 'ascending') {
-      direction = 'descending';
-    }
-    setSortConfig({ key, direction });
-  };
-
-  const filteredUsers = users.filter(user => {
-    const matchesSearch = 
-      user.fullName?.toLowerCase().includes(searchTerm.toLowerCase()) ||
-      user.email?.toLowerCase().includes(searchTerm.toLowerCase()) ||
-      user.phone?.includes(searchTerm) ||
-      user.nurseId?.toLowerCase().includes(searchTerm.toLowerCase()) ||
-      user.technicianId?.toLowerCase().includes(searchTerm.toLowerCase()) ||
-      user.billingId?.toLowerCase().includes(searchTerm.toLowerCase()) ||
-      user.assistantId?.toLowerCase().includes(searchTerm.toLowerCase()) ||
-      user.staffId?.toLowerCase().includes(searchTerm.toLowerCase()) ||
-      user.supervisorId?.toLowerCase().includes(searchTerm.toLowerCase()) ||
-      user.managerId?.toLowerCase().includes(searchTerm.toLowerCase());
-    
-    const matchesRole = filterRole === 'all' || user.role === filterRole;
-    return matchesSearch && matchesRole;
-  });
-
-  const sortedUsers = [...filteredUsers].sort((a, b) => {
-    if (sortConfig.key) {
-      if (a[sortConfig.key] < b[sortConfig.key]) {
-        return sortConfig.direction === 'ascending' ? -1 : 1;
+    try {
+      if (editingStaff.rawId) {
+        await axios.put(
+          `${API_BASE_URL}/users/${editingStaff.rawId}`,
+          {
+            full_name: editForm.name,
+            name: editForm.name,
+            email: editForm.email,
+            department: editForm.department,
+            role: editForm.role,
+            shift: editForm.shift,
+            status: editForm.status,
+          },
+          { headers: getAuthHeaders() }
+        );
       }
-      if (a[sortConfig.key] > b[sortConfig.key]) {
-        return sortConfig.direction === 'ascending' ? 1 : -1;
-      }
+
+      setStaffRows((currentRows) =>
+        currentRows.map((staff) => (staff.id === editingStaff.id ? { ...staff, ...editForm } : staff))
+      );
+      setEditingStaff(null);
+      setEditForm(null);
+    } catch (error) {
+      alert(error.response?.data?.message || "Staff update nahi ho paya.");
     }
-    return 0;
-  });
-
-  const getRoleInfo = (roleValue) => {
-    return allRoles.find(r => r.value === roleValue) || {};
   };
 
-  const getFormTemplate = (roleValue) => {
-    return roleFormTemplates[roleValue] || {};
+  const closeUpdateModal = () => {
+    setEditingStaff(null);
+    setEditForm(null);
   };
 
-  const getUserStats = () => {
-    const stats = { total: users.length };
-    allRoles.forEach(role => {
-      stats[role.value] = users.filter(u => u.role === role.value).length;
+  const closeAddStaffModal = () => {
+    setShowAddStaffModal(false);
+    setSelectedNewRole("nurse");
+    setRoleSearchTerm("");
+    setRoleDepartmentFilter("All");
+    setRoleCategoryFilter("All");
+    setAddStaffStep(1);
+    setNewStaffForm({
+      firstName: "",
+      lastName: "",
+      email: "",
+      phone: "",
+      dateOfBirth: "",
+      gender: "",
+      department: "Nursing",
+      hireDate: "",
+      shift: "Morning",
     });
-    return stats;
   };
 
-  const stats = getUserStats();
+  const handleContinueNewStaff = async () => {
+    const role = docStaffRoleCards.find((item) => item.id === selectedNewRole) || docStaffRoleCards[0];
 
-  const getAutoGeneratedIdFields = () => {
-    if (!selectedRole) return [];
-    const template = roleFormTemplates[selectedRole];
-    const allFields = [...(template.basic || []), ...(template.professional || [])];
-    return allFields.filter(field => field.readOnly && field.description === "Auto-generated ID");
+    if (addStaffStep === 1) {
+      setNewStaffForm((currentForm) => ({
+        ...currentForm,
+        department: role.title === "Nurse" ? "Nursing" : role.department,
+      }));
+      setAddStaffStep(2);
+      return;
+    }
+
+    if (addStaffStep === 2) {
+      setAddStaffStep(3);
+      return;
+    }
+
+    const newStaffNumber = 4300 + staffRows.length;
+    const fullName = `${newStaffForm.firstName || "New"} ${newStaffForm.lastName || role.title}`.trim();
+    const generatedAvatar = role.title
+      .split(" ")
+      .map((word) => word[0])
+      .join("")
+      .slice(0, 2)
+      .toUpperCase();
+    const newStaff = {
+      id: `#MC-${newStaffNumber}`,
+      name: fullName,
+      email: newStaffForm.email || `${role.id}.${newStaffNumber}@mediconeckt.com`,
+      department: newStaffForm.department || (role.department === "Clinical" ? "Emergency" : role.department),
+      role: role.title,
+      shift: newStaffForm.shift,
+      verification: "Pending Docs",
+      status: "Active",
+      lastLogin: "Not logged in",
+      avatar: fullName
+        .split(" ")
+        .map((word) => word[0])
+        .join("")
+        .slice(0, 2)
+        .toUpperCase() || generatedAvatar,
+      avatarTone: "blue",
+      profilePhoto: `https://i.pravatar.cc/120?img=${staffRows.length + 20}`,
+      joinDate: newStaffForm.hireDate || "Today",
+      manager: "Dr. Sarah Jenkins",
+      shiftTime: "06:00 - 14:00",
+      permissions: ["Patient Records (View)", "Messages (Send)"],
+    };
+
+    try {
+      const response = await axios.post(
+        `${API_BASE_URL}/users/register`,
+        {
+          full_name: fullName,
+          name: fullName,
+          email: newStaffForm.email,
+          phone: newStaffForm.phone,
+          role: selectedNewRole,
+          department: newStaff.department,
+          shift: newStaffForm.shift,
+          date_of_birth: newStaffForm.dateOfBirth,
+          gender: newStaffForm.gender,
+          hire_date: newStaffForm.hireDate,
+          doctor_id: doctorId || undefined,
+          password: "Temp@12345",
+        },
+        { headers: getAuthHeaders() }
+      );
+      const createdStaff = normalizeStaffRow(response.data?.user || response.data?.data || response.data || newStaff, staffRows.length);
+      setStaffRows((currentRows) => [...currentRows, { ...newStaff, ...createdStaff }]);
+      closeAddStaffModal();
+    } catch (error) {
+      alert(error.response?.data?.message || error.response?.data?.error || "Staff create nahi ho paya.");
+    }
   };
+
+  const handleNewStaffFormChange = (field, value) => {
+    setNewStaffForm((currentForm) => ({
+      ...currentForm,
+      [field]: value,
+    }));
+  };
+
+  const renderSelect = (label, value, setValue, options) => (
+    <label className="docstaff-screen-select-shell">
+      <span className="docstaff-screen-sr-only">{label}</span>
+      <select
+        className="docstaff-screen-select"
+        value={value}
+        onChange={(event) => setValue(event.target.value)}
+      >
+        {options.map((option) => (
+          <option key={option} value={option}>
+            {label}: {option}
+          </option>
+        ))}
+      </select>
+    </label>
+  );
+
+  const selectedStaffRole = docStaffRoleCards.find((item) => item.id === selectedNewRole) || docStaffRoleCards[0];
+  const reviewFullName = `${newStaffForm.firstName || "Jonathan"} ${newStaffForm.lastName || "Doe"}`.trim();
+  const reviewEmail = newStaffForm.email || `${selectedStaffRole.id}.new@mediconeckt.com`;
+  const reviewPhone = newStaffForm.phone || "+1 (555) 123-4567";
+  const reviewDepartment = newStaffForm.department || (selectedStaffRole.title === "Nurse" ? "Nursing" : selectedStaffRole.department);
+  const reviewHireDate = newStaffForm.hireDate || "October 15, 2023";
+  const reviewShift = newStaffForm.shift === "Night" ? "Night Shift (7 PM - 7 AM)" : `${newStaffForm.shift || "Morning"} Shift`;
+  const reviewEmployeeId = `${selectedStaffRole.code.split("-")[0]}004`;
 
   return (
-    <div className="doctor-user-management-container">
-      {/* Doctor Theme Watermark */}
-      <div className="doctor-theme-watermark">
-        <FaStethoscope />
-      </div>
-      
-      {notification.show && (
-        <div className={`doctor-notification ${notification.type}`}>
-          {notification.type === 'success' && <FaCheck />}
-          {notification.type === 'error' && <FaTimesCircle />}
-          {notification.type === 'info' && <FaInfoCircle />}
-          {notification.message}
-        </div>
-      )}
+    <div className="docstaff-screen-page">
+      <section className="docstaff-screen-main">
+        <div className="docstaff-screen-header">
+          <div>
+            <h1 className="docstaff-screen-title">Staff Management</h1>
+            <p className="docstaff-screen-subtitle">
+              Manage staff accounts, permissions, departments, and employment status.
+            </p>
+          </div>
 
-      <div className="doctor-management-header doctor-medical-border">
-        <div className="doctor-header-title">
-          <h1><FaHospitalUser className="doctor-stethoscope-icon" /> Staff Management System</h1>
-          <p className="doctor-subtitle">Manage all staff accounts and permissions</p>
-        </div>
-        <div className="doctor-header-actions">
-          <button 
-            className="doctor-add-user-btn"
-            onClick={() => setShowForm(true)}
-            disabled={showForm}
-          >
-            <FaPlus /> Add New Staff
-          </button>
-        </div>
-      </div>
-
-      {apiStatus === 'loading' && !showForm && (
-        <div className="doctor-empty-state">
-          <FaUsers size={42} />
-          <h3>Loading staff members...</h3>
-        </div>
-      )}
-
-      {apiStatus === 'loading' && !showForm ? null : showForm ? (
-        <div className="doctor-user-form-container">
-          <div className="doctor-form-header">
-            <h2>{isEditing ? 'Edit User' : 'Create New Staff Member'}</h2>
-            <button className="doctor-close-form-btn" onClick={handleCancel}>
-              <FaTimes />
+          <div className="docstaff-screen-header-tools">
+            <label className="docstaff-screen-top-search">
+              <Search size={18} strokeWidth={2.2} />
+              <input
+                type="search"
+                placeholder="Search staff..."
+                value={searchTerm}
+                onChange={(event) => setSearchTerm(event.target.value)}
+              />
+            </label>
+            <button className="docstaff-screen-add-btn" type="button" onClick={() => setShowAddStaffModal(true)}>
+              <Plus size={16} strokeWidth={2.4} />
+              Add Staff Member
             </button>
           </div>
-
-          {!selectedRole ? (
-            <div className="doctor-role-selection">
-              <h3>Select Staff Role</h3>
-              <p className="doctor-role-selection-subtitle">Choose the role for the new staff account</p>
-              
-              <div className="doctor-auto-id-notice">
-                <FaInfoCircle /> Note: All IDs are auto-generated and cannot be modified
-              </div>
-              
-              <div className="doctor-role-grid">
-                {allRoles.map(role => (
-                  <div 
-                    key={role.value}
-                    className="doctor-role-card-select"
-                    onClick={() => handleRoleSelect(role.value)}
-                    style={{ borderLeftColor: role.color }}
-                  >
-                    <div className="doctor-role-icon" style={{ color: role.color }}>
-                      {role.icon}
-                    </div>
-                    <div className="doctor-role-info">
-                      <h4>{role.label}</h4>
-                      <p className="doctor-role-id-info">ID Format: {role.idPrefix}XXX</p>
-                      <p className="doctor-role-stats">{stats[role.value] || 0} users</p>
-                    </div>
-                    <FaChevronRight className="doctor-role-arrow" />
-                  </div>
-                ))}
-              </div>
-            </div>
-          ) : (
-            <form onSubmit={handleSubmit} className="doctor-user-form">
-              <div className="doctor-form-role-header">
-                <div className="doctor-selected-role-display">
-                  {getRoleInfo(selectedRole).icon}
-                  <span>{getRoleInfo(selectedRole).label}</span>
-                  <span className="doctor-form-mode">{isEditing ? 'Edit Mode' : 'Create Mode'}</span>
-                </div>
-                {getAutoGeneratedIdFields().map(field => (
-                  <div key={field.name} className="doctor-auto-id-display">
-                    <FaKey /> {field.label}: <strong>{formData[field.name]}</strong>
-                    <span className="doctor-auto-id-note">(Auto-generated)</span>
-                  </div>
-                ))}
-              </div>
-
-              <div className="doctor-form-sections">
-                <div className="doctor-form-section">
-                  <h3 className="doctor-section-title">Basic Information</h3>
-                  <div className="doctor-form-grid">
-                    <div className="doctor-form-group">
-                      <label>
-                        <FaUserCircle className="doctor-field-icon" />
-                        Full Name
-                        <span className="doctor-required">*</span>
-                      </label>
-                      <input
-                        type="text"
-                        name="fullName"
-                        value={formData.fullName || ''}
-                        onChange={handleInputChange}
-                        required
-                      />
-                    </div>
-
-                    <div className="doctor-form-group">
-                      <label>
-                        <FaEnvelope className="doctor-field-icon" />
-                        Email
-                        <span className="doctor-required">*</span>
-                      </label>
-                      <div className="doctor-verification-field">
-                        <input
-                          type="email"
-                          name="email"
-                          value={formData.email || ''}
-                          onChange={handleInputChange}
-                          required
-                          disabled={formData.emailVerified}
-                        />
-                        <div className="doctor-verification-controls">
-                          {formData.emailVerified ? (
-                            <span className="doctor-verified-badge">
-                              <FaCheck /> Verified
-                            </span>
-                          ) : (
-                            <button 
-                              type="button"
-                              className="doctor-verify-btn"
-                              onClick={handleSendEmailVerification}
-                            >
-                              Verify
-                            </button>
-                          )}
-                        </div>
-                      </div>
-                      {showEmailVerification && !formData.emailVerified && (
-                        <div className="doctor-verification-code-input">
-                          <input
-                            type="text"
-                            placeholder="Enter 6-digit code"
-                            value={emailVerificationCode}
-                            onChange={(e) => setEmailVerificationCode(e.target.value)}
-                            maxLength={6}
-                          />
-                          <button 
-                            type="button"
-                            className="doctor-verify-code-btn"
-                            onClick={handleVerifyEmail}
-                          >
-                            <FaCheck /> Verify Code
-                          </button>
-                        </div>
-                      )}
-                    </div>
-
-                    <div className="doctor-form-group">
-                      <label>
-                        <FaPhone className="doctor-field-icon" />
-                        Phone Number
-                        <span className="doctor-required">*</span>
-                      </label>
-                      <div className="doctor-verification-field">
-                        <input
-                          type="tel"
-                          name="phone"
-                          value={formData.phone || ''}
-                          onChange={handleInputChange}
-                          required
-                          disabled={formData.phoneVerified}
-                        />
-                        <div className="doctor-verification-controls">
-                          {formData.phoneVerified ? (
-                            <span className="doctor-verified-badge">
-                              <FaCheck /> Verified
-                            </span>
-                          ) : (
-                            <button 
-                              type="button"
-                              className="doctor-verify-btn"
-                              onClick={handleSendPhoneVerification}
-                            >
-                              Verify
-                            </button>
-                          )}
-                        </div>
-                      </div>
-                      {showPhoneVerification && !formData.phoneVerified && (
-                        <div className="doctor-verification-code-input">
-                          <input
-                            type="text"
-                            placeholder="Enter 6-digit code"
-                            value={phoneVerificationCode}
-                            onChange={(e) => setPhoneVerificationCode(e.target.value)}
-                            maxLength={6}
-                          />
-                          <button 
-                            type="button"
-                            className="doctor-verify-code-btn"
-                            onClick={handleVerifyPhone}
-                          >
-                            <FaCheck /> Verify Code
-                          </button>
-                        </div>
-                      )}
-                    </div>
-
-                    <div className="doctor-form-group">
-                      <label>
-                        <FaLock className="doctor-field-icon" />
-                        Password
-                        <span className="doctor-required">*</span>
-                      </label>
-                      <div className="doctor-password-input-group">
-                        <input
-                          type={passwordVisible ? "text" : "password"}
-                          name="password"
-                          value={formData.password || ''}
-                          onChange={handleInputChange}
-                          required
-                          minLength={6}
-                        />
-                        <button 
-                          type="button"
-                          className="doctor-password-toggle"
-                          onClick={togglePasswordVisibility}
-                        >
-                          {passwordVisible ? <FaEyeSlash /> : <FaEye />}
-                        </button>
-                      </div>
-                      <small className="doctor-password-hint">Minimum 6 characters</small>
-                    </div>
-
-                    <div className="doctor-form-group">
-                      <label>
-                        <FaLock className="doctor-field-icon" />
-                        Confirm Password
-                        <span className="doctor-required">*</span>
-                      </label>
-                      <div className="doctor-password-input-group">
-                        <input
-                          type={confirmPasswordVisible ? "text" : "password"}
-                          name="confirmPassword"
-                          value={formData.confirmPassword || ''}
-                          onChange={handleInputChange}
-                          required
-                        />
-                        <button 
-                          type="button"
-                          className="doctor-password-toggle"
-                          onClick={toggleConfirmPasswordVisibility}
-                        >
-                          {confirmPasswordVisible ? <FaEyeSlash /> : <FaEye />}
-                        </button>
-                      </div>
-                      {formData.password && formData.confirmPassword && formData.password !== formData.confirmPassword && (
-                        <small className="doctor-password-error">Passwords do not match!</small>
-                      )}
-                    </div>
-                  </div>
-                </div>
-
-                {Object.entries(getFormTemplate(selectedRole)).filter(([sectionName]) => sectionName !== 'basic').map(([sectionName, fields]) => (
-                  <div key={sectionName} className="doctor-form-section">
-                    <h3 className="doctor-section-title">
-                      {sectionName.charAt(0).toUpperCase() + sectionName.slice(1)} Information
-                    </h3>
-                    <div className="doctor-form-grid">
-                      {fields.map(field => (
-                        <div key={field.name} className="doctor-form-group">
-                          <label>
-                            {field.icon && <span className="doctor-field-icon">{field.icon}</span>}
-                            {field.label}
-                            {field.required && <span className="doctor-required">*</span>}
-                            {field.readOnly && field.description && (
-                              <span className="doctor-field-description">({field.description})</span>
-                            )}
-                          </label>
-                          {field.type === 'textarea' ? (
-                            <textarea
-                              name={field.name}
-                              value={formData[field.name] || ''}
-                              onChange={handleInputChange}
-                              placeholder={field.placeholder || ''}
-                              required={field.required}
-                              readOnly={field.readOnly}
-                              className={field.readOnly ? 'doctor-read-only-field' : ''}
-                            />
-                          ) : field.type === 'select' ? (
-                            <select
-                              name={field.name}
-                              value={formData[field.name] || ''}
-                              onChange={handleInputChange}
-                              required={field.required}
-                              disabled={field.readOnly}
-                              className={field.readOnly ? 'doctor-read-only-field' : ''}
-                            >
-                              <option value="">Select {field.label}</option>
-                              {field.options?.map(option => (
-                                <option key={option} value={option}>{option}</option>
-                              ))}
-                            </select>
-                          ) : (
-                            <input
-                              type={field.type}
-                              name={field.name}
-                              value={formData[field.name] || ''}
-                              onChange={handleInputChange}
-                              placeholder={field.placeholder || ''}
-                              required={field.required}
-                              readOnly={field.readOnly}
-                              min={field.type === 'number' ? 0 : undefined}
-                              className={field.readOnly ? 'doctor-read-only-field' : ''}
-                            />
-                          )}
-                        </div>
-                      ))}
-                    </div>
-                  </div>
-                ))}
-              </div>
-
-              <div className="doctor-verification-status">
-                <h4>Verification Status</h4>
-                <div className="doctor-verification-badges">
-                  <span className={`doctor-verification-badge ${formData.emailVerified ? 'verified' : 'pending'}`}>
-                    {formData.emailVerified ? <FaCheck /> : <FaTimesCircle />}
-                    Email {formData.emailVerified ? 'Verified' : 'Pending'}
-                  </span>
-                  <span className={`doctor-verification-badge ${formData.phoneVerified ? 'verified' : 'pending'}`}>
-                    {formData.phoneVerified ? <FaCheck /> : <FaTimesCircle />}
-                    Phone {formData.phoneVerified ? 'Verified' : 'Pending'}
-                  </span>
-                </div>
-              </div>
-
-              <div className="doctor-form-actions">
-                <button type="submit" className="doctor-submit-btn" disabled={isSaving}>
-                  <FaSave /> {isSaving ? 'Saving...' : isEditing ? 'Update Staff' : 'Create Staff'}
-                </button>
-                <button type="button" className="doctor-cancel-btn" onClick={handleCancel} disabled={isSaving}>
-                  <FaTimes /> Cancel
-                </button>
-              </div>
-            </form>
-          )}
         </div>
-      ) : (
-        <>
-          <div className="doctor-dashboard-stats">
-            <div className="doctor-stat-card total">
-              <div className="doctor-stat-icon">
-                <FaUsers />
-              </div>
-              <div className="doctor-stat-info">
-                <h3>Total Staff</h3>
-                <p>{stats.total}</p>
-              </div>
-            </div>
-            {allRoles.map(role => (
-              stats[role.value] > 0 && (
-                <div key={role.value} className="doctor-stat-card" style={{ borderColor: role.color }}>
-                  <div className="doctor-stat-icon" style={{ color: role.color }}>
-                    {role.icon}
-                  </div>
-                  <div className="doctor-stat-info">
-                    <h3>{role.label}</h3>
-                    <p>{stats[role.value]}</p>
-                    <small className="doctor-id-prefix">ID: {role.idPrefix}XXX</small>
+
+        <div className="docstaff-screen-stats">
+          {dynamicStats.map((stat) => {
+            const StatIcon = stat.icon;
+
+            return (
+              <article className="docstaff-screen-stat-card" key={stat.label}>
+                <div className={`docstaff-screen-stat-icon docstaff-screen-stat-icon-${stat.type}`}>
+                  <StatIcon size={22} strokeWidth={2.2} />
+                </div>
+                <div>
+                  <p className="docstaff-screen-stat-label">{stat.label}</p>
+                  <div className="docstaff-screen-stat-value-row">
+                    <strong>{stat.value}</strong>
+                    <span className={`docstaff-screen-stat-note docstaff-screen-stat-note-${stat.type}`}>
+                      {stat.note}
+                    </span>
                   </div>
                 </div>
-              )
-            ))}
+              </article>
+            );
+          })}
+        </div>
+
+        <div className="docstaff-screen-toolbar">
+          <label className="docstaff-screen-table-search">
+            <Search size={17} strokeWidth={2.1} />
+            <input
+              type="search"
+              placeholder="Search by name, ID or email..."
+              value={searchTerm}
+              onChange={(event) => setSearchTerm(event.target.value)}
+            />
+          </label>
+
+          <div className="docstaff-screen-filters">
+            {renderSelect("Role", roleFilter, setRoleFilter, roleFilterOptions)}
+            {renderSelect("Dept", deptFilter, setDeptFilter, departmentFilterOptions)}
+            {renderSelect("Status", statusFilter, setStatusFilter, statusFilterOptions)}
+            {renderSelect("Shift", shiftFilter, setShiftFilter, shiftFilterOptions)}
           </div>
 
-          <div className="doctor-controls-container">
-            <div className="doctor-search-container">
-              <FaSearch className="doctor-search-icon" />
-              <input
-                type="text"
-                placeholder="Search staff by name, email, phone, or ID..."
-                value={searchTerm}
-                onChange={(e) => setSearchTerm(e.target.value)}
-                className="doctor-search-input"
-              />
-            </div>
-            
-            <div className="doctor-filters-container">
-              <div className="doctor-filter-group">
-                <FaFilter className="doctor-filter-icon" />
-                <select 
-                  value={filterRole} 
-                  onChange={(e) => setFilterRole(e.target.value)}
-                  className="doctor-filter-select"
-                >
-                  <option value="all">All Roles</option>
-                  {allRoles.map(role => (
-                    <option key={role.value} value={role.value}>{role.label}</option>
-                  ))}
-                </select>
-              </div>
-              
-              <div className="doctor-sort-controls">
-                <span>Sort by:</span>
-                <select 
-                  value={sortConfig.key}
-                  onChange={(e) => handleSort(e.target.value)}
-                  className="doctor-sort-select"
-                >
-                  <option value="fullName">Name</option>
-                  <option value="role">Role</option>
-                  <option value="status">Status</option>
-                  <option value="createdAt">Created Date</option>
-                  <option value="experience">Experience</option>
-                </select>
-                <button 
-                  className="doctor-sort-direction"
-                  onClick={() => handleSort(sortConfig.key)}
-                >
-                  {sortConfig.direction === 'ascending' ? <FaSortUp /> : <FaSortDown />}
-                </button>
-              </div>
-            </div>
+          <div className="docstaff-screen-toolbar-actions">
+            <button className="docstaff-screen-icon-btn" type="button" aria-label="List filters">
+              <ListFilter size={16} />
+            </button>
+            <button className="docstaff-screen-icon-btn" type="button" aria-label="Advanced filter">
+              <Filter size={16} />
+            </button>
+            <button className="docstaff-screen-export-btn" type="button">
+              <Download size={15} />
+              Export
+            </button>
           </div>
+        </div>
 
-          <div className="doctor-users-table-container">
-            <table className="doctor-users-table">
+        <section className="docstaff-screen-table-card">
+          <div className="docstaff-screen-table-wrap">
+            <table className="docstaff-screen-table">
               <thead>
                 <tr>
-                  <th onClick={() => handleSort('id')}>
-                    Staff ID {sortConfig.key === 'id' && (sortConfig.direction === 'ascending' ? <FaSortUp /> : <FaSortDown />)}
-                  </th>
-                  <th onClick={() => handleSort('fullName')}>
-                    Staff Member {sortConfig.key === 'fullName' && (sortConfig.direction === 'ascending' ? <FaSortUp /> : <FaSortDown />)}
-                  </th>
-                  <th>Contact & Verification</th>
-                  <th onClick={() => handleSort('role')}>
-                    Role {sortConfig.key === 'role' && (sortConfig.direction === 'ascending' ? <FaSortUp /> : <FaSortDown />)}
-                  </th>
-                  <th>Professional Info</th>
-                  <th onClick={() => handleSort('status')}>
-                    Status {sortConfig.key === 'status' && (sortConfig.direction === 'ascending' ? <FaSortUp /> : <FaSortDown />)}
-                  </th>
+                  <th>Staff</th>
+                  <th>ID</th>
+                  <th>Dept & Role</th>
+                  <th>Shift</th>
+                  <th>Verification</th>
+                  <th>Status</th>
+                  <th>Last Login</th>
                   <th>Actions</th>
                 </tr>
               </thead>
               <tbody>
-                {sortedUsers.map(user => (
-                  <React.Fragment key={user.id}>
-                    <tr>
-                      <td className="doctor-user-id">
-                        <div className="doctor-id-display">
-                          <FaIdCard className="doctor-id-icon" />
-                          <span className="doctor-id-value">
-                            {user.nurseId || user.technicianId || user.billingId || 
-                             user.assistantId || user.staffId || user.supervisorId || 
-                             user.managerId || `#${user.id}`}
-                          </span>
-                          <span className="doctor-auto-generated-tag">Auto ID</span>
+                {isLoadingStaff && (
+                  <tr>
+                    <td className="docstaff-screen-empty" colSpan="8">
+                      Loading staff from API...
+                    </td>
+                  </tr>
+                )}
+                {!isLoadingStaff && staffError && (
+                  <tr>
+                    <td className="docstaff-screen-empty" colSpan="8">
+                      {staffError}
+                    </td>
+                  </tr>
+                )}
+                {!isLoadingStaff && !staffError && filteredRows.map((staff) => (
+                  <tr key={staff.id}>
+                    <td>
+                      <button className="docstaff-screen-person" type="button" onClick={() => handleViewStaff(staff)}>
+                        <div className={`docstaff-screen-avatar docstaff-screen-avatar-${staff.avatarTone}`}>
+                          {staff.avatar}
                         </div>
-                      </td>
-                      <td className="doctor-user-info">
-                        <div className="doctor-user-avatar" style={{ background: getRoleInfo(user.role).color }}>
-                          {getRoleInfo(user.role).icon}
+                        <div>
+                          <strong>{staff.name}</strong>
+                          <span>{staff.email}</span>
                         </div>
-                        <div className="doctor-user-details">
-                          <h4>{user.fullName}</h4>
-                          <p className="doctor-user-email">{user.email}</p>
-                        </div>
-                      </td>
-                      <td>
-                        <div className="doctor-contact-info">
-                          <p><FaPhone /> {user.phone}</p>
-                          <div className="doctor-verification-status-small">
-                            <span className={`doctor-verification-indicator ${user.emailVerified ? 'verified' : 'pending'}`}>
-                              <FaEnvelope size={12} /> {user.emailVerified ? '✓' : '✗'}
-                            </span>
-                            <span className={`doctor-verification-indicator ${user.phoneVerified ? 'verified' : 'pending'}`}>
-                              <FaPhone size={12} /> {user.phoneVerified ? '✓' : '✗'}
-                            </span>
-                          </div>
-                        </div>
-                      </td>
-                      <td>
-                        <span className="doctor-role-badge" style={{ 
-                          backgroundColor: getRoleInfo(user.role).color + '20',
-                          color: getRoleInfo(user.role).color,
-                          borderColor: getRoleInfo(user.role).color
-                        }}>
-                          {getRoleInfo(user.role).icon}
-                          {getRoleInfo(user.role).label}
-                        </span>
-                      </td>
-                      <td>
-                        {user.role === 'nurse' && (
-                          <div className="doctor-professional-info">
-                            <span className="doctor-shift">
-                              <FaCalendarAlt /> {user.shift} Shift
-                            </span>
-                            {user.ward && <span><FaBuilding /> {user.ward}</span>}
+                      </button>
+                    </td>
+                    <td className="docstaff-screen-id">{staff.id}</td>
+                    <td>
+                      <div className="docstaff-screen-role-stack">
+                        <span>{staff.department}</span>
+                        <b className={`docstaff-screen-role-pill docstaff-screen-role-${staff.role.replace(/\s+/g, "").toLowerCase()}`}>
+                          {staff.role}
+                        </b>
+                      </div>
+                    </td>
+                    <td>{staff.shift}</td>
+                    <td>
+                      <span
+                        className={`docstaff-screen-verify docstaff-screen-verify-${
+                          staff.verification === "Verified" ? "done" : "pending"
+                        }`}
+                      >
+                        {staff.verification === "Verified" ? (
+                          <CheckCircle2 size={14} />
+                        ) : (
+                          <CalendarClock size={14} />
+                        )}
+                        {staff.verification}
+                      </span>
+                    </td>
+                    <td>
+                      <span
+                        className={`docstaff-screen-status docstaff-screen-status-${
+                          staff.status === "Active" ? "active" : staff.status === "Suspended" ? "suspended" : "leave"
+                        }`}
+                      >
+                        {staff.status}
+                      </span>
+                    </td>
+                    <td className="docstaff-screen-login">{staff.lastLogin}</td>
+                    <td>
+                      <div className="docstaff-screen-action-cell">
+                        {openActionId === staff.id && (
+                          <div className="docstaff-screen-row-actions">
+                            <button type="button" title="Refresh" onClick={() => setOpenActionId(null)}>
+                              <RotateCcw size={15} />
+                            </button>
+                            <button type="button" title="Update" onClick={() => handleUpdateStaff(staff)}>
+                              <Pencil size={15} />
+                            </button>
+                            <button type="button" title="View" onClick={() => handleViewStaff(staff)}>
+                              <Eye size={15} />
+                            </button>
+                            <button className="docstaff-screen-action-danger" type="button" title="Delete" onClick={() => handleDeleteStaff(staff)}>
+                              <Trash2 size={15} />
+                            </button>
+                            <button type="button" title="Close" onClick={() => setOpenActionId(null)}>
+                              <MoreVertical size={15} />
+                            </button>
                           </div>
                         )}
-                        {user.role === 'technician' && (
-                          <div className="doctor-professional-info">
-                            <span className="doctor-lab-type">
-                              <FaMicroscope /> {user.labType}
-                            </span>
-                          </div>
-                        )}
-                        {user.role === 'billing' && (
-                          <div className="doctor-professional-info">
-                            <span className="doctor-user-department">
-                              <FaFileInvoiceDollar /> {user.department}
-                            </span>
-                          </div>
-                        )}
-                        {user.role === 'assistant' && (
-                          <div className="doctor-professional-info">
-                            <span className="doctor-user-department">
-                              <FaUsers /> {user.department}
-                            </span>
-                          </div>
-                        )}
-                        {user.role === 'supervisor' && (
-                          <div className="doctor-professional-info">
-                            <span className="doctor-user-department">
-                              <FaUserTie /> {user.department}
-                            </span>
-                          </div>
-                        )}
-                        {user.role === 'manager' && (
-                          <div className="doctor-professional-info">
-                            <span className="doctor-user-department">
-                              <FaUserTie /> {user.department}
-                            </span>
-                          </div>
-                        )}
-                        {user.role === 'housekeeping' && (
-                          <div className="doctor-professional-info">
-                            <span className="doctor-assigned-area">
-                              <FaBuilding /> {user.assignedArea}
-                            </span>
-                          </div>
-                        )}
-                      </td>
-                      <td>
-                        <span className={`doctor-status-badge ${user.status}`}>
-                          {user.status === 'active' ? <FaUnlock /> : <FaLock />}
-                          {user.status}
-                        </span>
-                      </td>
-                      <td>
-                        <div className="doctor-action-buttons">
-                          <button 
-                            className="doctor-edit-btn"
-                            onClick={() => handleEdit(user)}
-                            title="Edit User"
+
+                        {openActionId !== staff.id && (
+                          <button
+                            className="docstaff-screen-more"
+                            type="button"
+                            aria-label={`More actions for ${staff.name}`}
+                            onClick={() => setOpenActionId(staff.id)}
                           >
-                            <FaEdit />
+                            <MoreVertical size={17} />
                           </button>
-                          <button 
-                            className="doctor-view-btn"
-                            onClick={() => toggleDetails(user.id)}
-                            title={showDetails[user.id] ? "Hide Details" : "View Details"}
-                          >
-                            {showDetails[user.id] ? <FaChevronUp /> : <FaChevronDown />}
-                          </button>
-                          <button 
-                            className="doctor-delete-btn"
-                            onClick={() => handleDelete(user.id)}
-                            title="Delete User"
-                          >
-                            <FaTrash />
-                          </button>
-                        </div>
-                      </td>
-                    </tr>
-                    {showDetails[user.id] && (
-                      <tr className="doctor-details-row">
-                        <td colSpan="7">
-                          <div className="doctor-user-details-expanded">
-                            <h4>Detailed Information</h4>
-                            <div className="doctor-details-grid">
-                              <div className="doctor-detail-item">
-                                <FaIdCard /> <strong>Staff ID:</strong> 
-                                <span className="doctor-id-display-detail">
-                                  {user.nurseId || user.technicianId || user.billingId || 
-                                   user.assistantId || user.staffId || user.supervisorId || 
-                                   user.managerId}
-                                </span>
-                                <span className="doctor-id-type">(Auto-generated)</span>
-                              </div>
-                              <div className="doctor-detail-item">
-                                <FaEnvelope /> <strong>Email Verification:</strong> 
-                                <span className={`doctor-verification-detail ${user.emailVerified ? 'verified' : 'pending'}`}>
-                                  {user.emailVerified ? 'Verified' : 'Pending'}
-                                </span>
-                              </div>
-                              <div className="doctor-detail-item">
-                                <FaPhone /> <strong>Phone Verification:</strong> 
-                                <span className={`doctor-verification-detail ${user.phoneVerified ? 'verified' : 'pending'}`}>
-                                  {user.phoneVerified ? 'Verified' : 'Pending'}
-                                </span>
-                              </div>
-                              {user.experience && (
-                                <div className="doctor-detail-item">
-                                  <FaBriefcase /> <strong>Experience:</strong> {user.experience} years
-                                </div>
-                              )}
-                              <div className="doctor-detail-item">
-                                <FaCalendarAlt /> <strong>Joined:</strong> {user.createdAt}
-                              </div>
-                              <div className="doctor-detail-item">
-                                <FaLock /> <strong>Last Login:</strong> {user.lastLogin}
-                              </div>
-                            </div>
-                          </div>
-                        </td>
-                      </tr>
-                    )}
-                  </React.Fragment>
+                        )}
+                      </div>
+                    </td>
+                  </tr>
                 ))}
+                {!isLoadingStaff && !staffError && filteredRows.length === 0 && (
+                  <tr>
+                    <td className="docstaff-screen-empty" colSpan="8">
+                      No staff members match these filters.
+                    </td>
+                  </tr>
+                )}
               </tbody>
             </table>
-            
-            {sortedUsers.length === 0 && (
-              <div className="doctor-empty-state">
-                <FaSearch size={48} />
-                <h3>No staff members found</h3>
-                <p>{searchTerm ? "Try a different search term" : "Add your first staff member to get started"}</p>
-                {!searchTerm && (
-                  <button className="doctor-add-first-btn" onClick={() => setShowForm(true)}>
-                    <FaPlus /> Add First Staff
+          </div>
+
+          <div className="docstaff-screen-pagination">
+            <span>Showing {filteredRows.length ? 1 : 0} to {filteredRows.length} of {staffRows.length} entries</span>
+            <div className="docstaff-screen-pages">
+              <button type="button" disabled>
+                Previous
+              </button>
+              <button className="docstaff-screen-page-active" type="button">
+                1
+              </button>
+              <button type="button">2</button>
+              <button type="button">3</button>
+              <span>...</span>
+              <button type="button">Next</button>
+            </div>
+          </div>
+        </section>
+      </section>
+
+      {viewStaff && (
+        <div className="docstaff-screen-profile-backdrop" role="presentation" onClick={() => setViewStaff(null)}>
+          <section
+            className="docstaff-screen-profile-panel"
+            role="dialog"
+            aria-modal="true"
+            aria-labelledby="docstaff-view-title"
+            onClick={(event) => event.stopPropagation()}
+          >
+            <div className="docstaff-screen-profile-header">
+              <h2 id="docstaff-view-title">Staff Profile</h2>
+              <button type="button" className="docstaff-screen-profile-close" onClick={() => setViewStaff(null)}>
+                <X size={18} />
+              </button>
+            </div>
+
+            <div className="docstaff-screen-profile-body">
+              <div className="docstaff-screen-profile-hero">
+                <img src={viewStaff.profilePhoto} alt={viewStaff.name} />
+                <h3>{viewStaff.name}</h3>
+                <p>
+                  {viewStaff.email} | {viewStaff.id.replace("#", "")}
+                </p>
+                <div className="docstaff-screen-profile-badges">
+                  <span className={`docstaff-screen-role-pill docstaff-screen-role-${viewStaff.role.replace(/\s+/g, "").toLowerCase()}`}>
+                    {viewStaff.role}
+                  </span>
+                  <span
+                    className={`docstaff-screen-status docstaff-screen-status-${
+                      viewStaff.status === "Active" ? "active" : viewStaff.status === "Suspended" ? "suspended" : "leave"
+                    }`}
+                  >
+                    {viewStaff.status}
+                  </span>
+                </div>
+                <div className="docstaff-screen-profile-actions">
+                  <button type="button" className="docstaff-screen-profile-message">
+                    Message
                   </button>
-                )}
+                  <button type="button" className="docstaff-screen-profile-edit" onClick={() => handleUpdateStaff(viewStaff)}>
+                    Edit Profile
+                  </button>
+                </div>
+              </div>
+
+              <section className="docstaff-screen-profile-section">
+                <h4>Employment Details</h4>
+                <div className="docstaff-screen-profile-details">
+                  <span>Department</span>
+                  <strong>{viewStaff.department}</strong>
+                  <span>Shift</span>
+                  <strong>
+                    {viewStaff.shift} ({viewStaff.shiftTime})
+                  </strong>
+                  <span>Join Date</span>
+                  <strong>{viewStaff.joinDate}</strong>
+                  <span>Manager</span>
+                  <strong className="docstaff-screen-profile-link">{viewStaff.manager}</strong>
+                </div>
+              </section>
+
+              <section className="docstaff-screen-profile-section">
+                <h4>Permissions & Access</h4>
+                <div className="docstaff-screen-permissions">
+                  {viewStaff.permissions.map((permission) => (
+                    <label key={permission}>
+                      <input type="checkbox" checked readOnly />
+                      {permission}
+                    </label>
+                  ))}
+                </div>
+              </section>
+
+              <button type="button" className="docstaff-screen-suspend-btn" onClick={() => handleSuspendStaff(viewStaff)}>
+                Suspend Account
+              </button>
+            </div>
+          </section>
+        </div>
+      )}
+
+      {showAddStaffModal && (
+        <div className="docstaff-screen-add-backdrop" role="presentation" onClick={closeAddStaffModal}>
+          <section
+            className={`docstaff-screen-add-modal ${addStaffStep === 2 ? "docstaff-screen-add-modal-details" : ""} ${
+              addStaffStep === 3 ? "docstaff-screen-add-modal-review" : ""
+            }`}
+            role="dialog"
+            aria-modal="true"
+            aria-labelledby="docstaff-add-title"
+            onClick={(event) => event.stopPropagation()}
+          >
+            <div className="docstaff-screen-add-header">
+              <div>
+                <h2 id="docstaff-add-title">Create New Staff Member</h2>
+                <p>
+                  {addStaffStep === 1
+                    ? "Choose a staff role to begin creating a new account."
+                    : "Enter the personal and professional details for the new staff member."}
+                </p>
+              </div>
+              <button type="button" className="docstaff-screen-add-close" onClick={closeAddStaffModal}>
+                <X size={19} />
+              </button>
+            </div>
+
+            <div className="docstaff-screen-add-steps">
+              <div className="docstaff-screen-add-step docstaff-screen-add-step-active">
+                <span>1</span>
+                Choose Role
+              </div>
+              <div className={`docstaff-screen-add-step ${addStaffStep >= 2 ? "docstaff-screen-add-step-active" : ""}`}>
+                <span>2</span>
+                Staff Details
+              </div>
+              <div className={`docstaff-screen-add-step ${addStaffStep >= 3 ? "docstaff-screen-add-step-active" : ""}`}>
+                <span>3</span>
+                Review & Create
+              </div>
+            </div>
+
+            {addStaffStep === 1 && (
+              <>
+            <div className="docstaff-screen-add-filters">
+              <label className="docstaff-screen-add-search">
+                <Search size={17} />
+                <input
+                  type="search"
+                  placeholder="Search staff roles..."
+                  value={roleSearchTerm}
+                  onChange={(event) => setRoleSearchTerm(event.target.value)}
+                />
+              </label>
+              <select value={roleDepartmentFilter} onChange={(event) => setRoleDepartmentFilter(event.target.value)}>
+                <option>All</option>
+                <option>Clinical</option>
+                <option>Pathology</option>
+                <option>Finance</option>
+                <option>Operations</option>
+              </select>
+              <select value={roleCategoryFilter} onChange={(event) => setRoleCategoryFilter(event.target.value)}>
+                <option>All</option>
+                <option>Care Team</option>
+                <option>Diagnostics</option>
+                <option>Administration</option>
+                <option>Support</option>
+                <option>Leadership</option>
+              </select>
+            </div>
+
+            <div className="docstaff-screen-role-card-grid">
+              {filteredRoleCards.map((role) => {
+                const RoleIcon = role.icon;
+                const isSelected = selectedNewRole === role.id;
+
+                return (
+                  <button
+                    key={role.id}
+                    type="button"
+                    className={`docstaff-screen-role-card ${isSelected ? "docstaff-screen-role-card-selected" : ""}`}
+                    onClick={() => setSelectedNewRole(role.id)}
+                  >
+                    <span className="docstaff-screen-role-icon">
+                      <RoleIcon size={19} />
+                    </span>
+                    {isSelected && (
+                      <span className="docstaff-screen-role-check">
+                        <CheckCircle2 size={14} />
+                      </span>
+                    )}
+                    <strong>{role.title}</strong>
+                    <p>{role.description}</p>
+                    <div className="docstaff-screen-role-meta">
+                      <span>
+                        <Users size={12} />
+                        {role.count} Active
+                      </span>
+                      <b>{role.code}</b>
+                    </div>
+                  </button>
+                );
+              })}
+            </div>
+
+            <div className="docstaff-screen-add-hint">
+              Select the staff role first. Details and permissions can be edited in the next step.
+            </div>
+
+              </>
+            )}
+
+            {addStaffStep === 2 && (
+              <div className="docstaff-screen-staff-details-step">
+                <section className="docstaff-screen-details-section">
+                  <h3>Personal Information</h3>
+                  <div className="docstaff-screen-photo-row">
+                    <span className="docstaff-screen-photo-placeholder">
+                      <Users size={21} />
+                    </span>
+                    <button type="button" className="docstaff-screen-upload-btn">
+                      <Download size={13} />
+                      Upload Photo
+                    </button>
+                  </div>
+
+                  <div className="docstaff-screen-details-grid">
+                    <label>
+                      First Name
+                      <input
+                        type="text"
+                        placeholder="e.g. Jane"
+                        value={newStaffForm.firstName}
+                        onChange={(event) => handleNewStaffFormChange("firstName", event.target.value)}
+                      />
+                    </label>
+                    <label>
+                      Last Name
+                      <input
+                        type="text"
+                        placeholder="e.g. Doe"
+                        value={newStaffForm.lastName}
+                        onChange={(event) => handleNewStaffFormChange("lastName", event.target.value)}
+                      />
+                    </label>
+                    <label>
+                      Email Address
+                      <input
+                        type="email"
+                        placeholder="jane.doe@example.com"
+                        value={newStaffForm.email}
+                        onChange={(event) => handleNewStaffFormChange("email", event.target.value)}
+                      />
+                    </label>
+                    <label>
+                      Phone Number
+                      <input
+                        type="tel"
+                        placeholder="(555) 123-4567"
+                        value={newStaffForm.phone}
+                        onChange={(event) => handleNewStaffFormChange("phone", event.target.value)}
+                      />
+                    </label>
+                  </div>
+                </section>
+
+                <section className="docstaff-screen-details-section">
+                  <h3>Professional Details</h3>
+                  <div className="docstaff-screen-details-grid">
+                    <label>
+                      Date of Birth
+                      <input
+                        type="text"
+                        placeholder="mm/dd/yyyy"
+                        value={newStaffForm.dateOfBirth}
+                        onChange={(event) => handleNewStaffFormChange("dateOfBirth", event.target.value)}
+                      />
+                    </label>
+                    <label>
+                      Gender
+                      <select value={newStaffForm.gender} onChange={(event) => handleNewStaffFormChange("gender", event.target.value)}>
+                        <option value="">Select gender</option>
+                        <option>Female</option>
+                        <option>Male</option>
+                        <option>Other</option>
+                      </select>
+                    </label>
+                    <label>
+                      Department
+                      <select
+                        value={newStaffForm.department}
+                        onChange={(event) => handleNewStaffFormChange("department", event.target.value)}
+                      >
+                        <option>Nursing</option>
+                        <option>Emergency</option>
+                        <option>Pathology</option>
+                        <option>Finance</option>
+                        <option>Operations</option>
+                        <option>Admin</option>
+                      </select>
+                    </label>
+                    <label>
+                      Hire Date
+                      <input
+                        type="text"
+                        placeholder="mm/dd/yyyy"
+                        value={newStaffForm.hireDate}
+                        onChange={(event) => handleNewStaffFormChange("hireDate", event.target.value)}
+                      />
+                    </label>
+                    <label>
+                      Shift Preference
+                      <select value={newStaffForm.shift} onChange={(event) => handleNewStaffFormChange("shift", event.target.value)}>
+                        <option>Morning</option>
+                        <option>Evening</option>
+                        <option>Night</option>
+                      </select>
+                    </label>
+                  </div>
+                </section>
               </div>
             )}
-          </div>
-        </>
+
+            {addStaffStep === 3 && (
+              <div className="docstaff-screen-review-step">
+                <div className="docstaff-screen-review-left">
+                  <section className="docstaff-screen-review-card">
+                    <div className="docstaff-screen-review-card-head">
+                      <h3>
+                        <Users size={17} />
+                        Personal Information
+                      </h3>
+                      <button type="button" onClick={() => setAddStaffStep(2)}>
+                        <Pencil size={13} />
+                        Edit
+                      </button>
+                    </div>
+
+                    <div className="docstaff-screen-review-personal">
+                      <div className="docstaff-screen-review-avatar-block">
+                        <img src={`https://i.pravatar.cc/120?u=${reviewEmail}`} alt={reviewFullName} />
+                        <span>
+                          <CheckCircle2 size={12} />
+                          Verified
+                        </span>
+                      </div>
+
+                      <div className="docstaff-screen-review-field">
+                        <small>Full Name</small>
+                        <strong>{reviewFullName}</strong>
+                      </div>
+                      <div className="docstaff-screen-review-field">
+                        <small>Email Address</small>
+                        <strong>{reviewEmail}</strong>
+                      </div>
+                      <div className="docstaff-screen-review-field">
+                        <small>Phone Number</small>
+                        <strong>{reviewPhone}</strong>
+                      </div>
+                      <div className="docstaff-screen-review-field">
+                        <small>Temporary Password</small>
+                        <strong className="docstaff-screen-password-preview">
+                          <span>********</span>
+                          <Eye size={14} />
+                        </strong>
+                      </div>
+                    </div>
+                  </section>
+
+                  <section className="docstaff-screen-review-card">
+                    <div className="docstaff-screen-review-card-head">
+                      <h3>
+                        <CalendarClock size={17} />
+                        Professional Details
+                      </h3>
+                      <button type="button" onClick={() => setAddStaffStep(2)}>
+                        <Pencil size={13} />
+                        Edit
+                      </button>
+                    </div>
+
+                    <div className="docstaff-screen-review-professional">
+                      <div className="docstaff-screen-review-field">
+                        <small>Role</small>
+                        <span className="docstaff-screen-review-role">{selectedStaffRole.title}</span>
+                      </div>
+                      <div className="docstaff-screen-review-field">
+                        <small>Employee ID</small>
+                        <strong>{reviewEmployeeId}</strong>
+                      </div>
+                      <div className="docstaff-screen-review-field">
+                        <small>Department</small>
+                        <strong>{reviewDepartment}</strong>
+                      </div>
+                      <div className="docstaff-screen-review-field">
+                        <small>Hire Date</small>
+                        <strong>{reviewHireDate}</strong>
+                      </div>
+                      <div className="docstaff-screen-review-field">
+                        <small>Shift Preference</small>
+                        <strong>{reviewShift}</strong>
+                      </div>
+                    </div>
+                  </section>
+                </div>
+
+                <aside className="docstaff-screen-summary-card">
+                  <h3>Final Account Summary</h3>
+                  <div className="docstaff-screen-summary-list">
+                    <div>
+                      <CheckCircle2 size={17} />
+                      <p>
+                        <strong>Personal Info Complete</strong>
+                        <span>All required fields filled.</span>
+                      </p>
+                    </div>
+                    <div>
+                      <CheckCircle2 size={17} />
+                      <p>
+                        <strong>Professional Details Set</strong>
+                        <span>Role and ID assigned.</span>
+                      </p>
+                    </div>
+                  </div>
+                  <div className="docstaff-screen-activation-note">
+                    <CheckCircle2 size={18} />
+                    <p>
+                      An activation email will be sent to <strong>{reviewEmail}</strong> with instructions to set a
+                      permanent password.
+                    </p>
+                  </div>
+                </aside>
+              </div>
+            )}
+
+            <div className="docstaff-screen-add-footer">
+              <button
+                type="button"
+                className="docstaff-screen-add-cancel"
+                onClick={addStaffStep === 1 ? closeAddStaffModal : () => setAddStaffStep(addStaffStep - 1)}
+              >
+                {addStaffStep === 1 ? "Cancel" : "Back"}
+              </button>
+              <button type="button" className="docstaff-screen-add-continue" onClick={handleContinueNewStaff}>
+                {addStaffStep === 3 ? "Create Account" : "Continue"}
+                {addStaffStep !== 3 && <span>-&gt;</span>}
+              </button>
+            </div>
+          </section>
+        </div>
+      )}
+
+      {editingStaff && editForm && (
+        <div className="docstaff-screen-modal-backdrop" role="presentation" onClick={closeUpdateModal}>
+          <section
+            className="docstaff-screen-modal"
+            role="dialog"
+            aria-modal="true"
+            aria-labelledby="docstaff-update-title"
+            onClick={(event) => event.stopPropagation()}
+          >
+            <div className="docstaff-screen-modal-header">
+              <div>
+                <h2 id="docstaff-update-title">Update Staff</h2>
+                <p>{editingStaff.id}</p>
+              </div>
+              <button type="button" className="docstaff-screen-modal-close" onClick={closeUpdateModal}>
+                <X size={18} />
+              </button>
+            </div>
+
+            <form className="docstaff-screen-edit-form" onSubmit={handleSaveStaffUpdate}>
+              <label>
+                Name
+                <input
+                  type="text"
+                  value={editForm.name}
+                  onChange={(event) => handleEditFormChange("name", event.target.value)}
+                  required
+                />
+              </label>
+              <label>
+                Email
+                <input
+                  type="email"
+                  value={editForm.email}
+                  onChange={(event) => handleEditFormChange("email", event.target.value)}
+                  required
+                />
+              </label>
+              <label>
+                Department
+                <select
+                  value={editForm.department}
+                  onChange={(event) => handleEditFormChange("department", event.target.value)}
+                >
+                  <option>Emergency</option>
+                  <option>Pathology</option>
+                  <option>Finance</option>
+                  <option>Admin</option>
+                </select>
+              </label>
+              <label>
+                Role
+                <select value={editForm.role} onChange={(event) => handleEditFormChange("role", event.target.value)}>
+                  <option>Nurse</option>
+                  <option>Lab Technician</option>
+                  <option>Billing</option>
+                  <option>Receptionist</option>
+                </select>
+              </label>
+              <label>
+                Shift
+                <select value={editForm.shift} onChange={(event) => handleEditFormChange("shift", event.target.value)}>
+                  <option>Morning</option>
+                  <option>Night</option>
+                  <option>Evening</option>
+                </select>
+              </label>
+              <label>
+                Status
+                <select value={editForm.status} onChange={(event) => handleEditFormChange("status", event.target.value)}>
+                  <option>Active</option>
+                  <option>On Leave</option>
+                </select>
+              </label>
+
+              <div className="docstaff-screen-modal-actions">
+                <button type="button" className="docstaff-screen-cancel-btn" onClick={closeUpdateModal}>
+                  Cancel
+                </button>
+                <button type="submit" className="docstaff-screen-save-btn">
+                  Update Staff
+                </button>
+              </div>
+            </form>
+          </section>
+        </div>
       )}
     </div>
   );

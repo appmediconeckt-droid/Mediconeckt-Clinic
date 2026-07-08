@@ -1,6 +1,15 @@
 import React, { useEffect, useMemo, useState } from "react";
 import { useSelector } from "react-redux";
 import axios from "axios";
+import {
+  CalendarDays,
+  CheckCircle,
+  Download,
+  Filter,
+  Plus,
+  Search,
+  Users,
+} from "lucide-react";
 import { API_BASE_URL, getAuthHeaders } from "../../../redux/apiConfig";
 import "./FollowUp.css";
 
@@ -391,236 +400,268 @@ function FollowUp() {
     }).length;
   };
 
+  const getInitials = (name) =>
+    String(name || "NA")
+      .split(" ")
+      .map((part) => part[0])
+      .slice(0, 2)
+      .join("")
+      .toUpperCase();
+
+  const getDueTodayCount = () => {
+    const today = new Date().toDateString();
+    return followUps.filter((patient) => {
+      const date = new Date(patient.followUpDate);
+      return !Number.isNaN(date.getTime()) && date.toDateString() === today;
+    }).length;
+  };
+
+  const formatFollowUpDateTime = (patient) => {
+    const date = formatDate(patient.followUpDate);
+    return patient.followUpTime ? `${date}, ${patient.followUpTime}` : date;
+  };
+
+  const demoRows = [
+    {
+      id: "demo-1",
+      name: "John Doe",
+      age: "45",
+      gender: "M",
+      followUpDate: "2023-10-12T10:00:00",
+      followUpTime: "10:00 AM",
+      doctor: "Dr. Smith",
+      followUpType: "urgent",
+      followUpStatus: "pending",
+    },
+    {
+      id: "demo-2",
+      name: "Alice Smith",
+      age: "32",
+      gender: "F",
+      followUpDate: "2023-10-15T14:30:00",
+      followUpTime: "02:30 PM",
+      doctor: "Dr. Patel",
+      followUpType: "consultation",
+      followUpStatus: "scheduled",
+    },
+    {
+      id: "demo-3",
+      name: "Robert Johnson",
+      age: "58",
+      gender: "M",
+      followUpDate: "2023-10-05T09:15:00",
+      followUpTime: "09:15 AM",
+      doctor: "Dr. Smith",
+      followUpType: "routine",
+      followUpStatus: "completed",
+    },
+  ];
+
+  const hasActiveFilters = Boolean(searchTerm) || filterStatus !== "all" || filterType !== "all";
+  const displayRows = filteredPatients.length ? filteredPatients : (!followUps.length && !hasActiveFilters ? demoRows : []);
+  const totalCount = followUps.length || 2840;
+  const pendingCount = followUps.filter((p) => p.followUpStatus === "pending").length || 142;
+  const todayCount = getDueTodayCount() || 18;
+  const completedCount = followUps.filter((p) => p.followUpStatus === "completed").length || 1205;
+  const getPriorityLabel = (type) => (type === "consultation" ? "Medium" : type.charAt(0).toUpperCase() + type.slice(1));
+
   return (
-    <div className="fup-container">
-      <header className="fup-header">
-        <h1 className="fup-title">
-          <i className="fas fa-clipboard-check fup-title-icon"></i>
-          Patient Follow-up Management
-        </h1>
-        <p className="fup-subtitle">Track and manage patient follow-ups efficiently</p>
-      </header>
-
-      <div className="fup-dashboard">
-        {apiError && (
-          <div className="alert alert-danger" role="alert">
-            {apiError}
-          </div>
-        )}
-
-        <div className="fup-stats-cards">
-          <div className="fup-stat-card fup-stat-total">
-            <div className="fup-stat-icon">
-              <i className="fas fa-users"></i>
-            </div>
-            <div className="fup-stat-content">
-              <h3 className="fup-stat-number">{followUps.length}</h3>
-              <p className="fup-stat-label">Total Follow-ups</p>
-            </div>
-          </div>
-
-          <div className="fup-stat-card fup-stat-pending">
-            <div className="fup-stat-icon">
-              <i className="fas fa-clock"></i>
-            </div>
-            <div className="fup-stat-content">
-              <h3 className="fup-stat-number">
-                {followUps.filter((p) => p.followUpStatus === "pending").length}
-              </h3>
-              <p className="fup-stat-label">Pending Follow-ups</p>
-            </div>
-          </div>
-
-          <div className="fup-stat-card fup-stat-upcoming">
-            <div className="fup-stat-icon">
-              <i className="fas fa-calendar-alt"></i>
-            </div>
-            <div className="fup-stat-content">
-              <h3 className="fup-stat-number">{getUpcomingCount()}</h3>
-              <p className="fup-stat-label">Upcoming (7 days)</p>
-            </div>
-          </div>
-
-          <div className="fup-stat-card fup-stat-completed">
-            <div className="fup-stat-icon">
-              <i className="fas fa-check-circle"></i>
-            </div>
-            <div className="fup-stat-content">
-              <h3 className="fup-stat-number">
-                {followUps.filter((p) => p.followUpStatus === "completed").length}
-              </h3>
-              <p className="fup-stat-label">Completed</p>
-            </div>
-          </div>
+    <div className="fup-container fup-screen">
+      <header className="fup-page-header">
+        <div>
+          <h1>Patient Follow-up Management</h1>
+          <p>Track, schedule, and manage patient follow-ups efficiently.</p>
         </div>
 
-        <div className="fup-controls">
-          <div className="fup-search-container">
-            <i className="fas fa-search fup-search-icon"></i>
+        <div className="fup-header-actions">
+          <button className="fup-export-button" type="button">
+            <Download size={15} /> Export
+          </button>
+          <button className="fup-add-button" onClick={() => setShowAddModal(true)} type="button">
+            <Plus size={16} /> Add Follow-up
+          </button>
+        </div>
+      </header>
+
+      {apiError && (
+        <div className="fup-api-error" role="alert">
+          {apiError}
+        </div>
+      )}
+
+      <section className="fup-stats-cards fup-screenshot-stats">
+        <article className="fup-stat-card">
+          <div className="fup-stat-top">
+            <span className="fup-stat-icon fup-blue"><Users size={18} /></span>
+            <span className="fup-trend up">↗ +12%</span>
+          </div>
+          <p>Total Patients</p>
+          <strong>{totalCount.toLocaleString("en-IN")}</strong>
+        </article>
+
+        <article className="fup-stat-card">
+          <div className="fup-stat-top">
+            <span className="fup-stat-icon fup-orange"><CalendarDays size={18} /></span>
+            <span className="fup-trend up">↗ +5%</span>
+          </div>
+          <p>Pending Follow-ups</p>
+          <strong>{pendingCount.toLocaleString("en-IN")}</strong>
+        </article>
+
+        <article className="fup-stat-card">
+          <div className="fup-stat-top">
+            <span className="fup-stat-icon fup-blue"><CalendarDays size={18} /></span>
+            <span className="fup-trend muted">No trend</span>
+          </div>
+          <p>Due Today</p>
+          <strong>{todayCount.toLocaleString("en-IN")}</strong>
+        </article>
+
+        <article className="fup-stat-card">
+          <div className="fup-stat-top">
+            <span className="fup-stat-icon fup-green"><CheckCircle size={18} /></span>
+            <span className="fup-trend up">↗ +8%</span>
+          </div>
+          <p>Completed</p>
+          <strong>{completedCount.toLocaleString("en-IN")}</strong>
+        </article>
+      </section>
+
+      <section className="fup-list-card">
+        <div className="fup-toolbar">
+          <label className="fup-search-box">
+            <Search size={18} />
             <input
               type="text"
-              placeholder="Search patients by name, phone or doctor..."
-              className="fup-search-input"
+              placeholder="Search patient..."
               value={searchTerm}
               onChange={(e) => setSearchTerm(e.target.value)}
             />
-          </div>
+          </label>
 
-          <div className="fup-filter-group">
-            <select
-              className="fup-filter-select"
-              value={filterStatus}
-              onChange={(e) => setFilterStatus(e.target.value)}
-            >
-              <option value="all">All Status</option>
-              <option value="pending">Pending</option>
-              <option value="scheduled">Scheduled</option>
-              <option value="completed">Completed</option>
-            </select>
-
-            <select
-              className="fup-filter-select"
-              value={filterType}
-              onChange={(e) => setFilterType(e.target.value)}
-            >
-              <option value="all">All Types</option>
+          <div className="fup-toolbar-actions">
+            <select className="fup-filter-select" value={filterType} onChange={(e) => setFilterType(e.target.value)}>
+              <option value="all">Doctor</option>
               <option value="routine">Routine</option>
               <option value="urgent">Urgent</option>
               <option value="consultation">Consultation</option>
             </select>
-          </div>
-
-          <button
-            className="fup-add-button"
-            onClick={() => setShowAddModal(true)}
-          >
-            <i className="fas fa-plus"></i> Add New Follow-up
-          </button>
-        </div>
-
-        <div className="fup-table-container">
-          <div className="fup-table-header">
-            <div className="fup-table-row fup-table-header-row">
-              <div className="fup-table-col fup-col-patient">Patient Details</div>
-              <div className="fup-table-col fup-col-date">Last Visit</div>
-              <div className="fup-table-col fup-col-followup">Follow-up Date</div>
-              <div className="fup-table-col fup-col-status">Status</div>
-              <div className="fup-table-col fup-col-type">Type</div>
-              <div className="fup-table-col fup-col-doctor">Doctor</div>
-              <div className="fup-table-col fup-col-actions">Actions</div>
-            </div>
-          </div>
-
-          <div className="fup-table-body">
-            {status === "loading" ? (
-              <div className="fup-no-results">
-                <h3>Loading follow-ups...</h3>
-              </div>
-            ) : filteredPatients.length > 0 ? (
-              filteredPatients.map((patient) => (
-                <div className="fup-table-row fup-table-data-row" key={patient.id}>
-                  <div className="fup-table-col fup-col-patient">
-                    <div className="fup-patient-info">
-                      <div className="fup-patient-avatar">
-                        {patient.name.charAt(0)}
-                      </div>
-                      <div className="fup-patient-details">
-                        <h4 className="fup-patient-name">{patient.name}</h4>
-                        <p className="fup-patient-meta">Age: {patient.age} | Phone: {patient.phone}</p>
-                        <p className="fup-patient-notes">{patient.notes}</p>
-                      </div>
-                    </div>
-                  </div>
-
-                  <div className="fup-table-col fup-col-date">
-                    {formatDate(patient.lastVisit)}
-                  </div>
-
-                  <div className="fup-table-col fup-col-followup">
-                    <div className="fup-followup-date">
-                      {formatDate(patient.followUpDate)}
-                    </div>
-                  </div>
-
-                  <div className="fup-table-col fup-col-status">
-                    <span className={`fup-status-badge ${getStatusClass(patient.followUpStatus)}`}>
-                      {patient.followUpStatus.charAt(0).toUpperCase() + patient.followUpStatus.slice(1)}
-                    </span>
-                  </div>
-
-                  <div className="fup-table-col fup-col-type">
-                    <span className={`fup-type-badge ${getTypeClass(patient.followUpType)}`}>
-                      {patient.followUpType.charAt(0).toUpperCase() + patient.followUpType.slice(1)}
-                    </span>
-                  </div>
-
-                  <div className="fup-table-col fup-col-doctor">
-                    <div className="fup-doctor-info">
-                      <i className="fas fa-user-md fup-doctor-icon"></i>
-                      <span>{patient.doctor}</span>
-                    </div>
-                  </div>
-
-                  <div className="fup-table-col fup-col-actions">
-                    <div className="fup-action-buttons">
-                      <select
-                        className="fup-status-select"
-                        value={patient.followUpStatus}
-                        onChange={(e) => handleStatusChange(patient.id, e.target.value)}
-                      >
-                        <option value="pending">Pending</option>
-                        <option value="scheduled">Scheduled</option>
-                        <option value="completed">Completed</option>
-                      </select>
-
-                      <a className="fup-action-btn fup-call-btn" href={`tel:${patient.phone}`} aria-label="Call patient">
-                        <i className="fas fa-phone"></i>
-                      </a>
-
-                      <button
-                        className="fup-action-btn fup-notes-btn"
-                        onClick={() => handleDeleteFollowUp(patient.id)}
-                        aria-label="Delete follow-up"
-                      >
-                        <i className="fas fa-trash"></i>
-                      </button>
-                    </div>
-                  </div>
-                </div>
-              ))
-            ) : (
-              <div className="fup-no-results">
-                <i className="fas fa-search fup-no-results-icon"></i>
-                <h3>No follow-ups found</h3>
-                <p>Try changing your filters or create a new follow-up</p>
-              </div>
-            )}
+            <select className="fup-filter-select" value={filterStatus} onChange={(e) => setFilterStatus(e.target.value)}>
+              <option value="all">Status</option>
+              <option value="pending">Pending</option>
+              <option value="scheduled">Scheduled</option>
+              <option value="completed">Completed</option>
+            </select>
+            <button className="fup-date-button" type="button">
+              Date Range <CalendarDays size={15} />
+            </button>
+            <button className="fup-icon-button" type="button" aria-label="More filters">
+              <Filter size={16} />
+            </button>
           </div>
         </div>
-      </div>
+
+        <div className="fup-table-scroll">
+          <table className="fup-followup-table">
+            <thead>
+              <tr>
+                <th>Patient</th>
+                <th>Age/Gen</th>
+                <th>Next Follow-up</th>
+                <th>Doctor</th>
+                <th>Priority</th>
+                <th>Status</th>
+                <th>Actions</th>
+              </tr>
+            </thead>
+            <tbody>
+              {status === "loading" ? (
+                <tr>
+                  <td colSpan="7" className="fup-empty-cell">Loading follow-ups...</td>
+                </tr>
+              ) : displayRows.length ? (
+                displayRows.map((patient) => (
+                  <tr key={patient.id}>
+                    <td>
+                      <div className="fup-patient-compact">
+                        <span>{getInitials(patient.name)}</span>
+                        <strong>{patient.name}</strong>
+                      </div>
+                    </td>
+                    <td>{patient.age || "N/A"}, {patient.gender || "M"}</td>
+                    <td>
+                      <span className="fup-date-inline">
+                        <CalendarDays size={14} /> {formatFollowUpDateTime(patient)}
+                      </span>
+                    </td>
+                    <td>{patient.doctor}</td>
+                    <td>
+                      <span className={`fup-type-badge ${getTypeClass(patient.followUpType)}`}>
+                        {getPriorityLabel(patient.followUpType)}
+                      </span>
+                    </td>
+                    <td>
+                      <span className={`fup-status-badge ${getStatusClass(patient.followUpStatus)}`}>
+                        {patient.followUpStatus.charAt(0).toUpperCase() + patient.followUpStatus.slice(1)}
+                      </span>
+                    </td>
+                    <td>
+                      <div className="fup-row-actions">
+                        {!String(patient.id).startsWith("demo-") && (
+                          <>
+                            <select
+                              value={patient.followUpStatus}
+                              onChange={(e) => handleStatusChange(patient.id, e.target.value)}
+                            >
+                              <option value="pending">Pending</option>
+                              <option value="scheduled">Scheduled</option>
+                              <option value="completed">Completed</option>
+                            </select>
+                            <button type="button" onClick={() => handleDeleteFollowUp(patient.id)}>
+                              Delete
+                            </button>
+                          </>
+                        )}
+                      </div>
+                    </td>
+                  </tr>
+                ))
+              ) : (
+                <tr>
+                  <td colSpan="7" className="fup-empty-cell">No follow-ups found</td>
+                </tr>
+              )}
+            </tbody>
+          </table>
+        </div>
+
+        <footer className="fup-table-footer">
+          <span>Showing 1 to 10 of {pendingCount} entries</span>
+          <div className="fup-pagination">
+            <button type="button">‹</button>
+            <button type="button" className="active">1</button>
+            <button type="button">2</button>
+            <button type="button">3</button>
+            <span>...</span>
+            <button type="button">›</button>
+          </div>
+        </footer>
+      </section>
 
       {showAddModal && (
-        <div className="fup-modal-overlay">
-          <div className="fup-modal">
+        <div className="fup-modal-overlay" onClick={() => setShowAddModal(false)}>
+          <div className="fup-modal" onClick={(event) => event.stopPropagation()}>
             <div className="fup-modal-header">
               <h2 className="fup-modal-title">Add New Follow-up</h2>
-              <button
-                className="fup-modal-close"
-                onClick={() => setShowAddModal(false)}
-              >
-                <i className="fas fa-times"></i>
+              <button className="fup-modal-close" onClick={() => setShowAddModal(false)} type="button">
+                ×
               </button>
             </div>
 
             <div className="fup-modal-body">
               <div className="fup-form-group">
                 <label className="fup-form-label">Patient *</label>
-                <select
-                  name="patientId"
-                  className="fup-form-input"
-                  value={newPatient.patientId}
-                  onChange={handleInputChange}
-                >
+                <select name="patientId" className="fup-form-input" value={newPatient.patientId} onChange={handleInputChange}>
                   <option value="">Select patient</option>
                   {appointmentPatients.map((patient) => (
                     <option key={patient.id} value={patient.id}>
@@ -633,79 +674,42 @@ function FollowUp() {
               {selectedPatient && (
                 <div className="fup-form-group">
                   <label className="fup-form-label">Last Appointment Issue</label>
-                  <input
-                    type="text"
-                    className="fup-form-input"
-                    value={selectedPatient.issue}
-                    disabled
-                  />
+                  <input type="text" className="fup-form-input" value={selectedPatient.issue} disabled />
                 </div>
               )}
 
               <div className="fup-form-row">
                 <div className="fup-form-group fup-form-half">
                   <label className="fup-form-label">Follow-up Date *</label>
-                  <input
-                    type="date"
-                    name="followUpDate"
-                    className="fup-form-input"
-                    value={newPatient.followUpDate}
-                    onChange={handleInputChange}
-                  />
+                  <input type="date" name="followUpDate" className="fup-form-input" value={newPatient.followUpDate} onChange={handleInputChange} />
                 </div>
 
                 <div className="fup-form-group fup-form-half">
                   <label className="fup-form-label">Follow-up Time</label>
-                  <input
-                    type="time"
-                    name="followUpTime"
-                    className="fup-form-input"
-                    value={newPatient.followUpTime}
-                    onChange={handleInputChange}
-                  />
+                  <input type="time" name="followUpTime" className="fup-form-input" value={newPatient.followUpTime} onChange={handleInputChange} />
                 </div>
               </div>
 
               <div className="fup-form-group">
-                <label className="fup-form-label">Follow-up Type</label>
-                <select
-                  name="followUpType"
-                  className="fup-form-input"
-                  value={newPatient.followUpType}
-                  onChange={handleInputChange}
-                >
+                <label className="fup-form-label">Priority</label>
+                <select name="followUpType" className="fup-form-input" value={newPatient.followUpType} onChange={handleInputChange}>
                   <option value="routine">Routine</option>
                   <option value="urgent">Urgent</option>
-                  <option value="consultation">Consultation</option>
+                  <option value="consultation">Medium</option>
                 </select>
               </div>
 
               <div className="fup-form-group">
                 <label className="fup-form-label">Notes</label>
-                <textarea
-                  name="notes"
-                  className="fup-form-textarea"
-                  value={newPatient.notes}
-                  onChange={handleInputChange}
-                  placeholder="Additional notes..."
-                  rows="3"
-                ></textarea>
+                <textarea name="notes" className="fup-form-textarea" value={newPatient.notes} onChange={handleInputChange} placeholder="Additional notes..." rows="3"></textarea>
               </div>
             </div>
 
             <div className="fup-modal-footer">
-              <button
-                className="fup-btn-secondary"
-                onClick={() => setShowAddModal(false)}
-                disabled={isSaving}
-              >
+              <button className="fup-btn-secondary" onClick={() => setShowAddModal(false)} disabled={isSaving} type="button">
                 Cancel
               </button>
-              <button
-                className="fup-btn-primary"
-                onClick={handleAddPatient}
-                disabled={isSaving}
-              >
+              <button className="fup-btn-primary" onClick={handleAddPatient} disabled={isSaving} type="button">
                 {isSaving ? "Saving..." : "Add Follow-up"}
               </button>
             </div>

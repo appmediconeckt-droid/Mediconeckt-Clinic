@@ -4,7 +4,7 @@
 import React, { useEffect, useState } from "react";
 import { useSelector } from "react-redux";
 import axios from "axios";
-import { Search, User, Phone, Calendar, Clock, Heart, Pill, Stethoscope, ChevronLeft, FileText, Download } from "lucide-react";
+import { User, Phone, Calendar, Clock, Heart, Pill, Stethoscope, ChevronLeft, FileText, Download, Users, UserPlus, ClipboardList, TrendingUp } from "lucide-react";
 import "./PatientDetailsPage.css";
 import { generatePrescriptionPDF } from "./pdfGenerator";
 import { API_BASE_URL, getAuthHeaders } from "../../../redux/apiConfig";
@@ -141,6 +141,16 @@ export default function PatientDetailsPage() {
   const [patients, setPatients] = useState([]);
   const [status, setStatus] = useState("loading");
   const [error, setError] = useState("");
+  const [showAddPatientModal, setShowAddPatientModal] = useState(false);
+  const [newPatient, setNewPatient] = useState({
+    name: "",
+    age: "",
+    gender: "Male",
+    phone: "",
+    bloodGroup: "",
+    doctor: "",
+    lastVisit: new Date().toISOString().split("T")[0],
+  });
 
   const getStoredAuthUser = () => {
     try {
@@ -286,6 +296,15 @@ export default function PatientDetailsPage() {
       p.name.toLowerCase().includes(search.toLowerCase()) ||
       String(p.phone).includes(search)
   );
+  const todayLabel = new Date().toLocaleDateString();
+  const todaysAppointments = patients.reduce(
+    (count, patient) => count + patient.records.filter((record) => record.date === todayLabel).length,
+    0
+  );
+  const pendingReports = patients.reduce(
+    (count, patient) => count + patient.records.filter((record) => record.diagnosis === "N/A").length,
+    0
+  );
 
   const handlePatientClick = (patient) => {
     setSelectedPatient(patient);
@@ -317,44 +336,122 @@ export default function PatientDetailsPage() {
     }
   };
 
+  const updateNewPatient = (field, value) => {
+    setNewPatient((prev) => ({ ...prev, [field]: value }));
+  };
+
+  const handleAddPatient = (event) => {
+    event.preventDefault();
+    const visitDate = formatDate(newPatient.lastVisit);
+    const patient = {
+      id: `local-${Date.now()}`,
+      name: newPatient.name || "New Patient",
+      age: newPatient.age || "N/A",
+      gender: newPatient.gender || "N/A",
+      phone: newPatient.phone || "N/A",
+      bloodGroup: newPatient.bloodGroup || "N/A",
+      lastVisit: visitDate,
+      records: [
+        {
+          id: `record-${Date.now()}`,
+          date: visitDate,
+          time: "N/A",
+          bp: "N/A",
+          pulse: "N/A",
+          temperature: "N/A",
+          problem: "New patient registration",
+          diagnosis: "N/A",
+          tablets: "N/A",
+          days: "N/A",
+          doctor: newPatient.doctor || authUser?.full_name || authUser?.name || "Doctor",
+          prescription: "N/A",
+          followUp: "N/A",
+        },
+      ],
+    };
+
+    setPatients((prev) => [patient, ...prev]);
+    setShowAddPatientModal(false);
+    setNewPatient({
+      name: "",
+      age: "",
+      gender: "Male",
+      phone: "",
+      bloodGroup: "",
+      doctor: "",
+      lastVisit: new Date().toISOString().split("T")[0],
+    });
+  };
+
   return (
     <div className="pd-container">
-      {/* Header */}
-      <div className="pd-header">
-        <div className="pd-header-left">
-          <Stethoscope size={32} className="pd-header-icon" />
-          <div>
-            <h2 className="pd-title">Patient Medical Records</h2>
-            <p className="pd-subtitle">Comprehensive patient history and visit details</p>
+      {showPatientList && (
+        <>
+          <div className="pd-overview-header">
+            <div>
+              <h2 className="pd-title">Patients Medical Records</h2>
+              <p className="pd-subtitle">Comprehensive patient history and visit details</p>
+            </div>
+            <button type="button" className="pd-add-patient-btn" onClick={() => setShowAddPatientModal(true)}>+ Add Patient</button>
           </div>
-        </div>
-        <div className="pd-stats">
-          <div className="pd-stat-card">
-            <span className="pd-stat-number">{patients.length}</span>
-            <span className="pd-stat-label">Total Patients</span>
-          </div>
-        </div>
-      </div>
 
-      {/* Search Bar */}
-      <div className="pd-search-container">
-        <Search className="pd-search-icon" />
-        <input
-          type="text"
-          className="pd-search-input"
-          placeholder="Search patient by name or phone number..."
-          value={search}
-          onChange={(e) => setSearch(e.target.value)}
-        />
-      </div>
+          <div className="pd-stats-strip">
+            <div className="pd-stat-tile active">
+              <div className="pd-stat-icon teal"><Users size={22} /></div>
+              <span className="pd-stat-trend"><TrendingUp size={12} /> 12%</span>
+              <small>Total Patients</small>
+              <strong>{patients.length || 0}</strong>
+            </div>
+            <div className="pd-stat-tile">
+              <div className="pd-stat-icon blue"><UserPlus size={22} /></div>
+              <small>New Admissions</small>
+              <strong>{patients.filter((patient) => patient.records.length === 1).length}</strong>
+            </div>
+            <div className="pd-stat-tile">
+              <div className="pd-stat-icon red"><ClipboardList size={22} /></div>
+              <small>Pending Reports</small>
+              <strong>{pendingReports}</strong>
+            </div>
+            <div className="pd-stat-tile">
+              <div className="pd-stat-icon slate"><Calendar size={22} /></div>
+              <small>Today's Appts</small>
+              <strong>{todaysAppointments}</strong>
+            </div>
+          </div>
+        </>
+      )}
 
       <div className="pd-main-layout">
         {/* Patient List Section - Only shown when no patient selected */}
         {showPatientList && (
           <div className="pd-patient-list-section">
-            <h3 className="pd-section-title">
-              <User size={20} /> Patient Directory
-            </h3>
+            <div className="pd-directory-header">
+              <h3 className="pd-section-title">Patients Directory</h3>
+              <div className="pd-directory-search">
+                <input
+                  type="text"
+                  placeholder="Search patient"
+                  value={search}
+                  onChange={(e) => setSearch(e.target.value)}
+                />
+              </div>
+            </div>
+            <div className="pd-directory-tools">
+              <div className="pd-filter-row">
+                <button type="button">Gender</button>
+                <button type="button">Blood Group</button>
+                <button type="button">Age <i className="fa-solid fa-chevron-down"></i></button>
+                <button type="button">Last Visit <i className="fa-solid fa-chevron-down"></i></button>
+              </div>
+              <label className="pd-sort-control">
+                Sort by:
+                <select defaultValue="Newest First">
+                  <option>Newest First</option>
+                  <option>Oldest First</option>
+                  <option>Name A-Z</option>
+                </select>
+              </label>
+            </div>
             {status === "loading" ? (
               <div className="pd-empty-state">
                 <FileText size={48} />
@@ -646,6 +743,72 @@ export default function PatientDetailsPage() {
           </div>
         )}
       </div>
+
+      {showAddPatientModal && (
+        <div className="pd-modal-backdrop" role="dialog" aria-modal="true" onClick={() => setShowAddPatientModal(false)}>
+          <form className="pd-add-patient-modal" onSubmit={handleAddPatient} onClick={(event) => event.stopPropagation()}>
+            <div className="pd-modal-header">
+              <div>
+                <h3>Add Patient</h3>
+                <p>Create a patient profile for the doctor portal.</p>
+              </div>
+              <button type="button" onClick={() => setShowAddPatientModal(false)} aria-label="Close">
+                <i className="fa-solid fa-xmark"></i>
+              </button>
+            </div>
+
+            <div className="pd-add-form-grid">
+              <label>
+                Patient Name
+                <input required value={newPatient.name} onChange={(event) => updateNewPatient("name", event.target.value)} placeholder="Robert Chen" />
+              </label>
+              <label>
+                Phone No
+                <input value={newPatient.phone} onChange={(event) => updateNewPatient("phone", event.target.value)} placeholder="+1 (555) 019-2834" />
+              </label>
+              <label>
+                Age
+                <input type="number" min="0" value={newPatient.age} onChange={(event) => updateNewPatient("age", event.target.value)} placeholder="54" />
+              </label>
+              <label>
+                Gender
+                <select value={newPatient.gender} onChange={(event) => updateNewPatient("gender", event.target.value)}>
+                  <option>Male</option>
+                  <option>Female</option>
+                  <option>Other</option>
+                </select>
+              </label>
+              <label>
+                Blood Group
+                <select value={newPatient.bloodGroup} onChange={(event) => updateNewPatient("bloodGroup", event.target.value)}>
+                  <option value="">Select blood group</option>
+                  <option>O+</option>
+                  <option>O-</option>
+                  <option>A+</option>
+                  <option>A-</option>
+                  <option>B+</option>
+                  <option>B-</option>
+                  <option>AB+</option>
+                  <option>AB-</option>
+                </select>
+              </label>
+              <label>
+                Doctor
+                <input value={newPatient.doctor} onChange={(event) => updateNewPatient("doctor", event.target.value)} placeholder="Dr. Sarah Jenkins" />
+              </label>
+              <label className="pd-wide-field">
+                Last Visit
+                <input type="date" value={newPatient.lastVisit} onChange={(event) => updateNewPatient("lastVisit", event.target.value)} />
+              </label>
+            </div>
+
+            <div className="pd-modal-actions">
+              <button type="button" className="pd-modal-cancel" onClick={() => setShowAddPatientModal(false)}>Cancel</button>
+              <button type="submit" className="pd-modal-save">Add Patient</button>
+            </div>
+          </form>
+        </div>
+      )}
     </div>
   );
 }

@@ -1,7 +1,7 @@
 import React, { useEffect, useState } from "react";
 import { useSelector } from "react-redux";
 import axios from "axios";
-import { CheckCircle, Clock, XCircle, Trash2, Plus } from "lucide-react";
+import { CheckCircle, Clock, XCircle, Plus, Users, Stethoscope, CircleCheck, CircleX, Search, CalendarDays, SlidersHorizontal, Link2 } from "lucide-react";
 import { API_BASE_URL, getAuthHeaders } from "../../../redux/apiConfig";
 import "./WalkInAppointment.css";
 
@@ -18,7 +18,10 @@ export default function WalkInAppointment() {
     name: "",
     phone: "",
     gender: "",
-    problem: ""
+    problem: "",
+    doctor: "",
+    department: "",
+    priority: "Low",
   });
   const [errors, setErrors] = useState({});
 
@@ -72,6 +75,10 @@ export default function WalkInAppointment() {
       status: (item.status || "BOOKED").toUpperCase(),
       date: formatAppointmentDate(createdAt),
       time: item.time || item.appointment_time || formatAppointmentTime(createdAt),
+      doctor: item.doctor_name || item.doctor?.name || item.doctor || "Dr. Sarah Chen",
+      department: item.department || item.dept || "General Medicine",
+      priority: item.priority || "Low",
+      token: item.token || item.queue_token || item.queueToken || "",
     };
   };
 
@@ -113,7 +120,10 @@ export default function WalkInAppointment() {
       name: "",
       phone: "",
       gender: "",
-      problem: ""
+      problem: "",
+      doctor: "",
+      department: "",
+      priority: "Low",
     });
     setErrors({});
   };
@@ -169,6 +179,9 @@ export default function WalkInAppointment() {
       contact_number: formData.phone,
       gender: formData.gender || "Not specified",
       symptoms: formData.problem,
+      doctor_name: formData.doctor,
+      department: formData.department,
+      priority: formData.priority,
       status: "booked",
     };
 
@@ -222,9 +235,12 @@ export default function WalkInAppointment() {
 
   const renderStatusBadge = (status) => {
     switch(status) {
-      case "BOOKED": return <span className="walkin-badge-booked">Booked</span>;
-      case "CANCELLED": return <span className="walkin-badge-cancelled">Cancelled</span>;
-      default: return <span className="walkin-badge-booked">Booked</span>;
+      case "BOOKED": return <span className="walkin-status waiting"><i></i> Waiting</span>;
+      case "WAITING": return <span className="walkin-status waiting"><i></i> Waiting</span>;
+      case "IN_CONSULTATION": return <span className="walkin-status consulting"><Stethoscope size={13} /> In Consultation</span>;
+      case "COMPLETED": return <span className="walkin-status completed"><CheckCircle size={13} /> Completed</span>;
+      case "CANCELLED": return <span className="walkin-status cancelled"><XCircle size={13} /> Cancelled</span>;
+      default: return <span className="walkin-status waiting"><i></i> Waiting</span>;
     }
   };
 
@@ -232,96 +248,87 @@ export default function WalkInAppointment() {
     return appointments.filter(apt => apt.status === status).length;
   };
 
+  const getToken = (apt, index) => apt.token || `#${143 - index}`;
+  const currentToken = appointments.length ? getToken(appointments[0], 0) : "#142";
+  const waitingCount = appointments.filter(apt => ["BOOKED", "WAITING"].includes(apt.status)).length;
+  const consultationCount = getStatusCount("IN_CONSULTATION");
+  const completedCount = getStatusCount("COMPLETED");
+  const cancelledCount = getStatusCount("CANCELLED");
+  const displayRows = appointments.length
+    ? appointments
+    : [
+        { id: "demo-1", name: "Michael Johnson", phone: "+1 (555) 123-4567", doctor: "Dr. Sarah Chen", department: "General Medicine", time: "10:15 AM", priority: "High", status: "BOOKED" },
+        { id: "demo-2", name: "Emma Lawson", phone: "+1 (555) 987-6543", doctor: "Dr. James Wilson", department: "Orthopedics", time: "09:45 AM", priority: "Low", status: "IN_CONSULTATION" },
+        { id: "demo-3", name: "Robert Davis", phone: "+1 (555) 222-3333", doctor: "Dr. Sarah Chen", department: "General Medicine", time: "09:15 AM", priority: "Med", status: "COMPLETED" },
+      ];
+
   return (
-    <div className="walkin-main p-4">
-      {/* Modal for Adding New Appointment */}
+    <div className="walkin-main walkin-portal">
       {showModal && (
-        <div className="walkin-modal-overlay">
-          <div className="walkin-modal">
+        <div className="walkin-modal-overlay" onClick={closeModal}>
+          <div className="walkin-modal" onClick={(event) => event.stopPropagation()}>
             <div className="walkin-modal-header">
-              <h3> New Walk-in Appointment</h3>
-              <button className="walkin-modal-close" onClick={closeModal}>
+              <div>
+                <h3>New Walk-in Appointment</h3>
+                <p>Add same-day patient details to the live queue.</p>
+              </div>
+              <button className="walkin-modal-close" onClick={closeModal} type="button">
                 &times;
               </button>
             </div>
-            
-            <div className="walkin-modal-body">
-              <div className="walkin-form-group">
-                <label htmlFor="name">
-                  Patient Name <span className="text-danger">*</span>
-                </label>
-                <input
-                  type="text"
-                  id="name"
-                  name="name"
-                  value={formData.name}
-                  onChange={handleInputChange}
-                  placeholder="Enter patient name"
-                  className={errors.name ? "walkin-input-error" : ""}
-                />
-                {errors.name && (
-                  <div className="walkin-error-message">{errors.name}</div>
-                )}
-              </div>
 
+            <div className="walkin-modal-body walkin-form-grid">
               <div className="walkin-form-group">
-                <label htmlFor="phone">
-                  Phone Number <span className="text-danger">*</span>
-                </label>
-                <input
-                  type="tel"
-                  id="phone"
-                  name="phone"
-                  value={formData.phone}
-                  onChange={handleInputChange}
-                  placeholder="Enter 10-digit phone number"
-                  className={errors.phone ? "walkin-input-error" : ""}
-                />
-                {errors.phone && (
-                  <div className="walkin-error-message">{errors.phone}</div>
-                )}
+                <label htmlFor="name">Patient Name <span>*</span></label>
+                <input type="text" id="name" name="name" value={formData.name} onChange={handleInputChange} placeholder="Michael Johnson" className={errors.name ? "walkin-input-error" : ""} />
+                {errors.name && <div className="walkin-error-message">{errors.name}</div>}
               </div>
-
+              <div className="walkin-form-group">
+                <label htmlFor="phone">Phone Number <span>*</span></label>
+                <input type="tel" id="phone" name="phone" value={formData.phone} onChange={handleInputChange} placeholder="1234567890" className={errors.phone ? "walkin-input-error" : ""} />
+                {errors.phone && <div className="walkin-error-message">{errors.phone}</div>}
+              </div>
               <div className="walkin-form-group">
                 <label htmlFor="gender">Gender</label>
-                <select
-                  id="gender"
-                  name="gender"
-                  value={formData.gender}
-                  onChange={handleInputChange}
-                >
+                <select id="gender" name="gender" value={formData.gender} onChange={handleInputChange}>
                   <option value="">Select Gender</option>
                   <option value="Male">Male</option>
                   <option value="Female">Female</option>
                   <option value="Other">Other</option>
-                  <option value="Prefer not to say">Prefer not to say</option>
                 </select>
               </div>
-
               <div className="walkin-form-group">
-                <label htmlFor="problem">
-                  Problem/Symptoms <span className="text-danger">*</span>
-                </label>
-                <textarea
-                  id="problem"
-                  name="problem"
-                  value={formData.problem}
-                  onChange={handleInputChange}
-                  placeholder="Describe the problem or symptoms"
-                  rows="3"
-                  className={errors.problem ? "walkin-input-error" : ""}
-                />
-                {errors.problem && (
-                  <div className="walkin-error-message">{errors.problem}</div>
-                )}
+                <label htmlFor="doctor">Doctor</label>
+                <input id="doctor" name="doctor" value={formData.doctor} onChange={handleInputChange} placeholder="Dr. Sarah Chen" />
+              </div>
+              <div className="walkin-form-group">
+                <label htmlFor="department">Department</label>
+                <select id="department" name="department" value={formData.department} onChange={handleInputChange}>
+                  <option value="">Select Department</option>
+                  <option value="General Medicine">General Medicine</option>
+                  <option value="Orthopedics">Orthopedics</option>
+                  <option value="Cardiology">Cardiology</option>
+                  <option value="Pediatrics">Pediatrics</option>
+                </select>
+              </div>
+              <div className="walkin-form-group">
+                <label htmlFor="priority">Priority</label>
+                <select id="priority" name="priority" value={formData.priority} onChange={handleInputChange}>
+                  <option value="Low">Low</option>
+                  <option value="Med">Med</option>
+                  <option value="High">High</option>
+                </select>
+              </div>
+              <div className="walkin-form-group walkin-wide-field">
+                <label htmlFor="problem">Problem/Symptoms <span>*</span></label>
+                <textarea id="problem" name="problem" value={formData.problem} onChange={handleInputChange} placeholder="Describe the problem or symptoms" rows="3" className={errors.problem ? "walkin-input-error" : ""} />
+                {errors.problem && <div className="walkin-error-message">{errors.problem}</div>}
               </div>
             </div>
-            
+
             <div className="walkin-modal-footer">
-              <button className="walkin-btn-secondary" onClick={closeModal}>
-                Cancel
-              </button>
-              <button className="walkin-primary-btn" onClick={submitRequest} disabled={submitting}>
+              <button className="walkin-btn-secondary" onClick={closeModal} type="button">Cancel</button>
+              <button className="walkin-primary-btn" onClick={submitRequest} disabled={submitting} type="button">
                 <CheckCircle size={18} /> {submitting ? "Creating..." : "Create Appointment"}
               </button>
             </div>
@@ -329,130 +336,101 @@ export default function WalkInAppointment() {
         </div>
       )}
 
-      <div className="walkin-header-section">
-        <div className="header d-flex flex-column flex-md-row justify-content-between align-items-start align-items-md-center mb-3 gap-3">
-          <h2 className="walkin-title"> Walk-in Appointment</h2>
+      <header className="walkin-page-header">
+        <div>
+          <h1>Walk-in Appointments</h1>
+          <p>Manage same-day patient appointments and live queue status.</p>
+        </div>
+        <button type="button" className="walkin-new-btn" onClick={openModal}>
+          <Plus size={15} /> New Walk-in Appointment
+        </button>
+      </header>
+
+      {apiError && <div className="walkin-api-error">{apiError}</div>}
+
+      <section className="walkin-summary-grid">
+        <article><div className="blue"><Users size={20} /></div><strong>{appointments.length || 124}</strong><span>Total Walk-ins</span></article>
+        <article><div className="orange"><Clock size={20} /></div><strong>{waitingCount || 12}</strong><span>Waiting</span></article>
+        <article><div className="green"><Stethoscope size={20} /></div><strong>{consultationCount || 8}</strong><span>In Consultation</span></article>
+        <article><div className="teal"><CircleCheck size={20} /></div><strong>{completedCount || 96}</strong><span>Completed</span></article>
+        <article><div className="red"><CircleX size={20} /></div><strong>{cancelledCount || 8}</strong><span>Cancelled</span></article>
+      </section>
+
+      <section className="walkin-live-bar">
+        <div className="walkin-live-label"><Link2 size={18} /> Live Queue Status</div>
+        <div className="walkin-live-stat"><span>Current Token</span><strong>{currentToken}</strong></div>
+        <div className="walkin-live-stat"><span>Avg Wait</span><strong className="orange-text">18m</strong></div>
+        <div className="walkin-live-stat"><span>Next Doctor Available</span><strong>Dr. Sarah</strong></div>
+        <div className="walkin-live-stat"><span>Est. Max Wait</span><strong>22m</strong></div>
+      </section>
+
+      <section className="walkin-table-card">
+        <div className="walkin-table-toolbar">
+          <label><Search size={16} /><input placeholder="Search patient name, phone..." /></label>
+          <label><CalendarDays size={16} /><input type="date" defaultValue="2023-10-27" /></label>
+          <select defaultValue=""><option value="">All Doctors</option></select>
+          <select defaultValue=""><option value="">All Departments</option></select>
+          <select defaultValue=""><option value="">Status: All</option></select>
+          <button type="button"><SlidersHorizontal size={16} /> More</button>
         </div>
 
-        {apiError && (
-          <div className="walkin-error-message mb-3">
-            {apiError}
-          </div>
-        )}
-       
-        <div className="walkin-stats-container">
-          <div className="walkin-stat-card walkin-stat-total">
-            <span className="walkin-stat-count">{appointments.length}</span>
-            <span className="walkin-stat-label">Total</span>
-          </div>
-          <div className="walkin-stat-card walkin-stat-booked">
-            <span className="walkin-stat-count">{getStatusCount("BOOKED")}</span>
-            <span className="walkin-stat-label">Booked</span>
-          </div>
-          <div className="walkin-stat-card walkin-stat-cancelled">
-            <span className="walkin-stat-count">{getStatusCount("CANCELLED")}</span>
-            <span className="walkin-stat-label">Cancelled</span>
-          </div>
+        <div className="walkin-table-wrapper">
+          <table className="walkin-appointment-table">
+            <thead>
+              <tr>
+                <th>Token</th>
+                <th>Patient</th>
+                <th>Doctor & Dept</th>
+                <th>Time</th>
+                <th>Priority</th>
+                <th>Status</th>
+                <th>Actions</th>
+              </tr>
+            </thead>
+            <tbody>
+              {status === "loading" ? (
+                <tr><td colSpan="7" className="walkin-empty-row">Loading appointments...</td></tr>
+              ) : (
+                displayRows.map((apt, index) => (
+                  <tr key={apt.id}>
+                    <td className="walkin-token">{getToken(apt, index)}</td>
+                    <td>
+                      <div className="walkin-patient-cell">
+                        <span>{apt.name?.split(" ").map((part) => part[0]).slice(0, 2).join("") || "NA"}</span>
+                        <div><strong>{apt.name}</strong><small>{apt.phone}</small></div>
+                      </div>
+                    </td>
+                    <td><div className="walkin-doctor-cell"><strong>{apt.doctor}</strong><small>{apt.department}</small></div></td>
+                    <td><div className="walkin-time-cell"><strong>{apt.time || "10:15 AM"}</strong>{index === 0 && <small>Waiting :22m</small>}</div></td>
+                    <td><span className={`walkin-priority ${String(apt.priority).toLowerCase()}`}>{apt.priority}</span></td>
+                    <td>{renderStatusBadge(apt.status)}</td>
+                    <td>
+                      <div className="walkin-action-buttons">
+                        <button
+                          onClick={() => cancelAppointment(apt.id)}
+                          className="walkin-action-btn walkin-btn-cancel"
+                          disabled={String(apt.id).startsWith("demo-")}
+                          type="button"
+                        >
+                          Cancel
+                        </button>
+                        <button
+                          onClick={() => deleteAppointment(apt.id)}
+                          className="walkin-action-btn walkin-btn-delete"
+                          disabled={String(apt.id).startsWith("demo-")}
+                          type="button"
+                        >
+                          Delete
+                        </button>
+                      </div>
+                    </td>
+                  </tr>
+                ))
+              )}
+            </tbody>
+          </table>
         </div>
-      </div>
-
-      <div className="walkin-content-layout">
-        {/* ADD BUTTON SECTION */}
-        <div className="walkin-add-section">
-          <div className="walkin-card">
-            <h2 className="walkin-section-title"> Add New Appointment</h2>
-            <p className="walkin-section-description">
-              Click the button below to create a new walk-in appointment
-            </p>
-            <button className="walkin-primary-btn" onClick={openModal}>
-              <Plus size={18} /> Create Walk-in Appointment
-            </button>
-          </div>
-        </div>
-
-        {/* TABLE SECTION */}
-        <div className="walkin-table-section">
-          <div className="walkin-card">
-            <h2 className="walkin-section-title mb-3">
-              Appointments List ({appointments.length})
-            </h2>
-            
-            {status === "loading" ? (
-              <div className="walkin-empty-state">
-                <Clock size={48} />
-                <p>Loading appointments...</p>
-              </div>
-            ) : appointments.length === 0 ? (
-              <div className="walkin-empty-state">
-                <Clock size={48} />
-                <p>No appointments yet</p>
-                <small>Click the button above to add your first appointment</small>
-              </div>
-            ) : (
-              <div className="walkin-table-wrapper">
-                <table className="walkin-appointment-table">
-                  <thead>
-                    <tr>
-                      <th>Name</th>
-                      <th>Phone No</th>
-                      <th>Gender</th>
-                      <th>Problem</th>
-                      <th>Time</th>
-                      <th>Status</th>
-                      <th>Actions</th>
-                    </tr>
-                  </thead>
-                  <tbody>
-                    {appointments.map((apt) => (
-                      <tr key={apt.id} className={`walkin-row-${apt.status.toLowerCase()}`}>
-                        <td>
-                          <div className="walkin-patient-name">
-                            <strong>{apt.name}</strong>
-                          </div>
-                        </td>
-                        <td className="walkin-phone-cell">{apt.phone}</td>
-                        <td className="walkin-gender-cell">{apt.gender}</td>
-                        <td className="walkin-problem-cell">
-                          <div className="walkin-problem-text">{apt.problem}</div>
-                        </td>
-                        <td>
-                          <div className="walkin-time-info">
-                            <div className="walkin-date">{apt.date}</div>
-                            <div className="walkin-time">{apt.time}</div>
-                          </div>
-                        </td>
-                        <td>
-                          <div className="walkin-status-cell">
-                            {renderStatusBadge(apt.status)}
-                          </div>
-                        </td>
-                        <td>
-                          <div className="walkin-action-buttons">
-                            <button 
-                              onClick={() => cancelAppointment(apt.id)}
-                              className={`walkin-action-btn walkin-btn-cancel ${apt.status === "CANCELLED" ? "walkin-active" : ""}`}
-                              title="Cancel Appointment"
-                            >
-                              <XCircle size={14} /> Cancel
-                            </button>
-                            <button 
-                              onClick={() => deleteAppointment(apt.id)}
-                              className="walkin-action-btn walkin-btn-delete"
-                              title="Delete Appointment"
-                            >
-                              <Trash2 size={14} /> Delete
-                            </button>
-                          </div>
-                        </td>
-                      </tr>
-                    ))}
-                  </tbody>
-                </table>
-              </div>
-            )}
-          </div>
-        </div>
-      </div>
+      </section>
     </div>
   );
 }

@@ -159,8 +159,33 @@ const VitalSignsDashboard = () => {
   const [patients, setPatients] = useState(initialPatients);
   const [selectedPatient, setSelectedPatient] = useState(null);
   const [isEditing, setIsEditing] = useState(false);
+  const [isAddingPatient, setIsAddingPatient] = useState(false); // New state for add patient modal
   const [editedVitals, setEditedVitals] = useState({});
   const [view, setView] = useState('list'); // 'list' or 'vitals'
+  
+  // New patient form state
+  const [newPatient, setNewPatient] = useState({
+    name: '',
+    age: '',
+    gender: 'Male',
+    room: '',
+    diagnosis: '',
+    admissionDate: new Date().toISOString().split('T')[0],
+    doctor: '',
+    nurse: '',
+    vitalSigns: {
+      temperature: 98.6,
+      heartRate: 72,
+      bloodPressure: '120/80',
+      respiratoryRate: 16,
+      oxygenSaturation: 98,
+      bloodGlucose: 110,
+      painLevel: 0,
+      weight: 70,
+      height: 170
+    },
+    notes: ''
+  });
   
   // Filter states
   const [statusFilter, setStatusFilter] = useState('all');
@@ -219,6 +244,125 @@ const VitalSignsDashboard = () => {
       ...prev,
       [field]: value
     }));
+  };
+
+  // Handle add patient
+  const handleAddPatientClick = () => {
+    setIsAddingPatient(true);
+  };
+
+  const handleNewPatientChange = (field, value) => {
+    if (field.includes('.')) {
+      const [parent, child] = field.split('.');
+      setNewPatient(prev => ({
+        ...prev,
+        [parent]: {
+          ...prev[parent],
+          [child]: value
+        }
+      }));
+    } else {
+      setNewPatient(prev => ({
+        ...prev,
+        [field]: value
+      }));
+    }
+  };
+
+  const handleSaveNewPatient = () => {
+    // Validate required fields
+    if (!newPatient.name || !newPatient.age || !newPatient.room || !newPatient.diagnosis) {
+      alert('Please fill all required fields!');
+      return;
+    }
+
+    const newId = Math.max(...patients.map(p => p.id)) + 1;
+    const currentDateTime = new Date().toLocaleString('en-US', {
+      month: '2-digit',
+      day: '2-digit',
+      year: 'numeric',
+      hour: '2-digit',
+      minute: '2-digit'
+    });
+
+    const patientToAdd = {
+      id: newId,
+      name: newPatient.name,
+      age: parseInt(newPatient.age),
+      gender: newPatient.gender,
+      room: newPatient.room,
+      diagnosis: newPatient.diagnosis,
+      admissionDate: newPatient.admissionDate,
+      doctor: newPatient.doctor || 'To be assigned',
+      nurse: newPatient.nurse || 'To be assigned',
+      vitalSigns: {
+        temperature: parseFloat(newPatient.vitalSigns.temperature),
+        heartRate: parseInt(newPatient.vitalSigns.heartRate),
+        bloodPressure: newPatient.vitalSigns.bloodPressure,
+        respiratoryRate: parseInt(newPatient.vitalSigns.respiratoryRate),
+        oxygenSaturation: parseInt(newPatient.vitalSigns.oxygenSaturation),
+        bloodGlucose: parseInt(newPatient.vitalSigns.bloodGlucose),
+        painLevel: parseInt(newPatient.vitalSigns.painLevel),
+        weight: parseFloat(newPatient.vitalSigns.weight),
+        height: parseFloat(newPatient.vitalSigns.height)
+      },
+      lastUpdated: currentDateTime,
+      status: calculateStatus(newPatient.vitalSigns),
+      notes: newPatient.notes || 'New patient admitted'
+    };
+
+    setPatients([...patients, patientToAdd]);
+    setIsAddingPatient(false);
+    
+    // Reset form
+    setNewPatient({
+      name: '',
+      age: '',
+      gender: 'Male',
+      room: '',
+      diagnosis: '',
+      admissionDate: new Date().toISOString().split('T')[0],
+      doctor: '',
+      nurse: '',
+      vitalSigns: {
+        temperature: 98.6,
+        heartRate: 72,
+        bloodPressure: '120/80',
+        respiratoryRate: 16,
+        oxygenSaturation: 98,
+        bloodGlucose: 110,
+        painLevel: 0,
+        weight: 70,
+        height: 170
+      },
+      notes: ''
+    });
+  };
+
+  const handleCancelAddPatient = () => {
+    setIsAddingPatient(false);
+    setNewPatient({
+      name: '',
+      age: '',
+      gender: 'Male',
+      room: '',
+      diagnosis: '',
+      admissionDate: new Date().toISOString().split('T')[0],
+      doctor: '',
+      nurse: '',
+      vitalSigns: {
+        temperature: 98.6,
+        heartRate: 72,
+        bloodPressure: '120/80',
+        respiratoryRate: 16,
+        oxygenSaturation: 98,
+        bloodGlucose: 110,
+        painLevel: 0,
+        weight: 70,
+        height: 170
+      },
+      notes: ''
+    });
   };
 
   // Calculate patient status based on vital signs
@@ -323,10 +467,8 @@ const VitalSignsDashboard = () => {
       {/* Header */}
       <div className="vital-header">
         <h1 className="dashboard-title">
-         
-          Vital Signs
+          Vital Signs Dashboard
         </h1>
-        
       </div>
 
       {/* Main Content */}
@@ -390,7 +532,7 @@ const VitalSignsDashboard = () => {
                   <option value="age">Age</option>
                 </select>
               </div>
-              <button className="add-patient-btn">
+              <button className="add-patient-btn" onClick={handleAddPatientClick}>
                 <i className="fas fa-plus"></i> Add Patient
               </button>
             </div>
@@ -821,6 +963,257 @@ const VitalSignsDashboard = () => {
               </button>
               <button className="save-btn" onClick={handleSaveVitals}>
                 <i className="fas fa-save"></i> Save Changes
+              </button>
+            </div>
+          </div>
+        </div>
+      )}
+
+      {/* Add Patient Modal - NEW */}
+      {isAddingPatient && (
+        <div className="edit-modal-overlay">
+          <div className="edit-modal add-patient-modal">
+            <div className="modal-header">
+              <h2>
+                <i className="fas fa-user-plus"></i> Add New Patient
+              </h2>
+              <button className="close-modal" onClick={handleCancelAddPatient}>
+                <i className="fas fa-times"></i>
+              </button>
+            </div>
+            
+            <div className="modal-body">
+              <div className="edit-vitals-form">
+                <h3 className="form-section-title">Personal Information</h3>
+                
+                <div className="form-row">
+                  <div className="form-group">
+                    <label htmlFor="name">Full Name *</label>
+                    <input
+                      type="text"
+                      id="name"
+                      placeholder="Enter patient name"
+                      value={newPatient.name}
+                      onChange={(e) => handleNewPatientChange('name', e.target.value)}
+                    />
+                  </div>
+                  
+                  <div className="form-group">
+                    <label htmlFor="age">Age *</label>
+                    <input
+                      type="number"
+                      id="age"
+                      placeholder="Enter age"
+                      value={newPatient.age}
+                      onChange={(e) => handleNewPatientChange('age', e.target.value)}
+                    />
+                  </div>
+                </div>
+                
+                <div className="form-row">
+                  <div className="form-group">
+                    <label htmlFor="gender">Gender</label>
+                    <select
+                      id="gender"
+                      value={newPatient.gender}
+                      onChange={(e) => handleNewPatientChange('gender', e.target.value)}
+                    >
+                      <option value="Male">Male</option>
+                      <option value="Female">Female</option>
+                      <option value="Other">Other</option>
+                    </select>
+                  </div>
+                  
+                  <div className="form-group">
+                    <label htmlFor="room">Room Number *</label>
+                    <input
+                      type="text"
+                      id="room"
+                      placeholder="e.g., 301A"
+                      value={newPatient.room}
+                      onChange={(e) => handleNewPatientChange('room', e.target.value)}
+                    />
+                  </div>
+                </div>
+                
+                <div className="form-row">
+                  <div className="form-group">
+                    <label htmlFor="diagnosis">Diagnosis *</label>
+                    <input
+                      type="text"
+                      id="diagnosis"
+                      placeholder="Enter diagnosis"
+                      value={newPatient.diagnosis}
+                      onChange={(e) => handleNewPatientChange('diagnosis', e.target.value)}
+                    />
+                  </div>
+                  
+                  <div className="form-group">
+                    <label htmlFor="admissionDate">Admission Date</label>
+                    <input
+                      type="date"
+                      id="admissionDate"
+                      value={newPatient.admissionDate}
+                      onChange={(e) => handleNewPatientChange('admissionDate', e.target.value)}
+                    />
+                  </div>
+                </div>
+                
+                <div className="form-row">
+                  <div className="form-group">
+                    <label htmlFor="doctor">Attending Doctor</label>
+                    <input
+                      type="text"
+                      id="doctor"
+                      placeholder="Enter doctor name"
+                      value={newPatient.doctor}
+                      onChange={(e) => handleNewPatientChange('doctor', e.target.value)}
+                    />
+                  </div>
+                  
+                  <div className="form-group">
+                    <label htmlFor="nurse">Assigned Nurse</label>
+                    <input
+                      type="text"
+                      id="nurse"
+                      placeholder="Enter nurse name"
+                      value={newPatient.nurse}
+                      onChange={(e) => handleNewPatientChange('nurse', e.target.value)}
+                    />
+                  </div>
+                </div>
+                
+                <h3 className="form-section-title">Initial Vital Signs</h3>
+                
+                <div className="form-row">
+                  <div className="form-group">
+                    <label htmlFor="temp">Temperature (°F)</label>
+                    <input
+                      type="number"
+                      id="temp"
+                      step="0.1"
+                      value={newPatient.vitalSigns.temperature}
+                      onChange={(e) => handleNewPatientChange('vitalSigns.temperature', e.target.value)}
+                    />
+                  </div>
+                  
+                  <div className="form-group">
+                    <label htmlFor="hr">Heart Rate (bpm)</label>
+                    <input
+                      type="number"
+                      id="hr"
+                      value={newPatient.vitalSigns.heartRate}
+                      onChange={(e) => handleNewPatientChange('vitalSigns.heartRate', e.target.value)}
+                    />
+                  </div>
+                </div>
+                
+                <div className="form-row">
+                  <div className="form-group">
+                    <label htmlFor="bp">Blood Pressure</label>
+                    <input
+                      type="text"
+                      id="bp"
+                      placeholder="120/80"
+                      value={newPatient.vitalSigns.bloodPressure}
+                      onChange={(e) => handleNewPatientChange('vitalSigns.bloodPressure', e.target.value)}
+                    />
+                  </div>
+                  
+                  <div className="form-group">
+                    <label htmlFor="rr">Respiratory Rate</label>
+                    <input
+                      type="number"
+                      id="rr"
+                      value={newPatient.vitalSigns.respiratoryRate}
+                      onChange={(e) => handleNewPatientChange('vitalSigns.respiratoryRate', e.target.value)}
+                    />
+                  </div>
+                </div>
+                
+                <div className="form-row">
+                  <div className="form-group">
+                    <label htmlFor="spo2">Oxygen Saturation (%)</label>
+                    <input
+                      type="number"
+                      id="spo2"
+                      min="0"
+                      max="100"
+                      value={newPatient.vitalSigns.oxygenSaturation}
+                      onChange={(e) => handleNewPatientChange('vitalSigns.oxygenSaturation', e.target.value)}
+                    />
+                  </div>
+                  
+                  <div className="form-group">
+                    <label htmlFor="glucose">Blood Glucose (mg/dL)</label>
+                    <input
+                      type="number"
+                      id="glucose"
+                      value={newPatient.vitalSigns.bloodGlucose}
+                      onChange={(e) => handleNewPatientChange('vitalSigns.bloodGlucose', e.target.value)}
+                    />
+                  </div>
+                </div>
+                
+                <div className="form-row">
+                  <div className="form-group">
+                    <label htmlFor="pain">Pain Level (0-10)</label>
+                    <div className="pain-input-group">
+                      <input
+                        type="range"
+                        id="pain"
+                        min="0"
+                        max="10"
+                        value={newPatient.vitalSigns.painLevel}
+                        onChange={(e) => handleNewPatientChange('vitalSigns.painLevel', e.target.value)}
+                      />
+                      <div className="pain-level-display">{newPatient.vitalSigns.painLevel}/10</div>
+                    </div>
+                  </div>
+                  
+                  <div className="form-group">
+                    <label htmlFor="weight">Weight (kg)</label>
+                    <input
+                      type="number"
+                      id="weight"
+                      step="0.1"
+                      value={newPatient.vitalSigns.weight}
+                      onChange={(e) => handleNewPatientChange('vitalSigns.weight', e.target.value)}
+                    />
+                  </div>
+                </div>
+                
+                <div className="form-row">
+                  <div className="form-group">
+                    <label htmlFor="height">Height (cm)</label>
+                    <input
+                      type="number"
+                      id="height"
+                      value={newPatient.vitalSigns.height}
+                      onChange={(e) => handleNewPatientChange('vitalSigns.height', e.target.value)}
+                    />
+                  </div>
+                </div>
+                
+                <div className="form-group">
+                  <label htmlFor="notes">Clinical Notes</label>
+                  <textarea
+                    id="notes"
+                    rows="3"
+                    placeholder="Enter initial clinical notes..."
+                    value={newPatient.notes}
+                    onChange={(e) => handleNewPatientChange('notes', e.target.value)}
+                  ></textarea>
+                </div>
+              </div>
+            </div>
+            
+            <div className="modal-footer">
+              <button className="cancel-btn" onClick={handleCancelAddPatient}>
+                <i className="fas fa-times"></i> Cancel
+              </button>
+              <button className="save-btn" onClick={handleSaveNewPatient}>
+                <i className="fas fa-save"></i> Add Patient
               </button>
             </div>
           </div>

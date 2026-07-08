@@ -18,7 +18,6 @@ export default function ClinicSettings() {
   const storedUser = typeof window !== 'undefined' ? JSON.parse(localStorage.getItem('authUser') || 'null') : null;
   const user = authUser || storedUser;
   
-  // Try to extract doctor ID from multiple possible field names
   const extractDoctorId = (userObj) => {
     if (!userObj) return '';
     return (
@@ -35,7 +34,6 @@ export default function ClinicSettings() {
   
   const doctorId = extractDoctorId(user);
 
-  // Debug: log user and doctor ID to console
   React.useEffect(() => {
     console.log('=== ClinicUpload Debug ===');
     console.log('authUser:', authUser);
@@ -49,7 +47,6 @@ export default function ClinicSettings() {
     console.log('========================');
   }, [authUser, storedUser, user, doctorId]);
 
-  // 📍 Get Current Location
   const getCurrentLocation = () => {
     if (!navigator.geolocation) {
       alert("Geolocation not supported");
@@ -67,7 +64,6 @@ export default function ClinicSettings() {
     );
   };
 
-  // 📸 Upload Photos
   const handlePhotoUpload = (e) => {
     const files = Array.from(e.target.files);
     setPhotos(files);
@@ -76,7 +72,6 @@ export default function ClinicSettings() {
     setPreviewUrls(urls);
   };
 
-  // 💾 Save Data
   const handleSave = async () => {
     const token = getAuthToken();
     console.log('Form validation:', { clinicName, phone, address, doctorId, token, hasToken: !!token });
@@ -126,7 +121,6 @@ export default function ClinicSettings() {
     }
   };
 
-  // ❌ Cancel
   const handleCancel = () => {
     setClinicName("");
     setPhone("");
@@ -139,84 +133,154 @@ export default function ClinicSettings() {
   };
 
   return (
-    <div className="clinic p-4">
-      <h2>Clinic Settings</h2>
-
-      {/* Clinic Name */}
-      <div className="input-group">
-        <label>Clinic Name</label>
-        <input
-          type="text"
-          value={clinicName}
-          onChange={(e) => setClinicName(e.target.value)}
-          placeholder="Enter Clinic Name"
-        />
-      </div>
-
-      {/* Phone Number */}
-      <div className="input-group">
-        <label>Phone Number</label>
-        <input
-          type="tel"
-          value={phone}
-          onChange={(e) => setPhone(e.target.value)}
-          placeholder="Enter Clinic Phone Number"
-          maxLength={10}
-        />
-      </div>
-
-      {/* Location Section */}
-      <div className="map-section">
-        <h3>Location</h3>
-
-        <textarea
-          placeholder="Enter full clinic address"
-          value={address}
-          onChange={(e) => setAddress(e.target.value)}
-        />
-
-        <button className="btn current-btn" onClick={getCurrentLocation}>
-          📍 Get Current Location
-        </button>
-
-        {location.lat && (
-          <p className="location-text">
-            Latitude: {location.lat} <br />
-            Longitude: {location.lng}
-          </p>
-        )}
-      </div>
-
-      {/* Upload Photos */}
-      <div className="upload-section">
-        <h3>Upload Clinic Photos</h3>
-        <input type="file" multiple accept="image/*" onChange={handlePhotoUpload} />
-      </div>
-
-      {/* Photo Preview */}
-      <div className="preview-wrapper">
-        {previewUrls.map((src, i) => (
-          <div className="preview-card" key={i}>
-            <img src={src} alt={`preview-${i}`} />
-            <p>Photo {i + 1}</p>
-          </div>
-        ))}
-      </div>
-
-      {message && (
-        <div className={`clinic-message ${status}`}>
-          {message}
+    <div className="clinic-settings">
+      <div className="clinic-settings-container">
+        <div className="clinic-header">
+          <h2>Clinic Settings</h2>
+          <p>Manage your clinic information and location</p>
         </div>
-      )}
 
-      {/* Save / Cancel */}
-      <div className="button-row">
-        <button className="btn save-btn" onClick={handleSave}>
-          Save
-        </button>
-        <button className="btn cancel-btn" onClick={handleCancel}>
-          Cancel
-        </button>
+        <div className="clinic-form">
+          {/* Clinic Name */}
+          <div className="form-group">
+            <label className="form-label">
+              <span className="required-star">*</span> Clinic Name
+            </label>
+            <input
+              type="text"
+              className="form-input"
+              value={clinicName}
+              onChange={(e) => setClinicName(e.target.value)}
+              placeholder="Enter clinic name"
+            />
+          </div>
+
+          {/* Phone Number */}
+          <div className="form-group">
+            <label className="form-label">
+              <span className="required-star">*</span> Phone Number
+            </label>
+            <input
+              type="tel"
+              className="form-input"
+              value={phone}
+              onChange={(e) => setPhone(e.target.value)}
+              placeholder="Enter phone number"
+              maxLength={10}
+            />
+          </div>
+
+          {/* Location Section */}
+          <div className="form-section">
+            <div className="section-header">
+              <h3>📍 Location Details</h3>
+              <span className="required-badge">Required</span>
+            </div>
+            
+            <div className="form-group">
+              <label className="form-label">
+                <span className="required-star">*</span> Full Address
+              </label>
+              <textarea
+                className="form-textarea"
+                placeholder="Enter complete clinic address"
+                value={address}
+                onChange={(e) => setAddress(e.target.value)}
+                rows="3"
+              />
+            </div>
+
+            <button className="btn-location" onClick={getCurrentLocation}>
+              📍 Get Current Location
+            </button>
+
+            {location.lat && (
+              <div className="location-coordinates">
+                <div className="coord-box">
+                  <span className="coord-label">Latitude:</span>
+                  <span className="coord-value">{location.lat}</span>
+                </div>
+                <div className="coord-box">
+                  <span className="coord-label">Longitude:</span>
+                  <span className="coord-value">{location.lng}</span>
+                </div>
+              </div>
+            )}
+          </div>
+
+          {/* Upload Photos */}
+          <div className="form-section">
+            <div className="section-header">
+              <h3>📸 Clinic Photos</h3>
+              <span className="optional-badge">Optional</span>
+            </div>
+            
+            <div className="upload-area">
+              <label className="upload-label">
+                <input
+                  type="file"
+                  multiple
+                  accept="image/*"
+                  onChange={handlePhotoUpload}
+                  className="upload-input"
+                />
+                <div className="upload-content">
+                  <span className="upload-icon">📷</span>
+                  <p>Click or drag to upload clinic photos</p>
+                  <small>Supports JPG, PNG, GIF (Max 5MB each)</small>
+                </div>
+              </label>
+            </div>
+          </div>
+
+          {/* Photo Preview */}
+          {previewUrls.length > 0 && (
+            <div className="photo-preview-section">
+              <h4>Photo Preview ({previewUrls.length})</h4>
+              <div className="preview-grid">
+                {previewUrls.map((src, i) => (
+                  <div className="preview-card" key={i}>
+                    <img src={src} alt={`preview-${i}`} />
+                    <div className="preview-info">
+                      <span>Photo {i + 1}</span>
+                      <button 
+                        className="remove-photo"
+                        onClick={() => {
+                          const newPhotos = photos.filter((_, index) => index !== i);
+                          const newUrls = previewUrls.filter((_, index) => index !== i);
+                          setPhotos(newPhotos);
+                          setPreviewUrls(newUrls);
+                        }}
+                      >
+                        ×
+                      </button>
+                    </div>
+                  </div>
+                ))}
+              </div>
+            </div>
+          )}
+
+          {/* Message */}
+          {message && (
+            <div className={`alert-message alert-${status}`}>
+              {status === 'loading' && <span className="alert-icon">⏳</span>}
+              {status === 'succeeded' && <span className="alert-icon">✅</span>}
+              {status === 'failed' && <span className="alert-icon">❌</span>}
+              <span>{message}</span>
+            </div>
+          )}
+
+          {/* Action Buttons */}
+          <div className="action-buttons">
+            <button className="btn-cancel" onClick={handleCancel}>
+              Cancel
+            </button>
+            <button className="btn-save" onClick={handleSave}>
+              {status === 'loading' ? 'Saving...' : 'Save Clinic'}
+            </button>
+          </div>
+        </div>
       </div>
     </div>
   );

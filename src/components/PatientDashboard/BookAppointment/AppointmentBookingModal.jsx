@@ -2,7 +2,7 @@ import React, { useState, useEffect } from 'react';
 import { useDispatch, useSelector } from 'react-redux';
 import axios from 'axios';
 import './AppointmentBookingModal.css';
-import { patientData } from "./data";
+
 import { fetchClinicsByDoctor } from '../../../redux/clinicsSlice';
 import { API_BASE_URL, getAuthHeaders } from '../../../redux/apiConfig';
 
@@ -23,6 +23,13 @@ const AppointmentBooking = ({ userData, doctorId, doctorData }) => {
   const [selectedConsultationMode, setSelectedConsultationMode] = useState('in-clinic');
   const [isBookingAppointment, setIsBookingAppointment] = useState(false);
   const [bookingError, setBookingError] = useState('');
+    const [patientData, setPatientData] = useState({
+  name: "",
+  email: "",
+  phone: "",
+  gender: "",
+  dob: "",
+});
 
   const getClinicAvailableDays = (clinic) => {
     const days = clinic.available_days || clinic.availableDays;
@@ -269,6 +276,36 @@ const AppointmentBooking = ({ userData, doctorId, doctorData }) => {
     return time && time.length === 5 ? `${time}:00` : time;
   };
 
+
+useEffect(() => {
+  const authUser = JSON.parse(localStorage.getItem("authUser"));
+  const patientId = authUser?.id || authUser?.user?.id;
+
+  if (patientId) {
+    getPatientProfile(patientId);
+  }
+}, []);
+
+const getPatientProfile = async (patientId) => {
+  try {
+    const res = await axios.get(`${API_BASE_URL}/users/${patientId}`);
+
+    const user = res.data?.data || res.data;
+
+    setPatientData({
+      name: user.full_name || "",
+      email: user.email || "",
+      phone: user.contact_number || "",
+      gender: user.gender || "",
+      dob: user.date_of_birth || "",
+    });
+  } catch (error) {
+    console.log("Patient profile error:", error);
+  }
+};
+
+
+
   const handleBookAppointment = async () => {
     if (!selectedClinic) {
       alert('Please select a clinic first');
@@ -354,6 +391,12 @@ const AppointmentBooking = ({ userData, doctorId, doctorData }) => {
   if (isBooked) {
     const modeDetails = getSelectedModeDetails();
     const totalFee = calculateTotalFee();
+
+
+
+  
+
+
 
     return (
       <div className="apt-booking-container apt-p-4">

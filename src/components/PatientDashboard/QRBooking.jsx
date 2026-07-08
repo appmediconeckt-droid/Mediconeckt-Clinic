@@ -1,8 +1,11 @@
 import React, { useState, useEffect } from 'react';
+import { useLocation } from 'react-router-dom';
 import '../PatientDashboard/BookAppointment/AppointmentBookingModal.css';
-import { patientData } from "./BookAppointment/data";
+import { API_BASE_URL, getAuthHeaders } from '../../redux/apiConfig';
+import axios from 'axios';
 
 const AppointmentBooking = ({ userData }) => {
+  const location = useLocation();
   const [selectedDate, setSelectedDate] = useState('');
   const [selectedTime, setSelectedTime] = useState('');
   const [selectedPayment, setSelectedPayment] = useState('');
@@ -11,60 +14,229 @@ const AppointmentBooking = ({ userData }) => {
   const [isBooked, setIsBooked] = useState(false);
   const [showClinicDropdown, setShowClinicDropdown] = useState(false);
   const [selectedClinic, setSelectedClinic] = useState(null);
+  const [isBookingAppointment, setIsBookingAppointment] = useState(false);
+  const [bookingError, setBookingError] = useState('');
+  const [doctorInfo, setDoctorInfo] = useState({
+    id: '',
+    name: 'Loading doctor...',
+    specialty: '',
+    experience: '',
+    languages: '',
+    clinics: [],
+  });
+  const [doctorLoading, setDoctorLoading] = useState(false);
+  const [clinicsLoading, setClinicsLoading] = useState(false);
+  const [patientInfo, setPatientInfo] = useState(null);
 
-  // Simulated doctor data with multiple clinics
-  const doctorInfo = {
-    name: "Dr. Sarah Johnson",
-    specialty: "Cardiologist",
-    experience: "15 years",
-    languages: "English, Spanish",
-    consultationFee: 150,
-    clinics: [
-      {
-        id: 1,
-        name: "City Medical Clinic",
-        location: "456 North Ave, Healthcare Complex",
-        color: "#007bff",
-        consultationFee: 150,
-        availableDays: ["Mon", "Tue", "Wed", "Thu", "Fri"],
-        timings: "9:00 AM - 5:00 PM"
-      },
-      {
-        id: 2,
-        name: "Northside Hospital",
-        location: "456 North Ave, Healthcare Complex",
-        color: "#28a745",
-        consultationFee: 180,
-        availableDays: ["Mon", "Wed", "Fri", "Sat"],
-        timings: "10:00 AM - 6:00 PM"
-      },
-      {
-        id: 3,
-        name: "West End Clinic",
-        location: "789 West Blvd, Medical Plaza",
-        color: "#dc3545",
-        consultationFee: 130,
-        availableDays: ["Tue", "Thu", "Sat"],
-        timings: "8:00 AM - 4:00 PM"
-      },
-      {
-        id: 4,
-        name: "East Medical Center",
-        location: "321 East Road, Health District",
-        color: "#ffc107",
-        consultationFee: 200,
-        availableDays: ["Mon", "Tue", "Wed", "Thu", "Fri", "Sat"],
-        timings: "7:00 AM - 7:00 PM"
-      }
-    ]
+  const getStoredAuthUser = () => {
+    try {
+      return JSON.parse(localStorage.getItem('authUser') || 'null');
+    } catch {
+      return null;
+    }
   };
 
-  // Initialize selected clinic on component mount
-  useEffect(() => {
-    if (doctorInfo.clinics.length > 0) {
-      setSelectedClinic(doctorInfo.clinics[0]);
+  const getPatientId = () => {
+    const user = userData || getStoredAuthUser();
+    return user?.patient_id || user?.patientId || user?.id || user?._id || user?.user_id || user?.user?.id;
+  };
+
+  const getDoctorIdFromQr = () => {
+    const params = new URLSearchParams(location.search);
+    return (
+      params.get('doctorId') ||
+      params.get('doctor_id') ||
+      params.get('userId') ||
+      params.get('user_id') ||
+      params.get('id') ||
+      params.get('doctor') ||
+      ''
+    );
+  };
+
+  const getClinicIdFromQr = () => {
+    const params = new URLSearchParams(location.search);
+    return (
+      params.get('clinicId') ||
+      params.get('clinic_id') ||
+      params.get('clinic') ||
+      ''
+    );
+  };
+
+  const doctorId = getDoctorIdFromQr();
+  const clinicId = getClinicIdFromQr();
+  const patientId = getPatientId();
+
+  const getApiData = (payload) => payload?.data?.data || payload?.data || payload;
+
+  const getArrayData = (payload) => {
+    const data = getApiData(payload);
+    if (Array.isArray(data)) return data;
+    if (Array.isArray(data?.clinics)) return data.clinics;
+    if (Array.isArray(data?.data)) return data.data;
+    return [];
+  };
+
+  const getClinicAvailableDays = (clinic) => {
+    const days = clinic.available_days || clinic.availableDays;
+    if (Array.isArray(days)) return days;
+    if (typeof days === 'string') {
+      return days.split(',').map((day) => day.trim()).filter(Boolean);
     }
-  }, []);
+    return ['Mon', 'Tue', 'Wed', 'Thu', 'Fri'];
+  };
+
+  const normalizeClinic = (clinic, index) => ({
+    id: clinic.id || clinic.clinic_id || clinic._id || index,
+    name: clinic.clinic_name || clinic.clinicName || clinic.name || 'Clinic',
+    location: clinic.location || clinic.address || clinic.clinic_address || '',
+    color: ['#007bff', '#28a745', '#dc3545', '#ffc107', '#6f42c1'][index % 5],
+    consultationFee: clinic.consultation_fee || clinic.consultationFee || clinic.fee || 0,
+    availableDays: getClinicAvailableDays(clinic),
+    timings: clinic.timings || clinic.consultation_hours || clinic.opening_hours || '9:00 AM - 5:00 PM',
+    phone: clinic.phone_number || clinic.phone || clinic.contact_number || '',
+    raw: clinic,
+  });
+
+  const normalizeDoctor = (doctor) => ({
+    id: doctor.id || doctor.doctor_id || doctor.user_id || doctor._id || doctorId,
+    name: doctor.full_name || doctor.name || doctor.doctor_name || 'Doctor',
+    specialty: doctor.speciality || doctor.specialty || doctor.position || doctor.qualification || '',
+    experience: doctor.experience || 'N/A',
+    languages: doctor.languages || 'N/A',
+    clinics: [],
+  });
+
+  useEffect(() => {
+    const fetchDoctorAndClinics = async () => {
+      if (!doctorId) {
+        setBookingError('Doctor ID missing. Please scan valid QR code.');
+        return;
+      }
+
+      try {
+        setDoctorLoading(true);
+        setClinicsLoading(true);
+        setBookingError('');
+
+        const [doctorRes, clinicsRes] = await Promise.all([
+          axios.get(`${API_BASE_URL}/users/doctor-profile/${doctorId}`, { headers: getAuthHeaders() }),
+          axios.get(`${API_BASE_URL}/clinics?doctor_id=${doctorId}`, { headers: getAuthHeaders() }),
+        ]);
+
+        const mappedClinics = getArrayData(clinicsRes).map(normalizeClinic);
+        setDoctorInfo({
+          ...normalizeDoctor(getApiData(doctorRes)),
+          clinics: mappedClinics,
+        });
+        const qrClinic = clinicId
+          ? mappedClinics.find((clinic) => String(clinic.id) === String(clinicId))
+          : null;
+        setSelectedClinic(qrClinic || mappedClinics[0] || null);
+      } catch (error) {
+        console.log('QR doctor/clinic load error:', error.response?.data || error.message);
+        setBookingError(error.response?.data?.message || 'Doctor details load nahi ho pa rahi hain');
+      } finally {
+        setDoctorLoading(false);
+        setClinicsLoading(false);
+      }
+    };
+
+    fetchDoctorAndClinics();
+  }, [doctorId, clinicId]);
+
+  useEffect(() => {
+    const fetchPatientProfile = async () => {
+      if (!patientId) {
+        setPatientInfo(null);
+        return;
+      }
+
+      try {
+        const res = await axios.get(`${API_BASE_URL}/users/${patientId}`, {
+          headers: getAuthHeaders(),
+        });
+        const user = getApiData(res);
+        setPatientInfo({
+          name: user.full_name || user.name || '',
+          email: user.email || '',
+          phone: user.contact_number || user.phone || '',
+          gender: user.gender || '',
+          dob: user.date_of_birth || user.dob || '',
+        });
+      } catch (error) {
+        console.log('QR patient profile load error:', error.response?.data || error.message);
+        setPatientInfo(null);
+      }
+    };
+
+    fetchPatientProfile();
+  }, [patientId]);
+
+
+const handleBookAppointment = async () => {
+  if (!doctorId) {
+    setBookingError("Doctor ID missing. Please scan valid QR code.");
+    return;
+  }
+
+  if (!patientId) {
+    setBookingError("Patient ID missing. Please login first.");
+    return;
+  }
+
+  if (!selectedClinic) {
+    setBookingError("Please select a clinic first");
+    return;
+  }
+
+  if (!selectedDate || !selectedTime || !selectedPayment) {
+    setBookingError("Please select date, time and payment method");
+    return;
+  }
+
+  try {
+    setIsBookingAppointment(true);
+    setBookingError('');
+
+    const appointmentPayload = {
+      patient_id: patientId,
+      doctor_id: doctorId,
+      clinic_id: selectedClinic.id,
+      consultation_mode: "clinic",
+      appointment_date: selectedDate,
+      appointment_time: selectedTime,
+      consultation_fee: selectedClinic.consultationFee,
+      payment_method: selectedPayment,
+    };
+
+    console.log("Appointment Payload:", appointmentPayload);
+
+    const res = await axios.post(
+      `${API_BASE_URL}/appointments`,
+      appointmentPayload,
+      {
+        headers: getAuthHeaders(),
+      }
+    );
+
+    console.log("Appointment Created:", res.data);
+
+    setIsBooked(true);
+
+    setTimeout(() => {
+      resetForm();
+    }, 5000);
+  } catch (error) {
+    console.error("Appointment booking error:", error.response?.data || error);
+    setBookingError(error.response?.data?.message || error.response?.data?.error || "Appointment booking failed");
+  } finally {
+    setIsBookingAppointment(false);
+  }
+};
+
+
 
   // Generate next 10 days for calendar
   const generateAvailableDates = () => {
@@ -95,7 +267,7 @@ const AppointmentBooking = ({ userData }) => {
     if (!selectedClinic) return [];
     
     const slots = [];
-    const timings = selectedClinic.timings.split('-');
+    const timings = (selectedClinic.timings || '9:00 AM - 5:00 PM').split('-');
     const startTime = timings[0].trim();
     const endTime = timings[1].trim();
     
@@ -170,33 +342,6 @@ const AppointmentBooking = ({ userData }) => {
     }
   };
 
-  const handleBookAppointment = () => {
-    if (!selectedClinic) {
-      alert('Please select a clinic first');
-      return;
-    }
-
-    const appointmentData = {
-      patient: patientData,
-      doctor: doctorInfo.name,
-      clinic: selectedClinic.name,
-      clinicLocation: selectedClinic.location,
-      date: selectedDate,
-      time: selectedTime,
-      tokenNumber: tokenNumber,
-      paymentMethod: selectedPayment,
-      consultationFee: selectedClinic.consultationFee,
-      timestamp: new Date().toISOString()
-    };
-    
-    console.log('Booking appointment:', appointmentData);
-    setIsBooked(true);
-    
-    setTimeout(() => {
-      resetForm();
-    }, 5000);
-  };
-
   const resetForm = () => {
     setSelectedDate('');
     setSelectedTime('');
@@ -204,6 +349,7 @@ const AppointmentBooking = ({ userData }) => {
     setTokenNumber(null);
     setBookingStep(1);
     setIsBooked(false);
+    setBookingError('');
   };
 
   const formatDisplayDate = (dateStr) => {
@@ -237,21 +383,23 @@ const AppointmentBooking = ({ userData }) => {
           </div>
           <h2 className='apt-mb-5'>Appointment Booked Successfully!</h2>
           <div className="apt-confirmation-details">
-            <div className="apt-detail-item">
-              <i className="fas fa-user"></i>
-              <span>Patient: <strong>{patientData.name}</strong></span>
-            </div>
+            {patientInfo?.name && (
+              <div className="apt-detail-item">
+                <i className="fas fa-user"></i>
+                <span>Patient: <strong>{patientInfo.name}</strong></span>
+              </div>
+            )}
             <div className="apt-detail-item">
               <i className="fas fa-user-md"></i>
               <span>Doctor: <strong>{doctorInfo.name}</strong></span>
             </div>
             <div className="apt-detail-item">
               <i className="fas fa-hospital"></i>
-              <span>Clinic: <strong>{selectedClinic.name}</strong></span>
+              <span>Clinic: <strong>{selectedClinic?.name}</strong></span>
             </div>
             <div className="apt-detail-item">
               <i className="fas fa-location-arrow"></i>
-              <span>Location: <strong>{selectedClinic.location}</strong></span>
+              <span>Location: <strong>{selectedClinic?.location}</strong></span>
             </div>
             <div className="apt-detail-item">
               <i className="fas fa-calendar-alt"></i>
@@ -267,7 +415,7 @@ const AppointmentBooking = ({ userData }) => {
             </div>
             <div className="apt-detail-item">
               <i className="fas fa-money-bill-wave"></i>
-              <span>Fee: <strong>${selectedClinic.consultationFee}</strong></span>
+              <span>Fee: <strong>${selectedClinic?.consultationFee}</strong></span>
             </div>
           </div>
           <button className="apt-new-appointment-btn" onClick={resetForm}>
@@ -283,7 +431,11 @@ const AppointmentBooking = ({ userData }) => {
       <div className="apt-booking-header">
         {/* Clinic Selection Dropdown */}
         <div className="apt-clinic-selection-container">
-          {doctorInfo.clinics.length === 1 ? (
+          {doctorLoading || clinicsLoading ? (
+            <div className="apt-loading-message">Loading doctor details...</div>
+          ) : doctorInfo.clinics.length === 0 ? (
+            <div className="apt-error-message">No clinics available for this doctor.</div>
+          ) : doctorInfo.clinics.length === 1 ? (
             <div className="apt-single-clinic-display">
               <h2 className="apt-clinic-name">{doctorInfo.clinics[0].name}</h2>
               <div className="apt-clinic-badge apt-single">
@@ -455,6 +607,12 @@ const AppointmentBooking = ({ userData }) => {
                       <i className="fas fa-clock me-2"></i>
                       <strong>Timings:</strong> {selectedClinic.timings}
                     </p>
+                    {selectedClinic.phone && (
+                      <p className="apt-mb-1">
+                        <i className="fas fa-phone me-2"></i>
+                        <strong>Phone:</strong> {selectedClinic.phone}
+                      </p>
+                    )}
                     <p className="apt-mb-0">
                       <i className="fas fa-money-bill-wave me-2"></i>
                       <strong>Consultation Fee:</strong> 
@@ -468,28 +626,40 @@ const AppointmentBooking = ({ userData }) => {
         </div>
 
         {/* Patient Information Banner */}
-        <div className="apt-patient-info-banner">
-          <div className="apt-patient-info-item">
-            <i className="fas fa-user"></i>
-            <span>{patientData.name}</span>
+        {patientInfo && (
+          <div className="apt-patient-info-banner">
+            {patientInfo.name && (
+              <div className="apt-patient-info-item">
+                <i className="fas fa-user"></i>
+                <span>{patientInfo.name}</span>
+              </div>
+            )}
+            {patientInfo.email && (
+              <div className="apt-patient-info-item">
+                <i className="fas fa-envelope"></i>
+                <span>{patientInfo.email}</span>
+              </div>
+            )}
+            {patientInfo.phone && (
+              <div className="apt-patient-info-item">
+                <i className="fas fa-phone"></i>
+                <span>{patientInfo.phone}</span>
+              </div>
+            )}
+            {patientInfo.gender && (
+              <div className="apt-patient-info-item">
+                <i className="fas fa-venus-mars"></i>
+                <span>{patientInfo.gender}</span>
+              </div>
+            )}
+            {patientInfo.dob && (
+              <div className="apt-patient-info-item">
+                <i className="fas fa-birthday-cake"></i>
+                <span>{patientInfo.dob}</span>
+              </div>
+            )}
           </div>
-          <div className="apt-patient-info-item">
-            <i className="fas fa-envelope"></i>
-            <span>{patientData.email}</span>
-          </div>
-          <div className="apt-patient-info-item">
-            <i className="fas fa-phone"></i>
-            <span>{patientData.phone}</span>
-          </div>
-          <div className="apt-patient-info-item">
-            <i className="fas fa-venus-mars"></i>
-            <span>{patientData.gender}</span>
-          </div>
-          <div className="apt-patient-info-item">
-            <i className="fas fa-birthday-cake"></i>
-            <span>{patientData.dob}</span>
-          </div>
-        </div>
+        )}
       </div>
 
       {/* Progress Bar */}
@@ -620,11 +790,13 @@ const AppointmentBooking = ({ userData }) => {
               <div className="apt-summary-card">
                 <h4>Appointment Summary</h4>
                 <div className="apt-summary-details">
-                  <div className="apt-summary-item ">
-                    <i className="fas fa-user"></i>
-                    <span>Patient:</span>
-                    <strong>{patientData.name}</strong>
-                  </div>
+                  {patientInfo?.name && (
+                    <div className="apt-summary-item ">
+                      <i className="fas fa-user"></i>
+                      <span>Patient:</span>
+                      <strong>{patientInfo.name}</strong>
+                    </div>
+                  )}
                   <div className="apt-summary-item">
                     <i className="fas fa-user-md"></i>
                     <span>Doctor:</span>
@@ -708,6 +880,13 @@ const AppointmentBooking = ({ userData }) => {
 
       {/* Navigation Buttons */}
       <div className="apt-booking-actions">
+        {bookingError && (
+          <div className="apt-selected-info" style={{ color: '#dc3545', width: '100%' }}>
+            <i className="fas fa-exclamation-circle"></i>
+            {bookingError}
+          </div>
+        )}
+
         {bookingStep > 1 && (
           <button className="apt-btn-back" onClick={prevStep}>
             <i className="fas fa-arrow-left"></i>
@@ -732,12 +911,12 @@ const AppointmentBooking = ({ userData }) => {
           </button>
         ) : (
           <button 
-            className={`apt-btn-book ${!selectedPayment ? 'disabled' : ''}`}
+            className={`apt-btn-book ${(!selectedPayment || isBookingAppointment) ? 'disabled' : ''}`}
             onClick={handleBookAppointment}
-            disabled={!selectedPayment}
+            disabled={!selectedPayment || isBookingAppointment}
           >
             <i className="fas fa-calendar-check"></i>
-            Confirm & Book Appointment
+            {isBookingAppointment ? 'Booking...' : 'Confirm & Book Appointment'}
           </button>
         )}
       </div>

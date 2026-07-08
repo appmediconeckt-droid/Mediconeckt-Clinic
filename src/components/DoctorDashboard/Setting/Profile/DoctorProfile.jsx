@@ -1,116 +1,68 @@
 // ProfessionalProfileTable.jsx
 import React, { useState, useEffect, useRef } from "react";
 import "./ProfessionalProfileTable.css";
+import { API_BASE_URL } from "../../../../redux/apiConfig";
+import axios from "axios";
 
 // Default profile image (you can replace with actual image)
 const DEFAULT_PROFILE_IMAGE = "data:image/jpeg;base64,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";
 
 const ProfessionalProfileTable = () => {
   // Initial state with Dr. Joshua Rein's data from Mount Sinai profile
-  const [profileData, setProfileData] = useState({
+   const [profileData, setProfileData] = useState({
     personalDetails: {
-      fullName: "Ronit Roy",
-      qualification: "DO, New York College of Osteopathic Medicine",
-      experience: "Nephrology Specialist",
-      languages: "English",
-      position: "ASSISTANT PROFESSOR | Medicine, Nephrology",
-      boardCertification: "American Board of Internal Medicine",
-      profileImage: DEFAULT_PROFILE_IMAGE
+      fullName: "",
+      qualification: "",
+      experience: "",
+      languages: "",
+      position: "",
+      boardCertification: "",
+      profileImage: DEFAULT_PROFILE_IMAGE,
     },
     professionalSummary: {
-      about: "Ronit Roy, is a nephrologist, physiologist, and hypertension specialist. He is an Assistant Professor of Medicine in the Barbara T. Murphy Division of Nephrology at the Icahn School of Medicine at Mount Sinai and a Staff Physician Scientist at the James J. Peters Veterans Affairs Medical Center.",
-      expertise: "Hypertension, Acid/Base Disorders, Electrolyte Disorders, Chronic Kidney Disease, Dialysis, Kidney Stones",
-      awards: [
-        "2022 - Young Leadership Award, Park East Synagogue",
-        "2018 - 2nd Place in Basic Science, New York Society of Nephrology (NYSN) Fellows' Night",
-        "2015 - Dr. Ira B. Cohen Award for Most Outstanding Medical House Officer"
-      ],
-      researchFocus: "Kidney, Lipid Signaling, Membrane Proteins/Channels, Receptors. Developing 3D kidney-on-a-chip models for studying tubular ion transport physiology."
+      about: "",
+      expertise: "",
+      awards: [],
+      researchFocus: "",
     },
     educationTraining: {
-      medicalDegree: "DO, New York College of Osteopathic Medicine",
-      residency: "Internal Medicine, Mount Sinai Hospital",
-      fellowship: "Nephrology, Icahn School of Medicine",
-      specialTraining: "Clinical and Research Nephrology Fellowships at Mount Sinai Hospital"
+      medicalDegree: "",
+      residency: "",
+      fellowship: "",
+      specialTraining: "",
     },
     hospitalAffiliations: {
-      primaryHospital: "Mount Sinai Union Square",
-      address: "10 Union Square East, New York, NY 10003",
-      googleMapLink: "https://maps.app.goo.gl/97UXW12vLkf4TvfT9",
-      allHospitals: [
-        "Mount Sinai Beth Israel",
-        "Mount Sinai Morningside",
-        "Mount Sinai Brooklyn",
-        "Mount Sinai Queens",
-        "The Mount Sinai Hospital",
-        "Mount Sinai West"
-      ],
-      contact: "212-420-4070",
-      videoVisits: "Video Visit Available"
+      primaryHospital: "",
+      address: "",
+      googleMapLink: "",
+      allHospitals: [],
+      contact: "",
+      videoVisits: "",
     },
     clinicalFocus: {
-      primarySpecialties: [
-        "Hypertension (High Blood Pressure)",
-        "Chronic Kidney Disease",
-        "Acute Kidney Injury",
-        "Electrolyte Disorders"
-      ],
-      allConditions: [
-        "Acute Interstitial Nephritis",
-        "Acute Renal Failure",
-        "Adrenal Hypertension",
-        "Alkalosis",
-        "Blood Pressure Testing",
-        "Calcium Disorders",
-        "Conn's Syndrome",
-        "Diabetes Insipidus",
-        "Diabetic Kidney Disease",
-        "Dialysis",
-        "End Stage Renal Disease",
-        "Glomerulonephritis",
-        "Hyperaldosteronism",
-        "Hyperkalemia",
-        "Hypernatremia",
-        "Hypokalemia",
-        "Hyponatremia",
-        "Kidney Biopsy",
-        "Kidney Stones",
-        "Nephrotic Syndrome",
-        "Polycystic Kidney Disease",
-        "Proteinuria",
-        "Renal Artery Stenosis"
-      ]
+      primarySpecialties: [],
+      allConditions: [],
     },
     availability: {
-      todayAvailable: true,
-      onlineConsultation: true,
-      location: "Mount Sinai Union Square",
-      acceptsNewPatients: true,
-      consultationHours: "9:00 AM - 5:00 PM, Monday to Friday"
+      todayAvailable: false,
+      onlineConsultation: false,
+      location: "",
+      acceptsNewPatients: false,
+      consultationHours: "",
     },
     consultationFees: {
-      initialConsultation: "$350",
-      followUpVisit: "$200",
-      onlineConsultation: "$250",
-      insuranceAccepted: "Yes"
+      initialConsultation: "",
+      followUpVisit: "",
+      onlineConsultation: "",
+      insuranceAccepted: false,
     },
     insuranceInformation: {
-      acceptedInsurances: [
-        "AETNA - Commercial/Medicare",
-        "CIGNA Healthcare",
-        "Empire Blue Cross Blue Shield",
-        "EmblemHealth (GHI, HIP)",
-        "Medicare - NY/NJ",
-        "United Health Care",
-        "Oxford",
-        "1199 SEIU",
-        "HealthFirst",
-        "Metroplus",
-        "Multiplan PHCS"
-      ],
-      insuranceNote: "Accepted insurance may vary by location. Contact office for most up-to-date information."
-    }
+      acceptedInsurances: [],
+      insuranceNote: "",
+    },
   });
+
+
 
   const [editingSection, setEditingSection] = useState(null);
   const [editFormData, setEditFormData] = useState({});
@@ -121,24 +73,172 @@ const ProfessionalProfileTable = () => {
   const [activeTab, setActiveTab] = useState("overview");
   const [isLoading, setIsLoading] = useState(false);
   const fileInputRef = useRef(null);
+  const [selectedImageFile, setSelectedImageFile] = useState(null);
 
   // Animation for section transitions
   const [animatedSections, setAnimatedSections] = useState({});
 
+const getDoctorId = () => {
+    const authUser = localStorage.getItem("authUser");
+
+    if (!authUser) return null;
+
+    try {
+      const parsed = JSON.parse(authUser);
+      return (
+        parsed?.id ||
+        parsed?.user?.id ||
+        parsed?.data?.id ||
+        parsed?.data?.user?.id ||
+        null
+      );
+    } catch (error) {
+      console.log("authUser parse error:", error);
+      return null;
+    }
+  };
+
+ const stringToArray = (value) => {
+    if (!value) return [];
+    if (Array.isArray(value)) return value;
+
+    try {
+      const parsed = JSON.parse(value);
+      return Array.isArray(parsed) ? parsed : value.split(",").map((x) => x.trim());
+    } catch {
+      return value.split(",").map((x) => x.trim());
+    }
+  };
+
+   const arrayToString = (value) => {
+    if (!value) return "";
+    return Array.isArray(value) ? value.join(", ") : value;
+  };
+
+  const getImageUrl = (img) => {
+    if (!img) return DEFAULT_PROFILE_IMAGE;
+    if (img.startsWith("http") || img.startsWith("data:") || img.startsWith("blob:")) {
+      return img;
+    }
+
+    const baseUrl = API_BASE_URL.replace("/api", "");
+    return `${baseUrl}/${img.replace(/^\/+/, "")}`;
+  };
+
+
+ const fetchDoctorProfile = async () => {
+    try {
+      const doctorId = getDoctorId();
+
+      console.log("Doctor ID:", doctorId);
+
+      if (!doctorId) {
+        console.log("Doctor ID not found");
+        return;
+      }
+
+      const url = `${API_BASE_URL}/users/doctor-profile/${doctorId}`;
+      console.log("GET Profile URL:", url);
+
+      const res = await axios.get(url);
+      const data = res.data.data;
+
+      console.log("Profile API Response:", data);
+
+      setProfileData({
+        personalDetails: {
+          fullName: data.full_name || "",
+          qualification: data.qualification || "",
+          experience: data.experience || "",
+          languages: data.languages || "",
+          position: data.position || "",
+          boardCertification: data.board_certification || "",
+          profileImage: getImageUrl(
+            data.profileImage ||
+              data.profilePic ||
+              data.profile_pic ||
+              data.profile_image ||
+              data.profile_photo ||
+              ""
+          ),
+        },
+        professionalSummary: {
+          about: data.about_doctor || "",
+          expertise: data.expertise || "",
+          awards: stringToArray(data.awards),
+          researchFocus: data.research_focus || "",
+        },
+        educationTraining: {
+          medicalDegree: data.medical_degree || "",
+          residency: data.residency || "",
+          fellowship: data.fellowship || "",
+          specialTraining: data.special_training || "",
+        },
+        hospitalAffiliations: {
+          primaryHospital: data.primary_hospital || "",
+          address: data.hospital_address || "",
+          googleMapLink: data.google_map_link || "",
+          allHospitals: stringToArray(data.all_hospitals),
+          contact: data.contact_number || "",
+          videoVisits: data.video_visits || "",
+        },
+        clinicalFocus: {
+          primarySpecialties: stringToArray(data.primary_specialties),
+          allConditions: stringToArray(data.all_conditions),
+        },
+        availability: {
+          todayAvailable: Boolean(data.today_available),
+          onlineConsultation: Boolean(data.online_consultation),
+          location: data.doctor_location || "",
+          acceptsNewPatients: Boolean(data.accepts_new_patients),
+          consultationHours: data.consultation_hours || "",
+        },
+        consultationFees: {
+          initialConsultation: data.initial_consultation_fee || "",
+          followUpVisit: data.follow_up_visit_fee || "",
+          onlineConsultation: data.online_consultation_fee || "",
+          insuranceAccepted: Boolean(data.insurance_accepted),
+        },
+        insuranceInformation: {
+          acceptedInsurances: stringToArray(data.accepted_insurances),
+          insuranceNote: data.insurance_note || "",
+        },
+      });
+    } catch (error) {
+      console.log("GET Profile API Error:", error.response?.data || error.message);
+    }
+  };
+
   useEffect(() => {
-    // Trigger entrance animations
-    const sections = Object.keys(profileData);
-    sections.forEach((section, index) => {
+    fetchDoctorProfile();
+
+    Object.keys(profileData).forEach((section, index) => {
       setTimeout(() => {
-        setAnimatedSections(prev => ({ ...prev, [section]: true }));
+        setAnimatedSections((prev) => ({ ...prev, [section]: true }));
       }, index * 100);
     });
   }, []);
+
+
+
+  // useEffect(() => {
+  //   // Trigger entrance animations
+  //   const sections = Object.keys(profileData);
+  //   sections.forEach((section, index) => {
+  //     setTimeout(() => {
+  //       setAnimatedSections(prev => ({ ...prev, [section]: true }));
+  //     }, index * 100);
+  //   });
+  // }, []);
 
   // Handle edit button click
   const handleEditClick = (section) => {
     setEditingSection(section);
     setEditFormData(profileData[section]);
+    
+
+
+
     
     // Animation for edit mode
     const editSection = document.querySelector(`.js-profile-section-${section}`);
@@ -186,30 +286,94 @@ const ProfessionalProfileTable = () => {
     });
   };
 
+
+   const makeUpdatePayload = () => {
+    const updated = {
+      ...profileData,
+      [editingSection]: editFormData,
+    };
+
+    return {
+      full_name: updated.personalDetails.fullName,
+      qualification: updated.personalDetails.qualification,
+      experience: updated.personalDetails.experience,
+      languages: updated.personalDetails.languages,
+      position: updated.personalDetails.position,
+      board_certification: updated.personalDetails.boardCertification,
+      profile_image: updated.personalDetails.profileImage,
+
+      about_doctor: updated.professionalSummary.about,
+      expertise: updated.professionalSummary.expertise,
+      awards: arrayToString(updated.professionalSummary.awards),
+      research_focus: updated.professionalSummary.researchFocus,
+
+      medical_degree: updated.educationTraining.medicalDegree,
+      residency: updated.educationTraining.residency,
+      fellowship: updated.educationTraining.fellowship,
+      special_training: updated.educationTraining.specialTraining,
+
+      primary_hospital: updated.hospitalAffiliations.primaryHospital,
+      hospital_address: updated.hospitalAffiliations.address,
+      google_map_link: updated.hospitalAffiliations.googleMapLink,
+      all_hospitals: arrayToString(updated.hospitalAffiliations.allHospitals),
+      contact_number: updated.hospitalAffiliations.contact,
+      video_visits: updated.hospitalAffiliations.videoVisits,
+
+      primary_specialties: arrayToString(updated.clinicalFocus.primarySpecialties),
+      all_conditions: arrayToString(updated.clinicalFocus.allConditions),
+
+      today_available: updated.availability.todayAvailable ? 1 : 0,
+      online_consultation: updated.availability.onlineConsultation ? 1 : 0,
+      doctor_location: updated.availability.location,
+      accepts_new_patients: updated.availability.acceptsNewPatients ? 1 : 0,
+      consultation_hours: updated.availability.consultationHours,
+
+      initial_consultation_fee: updated.consultationFees.initialConsultation,
+      follow_up_visit_fee: updated.consultationFees.followUpVisit,
+      online_consultation_fee: updated.consultationFees.onlineConsultation,
+      insurance_accepted: updated.consultationFees.insuranceAccepted ? 1 : 0,
+
+      accepted_insurances: arrayToString(
+        updated.insuranceInformation.acceptedInsurances
+      ),
+      insurance_note: updated.insuranceInformation.insuranceNote,
+    };
+  };
+
+
   // Save changes with animation
-  const handleSaveClick = () => {
-    if (editingSection) {
+   const handleSaveClick = async () => {
+    try {
+      const doctorId = getDoctorId();
+
+      if (!doctorId) {
+        alert("Doctor ID not found");
+        return;
+      }
+
       setIsLoading(true);
-      
-      // Simulate API call
-      setTimeout(() => {
-        setProfileData({
-          ...profileData,
-          [editingSection]: editFormData
-        });
-        setEditingSection(null);
-        setEditFormData({});
-        setIsLoading(false);
-        
-        // Success animation
-        const successMsg = document.querySelector('.js-save-success');
-        if (successMsg) {
-          successMsg.classList.add('js-show-success');
-          setTimeout(() => {
-            successMsg.classList.remove('js-show-success');
-          }, 3000);
-        }
-      }, 800);
+
+      const payload = makeUpdatePayload();
+
+      console.log("PUT Payload:", payload);
+
+      const res = await axios.put(
+        `${API_BASE_URL}/users/doctor-profile/${doctorId}`,
+        payload
+      );
+
+      console.log("Update Response:", res.data);
+
+      await fetchDoctorProfile();
+
+      setEditingSection(null);
+      setEditFormData({});
+      alert("Profile updated successfully");
+    } catch (error) {
+      console.log("UPDATE Profile API Error:", error.response?.data || error.message);
+      alert(error.response?.data?.message || "Profile update failed");
+    } finally {
+      setIsLoading(false);
     }
   };
 
@@ -241,23 +405,53 @@ const ProfessionalProfileTable = () => {
   };
 
   // Save image URL
-  const handleSaveImageUrl = () => {
-    if (editingSection === "personalDetails") {
-      setEditFormData({
-        ...editFormData,
-        profileImage: imageUrlInput
-      });
-    } else {
-      setProfileData({
-        ...profileData,
-        personalDetails: {
-          ...profileData.personalDetails,
-          profileImage: imageUrlInput
-        }
-      });
+const handleSaveImageUrl = async () => {
+  try {
+    const doctorId = getDoctorId();
+
+    if (!doctorId) {
+      alert("Doctor ID not found");
+      return;
     }
+
+    const formData = new FormData();
+
+    if (selectedImageFile) {
+      formData.append("profilePic", selectedImageFile);
+    } else {
+      formData.append("profilePic", imageUrlInput);
+    }
+
+    setIsLoading(true);
+
+    const res = await axios.put(
+      `${API_BASE_URL}/users/doctor-profile/${doctorId}`,
+      formData,
+      {
+        headers: {
+          "Content-Type": "multipart/form-data",
+        },
+      }
+    );
+
+    console.log("Doctor profile image response:", res.data);
+
+    await fetchDoctorProfile();
+
+    setSelectedImageFile(null);
     setShowImageModal(false);
-  };
+
+    alert("Profile image updated successfully");
+  } catch (error) {
+    console.log("Doctor profile image upload error:", error.response?.data || error.message);
+    alert(error.response?.data?.message || "Profile image upload failed");
+  } finally {
+    setIsLoading(false);
+  }
+};
+
+
+  
 
   // Get current location
   const handleGetCurrentLocation = () => {
@@ -278,16 +472,19 @@ const ProfessionalProfileTable = () => {
   };
 
   // Handle file upload
-  const handleFileUpload = (e) => {
-    const file = e.target.files[0];
-    if (file) {
-      const reader = new FileReader();
-      reader.onload = (event) => {
-        setImageUrlInput(event.target.result);
-      };
-      reader.readAsDataURL(file);
-    }
-  };
+const handleFileUpload = (e) => {
+  const file = e.target.files[0];
+
+  if (file) {
+    setSelectedImageFile(file);
+
+    const reader = new FileReader();
+    reader.onload = (event) => {
+      setImageUrlInput(event.target.result);
+    };
+    reader.readAsDataURL(file);
+  }
+};
 
   // Trigger file input click
   const handleUploadClick = () => {

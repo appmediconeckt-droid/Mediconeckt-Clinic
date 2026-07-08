@@ -1107,6 +1107,297 @@ const DoctorCalendar = () => {
     setShowAddTimeModal(false);
   };
 
+  const month = currentDate.getMonth();
+  const year = currentDate.getFullYear();
+  const monthName = currentDate.toLocaleString("en-US", { month: "long" });
+  const monthDays = getDaysInMonth(month, year);
+  const firstDayIndex = new Date(year, month, 1).getDay();
+  const previousMonthDays = getDaysInMonth(month === 0 ? 11 : month - 1, month === 0 ? year - 1 : year);
+  const calendarCells = [
+    ...Array.from({ length: firstDayIndex }, (_, index) => ({
+      day: previousMonthDays - firstDayIndex + index + 1,
+      muted: true,
+    })),
+    ...Array.from({ length: monthDays }, (_, index) => ({
+      day: index + 1,
+      muted: false,
+    })),
+  ];
+  while (calendarCells.length % 7 !== 0) {
+    calendarCells.push({ day: calendarCells.length - firstDayIndex - monthDays + 1, muted: true });
+  }
+  const visibleCalendarCells = calendarCells.slice(0, 35);
+  const selectedDateLabel = selectedDays.length
+    ? `${monthName} ${selectedDays[0]}, ${year}`
+    : `${monthName} ${new Date().getDate()}, ${year}`;
+  const configuredDatesCount = Object.values(availabilityDateMap).filter((item) => item?.ranges?.length).length;
+
+  return (
+    <div className="doctor-calendar-root calendar-portal">
+      <header className="calendar-portal-header">
+        <div>
+          <h1>Calendar & Availability</h1>
+          <p>Recurring & date-specific availability</p>
+        </div>
+        <div className="calendar-header-actions">
+          <div className="calendar-clinic-select">
+            <button type="button" onClick={() => setShowClinicDropdown((open) => !open)}>
+              <i className="fa-solid fa-square-plus"></i>
+              {selectedClinic?.name || "Main Hospital"}
+              <i className="fa-solid fa-chevron-down"></i>
+            </button>
+            {showClinicDropdown && (
+              <div className="calendar-clinic-menu">
+                {clinics.map((clinic) => (
+                  <button
+                    type="button"
+                    key={clinic.id}
+                    className={String(selectedClinic?.id) === String(clinic.id) ? "active" : ""}
+                    onClick={() => {
+                      setSelectedClinic(clinic);
+                      setShowClinicDropdown(false);
+                    }}
+                  >
+                    <span style={{ backgroundColor: clinic.color }}></span>
+                    <div>
+                      <strong>{clinic.name}</strong>
+                      <small>{clinic.location}</small>
+                    </div>
+                  </button>
+                ))}
+              </div>
+            )}
+          </div>
+          <button type="button" className="calendar-clear-btn" onClick={clearAll}>Clear All</button>
+        </div>
+      </header>
+
+      <nav className="calendar-tabs">
+        <button type="button">Recurring Schedule</button>
+        <button type="button" className="active">Specific Dates</button>
+        <button type="button">Exceptions / Unavailable</button>
+      </nav>
+
+      {apiError && <div className="calendar-api-note">{apiError}</div>}
+
+      <section className="calendar-main-grid">
+        <div className="calendar-left-stack">
+          <section className="calendar-month-card">
+            <div className="calendar-month-header">
+              <div className="calendar-month-title">
+                <strong>{monthName} {year}</strong>
+                <button type="button" onClick={() => changeMonth(-1)} aria-label="Previous month">
+                  <i className="fa-solid fa-chevron-left"></i>
+                </button>
+                <button type="button" onClick={() => changeMonth(1)} aria-label="Next month">
+                  <i className="fa-solid fa-chevron-right"></i>
+                </button>
+              </div>
+              <div className="calendar-legend">
+                <span><i className="configured"></i> Configured</span>
+                <span><i className="selected"></i> Selected</span>
+                <span><i className="empty"></i> Empty</span>
+              </div>
+            </div>
+
+            <div className="portal-calendar-grid">
+              {days.map((day) => (
+                <div className="portal-weekday" key={day}>{day.toUpperCase()}</div>
+              ))}
+              {visibleCalendarCells.map((cell, index) => {
+                const dateKey = !cell.muted ? formatDateKey(year, month, cell.day) : "";
+                const isSelected = !cell.muted && selectedDays.includes(cell.day);
+                const isConfigured = !cell.muted && (availabilityDateMap[dateKey]?.ranges || []).length > 0;
+                const isPast = !cell.muted && isPastDate(year, month, cell.day);
+
+                return (
+                  <button
+                    type="button"
+                    key={`${cell.day}-${index}`}
+                    className={[
+                      "portal-day-cell",
+                      cell.muted ? "muted" : "",
+                      isSelected ? "selected" : "",
+                      isConfigured ? "configured" : "",
+                      isPast ? "past" : "",
+                    ].join(" ")}
+                    onClick={() => {
+                      if (!cell.muted && !isPast) toggleManualDay(year, month, cell.day);
+                    }}
+                    disabled={cell.muted || isPast}
+                  >
+                    <span>{cell.day}</span>
+                    {isConfigured && <em>{availabilityDateMap[dateKey].ranges.length} ranges</em>}
+                    {!cell.muted && !isSelected && !isConfigured && cell.day === 27 && <small>No timings</small>}
+                  </button>
+                );
+              })}
+            </div>
+          </section>
+
+          <section className="calendar-slot-preview">
+            <h2>Slot Preview &mdash; {selectedClinic?.name || "Main Hospital"}</h2>
+            <div className="slot-preview-box">
+              {slotPreview.length === 0 ? (
+                <div className="slot-empty">
+                  <i className="fa-regular fa-calendar-minus"></i>
+                  <p>No slots generated yet. Configure availability and click <button type="button" onClick={generateAllSlots}>Generate Slots</button> to preview.</p>
+                </div>
+              ) : (
+                <div className="slot-preview-list">
+                  {slotPreview.slice(0, 6).map((entry, index) => (
+                    <article key={`${entry.date}-${index}`}>
+                      <strong>{entry.date}</strong>
+                      <span>{entry.slots?.length || 0} slots</span>
+                    </article>
+                  ))}
+                </div>
+              )}
+            </div>
+          </section>
+        </div>
+
+        <aside className="calendar-side-panel">
+          <section className="calendar-date-card">
+            <div className="side-card-title">
+              <div>
+                <h3>{selectedDateLabel}</h3>
+                <p>{selectedDays.length || 0} days selected</p>
+              </div>
+              <i className="fa-solid fa-ban"></i>
+            </div>
+            <hr />
+            <h4>Time Ranges</h4>
+            <div className="time-range-row">
+              <i className="fa-regular fa-clock"></i>
+              <span>09:00 AM</span>
+              <small>&rarr;</small>
+              <span>01:00 PM</span>
+            </div>
+            <div className="time-range-row">
+              <i className="fa-regular fa-clock"></i>
+              <span>04:00 PM</span>
+              <small>&rarr;</small>
+              <span>07:00 PM</span>
+            </div>
+            <button type="button" className="add-range-btn" onClick={() => setShowAddTimeModal(true)}>
+              <i className="fa-solid fa-plus"></i> Add Another Range
+            </button>
+            <hr />
+            <button type="button" className="apply-selected-btn" onClick={() => setShowAddTimeModal(true)}>
+              Apply to Selected Dates
+            </button>
+          </section>
+
+          <section className="recurring-rules-card">
+            <div className="recurring-title">
+              <h3>Recurring Rules</h3>
+              <label className="calendar-switch">
+                <input type="checkbox" checked readOnly />
+                <span></span>
+              </label>
+            </div>
+            <p>Repeat these timings weekly on selected days.</p>
+            <div className="weekday-pills">
+              {days.map((day, index) => (
+                <button
+                  type="button"
+                  key={day}
+                  className={recurringWeekdays.includes(index) || [1, 2, 3, 4, 5].includes(index) ? "active" : ""}
+                  onClick={() => toggleRecurringWeekday(index)}
+                >
+                  {day[0]}
+                </button>
+              ))}
+            </div>
+            <button type="button" className="apply-weekdays-btn" onClick={() => setShowAddTimeModal(true)}>
+              Apply to weekdays
+            </button>
+          </section>
+        </aside>
+      </section>
+
+      {showAddTimeModal && (
+        <div
+          className="calendar-modal-backdrop"
+          role="dialog"
+          aria-modal="true"
+          onClick={() => setShowAddTimeModal(false)}
+        >
+          <div className="calendar-modal-card" onClick={(event) => event.stopPropagation()}>
+            <div className="calendar-modal-title">
+              <div>
+                <h3>Add Time Range</h3>
+                <p>Apply timings to selected dates or recurring weekdays.</p>
+              </div>
+              <button type="button" onClick={() => setShowAddTimeModal(false)} aria-label="Close">
+                <i className="fa-solid fa-xmark"></i>
+              </button>
+            </div>
+
+            <div className="calendar-modal-grid">
+              <label>
+                Start Time
+                <input
+                  type="time"
+                  value={additionalTime.start}
+                  onChange={(event) => setAdditionalTime((prev) => ({ ...prev, start: event.target.value }))}
+                />
+              </label>
+              <label>
+                End Time
+                <input
+                  type="time"
+                  value={additionalTime.end}
+                  onChange={(event) => setAdditionalTime((prev) => ({ ...prev, end: event.target.value }))}
+                />
+              </label>
+              <label>
+                Slot Duration
+                <select
+                  value={additionalTime.duration}
+                  onChange={(event) => setAdditionalTime((prev) => ({ ...prev, duration: Number(event.target.value) }))}
+                >
+                  <option value={10}>10 min</option>
+                  <option value={15}>15 min</option>
+                  <option value={30}>30 min</option>
+                  <option value={45}>45 min</option>
+                </select>
+              </label>
+            </div>
+
+            <div className="calendar-modal-actions">
+              <button type="button" className="save-draft-btn" onClick={() => setShowAddTimeModal(false)}>
+                Cancel
+              </button>
+              <button type="button" className="apply-weekdays-btn" onClick={addAdditionalTimingToWeekdays}>
+                Apply to weekdays
+              </button>
+              <button type="button" className="apply-selected-btn" onClick={addAdditionalTiming}>
+                Apply to selected dates
+              </button>
+            </div>
+          </div>
+        </div>
+      )}
+
+      <footer className="calendar-bottom-bar">
+        <div className="calendar-status-meta">
+          <span><i className="selected"></i> Selected dates: {selectedDays.length}</span>
+          <span><i className="configured"></i> Configured dates: {configuredDatesCount}</span>
+          <span className="pending"><i></i> Pending changes: {selectedDays.length ? 2 : 0}</span>
+        </div>
+        <div className="calendar-bottom-actions">
+          <button type="button" className="clear-preview-btn" onClick={() => setSlotPreview([])}>Clear Preview</button>
+          <button type="button" className="save-draft-btn">Save Draft</button>
+          <button type="button" className="generate-slots-btn" onClick={generateAllSlots}>
+            <i className="fa-solid fa-bolt"></i> Generate Slots
+          </button>
+        </div>
+      </footer>
+    </div>
+  );
+
   return (
     <div className="p-4 doctor-calendar-root">
 

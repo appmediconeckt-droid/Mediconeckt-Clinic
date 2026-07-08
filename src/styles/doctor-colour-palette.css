@@ -1,0 +1,24 @@
+:root {
+  --doctor-primary: #004ac6;
+  --doctor-gradient-start: #004ac6;
+  --doctor-gradient-end: #0070fa;
+  --doctor-gradient: linear-gradient(135deg, var(--doctor-gradient-start), var(--doctor-gradient-end));
+  --doctor-background-tint: #f5f5f5;
+
+  --doctor-primary-rgb: 0, 74, 198;
+  --doctor-gradient-end-rgb: 0, 112, 250;
+  --doctor-surface: #ffffff;
+  --doctor-border: #e2e8f0;
+  --doctor-text: #171b24;
+  --doctor-muted-text: #4a5261;
+}
+
+body.doctor-theme-navbar {
+  --portal-primary: var(--doctor-primary);
+  --portal-gradient: var(--doctor-gradient);
+  --portal-bg: var(--doctor-background-tint);
+  --portal-surface: var(--doctor-surface);
+  --portal-border: var(--doctor-border);
+  --portal-text: var(--doctor-text);
+  --portal-muted-text: var(--doctor-muted-text);
+}

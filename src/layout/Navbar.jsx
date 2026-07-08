@@ -1,5 +1,5 @@
 import React, { useState, useEffect, useRef } from "react";
-import { Link, useNavigate } from "react-router-dom";
+import { Link, useLocation, useNavigate } from "react-router-dom";
 import { motion } from "framer-motion";
 import logo from '../image/Mediconect-Logo-4.png';
 
@@ -15,6 +15,24 @@ const Navbar = ({ toggleSidebar }) => {
     "https://www.w3schools.com/howto/img_avatar.png"
   );
   const navigate = useNavigate();
+  const location = useLocation();
+  const doctorRoutes = [
+    "/doctordashboard",
+    "/doctorcalendar",
+    "/doctorprofile",
+    "/qrcode",
+    "/appointmentlist",
+    "/setting",
+    "/doctor-notifications",
+    "/clinicpage",
+    "/walkinappointment",
+    "/patient-sms",
+    "/followup",
+    "/patient-details",
+    "/doctor-user-management",
+  ];
+  const isDoctorRoute = doctorRoutes.includes(location.pathname) || location.pathname.startsWith("/patient-chat/");
+  const effectiveRole = isDoctorRoute ? "doctor" : userRole;
 
   // Get user role and department from localStorage
   useEffect(() => {
@@ -26,74 +44,74 @@ const Navbar = ({ toggleSidebar }) => {
 
   // Get theme colors based on user role - ADDED SUPER ADMIN
   const getThemeColors = () => {
-    if (userRole === "doctor") {
+    if (effectiveRole === "doctor") {
       return {
-        navbarBg: "#a8d8ff",
+        navbarBg: "#ffffff",
         emergencyIconColor: "#101012ff",
         emergencyActiveColor: "#dc2626",
         notificationColor: "#121314ff",
         brandColor: "#1e3a8a"
       };
-    } else if (userRole === "patient") {
+    } else if (effectiveRole === "patient") {
       return {
         navbarBg: "#8af5aaff",
         notificationColor: "#191515ff",
         brandColor: "#991b1b"
       };
-    } else if (userRole === "nurse") {
+    } else if (effectiveRole === "nurse") {
       return {
         navbarBg: "#ffd6e7",
         notificationColor: "#191515ff",
         brandColor: "#991b1b"
       };
-    } else if (userRole === "assistant") {
+    } else if (effectiveRole === "assistant") {
       return {
         navbarBg: "#e0d1ff",
         notificationColor: "#191515ff",
         brandColor: "#991b1b"
       };
-    } else if (userRole === "technician") {
+    } else if (effectiveRole === "technician") {
       return {
         navbarBg: "#ffe4c9",
         notificationColor: "#191515ff",
         brandColor: "#991b1b"
       };
-    } else if (userRole === "housekeeping") {
+    } else if (effectiveRole === "housekeeping") {
       return {
         navbarBg: "#fff9c9",
         notificationColor: "#191515ff",
         brandColor: "#991b1b"
       };
     }
-    else if (userRole === "supervisor") {
+    else if (effectiveRole === "supervisor") {
       return {
         navbarBg: "#b2ebf2",
         notificationColor: "#191515ff",
         brandColor: "#991b1b"
       };
     }
-    else if (userRole === "manager") {
+    else if (effectiveRole === "manager") {
       return {
         navbarBg: "#e6e6ff",
         notificationColor: "#191515ff",
         brandColor: "#991b1b"
       };
     }
-    else if (userRole === "billing") {
+    else if (effectiveRole === "billing") {
       return {
         navbarBg: "#c8f7c5",
         notificationColor: "#191515ff",
         brandColor: "#991b1b"
       };
     }
-    else if (userRole === "admin") {
+    else if (effectiveRole === "admin") {
       return {
         navbarBg: "#e3f2fd",
         notificationColor: "#191515ff",
         brandColor: "#991b1b"
       };
     }
-    else if (userRole === "superadmin") { // ADDED SUPER ADMIN
+    else if (effectiveRole === "superadmin") { // ADDED SUPER ADMIN
       return {
         navbarBg: "#fff9c2",
         emergencyIconColor: "#8b6914",
@@ -140,22 +158,22 @@ const Navbar = ({ toggleSidebar }) => {
     });
 
     // Add appropriate role class
-    if (userRole === "doctor") {
+    if (effectiveRole === "doctor") {
       document.body.classList.add('doctor-theme-navbar');
-    } else if (userRole === "patient") {
+    } else if (effectiveRole === "patient") {
       document.body.classList.add('patient-theme-navbar');
-    } else if (userRole === "hospital" && hospitalDept) {
+    } else if (effectiveRole === "hospital" && hospitalDept) {
       document.body.classList.add(`${hospitalDept}-theme-navbar`);
-    } else if (userRole === "superadmin") {
+    } else if (effectiveRole === "superadmin") {
       document.body.classList.add('superadmin-theme-navbar');
     }
-  }, [userRole, hospitalDept]);
+  }, [effectiveRole, hospitalDept]);
 
   // Handle notification click - different routes based on role
   const handleNotificationClick = (e) => {
     e.preventDefault();
 
-    if (userRole === "doctor") {
+    if (effectiveRole === "doctor") {
       navigate("/doctor-notifications");
     } else if (userRole === "patient") {
       navigate("/patient-notifications");
@@ -177,7 +195,7 @@ const Navbar = ({ toggleSidebar }) => {
 
   // Handle emergency click - Only for Doctor and Super Admin
   const handleEmergencyClick = () => {
-    if (userRole === "doctor" || userRole === "superadmin") {
+    if (effectiveRole === "doctor" || effectiveRole === "superadmin") {
       setIsEmergencyActive(!isEmergencyActive);
       // Add emergency logic here
     }
@@ -185,7 +203,7 @@ const Navbar = ({ toggleSidebar }) => {
 
   // Handle profile image click - Different routes based on role
   const handleProfileClick = () => {
-    if (userRole === "doctor") {
+    if (effectiveRole === "doctor") {
       setShowAvatarModal(true);
     } else if (userRole === "patient") {
       navigate("/patient-profile");
@@ -212,9 +230,9 @@ const Navbar = ({ toggleSidebar }) => {
 
   // Get role display name
   const getRoleDisplayName = () => {
-    if (userRole === "doctor") return "Doctor";
-    if (userRole === "patient") return "Patient";
-    if (userRole === "superadmin") return "Super Administrator";
+    if (effectiveRole === "doctor") return "Doctor";
+    if (effectiveRole === "patient") return "Patient";
+    if (effectiveRole === "superadmin") return "Super Administrator";
     if (userRole === "hospital" && hospitalDept) {
       const deptNames = {
         nurse: "Nurse",
@@ -233,9 +251,9 @@ const Navbar = ({ toggleSidebar }) => {
 
   // Get role icon
   const getRoleIcon = () => {
-    if (userRole === "doctor") return "fa-user-doctor";
-    if (userRole === "patient") return "fa-user";
-    if (userRole === "superadmin") return "fa-crown";
+    if (effectiveRole === "doctor") return "fa-user-doctor";
+    if (effectiveRole === "patient") return "fa-user";
+    if (effectiveRole === "superadmin") return "fa-crown";
     if (userRole === "hospital" && hospitalDept) {
       const deptIcons = {
         nurse: "fa-user-nurse",
@@ -262,9 +280,9 @@ const Navbar = ({ toggleSidebar }) => {
           zIndex: 999,
           backgroundColor: themeColors.navbarBg,
           transition: "background-color 0.3s ease",
-          height: "60px",
-          borderBottom: userRole === "superadmin" ? "3px solid #ffd700" : "none",
-          boxShadow: userRole === "superadmin" ? "0 4px 15px rgba(255, 215, 0, 0.3)" : "0 2px 4px rgba(0,0,0,0.1)"
+          height: effectiveRole === "doctor" ? "64px" : "60px",
+          borderBottom: effectiveRole === "doctor" ? "1px solid #edf0f4" : effectiveRole === "superadmin" ? "3px solid #ffd700" : "none",
+          boxShadow: effectiveRole === "doctor" ? "0 1px 0 rgba(15,23,42,0.04)" : effectiveRole === "superadmin" ? "0 4px 15px rgba(255, 215, 0, 0.3)" : "0 2px 4px rgba(0,0,0,0.1)"
         }}
       >
         <div className="nav-conte">
@@ -288,11 +306,11 @@ const Navbar = ({ toggleSidebar }) => {
 
             <div className="nav-main-icon d-flex align-items-center">
               {/* Emergency Icon - Only for DOCTOR and SUPER ADMIN roles */}
-              {(userRole === "doctor") && (
+              {(effectiveRole === "doctor") && (
                 <div className="emergency-container position-relative d-flex ">
                   <button
                     onClick={handleEmergencyClick}
-                    className="emergency-icon mb-4"
+                    className="emergency-icon doctor-break-action mb-4"
                     style={{
                       background: "transparent",
                       border: "none",
@@ -303,10 +321,10 @@ const Navbar = ({ toggleSidebar }) => {
                       
                     }}
                   >
-                    <i className={`fa-solid fa-triangle-exclamation ${isEmergencyActive ? 'fa-beat-fade' : ''}`}
-                      style={{ fontSize: "20px" }}></i>
+                    <i className="fa-solid fa-mug-saucer" style={{ fontSize: "15px" }}></i>
+                    <span>Take Break</span>
                   </button>
-                  {isEmergencyActive && (
+                  {isEmergencyActive && false && (
                     <span className="emergency-alert" style={{
                       position: "absolute",
                       top: "-5px",
@@ -319,6 +337,12 @@ const Navbar = ({ toggleSidebar }) => {
                     }}></span>
                   )}
                 </div>
+              )}
+
+              {effectiveRole === "doctor" && (
+                <button type="button" className="doctor-nav-round mb-4" aria-label="Theme">
+                  <i className="fa-solid fa-sun"></i>
+                </button>
               )}
 
               {/* Notification Link - Different routes based on role */}
@@ -426,7 +450,10 @@ const Navbar = ({ toggleSidebar }) => {
         
         /* ========== DOCTOR THEME NAVBAR (Light Blue) ========== */
         body.doctor-theme-navbar .navbar {
-          background-color: #a8d8ff !important;
+          background-color: #ffffff !important;
+          border-bottom: 1px solid #edf0f4 !important;
+          box-shadow: 0 1px 0 rgba(15, 23, 42, 0.04) !important;
+          height: 64px !important;
         }
         
         body.doctor-theme-navbar .fa-bell {

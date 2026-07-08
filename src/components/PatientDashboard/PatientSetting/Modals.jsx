@@ -9,8 +9,12 @@ export default function Modals({
   setShowDeleteConfirm,
   deleteSuccess,
   setDeleteSuccess,
-  navigate
+  navigate,
+  passwordData,
+  setPasswordData,
+  handleChangePassword,
 }) {
+  
   return (
     <>
       {/* Change Password Modal */}
@@ -18,13 +22,45 @@ export default function Modals({
         <div className="patient-modal-overlay">
           <div className="patient-modal-box">
             <div className="patient-modal-title">Change Password</div>
-            <form onSubmit={(e) => {
-              e.preventDefault();
-              setShowChangePassword(false);
-            }}>
-              <input type="password" placeholder="Current Password" required />
-              <input type="password" placeholder="New Password" required />
-              <input type="password" placeholder="Confirm New Password" required />
+           <form onSubmit={handleChangePassword}>
+  <input
+    type="password"
+    placeholder="Current Password"
+    value={passwordData.current_password}
+    onChange={(e) =>
+      setPasswordData({
+        ...passwordData,
+        current_password: e.target.value,
+      })
+    }
+    required
+  />
+
+  <input
+    type="password"
+    placeholder="New Password"
+    value={passwordData.new_password}
+    onChange={(e) =>
+      setPasswordData({
+        ...passwordData,
+        new_password: e.target.value,
+      })
+    }
+    required
+  />
+
+  <input
+    type="password"
+    placeholder="Confirm New Password"
+    value={passwordData.confirm_password}
+    onChange={(e) =>
+      setPasswordData({
+        ...passwordData,
+        confirm_password: e.target.value,
+      })
+    }
+    required
+  />
               <div className="patient-show">
                 <button
                   type="button"

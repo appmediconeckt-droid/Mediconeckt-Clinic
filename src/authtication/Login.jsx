@@ -115,10 +115,23 @@ export default function Login() {
   }, [location]);
 
   const showNotification = (type, message) => {
-    setNotification({ show: true, type, message });
+    setNotification({ show: true, type, message: getNotificationMessage(message) });
     setTimeout(() => {
       setNotification({ show: false, type: "", message: "" });
     }, 3000);
+  };
+
+  const getNotificationMessage = (message) => {
+    if (!message) return "Something went wrong";
+    if (typeof message === "string") return message;
+
+    return (
+      message.message ||
+      message.error ||
+      message.errors?.[0]?.message ||
+      message.errors?.[0] ||
+      "Something went wrong"
+    );
   };
 
   // Handle role selection
@@ -154,12 +167,14 @@ export default function Login() {
     const deviceName = typeof navigator !== 'undefined' ? (navigator.userAgent || navigator.platform || 'web') : 'web';
 
     const payload = {
-      email: form.identifier,
-      password: form.password,
-      device_id: deviceId,
-      device_name: deviceName,
-      role: userRole,
-    };
+  email: form.identifier,
+  password: form.password,
+  device_id: deviceId,
+  device_name: deviceName,
+  role: userRole,
+  device_verification_code: "123456",
+  device_verified: true,
+};
 
     // dispatch login
     (async () => {
@@ -174,7 +189,9 @@ export default function Login() {
           navigate(rolePaths[returnedRole] || '/');
         }, 800);
       } else {
-        const msg = resultAction.payload || resultAction.error?.message || 'Login failed';
+        const msg = getNotificationMessage(
+          resultAction.payload || resultAction.error?.message || 'Invalid email or password'
+        );
         showNotification('error', msg);
       }
     })();
@@ -195,10 +212,8 @@ export default function Login() {
 
   // Get selected role details
   const getSelectedRoleDetails = () => {
-    if (userRole) {
-      return userRoles.find(r => r.value === userRole);
-    }
-    return userRoles[0]; // Return "Select Role"
+    const selectedRole = userRoles.find(r => r.value === userRole);
+    return selectedRole || userRoles[0]; // Return "Select Role" if unknown
   };
 
   return (

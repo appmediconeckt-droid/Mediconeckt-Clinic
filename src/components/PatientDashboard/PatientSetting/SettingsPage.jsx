@@ -8,6 +8,8 @@ import MedicalRecordsTab from "./MedicalRecord/MedicalRecordsTab";
 import HelpTab from "./Help/HelpTab";
 import PrivacyTab from "./Privacy/PrivacyTab";
 import Modals from "./Modals";
+import { API_BASE_URL } from "../../../redux/apiConfig";
+import axios from "axios";
 
 
 export default function PatientSettingsPage() {
@@ -16,6 +18,49 @@ export default function PatientSettingsPage() {
   const [showLogoutConfirm, setShowLogoutConfirm] = useState(false);
   const [showDeleteConfirm, setShowDeleteConfirm] = useState(false);
   const [deleteSuccess, setDeleteSuccess] = useState(false);
+  const [passwordData, setPasswordData] = useState({
+  current_password: "",
+  new_password: "",
+  confirm_password: "",
+});
+
+const handleChangePassword = async (e) => {
+  e.preventDefault();
+
+  const authUser = JSON.parse(localStorage.getItem("authUser"));
+  const user_id = authUser?.id || authUser?.user?.id;
+
+  if (!user_id) {
+    alert("User ID not found. Please login again.");
+    return;
+  }
+
+  if (passwordData.new_password !== passwordData.confirm_password) {
+    alert("New password and confirm password do not match");
+    return;
+  }
+
+  try {
+    const res = await axios.post(`${API_BASE_URL}/users/change-password`, {
+      user_id,
+      current_password: passwordData.current_password,
+      new_password: passwordData.new_password,
+      confirm_password: passwordData.confirm_password,
+    });
+
+    alert(res.data.message || "Password changed successfully");
+
+    setPasswordData({
+      current_password: "",
+      new_password: "",
+      confirm_password: "",
+    });
+
+    setShowChangePassword(false);
+  } catch (error) {
+    alert(error.response?.data?.message || "Failed to change password");
+  }
+};
   
   const navigate = useNavigate();
 
@@ -57,17 +102,20 @@ export default function PatientSettingsPage() {
       </div>
 
       {/* All Modals */}
-      <Modals 
-        showChangePassword={showChangePassword}
-        setShowChangePassword={setShowChangePassword}
-        showLogoutConfirm={showLogoutConfirm}
-        setShowLogoutConfirm={setShowLogoutConfirm}
-        showDeleteConfirm={showDeleteConfirm}
-        setShowDeleteConfirm={setShowDeleteConfirm}
-        deleteSuccess={deleteSuccess}
-        setDeleteSuccess={setDeleteSuccess}
-        navigate={navigate}
-      />
+     <Modals 
+  showChangePassword={showChangePassword}
+  setShowChangePassword={setShowChangePassword}
+  showLogoutConfirm={showLogoutConfirm}
+  setShowLogoutConfirm={setShowLogoutConfirm}
+  showDeleteConfirm={showDeleteConfirm}
+  setShowDeleteConfirm={setShowDeleteConfirm}
+  deleteSuccess={deleteSuccess}
+  setDeleteSuccess={setDeleteSuccess}
+  navigate={navigate}
+  passwordData={passwordData}
+  setPasswordData={setPasswordData}
+  handleChangePassword={handleChangePassword}
+/>
     </div>
   );
 }

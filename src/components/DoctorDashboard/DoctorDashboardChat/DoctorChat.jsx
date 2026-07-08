@@ -74,6 +74,7 @@ const PatientChat = () => {
   const { patientId } = useParams();
   const navigate = useNavigate();
   const authUser = useSelector((state) => state.auth?.user);
+  const [activePatientId, setActivePatientId] = useState(patientId || '1');
   const [message, setMessage] = useState('');
   const [messages, setMessages] = useState([]);
   const [currentPatient, setCurrentPatient] = useState(null);
@@ -85,6 +86,12 @@ const PatientChat = () => {
 
   // Ref for auto-scrolling to latest message
   const messagesEndRef = useRef(null);
+
+  useEffect(() => {
+    if (patientId) {
+      setActivePatientId(patientId);
+    }
+  }, [patientId]);
 
   // Mock chat messages with file examples
   const mockChats = {
@@ -192,16 +199,16 @@ const PatientChat = () => {
 
         const [chatList, conversation] = await Promise.all([
           getChatList(),
-          getConversation(patientId),
+          getConversation(activePatientId),
         ]);
 
         const patientItem = chatList.find(item => {
           const p = item.patient || item.user || item;
-          return String(p.id || p._id || p.patient_id || item.patient_id || p.user_id) === String(patientId);
+          return String(p.id || p._id || p.patient_id || item.patient_id || p.user_id) === String(activePatientId);
         });
         const patient = patientItem?.patient || patientItem?.user || patientItem;
-        const fallbackPatient = mockPatients.find(p => p.id === parseInt(patientId));
-        const firstPatientMessage = conversation.find(message => String(message.sender_id) === String(patientId)) || conversation[0];
+        const fallbackPatient = mockPatients.find(p => p.id === parseInt(activePatientId));
+        const firstPatientMessage = conversation.find(message => String(message.sender_id) === String(activePatientId)) || conversation[0];
 
         setCurrentPatient(patient ? {
           id: patient.id || patient._id || patient.patient_id || patientItem?.patient_id || patient.user_id,
@@ -215,7 +222,7 @@ const PatientChat = () => {
           avatarColor: '#3498db',
           bloodGroup: patient.bloodGroup || patient.blood_group || '',
         } : fallbackPatient || (firstPatientMessage ? {
-          id: patientId,
+          id: activePatientId,
           name: firstPatientMessage.sender_name || firstPatientMessage.receiver_name || 'Unknown Patient',
           age: 'NA',
           gender: 'NA',
@@ -227,21 +234,19 @@ const PatientChat = () => {
           bloodGroup: '',
         } : null));
 
-        setMessages(conversation.map(normalizeMessage));
+        setMessages(conversation.length ? conversation.map(normalizeMessage) : (mockChats[activePatientId] || []));
         setChatStatus('succeeded');
       } catch (err) {
-        const fallbackPatient = mockPatients.find(p => p.id === parseInt(patientId));
+        const fallbackPatient = mockPatients.find(p => p.id === parseInt(activePatientId));
         setCurrentPatient(fallbackPatient || null);
-        setMessages([]);
+        setMessages(mockChats[activePatientId] || []);
         setChatError(err.response?.data?.message || err.message || 'Failed to load chat');
         setChatStatus('failed');
       }
     };
 
-    if (patientId) {
-      loadChat();
-    }
-  }, [patientId, authUser]);
+    loadChat();
+  }, [activePatientId, authUser]);
 
   // Auto-scroll to bottom when messages change
   useEffect(() => {
@@ -269,7 +274,7 @@ const PatientChat = () => {
       setChatError('');
 
       try {
-        await sendMessage({ receiverId: patientId, message: messageText });
+        await sendMessage({ receiverId: activePatientId, message: messageText });
       } catch (err) {
         setChatError(err.response?.data?.message || err.message || 'Failed to send message');
       } finally {
@@ -349,6 +354,64 @@ const PatientChat = () => {
     }
   };
 
+  const getInitials = (name) => String(name || 'JS')
+    .split(' ')
+    .map(part => part[0])
+    .slice(0, 2)
+    .join('')
+    .toUpperCase();
+
+  const selectConversation = (patient) => {
+    setActivePatientId(String(patient.id));
+    setCurrentPatient(patient);
+    setMessages(mockChats[patient.id] || []);
+    setChatError('');
+  };
+
+  const conversationRows = [
+    {
+      ...mockPatients[0],
+      previewTitle: 'Hypertension',
+      preview: "I've been feeling dizzy today...",
+      time: '9:42 AM',
+      unread: 2,
+    },
+    {
+      ...mockPatients[1],
+      name: 'Sarah Miller',
+      previewTitle: 'Diabetes Type 2',
+      preview: 'Blood sugar is 140...',
+      time: '11:15 AM',
+      status: 'Needs Attention',
+    },
+    {
+      ...mockPatients[4],
+      name: 'Robert Jones',
+      previewTitle: 'Post-op Care',
+      preview: 'incision_photo.jpg',
+      time: 'Yesterday',
+      status: 'Critical',
+    },
+    {
+      ...mockPatients[4],
+      id: 6,
+      name: 'Robert Jones',
+      previewTitle: 'Post-op Care',
+      preview: 'incision_photo.jpg',
+      time: 'Yesterday',
+      status: 'Critical',
+    },
+    {
+      ...mockPatients[1],
+      id: 7,
+      name: 'Sarah Miller',
+      previewTitle: 'Diabetes Type 2',
+      preview: 'Blood sugar is 140...',
+      time: '11:15 AM',
+      status: 'Needs Attention',
+    },
+  ];
+
   if (!currentPatient && chatStatus === 'loading') {
     return (
       <div className="patient-not-found">
@@ -369,154 +432,172 @@ const PatientChat = () => {
   }
 
   return (
-    <div className="patient-chat-container">
-      {/* Header */}
-      <div className="chat-header">
-        <button onClick={() => navigate('/patient-sms')} className="back-btn">
-          <FaArrowLeft /> Back to List
-        </button>
-
-        <div className="patient-profile-header">
-          <div className="patient-avatar-large" style={{ backgroundColor: currentPatient.avatarColor }}>
-            {currentPatient.name.split(' ').map(n => n[0]).join('')}
-          </div>
-          <div className="patient-header-info">
-            <h2>{currentPatient.name}</h2>
-            <div className="patient-header-details">
-              <span className="patient-age-gender">{currentPatient.age}y, {currentPatient.gender}</span>
-              <span className="patient-condition">{currentPatient.condition}</span>
-              <span className={`patient-status ${currentPatient.status.toLowerCase().replace(' ', '-')}`}>
-                {currentPatient.status}
-              </span>
-            </div>
-          </div>
+    <div className="patient-chat-container dc-communications-screen">
+      <header className="dc-comms-page-header">
+        <div>
+          <h1>Patient Communications</h1>
+          <p>Manage patient conversations and urgent communications.</p>
         </div>
+      </header>
 
-        <div className="dc-header-right">
-          <button className="dc-call-btn dc-video-btn">
-            <i className="fas fa-video"></i>
-          </button>
-          <button className="dc-call-btn dc-voice-btn">
-            <i className="fas fa-phone"></i>
-          </button>
-          <button className="dc-menu-btn">
-            <i className="fas fa-ellipsis-v"></i>
-          </button>
+      <section className="dc-comms-stats">
+        <article>
+          <span className="dc-stat-icon critical">△</span>
+          <span className="dc-stat-chip danger">+2 since 8am</span>
+          <strong>5</strong>
+          <b>Critical Patients</b>
+          <small>Require immediate attention</small>
+        </article>
+        <article>
+          <span className="dc-stat-icon unread">✉</span>
+          <span className="dc-stat-chip blue">-4 trend</span>
+          <strong>11</strong>
+          <b>Unread Messages</b>
+          <small>New patient inquiries</small>
+        </article>
+        <article>
+          <span className="dc-stat-icon waiting">▣</span>
+          <span className="dc-stat-chip neutral">stable</span>
+          <strong>8</strong>
+          <b>Waiting for Reply</b>
+          <small>Awaiting clinical response</small>
+        </article>
+        <article>
+          <span className="dc-stat-icon resolved">✓</span>
+          <span className="dc-stat-chip success">+12% vs yesterday</span>
+          <strong>23</strong>
+          <b>Resolved Today</b>
+          <small>Closed conversations</small>
+        </article>
+      </section>
+
+      <div className="dc-comms-filters">
+        <div className="dc-filter-tabs">
+          {['All', 'Unread', 'Critical', 'Needs Attention', 'Stable', 'Improving', 'Archived'].map((tab) => (
+            <button className={tab === 'All' ? 'active' : ''} type="button" key={tab}>
+              {tab}
+              {tab === 'Unread' && <span>11</span>}
+            </button>
+          ))}
+        </div>
+        <div className="dc-sort-actions">
+          <button type="button">☰ Recent</button>
+          <button type="button">≡ Filter</button>
         </div>
       </div>
 
-      {/* Chat Messages */}
-      <div className="chat-messages-container">
-        <div className="chat-date">
-          <span>Today</span>
-        </div>
+      <main className="dc-comms-layout">
+        <aside className="dc-conversation-list">
+          <div className="dc-conversation-title">
+            <h2>Conversations</h2>
+            <button type="button">+</button>
+          </div>
 
-        <div className="messages-list">
-          {messages.length === 0 ? (
-            <div className="no-messages">
-              <div className="empty-chat-icon">
-                <FaStethoscope />
+          {conversationRows.map((patient) => (
+            <button
+              className={`dc-conversation-item ${String(activePatientId) === String(patient.id) ? 'active' : ''}`}
+              key={`${patient.id}-${patient.name}`}
+              onClick={() => selectConversation(patient)}
+              type="button"
+            >
+              <div className="dc-conversation-main">
+                <div>
+                  <strong>{patient.name}</strong>
+                  <span className={`dc-status-tag ${patient.status.toLowerCase().replace(/\s+/g, '-')}`}>{patient.status}</span>
+                </div>
+                <small>{patient.previewTitle}</small>
+                <p>{patient.preview}</p>
               </div>
-              <p>No messages yet. Start the conversation!</p>
-              {chatError && <small className="empty-chat-hint">{chatError}</small>}
-              <small className="empty-chat-hint">Your messages will appear here</small>
-            </div>
-          ) : (
-            <>
-              {messages.map((msg, index) => (
-                <div
-                  key={msg.id}
-                  className={`message ${msg.sender}`}
-                  style={{ '--message-index': index }}
-                >
-                  <div className="message-content">
-                    <div className="message-sender-meta">
-                      <strong>{getSenderDetails(msg).name}</strong>
-                      {getSenderDetails(msg).phone && (
-                        <span> {getSenderDetails(msg).phone}</span>
-                      )}
-                    </div>
-                    <p>{msg.text}</p>
+              <div className="dc-conversation-meta">
+                <span>{patient.time}</span>
+                {patient.unread && <b>{patient.unread}</b>}
+              </div>
+            </button>
+          ))}
+        </aside>
 
+        <section className="dc-chat-panel">
+          <div className="dc-chat-profile">
+            <div className="dc-chat-avatar">{getInitials(currentPatient.name)}</div>
+            <div className="dc-chat-profile-info">
+              <h2>{currentPatient.name} <span className={`dc-status-tag ${currentPatient.status.toLowerCase().replace(/\s+/g, '-')}`}>{currentPatient.status}</span></h2>
+              <p>{currentPatient.age}{currentPatient.gender?.[0] || 'M'} • Blood {currentPatient.bloodGroup || 'O+'} • {currentPatient.condition}</p>
+            </div>
+            <div className="dc-profile-actions">
+              <button type="button"><FaPhone /></button>
+              <button type="button"><i className="fas fa-video"></i></button>
+              <button type="button" className="profile">View Profile</button>
+            </div>
+          </div>
+
+          <div className="dc-chat-body">
+            <div className="dc-chat-date">Today</div>
+            {messages.map((msg, index) => (
+              <div className={`dc-message-row ${msg.sender}`} key={msg.id} style={{ '--message-index': index }}>
+                {msg.sender !== 'doctor' && <span className="dc-message-avatar">{getInitials(currentPatient.name)}</span>}
+                <div className="dc-message-stack">
+                  <div className="dc-message-meta">
+                    <strong>{msg.sender === 'doctor' ? 'You' : currentPatient.name}</strong>
+                    <span>{formatTime(msg.time)}</span>
+                  </div>
+                  <div className="dc-message-bubble">
+                    <p>{msg.text}</p>
                     {msg.file && (
                       <div className="file-attachment" style={{ borderColor: getFileColor(msg.file.type) }}>
-                        <div className="file-icon" style={{ color: getFileColor(msg.file.type) }}>
-                          {getFileIcon(msg.file.type)}
-                        </div>
+                        <div className="file-icon" style={{ color: getFileColor(msg.file.type) }}>{getFileIcon(msg.file.type)}</div>
                         <div className="file-info">
                           <span className="file-name">{msg.file.name}</span>
                           <span className="file-size">{msg.file.size}</span>
                         </div>
-                        <button className="file-download-btn">
-                          <FaFileMedical />
-                        </button>
                       </div>
                     )}
-
-                    <span className="message-time">{formatTime(msg.time)}</span>
                   </div>
                 </div>
-              ))}
-              <div ref={messagesEndRef} />
-            </>
-          )}
-        </div>
-      </div>
-
-      {/* File Options Popup */}
-      {showFileOptions && (
-        <div className="file-options-popup">
-          <div className="file-options-content">
-            <button className="file-option-btn" onClick={() => handleFileSelect('image')}>
-              <FaImage /> Image
-            </button>
-            <button className="file-option-btn" onClick={() => handleFileSelect('document')}>
-              <FaFilePdf /> Document
-            </button>
-            <button className="file-option-btn" onClick={() => handleFileSelect('medical')}>
-              <FaFileMedical /> Medical Record
-            </button>
+                {msg.sender === 'doctor' && <span className="dc-message-avatar doctor">{getInitials(authUser?.name || 'You')}</span>}
+              </div>
+            ))}
+            <div className="dc-new-divider"><span>New Messages</span></div>
+            <div ref={messagesEndRef} />
           </div>
-        </div>
-      )}
 
-      {/* Hidden file input */}
-      <input
-        type="file"
-        ref={fileInputRef}
-        style={{ display: 'none' }}
-        onChange={handleFileUpload}
-      />
+          <div className="dc-quick-actions">
+            <button type="button">▣ Schedule Appointment</button>
+            <button type="button">▤ Request Reports</button>
+            <button type="button">☤ Upload Prescription</button>
+            <button type="button">⟳ Follow Up</button>
+          </div>
 
-      {/* Message Input */}
-      <form className="message-input-form" onSubmit={handleSendMessage}>
-        <button
-          type="button"
-          className="attach-btn"
-          onClick={() => setShowFileOptions(!showFileOptions)}
-          aria-label="Attach file"
-        >
-          <FaPaperclip />
-        </button>
+          {showFileOptions && (
+            <div className="file-options-popup dc-file-popup">
+              <div className="file-options-content">
+                <button className="file-option-btn" onClick={() => handleFileSelect('image')} type="button"><FaImage /> Image</button>
+                <button className="file-option-btn" onClick={() => handleFileSelect('document')} type="button"><FaFilePdf /> Document</button>
+                <button className="file-option-btn" onClick={() => handleFileSelect('medical')} type="button"><FaFileMedical /> Medical Record</button>
+              </div>
+            </div>
+          )}
 
-        <input
-          type="text"
-          placeholder="Type your message here..."
-          value={message}
-          onChange={(e) => setMessage(e.target.value)}
-          className="message-input"
-          autoFocus
-        />
+          <input type="file" ref={fileInputRef} style={{ display: 'none' }} onChange={handleFileUpload} />
 
-        <button
-          type="submit"
-          className="send-btn"
-          disabled={!message.trim() || isSending}
-          aria-label="Send message"
-        >
-          <FaPaperPlane />
-        </button>
-      </form>
+          <form className="message-input-form dc-message-input-form" onSubmit={handleSendMessage}>
+            <button type="button" className="attach-btn" onClick={() => setShowFileOptions(!showFileOptions)} aria-label="Attach file">
+              <FaPaperclip />
+            </button>
+            <button type="button" className="dc-smile-btn" aria-label="Emoji">☺</button>
+            <input
+              type="text"
+              placeholder={`Type a message to ${currentPatient.name.split(' ')[0]}...`}
+              value={message}
+              onChange={(e) => setMessage(e.target.value)}
+              className="message-input"
+            />
+            <button type="button" className="dc-mic-btn" aria-label="Voice">♩</button>
+            <button type="submit" className="send-btn" disabled={!message.trim() || isSending} aria-label="Send message">
+              <FaPaperPlane />
+            </button>
+          </form>
+        </section>
+      </main>
     </div>
   );
 };

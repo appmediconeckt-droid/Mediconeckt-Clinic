@@ -146,6 +146,22 @@ function App() {
     location.pathname === "/hospital-signup" ||
     location.pathname.startsWith("/doctor-details/");
 
+  const isDoctorLayout =
+    location.pathname === "/doctordashboard" ||
+    location.pathname === "/doctorcalendar" ||
+    location.pathname === "/doctorprofile" ||
+    location.pathname === "/qrcode" ||
+    location.pathname === "/appointmentlist" ||
+    location.pathname === "/setting" ||
+    location.pathname === "/doctor-notifications" ||
+    location.pathname === "/clinicpage" ||
+    location.pathname === "/walkinappointment" ||
+    location.pathname === "/patient-sms" ||
+    location.pathname === "/followup" ||
+    location.pathname === "/patient-details" ||
+    location.pathname === "/doctor-user-management" ||
+    location.pathname.startsWith("/patient-chat/");
+
   return (
     <>
       {/* Show navbar only if layout is visible */}
@@ -194,8 +210,7 @@ function App() {
           />
 
           <div
-            className={`right-side-content ${isSidebarCollapsed ? "collapsed" : ""
-              }`}
+            className={`right-side-content ${isSidebarCollapsed ? "collapsed" : ""} ${isDoctorLayout ? "doctor-layout-content" : ""} ${location.pathname === "/patient-sms" ? "patient-sms-layout" : ""}`}
           >
             <Routes>
               {/* Super-Admin-Dashboard */}

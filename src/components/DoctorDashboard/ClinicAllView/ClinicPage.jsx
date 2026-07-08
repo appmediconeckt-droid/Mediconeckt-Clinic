@@ -1,12 +1,71 @@
 import { useCallback, useEffect, useMemo, useState } from "react";
 import { useSelector } from "react-redux";
 import axios from "axios";
-import { ChevronLeft, ChevronRight, Edit, MapPin, Phone, Save, Trash2, X } from "lucide-react";
-import { API_BASE_URL, getAuthHeaders, getAuthToken } from "../../../redux/apiConfig";
+import {
+  BedDouble,
+  BookOpen,
+  Building2,
+  CalendarDays,
+  ChevronLeft,
+  ChevronRight,
+  Clock3,
+  ExternalLink,
+  Hospital,
+  Mail,
+  MapPin,
+  Navigation,
+  Phone,
+  Share2,
+  ShieldCheck,
+  Star,
+  Stethoscope,
+  UsersRound,
+} from "lucide-react";
+import { API_BASE_URL, getAuthHeaders } from "../../../redux/apiConfig";
 import "./ClinicPage.css";
 
 const CLINICS_BASE_URL = `${API_BASE_URL}/clinics`;
-const DEFAULT_CLINIC_IMAGE = "https://images.unsplash.com/photo-1586773860418-d37222d8fce3";
+const DEFAULT_CLINIC_IMAGE = "https://images.unsplash.com/photo-1519494026892-80bbd2d6fd0d?auto=format&fit=crop&w=1600&q=80";
+
+const fallbackClinic = {
+  id: "fallback-clinic",
+  name: "Healthy Life Clinic",
+  subtitle: "Multi-Specialty Hospital",
+  address: "MG Road, Pune, Maharashtra",
+  fullAddress: "123 Health Avenue, MG Road, Pune, Maharashtra 411001",
+  phone: "+91 98765 43210",
+  email: "contact@healthylife.in",
+  website: "www.healthylifeclinic.in",
+  image: DEFAULT_CLINIC_IMAGE,
+  mapUrl: "",
+  about: "Healthy Life Clinic is a premier multi-specialty healthcare facility dedicated to providing world-class medical services with a compassionate approach. Established in 2010, we have grown to become a trusted name in healthcare, combining state-of-the-art technology with renowned medical expertise.",
+  mission: "To deliver accessible, high-quality, and patient-centric healthcare services through clinical excellence, innovation, and unwavering ethical standards.",
+  specialties: ["Cardiology", "Neurology", "Orthopedics", "Pediatrics", "Oncology", "Gastroenterology"],
+  stats: {
+    doctors: "28",
+    departments: "12",
+    beds: "180",
+    emergency: "24/7",
+    rating: "4.8",
+  },
+};
+
+const doctors = [
+  {
+    name: "Dr. Rajesh Sharma",
+    specialty: "Senior Cardiologist",
+    experience: "15 Yrs Exp",
+    rating: "4.9",
+    image: "https://images.unsplash.com/photo-1622253692010-333f2da6031d?auto=format&fit=crop&w=600&q=80",
+  },
+  {
+    name: "Dr. Anjali Desai",
+    specialty: "Lead Neurologist",
+    experience: "12 Yrs Exp",
+    rating: "4.8",
+    image: "https://images.unsplash.com/photo-1559839734-2b71ea197ec2?auto=format&fit=crop&w=600&q=80",
+  },
+];
 
 const getStoredAuthUser = () => {
   try {
@@ -24,8 +83,6 @@ const unwrapApiArray = (payload) => {
   if (Array.isArray(payload?.results)) return payload.results;
   return [];
 };
-
-const unwrapApiObject = (payload) => payload?.clinic || payload?.data?.clinic || payload?.data || payload || {};
 
 const getDoctorId = (user = {}) => (
   user.doctor_id ||
@@ -110,10 +167,7 @@ const buildMapUrl = (clinic, address) => {
   const lng = clinic.longitude || clinic.lng || clinic.location_lng || clinic.location?.lng;
   if (lat && lng) return `https://www.google.com/maps/search/?api=1&query=${lat},${lng}`;
 
-  if (address && address !== "Address not available") {
-    return `https://www.google.com/maps/search/?api=1&query=${encodeURIComponent(address)}`;
-  }
-
+  if (address) return `https://www.google.com/maps/search/?api=1&query=${encodeURIComponent(address)}`;
   return "";
 };
 
@@ -140,17 +194,38 @@ const normalizeClinic = (clinic, index = 0) => {
     clinic.filePath,
   ].filter(Boolean)).map(getAssetUrl);
 
-  const address = clinic.location || clinic.address || clinic.clinic_address || "Address not available";
+  const address = clinic.location || clinic.address || clinic.clinic_address || fallbackClinic.address;
+  const rawSpecialties = clinic.specialties || clinic.key_specialties || clinic.departments || clinic.services;
+  const specialties = Array.isArray(rawSpecialties)
+    ? rawSpecialties
+    : String(rawSpecialties || "")
+      .split(",")
+      .map((item) => item.trim())
+      .filter(Boolean);
 
   return {
     raw: clinic,
     id: clinic.id || clinic.clinic_id || clinic._id || index,
     doctorId: clinic.doctor_id || clinic.doctorId || clinic.doctor?.id || clinic.doctor?._id || "",
-    name: clinic.clinic_name || clinic.clinicName || clinic.name || "Unnamed Clinic",
+    name: clinic.clinic_name || clinic.clinicName || clinic.name || fallbackClinic.name,
+    subtitle: clinic.type || clinic.category || fallbackClinic.subtitle,
     address,
-    phone: clinic.phone_number || clinic.phone || clinic.contact_number || "N/A",
+    fullAddress: clinic.full_address || clinic.fullAddress || clinic.address || address,
+    phone: clinic.phone_number || clinic.phone || clinic.contact_number || fallbackClinic.phone,
+    email: clinic.email || clinic.clinic_email || fallbackClinic.email,
+    website: clinic.website || clinic.web_url || fallbackClinic.website,
+    image: photos[0] || fallbackClinic.image,
     mapUrl: buildMapUrl(clinic, address),
-    images: photos.length ? photos : [DEFAULT_CLINIC_IMAGE],
+    about: clinic.about || clinic.description || clinic.about_hospital || fallbackClinic.about,
+    mission: clinic.mission || clinic.our_mission || fallbackClinic.mission,
+    specialties: specialties.length ? specialties : fallbackClinic.specialties,
+    stats: {
+      doctors: clinic.doctors_count || clinic.doctor_count || clinic.total_doctors || fallbackClinic.stats.doctors,
+      departments: clinic.departments_count || clinic.department_count || clinic.total_departments || fallbackClinic.stats.departments,
+      beds: clinic.beds_count || clinic.bed_count || clinic.total_beds || fallbackClinic.stats.beds,
+      emergency: clinic.emergency_status || clinic.emergency || fallbackClinic.stats.emergency,
+      rating: clinic.rating || clinic.patient_rating || fallbackClinic.stats.rating,
+    },
   };
 };
 
@@ -161,22 +236,15 @@ export default function ClinicPage() {
   const userRole = String(user.role || "doctor").toLowerCase();
 
   const [clinics, setClinics] = useState([]);
+  const [activeClinicIndex, setActiveClinicIndex] = useState(0);
   const [status, setStatus] = useState("idle");
   const [error, setError] = useState("");
-  const [editingId, setEditingId] = useState(null);
-  const [editForm, setEditForm] = useState({
-    clinicName: "",
-    phone: "",
-    address: "",
-    photo: null,
-  });
-  const [activeClinicIndex, setActiveClinicIndex] = useState(0);
-  const [isSaving, setIsSaving] = useState(false);
 
-  const loadClinics = useCallback(async (signal) => {
+  const loadClinic = useCallback(async (signal) => {
     if (!doctorId) {
-      setError("Doctor id not found. Please login again.");
-      setStatus("failed");
+      setClinics([]);
+      setActiveClinicIndex(0);
+      setStatus("succeeded");
       return;
     }
 
@@ -191,199 +259,253 @@ export default function ClinicPage() {
 
       const rows = unwrapApiArray(response.data)
         .map(normalizeClinic)
-        .filter((clinic) => !clinic.doctorId || String(clinic.doctorId) === String(doctorId));
+        .filter((item) => !item.doctorId || String(item.doctorId) === String(doctorId));
 
       setClinics(rows);
       setActiveClinicIndex(0);
       setStatus("succeeded");
     } catch (err) {
       if (axios.isCancel(err)) return;
-      setError(err.response?.data?.message || err.response?.data?.error || "Failed to load clinics");
+      setClinics([]);
+      setActiveClinicIndex(0);
+      setError(err.response?.data?.message || err.response?.data?.error || "Showing sample clinic profile. Failed to load live clinic data.");
       setStatus("failed");
     }
   }, [doctorId, userRole]);
 
   useEffect(() => {
     const controller = new AbortController();
-    loadClinics(controller.signal);
+    loadClinic(controller.signal);
     return () => controller.abort();
-  }, [loadClinics]);
+  }, [loadClinic]);
 
-  const startEdit = (clinic) => {
-    setEditingId(clinic.id);
-    setEditForm({
-      clinicName: clinic.name,
-      phone: clinic.phone === "N/A" ? "" : clinic.phone,
-      address: clinic.address === "Address not available" ? "" : clinic.address,
-      photo: null,
-    });
-  };
+  const clinic = clinics[activeClinicIndex] || fallbackClinic;
 
-  const cancelEdit = () => {
-    setEditingId(null);
-    setEditForm({ clinicName: "", phone: "", address: "", photo: null });
-  };
-
-  const handleEditChange = (event) => {
-    const { name, value, files } = event.target;
-    setEditForm((prev) => ({
-      ...prev,
-      [name]: files ? files[0] || null : value,
-    }));
-  };
-
-  const handleUpdate = async (clinicId) => {
-    if (!editForm.clinicName || !editForm.phone || !editForm.address) {
-      alert("Please fill clinic name, phone and address.");
-      return;
-    }
-
-    const formData = new FormData();
-    formData.append("doctor_id", doctorId);
-    formData.append("clinic_name", editForm.clinicName);
-    formData.append("phone_number", editForm.phone);
-    formData.append("location", editForm.address);
-    if (editForm.photo) formData.append("clinic_photo", editForm.photo);
-
-    try {
-      setIsSaving(true);
-      const token = getAuthToken();
-      const response = await axios.patch(`${CLINICS_BASE_URL}/${clinicId}`, formData, {
-        headers: {
-          ...(token ? { Authorization: `Bearer ${token}` } : {}),
-        },
-      });
-
-      const updated = normalizeClinic({ ...clinics.find((item) => item.id === clinicId)?.raw, ...unwrapApiObject(response.data), id: clinicId });
-      setClinics((prev) => prev.map((clinic) => (clinic.id === clinicId ? updated : clinic)));
-      cancelEdit();
-    } catch (err) {
-      alert(err.response?.data?.message || err.response?.data?.error || "Failed to update clinic");
-    } finally {
-      setIsSaving(false);
-    }
-  };
-
-  const handleDelete = async (clinicId) => {
-    if (!window.confirm("Are you sure you want to delete this clinic?")) return;
-
-    const previousClinics = clinics;
-    setClinics((prev) => prev.filter((clinic) => clinic.id !== clinicId));
-    setActiveClinicIndex((currentIndex) => Math.max(0, Math.min(currentIndex, clinics.length - 2)));
-
-    try {
-      await axios.delete(`${CLINICS_BASE_URL}/${clinicId}`, { headers: getAuthHeaders() });
-    } catch (err) {
-      setClinics(previousClinics);
-      alert(err.response?.data?.message || err.response?.data?.error || "Failed to delete clinic");
-    }
-  };
+  const stats = [
+    { label: "Doctors", value: clinic.stats.doctors, icon: Stethoscope, tone: "blue" },
+    { label: "Departments", value: clinic.stats.departments, icon: Building2, tone: "indigo" },
+    { label: "Beds", value: clinic.stats.beds, icon: BedDouble, tone: "green" },
+    { label: "Emergency", value: clinic.stats.emergency, icon: Hospital, tone: "red" },
+    { label: "Patient Rating", value: clinic.stats.rating, icon: Star, tone: "gold" },
+  ];
 
   const changeClinic = (direction) => {
+    if (!clinics.length) return;
     setActiveClinicIndex((currentIndex) => (
       (currentIndex + direction + clinics.length) % clinics.length
     ));
   };
 
-  const activeClinic = clinics[activeClinicIndex] || null;
+  const formatWebsiteUrl = (website = "") => {
+    if (!website) return "#";
+    return website.startsWith("http") ? website : `https://${website}`;
+  };
 
   return (
-    <div className="doctor-clinics-page">
-      {error && <div className="doctor-clinics-error">{error}</div>}
+    <div className="doctor-clinic-profile-page">
+      {error && <div className="doctor-clinic-profile-error">{error}</div>}
 
-      {status === "loading" ? (
-        <div className="doctor-clinics-state">Loading clinics...</div>
-      ) : clinics.length === 0 ? (
-        <div className="doctor-clinics-state">No clinics found for this doctor.</div>
-      ) : activeClinic ? (
-        <div className="doctor-clinics-grid">
-            <article className="doctor-clinic-card" key={activeClinic.id}>
-              <div className="doctor-clinic-slider">
-                <img
-                  src={activeClinic.images[0]}
-                  alt={activeClinic.name}
-                  className="doctor-clinic-image"
-                  onError={(event) => {
-                    event.currentTarget.src = DEFAULT_CLINIC_IMAGE;
-                  }}
-                />
+      <section className="doctor-clinic-hero">
+        <img
+          src={clinic.image}
+          alt={clinic.name}
+          onError={(event) => {
+            event.currentTarget.src = DEFAULT_CLINIC_IMAGE;
+          }}
+        />
+        <div className="doctor-clinic-hero-overlay" />
 
-                <button
-                  type="button"
-                  className="doctor-clinic-slider-btn left"
-                  onClick={() => changeClinic(-1)}
-                  aria-label="Previous clinic"
-                >
-                  <ChevronLeft />
-                </button>
-                <button
-                  type="button"
-                  className="doctor-clinic-slider-btn right"
-                  onClick={() => changeClinic(1)}
-                  aria-label="Next clinic"
-                >
-                  <ChevronRight />
-                </button>
-              </div>
+        <div className="doctor-clinic-hero-content">
+          <div className="doctor-clinic-status-row">
+            <span className="doctor-clinic-open-badge">Open Now</span>
+            <span className="doctor-clinic-type-badge">{clinic.subtitle}</span>
+          </div>
 
-              {editingId === activeClinic.id ? (
-                <div className="doctor-clinic-edit">
-                  <input
-                    name="clinicName"
-                    value={editForm.clinicName}
-                    onChange={handleEditChange}
-                    placeholder="Clinic name"
-                  />
-                  <input
-                    name="phone"
-                    value={editForm.phone}
-                    onChange={handleEditChange}
-                    placeholder="Phone number"
-                  />
-                  <textarea
-                    name="address"
-                    value={editForm.address}
-                    onChange={handleEditChange}
-                    placeholder="Clinic address"
-                    rows="3"
-                  />
-                  <input name="photo" type="file" accept="image/*" onChange={handleEditChange} />
-                  <div className="doctor-clinic-actions">
-                    <button type="button" onClick={() => handleUpdate(activeClinic.id)} disabled={isSaving}>
-                      <Save size={16} /> {isSaving ? "Saving..." : "Save"}
-                    </button>
-                    <button type="button" className="secondary" onClick={cancelEdit} disabled={isSaving}>
-                      <X size={16} /> Cancel
-                    </button>
-                  </div>
-                </div>
-              ) : (
-                <div className="doctor-clinic-body">
-                  <h2>{activeClinic.name}</h2>
-                  <p><MapPin size={16} /> {activeClinic.address}</p>
-                  <p><Phone size={16} /> {activeClinic.phone}</p>
-
-                  <div className="doctor-clinic-actions">
-                    <button type="button" onClick={() => startEdit(activeClinic)}>
-                      <Edit size={16} /> Edit
-                    </button>
-                    <button type="button" className="danger" onClick={() => handleDelete(activeClinic.id)}>
-                      <Trash2 size={16} /> Delete
-                    </button>
-                    <button
-                      type="button"
-                      className="secondary"
-                      onClick={() => window.open(activeClinic.mapUrl, "_blank")}
-                      disabled={!activeClinic.mapUrl}
-                    >
-                      View on Map
-                    </button>
-                  </div>
-                </div>
-              )}
-            </article>
+          <h1>{clinic.name}</h1>
+          <div className="doctor-clinic-hero-meta">
+            <span>
+              <MapPin size={14} />
+              {clinic.address}
+            </span>
+            <span>
+              <Star size={14} fill="currentColor" />
+              4.8 (1,250 Reviews)
+            </span>
+          </div>
         </div>
-      ) : null}
+
+        <div className="doctor-clinic-hero-actions">
+          <button type="button" className="doctor-clinic-book-btn">
+            <CalendarDays size={15} />
+            Book Appointment
+          </button>
+          <button type="button" aria-label="Call clinic" onClick={() => window.location.href = `tel:${clinic.phone}`}>
+            <Phone size={15} />
+          </button>
+          <button
+            type="button"
+            aria-label="Open location"
+            onClick={() => clinic.mapUrl && window.open(clinic.mapUrl, "_blank")}
+          >
+            <Navigation size={15} />
+          </button>
+          <button type="button" aria-label="Share clinic">
+            <Share2 size={15} />
+          </button>
+        </div>
+
+        {clinics.length > 1 && (
+          <>
+            <button
+              type="button"
+              className="doctor-clinic-switch-btn doctor-clinic-switch-prev"
+              onClick={() => changeClinic(-1)}
+              aria-label="Previous clinic"
+            >
+              <ChevronLeft size={20} />
+            </button>
+            <button
+              type="button"
+              className="doctor-clinic-switch-btn doctor-clinic-switch-next"
+              onClick={() => changeClinic(1)}
+              aria-label="Next clinic"
+            >
+              <ChevronRight size={20} />
+            </button>
+          </>
+        )}
+      </section>
+
+      <nav className="doctor-clinic-tabs" aria-label="Clinic sections">
+        {["Overview", "Doctors", "Departments", "Facilities", "Reviews", "Contact"].map((tab, index) => (
+          <button type="button" className={index === 0 ? "is-active" : ""} key={tab}>
+            {tab}
+          </button>
+        ))}
+      </nav>
+
+      <div className="doctor-clinic-profile-body">
+        {status === "loading" && <div className="doctor-clinic-profile-state">Loading clinic profile...</div>}
+
+        <section className="doctor-clinic-stats" aria-label="Clinic summary">
+          {stats.map((item) => {
+            const Icon = item.icon;
+            return (
+              <article className="doctor-clinic-stat-card" key={item.label}>
+                <span className={`doctor-clinic-stat-icon doctor-clinic-stat-${item.tone}`}>
+                  <Icon size={20} />
+                </span>
+                <strong>{item.value}</strong>
+                <p>{item.label}</p>
+              </article>
+            );
+          })}
+        </section>
+
+        <section className="doctor-clinic-info-grid">
+          <article className="doctor-clinic-panel doctor-clinic-about">
+            <h2>About Hospital</h2>
+            <p>{clinic.about}</p>
+
+            <h3>Our Mission</h3>
+            <p>{clinic.mission}</p>
+
+            <h3>Key Specialties</h3>
+            <div className="doctor-clinic-specialties">
+              {clinic.specialties.map((item) => (
+                <span key={item}>{item}</span>
+              ))}
+            </div>
+          </article>
+
+          <aside className="doctor-clinic-panel doctor-clinic-contact">
+            <h2>Contact Information</h2>
+            <div className="doctor-clinic-contact-list">
+              <span>
+                <MapPin size={15} />
+                {clinic.fullAddress}
+              </span>
+              <a href={`tel:${clinic.phone}`}>
+                <Phone size={15} />
+                {clinic.phone}
+              </a>
+              <a href={`mailto:${clinic.email}`}>
+                <Mail size={15} />
+                {clinic.email}
+              </a>
+              <a href={formatWebsiteUrl(clinic.website)} target="_blank" rel="noreferrer">
+                <ExternalLink size={15} />
+                {clinic.website}
+              </a>
+            </div>
+
+            <div className="doctor-clinic-hours">
+              <h3>Hours</h3>
+              <p>
+                <span>Emergency</span>
+                <strong>24/7 Open</strong>
+              </p>
+              <p>
+                <span>OPD Timings</span>
+                <strong>8:00 AM - 8:00 PM</strong>
+              </p>
+            </div>
+          </aside>
+        </section>
+
+        <section className="doctor-clinic-specialists-section">
+          <div className="doctor-clinic-section-heading">
+            <div>
+              <h2>Featured Specialists</h2>
+              <p>Our team of experienced medical professionals</p>
+            </div>
+            <button type="button">View All Doctors</button>
+          </div>
+
+          <div className="doctor-clinic-doctors">
+            {doctors.map((doctor) => (
+              <article className="doctor-clinic-doctor-card" key={doctor.name}>
+                <img src={doctor.image} alt={doctor.name} />
+                <div>
+                  <h3>{doctor.name}</h3>
+                  <p>{doctor.specialty}</p>
+                  <div className="doctor-clinic-doctor-meta">
+                    <span>
+                      <Clock3 size={12} />
+                      {doctor.experience}
+                    </span>
+                    <span>
+                      <Star size={12} fill="currentColor" />
+                      {doctor.rating}
+                    </span>
+                    <span>
+                      <UsersRound size={12} />
+                      4.8
+                    </span>
+                  </div>
+                  <button type="button">Book Consult</button>
+                </div>
+              </article>
+            ))}
+          </div>
+        </section>
+      </div>
+
+      <div className="doctor-clinic-floating-actions">
+        <button type="button">
+          <BookOpen size={15} />
+          Book
+        </button>
+        <button type="button" onClick={() => window.location.href = `tel:${clinic.phone}`}>
+          <Phone size={15} />
+          Call
+        </button>
+      </div>
+
+      <span className="doctor-clinic-trust">
+        <ShieldCheck size={14} />
+        Verified clinic profile
+      </span>
     </div>
   );
 }

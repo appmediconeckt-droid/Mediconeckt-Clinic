@@ -7,6 +7,7 @@ const Sidebar = ({ menuItemClick }) => {
   const [userRole, setUserRole] = useState(null);
   const [hospitalDept, setHospitalDept] = useState("");
   const [userName, setUserName] = useState("");
+  const [doctorMenuCollapsed, setDoctorMenuCollapsed] = useState(true);
 
   const navigate = useNavigate();
   const location = useLocation();
@@ -22,7 +23,7 @@ const Sidebar = ({ menuItemClick }) => {
     updateBodyClass(hoverExpand);
 
     return () => {
-      document.body.classList.remove('sidebar-hover-expanded', 'sidebar-collapsed');
+      document.body.classList.remove('sidebar-hover-expanded', 'sidebar-collapsed', 'doctor-sidebar-menu-collapsed');
     };
   }, []);
 
@@ -64,9 +65,16 @@ const Sidebar = ({ menuItemClick }) => {
     { path: "/qrcode", icon: "fa-qrcode", text: "QR Code" },
     { path: "/doctor-user-management", icon: "fa-user-shield", text: "User Management" },
     { path: "/clinicpage", icon: "fa-hospital", text: "Clinic Page" },
-    { path: "/doctor-notifications", icon: "fa-bell", text: "Notification" },
-    { path: "/setting", icon: "fa-gear", text: "Setting" },
   ];
+  const doctorRoutePaths = [
+    ...doctorMenuItems.map((item) => item.path),
+    "/setting",
+    "/doctor-notifications",
+  ];
+  const isDoctorRoute =
+    doctorRoutePaths.includes(location.pathname) ||
+    location.pathname.startsWith("/patient-chat/");
+  const effectiveRole = isDoctorRoute ? "doctor" : userRole;
 
   // Patient Menu Items
   const patientMenuItems = [
@@ -177,8 +185,7 @@ const Sidebar = ({ menuItemClick }) => {
         <div
           className="menu-link menu-i"
           onClick={() => {
-            navigate(item.path);
-            if (menuItemClick) menuItemClick();
+            handleMenuNavigate(item.path);
           }}
         >
           <i className={`fa-solid ${item.icon}`}></i>
@@ -190,14 +197,14 @@ const Sidebar = ({ menuItemClick }) => {
 
   // Get menu items based on role and department
   const getMenuItems = () => {
-    if (userRole === "doctor") {
+    if (effectiveRole === "doctor") {
       return renderMenuItems(doctorMenuItems);
-    } else if (userRole === "patient") {
+    } else if (effectiveRole === "patient") {
       return renderMenuItems(patientMenuItems);
-    } else if (userRole === "superadmin") {
+    } else if (effectiveRole === "superadmin") {
       return renderMenuItems(superAdminMenuItems);
-    } else if (hospitalMenuItems[userRole]) {
-      return renderMenuItems(hospitalMenuItems[userRole]);
+    } else if (hospitalMenuItems[effectiveRole]) {
+      return renderMenuItems(hospitalMenuItems[effectiveRole]);
     }
     return <li className="menu-item"><div className="menu-link">No menu items available</div></li>;
   };
@@ -217,7 +224,45 @@ const Sidebar = ({ menuItemClick }) => {
       admin: "admin-theme",
       superadmin: "superadmin-theme" // Added Super Admin theme
     };
-    return themeMap[userRole] || "";
+    return themeMap[effectiveRole] || "";
+  };
+
+  const isDoctorRail = effectiveRole === "doctor";
+
+  useEffect(() => {
+    if (isDoctorRail && doctorMenuCollapsed) {
+      document.body.classList.add("doctor-sidebar-menu-collapsed");
+    } else {
+      document.body.classList.remove("doctor-sidebar-menu-collapsed");
+    }
+
+    return () => {
+      document.body.classList.remove("doctor-sidebar-menu-collapsed");
+    };
+  }, [isDoctorRail, doctorMenuCollapsed]);
+
+  const handleMenuNavigate = (path) => {
+    navigate(path);
+    if (isDoctorRail) setDoctorMenuCollapsed(true);
+    if (menuItemClick) menuItemClick();
+  };
+
+  const handleSidebarEnter = () => {
+    if (isDoctorRail) {
+      setDoctorMenuCollapsed(false);
+      return;
+    }
+
+    setHoverExpand(true);
+  };
+
+  const handleSidebarLeave = () => {
+    if (isDoctorRail) {
+      setDoctorMenuCollapsed(true);
+      return;
+    }
+
+    setHoverExpand(false);
   };
 
   // Get department name for display - ADDED SUPER ADMIN
@@ -256,14 +301,27 @@ const Sidebar = ({ menuItemClick }) => {
 
   return (
     <div
-      className={`sidebar-container ${hoverExpand ? "hover-expanded" : "collapsed"} ${getThemeClass()}`}
-      onMouseEnter={() => setHoverExpand(true)}
-      onMouseLeave={() => setHoverExpand(false)}
+      className={`sidebar-container ${hoverExpand && !isDoctorRail ? "hover-expanded" : "collapsed"} ${getThemeClass()} ${isDoctorRail ? "doctor-rail" : ""}`}
+      onMouseEnter={handleSidebarEnter}
+      onMouseLeave={handleSidebarLeave}
     >
       <div className="sidebar">
-
         <ul className="menu">
           {getMenuItems()}
+
+          {isDoctorRail && (
+            <li className={`menu-item doctor-setting-item ${isActive("/setting") ? "active" : ""}`}>
+              <div
+                className="menu-link menu-i"
+                onClick={() => {
+                  handleMenuNavigate("/setting");
+                }}
+              >
+                <i className="fa-solid fa-gear"></i>
+                <span className="menu-text">Setting</span>
+              </div>
+            </li>
+          )}
 
           {/* Logout Button */}
           <li className="menu-item logout-item">

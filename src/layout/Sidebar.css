@@ -20,22 +20,25 @@
 
 /* ========== DOCTOR THEME (Light Blue) ========== */
 .sidebar-container.doctor-theme {
-  background-color: #a8d8ff; /* Light blue */
+  background-color: #ffffff;
+  border-right: 1px solid #e3e8ef;
+  box-shadow: none;
 }
 
 .sidebar-container.doctor-theme .menu-link {
-  color: #000000;
+  color: #35383e;
 }
 
 .sidebar-container.doctor-theme .menu-link:hover {
-  background-color: #d4edff; /* Lighter blue for hover */
-  border-radius: 12px;
+  background-color: #edf5ff;
+  border-radius: 8px;
+  color: #0759ce;
 }
 
 .sidebar-container.doctor-theme .menu-item.active .menu-link {
-  background-color: #4a9eff; /* Medium blue for active */
+  background-color: #0759ce;
   color: white;
-  border-radius: 12px;
+  border-radius: 8px;
 }
 
 .sidebar-container.doctor-theme .sidebar-footer {
@@ -555,7 +558,7 @@ body.sidebar-hover-expanded .right-side-content {
 
 /* When sidebar is collapsed (no hover) */
 body.sidebar-collapsed .right-side-content {
-  padding-left: 62px;
+  padding-left: 88px;
   transition: padding-left 0.3s ease;
 }
 
@@ -579,6 +582,165 @@ body.sidebar-collapsed .right-side-content {
 .sidebar,
 .menu {
   scroll-behavior: smooth;
+}
+
+/* Screenshot-style doctor sidebar */
+.sidebar-container.doctor-theme.doctor-rail,
+.sidebar-container.doctor-theme.doctor-rail.collapsed,
+.sidebar-container.doctor-theme.doctor-rail.hover-expanded {
+  --doctor-sidebar-primary: #004ac6;
+  --doctor-sidebar-gradient: linear-gradient(135deg, #004ac6 0%, #0070fa 100%);
+  --doctor-sidebar-tint: #f5f5f5;
+  background: #ffffff;
+  border-right: 1px solid #e5e9f2;
+  bottom: 0;
+  box-shadow: 0 8px 24px rgba(15, 23, 42, 0.08);
+  height: calc(100vh - 64px);
+  overflow-x: hidden;
+  overflow-y: auto;
+  padding-top: 0;
+  top: 64px;
+  width: 220px;
+  z-index: 1001;
+  scrollbar-color: #cbd5e1 transparent;
+  scrollbar-width: thin;
+}
+
+body.doctor-sidebar-menu-collapsed .sidebar-container.doctor-theme.doctor-rail,
+body.doctor-sidebar-menu-collapsed .sidebar-container.doctor-theme.doctor-rail.collapsed,
+body.doctor-sidebar-menu-collapsed .sidebar-container.doctor-theme.doctor-rail.hover-expanded {
+  width: 76px;
+}
+
+.sidebar-container.doctor-theme.doctor-rail::-webkit-scrollbar {
+  width: 5px;
+}
+
+.sidebar-container.doctor-theme.doctor-rail::-webkit-scrollbar-track {
+  background: transparent;
+}
+
+.sidebar-container.doctor-theme.doctor-rail::-webkit-scrollbar-thumb {
+  background: #cbd5e1;
+  border-radius: 999px;
+}
+
+.sidebar-container.doctor-theme.doctor-rail .sidebar {
+  align-items: stretch;
+  height: 100%;
+  min-height: 0;
+  overflow: hidden;
+  padding: 14px 12px 20px;
+}
+
+.sidebar-container.doctor-theme.doctor-rail .menu {
+  align-items: stretch;
+  display: flex;
+  flex-direction: column;
+  gap: 3px;
+  min-height: 0;
+  overflow-x: hidden;
+  overflow-y: auto;
+  padding-right: 2px;
+  width: 100%;
+}
+
+.sidebar-container.doctor-theme.doctor-rail .menu::-webkit-scrollbar {
+  width: 4px;
+}
+
+.sidebar-container.doctor-theme.doctor-rail .menu::-webkit-scrollbar-thumb {
+  background: #d7deea;
+  border-radius: 999px;
+}
+
+.sidebar-container.doctor-theme.doctor-rail .menu-item {
+  border-radius: 4px;
+  font-size: 13px;
+  font-weight: 700;
+  height: 42px;
+  margin: 0;
+  width: 100%;
+}
+
+.sidebar-container.doctor-theme.doctor-rail .menu-link {
+  align-items: center;
+  border-radius: 4px;
+  display: flex;
+  gap: 10px;
+  height: 42px;
+  justify-content: flex-start;
+  padding: 0 12px;
+  width: 100%;
+  color: #1f2937;
+}
+
+.sidebar-container.doctor-theme.doctor-rail .menu-link:hover {
+  background: var(--doctor-sidebar-tint);
+  color: var(--doctor-sidebar-primary);
+}
+
+.sidebar-container.doctor-theme.doctor-rail .menu-item.active .menu-link {
+  background: var(--doctor-sidebar-gradient);
+  color: #ffffff;
+  box-shadow: 0 8px 16px rgba(0, 74, 198, 0.18);
+}
+
+.sidebar-container.doctor-theme.doctor-rail .menu-link .fa-solid {
+  flex: 0 0 14px;
+  font-size: 13px;
+  line-height: 1;
+  text-align: center;
+}
+
+.sidebar-container.doctor-theme.doctor-rail .menu-text {
+  display: inline-block;
+  margin-left: 0;
+  opacity: 1;
+  overflow: hidden;
+  text-overflow: ellipsis;
+  visibility: visible;
+  white-space: nowrap;
+}
+
+body.doctor-sidebar-menu-collapsed .sidebar-container.doctor-theme.doctor-rail .sidebar {
+  padding-left: 10px;
+  padding-right: 10px;
+}
+
+body.doctor-sidebar-menu-collapsed .sidebar-container.doctor-theme.doctor-rail .menu-item,
+body.doctor-sidebar-menu-collapsed .sidebar-container.doctor-theme.doctor-rail .menu-link {
+  width: 42px;
+}
+
+body.doctor-sidebar-menu-collapsed .sidebar-container.doctor-theme.doctor-rail .menu-link {
+  justify-content: center;
+  padding: 0;
+}
+
+body.doctor-sidebar-menu-collapsed .sidebar-container.doctor-theme.doctor-rail .menu-text {
+  display: none;
+}
+
+.sidebar-container.doctor-theme.doctor-rail .logout-item {
+  margin-top: 0;
+}
+
+.sidebar-container.doctor-theme.doctor-rail .doctor-setting-item {
+  margin-top: auto;
+}
+
+.sidebar-container.doctor-theme.doctor-rail .menu-item.active .menu-link .fa-solid {
+  color: #ffffff;
+}
+
+body.doctor-theme-navbar.sidebar-hover-expanded .right-side-content,
+body.doctor-theme-navbar.sidebar-collapsed .right-side-content {
+  padding-left: 76px;
+}
+
+body.doctor-theme-navbar.doctor-sidebar-menu-collapsed .right-side-content {
+  padding-left: 76px;
 }
 
 
