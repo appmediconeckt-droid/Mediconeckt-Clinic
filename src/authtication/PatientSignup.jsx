@@ -303,8 +303,15 @@ const MedicalPatientSignup = () => {
               transition={{ delay: 0.2, duration: 0.3 }}
             />
           </div>
-          {/* <h1 className="medi-right-logo-text">MediConeckt+</h1>
-          <p className="medi-right-tagline text-black">Healthcare Redefined</p> */}
+          <div className="patient-signup-brand-copy">
+            <h1>Patient Registration</h1>
+            <p>Create your medical profile and manage appointments, records, and care updates.</p>
+          </div>
+          <div className="patient-signup-brand-points">
+            <span><FaCheckCircle /> Secure Profile</span>
+            <span><FaHeartbeat /> Health Records</span>
+            <span><FaCalendarAlt /> Easy Appointments</span>
+          </div>
         </div>
       </div>
 

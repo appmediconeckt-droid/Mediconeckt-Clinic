@@ -7,6 +7,359 @@
   overflow: hidden; /* Prevent container scrolling */
 }
 
+/* Landing page aligned auth theme */
+.med-login-container {
+  min-height: 100vh;
+  padding: 12px;
+  background: #eef1f6;
+  gap: 0;
+  letter-spacing: 0;
+}
+
+.med-login-left-side {
+  flex: 0.95;
+  max-height: none;
+  min-height: calc(100vh - 24px);
+  padding: 42px;
+  background: #0568de;
+  border-radius: 14px 0 0 14px;
+  overflow: hidden;
+  position: relative;
+}
+
+.med-login-left-side::after {
+  content: "";
+  position: absolute;
+  left: 34px;
+  right: 34px;
+  bottom: 34px;
+  height: 140px;
+  border-radius: 16px;
+  background: rgba(255, 255, 255, 0.12);
+}
+
+.med-logo-container {
+  position: relative;
+  z-index: 1;
+  max-width: 520px;
+  width: 100%;
+  padding: 0;
+}
+
+.med-logo {
+  width: min(360px, 100%);
+  margin: 0;
+  filter: drop-shadow(0 12px 20px rgba(4, 36, 82, 0.2));
+}
+
+.med-login-right-side {
+  flex: 1.05;
+  max-height: none;
+  min-height: calc(100vh - 24px);
+  padding: 42px;
+  background: #f3f6fa;
+  border-radius: 0 14px 14px 0;
+  overflow-y: auto;
+}
+
+.med-login-right-content {
+  max-width: 480px;
+}
+
+.med-login-form {
+  margin: 0;
+  padding: 34px;
+  border: 1px solid #e1e7f0;
+  border-radius: 14px;
+  background: #ffffff;
+  box-shadow: 0 18px 38px rgba(15, 23, 42, 0.12);
+}
+
+.med-form-header {
+  margin-bottom: 28px;
+}
+
+.med-form-title {
+  color: #17233d;
+  font-size: 30px;
+  font-weight: 900;
+}
+
+.med-form-subtitle {
+  color: #52627f;
+}
+
+.med-section-label,
+.med-input-label {
+  color: #17233d;
+  font-weight: 800;
+  letter-spacing: 0;
+  text-transform: none;
+}
+
+.med-input-icon,
+.med-role-toggle-icon,
+.med-role-item-icon {
+  color: #0568de;
+}
+
+.med-role-dropdown-toggle,
+.med-input-field {
+  min-height: 46px;
+  border: 1px solid #dbe3f1;
+  border-radius: 8px;
+  background: #f8fbff;
+  color: #17233d;
+  box-shadow: none;
+}
+
+.med-role-dropdown-toggle:hover,
+.med-role-dropdown-toggle.med-dropdown-open,
+.med-input-field:focus {
+  border-color: #0568de;
+  background: #ffffff;
+  box-shadow: 0 0 0 3px rgba(5, 104, 222, 0.12);
+}
+
+.med-role-dropdown-menu {
+  border: 1px solid #dbe3f1;
+  border-radius: 10px;
+  box-shadow: 0 18px 35px rgba(15, 35, 70, 0.14);
+}
+
+.med-role-dropdown-item {
+  border-radius: 8px;
+}
+
+.med-role-dropdown-item.med-role-item-active {
+  background: #eef6ff;
+  color: #0568de;
+}
+
+.med-password-toggle {
+  color: #52627f;
+}
+
+.med-login-button {
+  min-height: 46px;
+  border-radius: 999px;
+  background: #0568de;
+  box-shadow: 0 14px 24px rgba(5, 104, 222, 0.22);
+  font-weight: 900;
+  letter-spacing: 0;
+}
+
+.med-login-button:hover {
+  background: #045abd;
+  transform: translateY(-1px);
+}
+
+.med-signup-container,
+.med-forgot-password {
+  text-align: center;
+}
+
+.med-signup-link,
+.med-forgot-link {
+  color: #0568de;
+  font-weight: 900;
+}
+
+@media (max-width: 900px) {
+  .med-login-container {
+    flex-direction: column;
+  }
+
+  .med-login-left-side,
+  .med-login-right-side {
+    min-height: auto;
+    border-radius: 14px;
+  }
+
+  .med-login-left-side {
+    padding: 30px;
+  }
+}
+
+@media (max-width: 560px) {
+  .med-login-container {
+    padding: 8px;
+  }
+
+  .med-login-right-side {
+    padding: 18px;
+  }
+
+  .med-login-form {
+    padding: 24px 18px;
+  }
+}
+
+/* Remove empty decorative card from login left panel */
+.med-login-left-side::before,
+.med-login-left-side::after {
+  content: none !important;
+  display: none !important;
+}
+
+.med-login-left-side .med-logo-container {
+  min-height: 100%;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+  text-align: center;
+}
+
+.med-login-left-side .med-login-brand-copy p {
+  margin-left: auto;
+  margin-right: auto;
+}
+
+.med-login-left-side .med-login-brand-points {
+  justify-content: center;
+}
+
+/* Login left panel polish */
+.med-login-left-side {
+  align-items: stretch;
+  justify-content: center;
+  background:
+    radial-gradient(circle at 18% 16%, rgba(255, 255, 255, 0.24) 0 110px, transparent 112px),
+    linear-gradient(135deg, #045abf 0%, #0568de 48%, #0878f2 100%) !important;
+}
+
+.med-login-left-side::before {
+  content: "";
+  position: absolute;
+  inset: 24px;
+  border: 1px solid rgba(255, 255, 255, 0.18);
+  border-radius: 12px;
+  pointer-events: none;
+}
+
+.med-login-left-side::after {
+  content: none;
+}
+
+.med-logo-container {
+  min-height: 100%;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+  gap: 26px;
+  text-align: center;
+}
+
+.med-login-brand-card {
+  width: min(390px, 100%);
+  min-height: 150px;
+  padding: 28px;
+  border-radius: 14px;
+  background: rgba(255, 255, 255, 0.96);
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  box-shadow: 0 22px 44px rgba(4, 36, 82, 0.22);
+}
+
+.med-login-brand-card .med-logo {
+  width: min(300px, 100%);
+  display: block;
+  margin: 0;
+  filter: none;
+}
+
+.med-login-brand-copy {
+  max-width: 420px;
+  color: #ffffff;
+}
+
+.med-login-brand-copy h1 {
+  margin: 0 0 10px;
+  font-size: clamp(34px, 4vw, 52px);
+  line-height: 0.98;
+  font-weight: 900;
+}
+
+.med-login-brand-copy p {
+  margin: 0;
+  max-width: 360px;
+  margin-left: auto;
+  margin-right: auto;
+  color: rgba(255, 255, 255, 0.82);
+  font-size: 15px;
+  line-height: 1.55;
+  font-weight: 600;
+}
+
+.med-login-brand-points {
+  position: relative;
+  z-index: 1;
+  display: flex;
+  flex-wrap: wrap;
+  justify-content: center;
+  gap: 10px;
+  max-width: 420px;
+}
+
+.med-login-brand-points span {
+  min-height: 34px;
+  padding: 0 14px;
+  border-radius: 999px;
+  background: rgba(255, 255, 255, 0.18);
+  color: #ffffff;
+  display: inline-flex;
+  align-items: center;
+  gap: 8px;
+  font-size: 12px;
+  font-weight: 900;
+}
+
+.med-login-brand-points svg {
+  font-size: 13px;
+}
+
+@media (max-width: 900px) {
+  .med-login-left-side {
+    min-height: 330px;
+  }
+
+  .med-logo-container {
+    align-items: center;
+    text-align: center;
+  }
+
+  .med-login-brand-copy p {
+    margin: 0 auto;
+  }
+
+  .med-login-brand-points {
+    justify-content: center;
+  }
+}
+
+@media (max-width: 560px) {
+  .med-login-left-side {
+    padding: 22px;
+  }
+
+  .med-login-left-side::before,
+  .med-login-left-side::after {
+    display: none;
+  }
+
+  .med-login-brand-card {
+    min-height: 112px;
+    padding: 20px;
+  }
+
+  .med-login-brand-copy h1 {
+    font-size: 32px;
+  }
+}
+
 .med-login-left-side {
   flex: 1;
   display: flex;
@@ -1128,4 +1481,192 @@
   border-color: #ffd700 !important;
   background: linear-gradient(135deg, rgba(255, 215, 0, 0.1) 0%, rgba(184, 134, 11, 0.05) 100%) !important;
   box-shadow: 0 0 10px rgba(255, 215, 0, 0.3) !important;
+}
+
+/* Final landing page aligned auth theme */
+.med-login-container {
+  min-height: 100vh;
+  padding: 12px;
+  background: #eef1f6 !important;
+  gap: 0;
+  letter-spacing: 0;
+}
+
+.med-login-left-side {
+  flex: 0.95;
+  max-height: none;
+  min-height: calc(100vh - 24px);
+  padding: 42px;
+  background: #0568de !important;
+  border-radius: 14px 0 0 14px;
+  overflow: hidden;
+  position: relative;
+}
+
+.med-login-left-side::after {
+  content: "";
+  position: absolute;
+  left: 34px;
+  right: 34px;
+  bottom: 34px;
+  height: 140px;
+  border-radius: 16px;
+  background: rgba(255, 255, 255, 0.12);
+}
+
+.med-logo-container {
+  position: relative;
+  z-index: 1;
+  max-width: 520px;
+  width: 100%;
+  padding: 0;
+}
+
+.med-logo {
+  width: min(360px, 100%);
+  margin: 0;
+  filter: drop-shadow(0 12px 20px rgba(4, 36, 82, 0.2));
+}
+
+.med-login-right-side {
+  flex: 1.05;
+  max-height: none;
+  min-height: calc(100vh - 24px);
+  padding: 42px;
+  background: #f3f6fa !important;
+  border-radius: 0 14px 14px 0;
+  overflow-y: auto;
+}
+
+.med-login-right-content {
+  max-width: 480px;
+}
+
+.med-login-form {
+  margin: 0;
+  padding: 34px;
+  border: 1px solid #e1e7f0;
+  border-radius: 14px;
+  background: #ffffff;
+  box-shadow: 0 18px 38px rgba(15, 23, 42, 0.12);
+}
+
+.med-form-header {
+  margin-bottom: 28px;
+}
+
+.med-form-title {
+  color: #17233d;
+  font-size: 30px;
+  font-weight: 900;
+}
+
+.med-form-subtitle {
+  color: #52627f;
+}
+
+.med-section-label,
+.med-input-label {
+  color: #17233d;
+  font-weight: 800;
+  letter-spacing: 0;
+  text-transform: none;
+}
+
+.med-input-icon,
+.med-role-toggle-icon,
+.med-role-item-icon {
+  color: #0568de;
+}
+
+.med-role-dropdown-toggle,
+.med-input-field {
+  min-height: 46px;
+  border: 1px solid #dbe3f1;
+  border-radius: 8px;
+  background: #f8fbff;
+  color: #17233d;
+  box-shadow: none;
+}
+
+.med-role-dropdown-toggle:hover,
+.med-role-dropdown-toggle.med-dropdown-open,
+.med-input-field:focus {
+  border-color: #0568de;
+  background: #ffffff;
+  box-shadow: 0 0 0 3px rgba(5, 104, 222, 0.12);
+}
+
+.med-role-dropdown-menu {
+  border: 1px solid #dbe3f1;
+  border-radius: 10px;
+  box-shadow: 0 18px 35px rgba(15, 35, 70, 0.14);
+}
+
+.med-role-dropdown-item {
+  border-radius: 8px;
+}
+
+.med-role-dropdown-item.med-role-item-active {
+  background: #eef6ff;
+  color: #0568de;
+}
+
+.med-password-toggle {
+  color: #52627f;
+}
+
+.med-login-button {
+  min-height: 46px;
+  border-radius: 999px;
+  background: #0568de !important;
+  box-shadow: 0 14px 24px rgba(5, 104, 222, 0.22);
+  font-weight: 900;
+  letter-spacing: 0;
+}
+
+.med-login-button:hover {
+  background: #045abd !important;
+  transform: translateY(-1px);
+}
+
+.med-signup-container,
+.med-forgot-password {
+  text-align: center;
+}
+
+.med-signup-link,
+.med-forgot-link {
+  color: #0568de;
+  font-weight: 900;
+}
+
+@media (max-width: 900px) {
+  .med-login-container {
+    flex-direction: column;
+  }
+
+  .med-login-left-side,
+  .med-login-right-side {
+    min-height: auto;
+    border-radius: 14px;
+  }
+
+  .med-login-left-side {
+    padding: 30px;
+  }
+}
+
+@media (max-width: 560px) {
+  .med-login-container {
+    padding: 8px;
+  }
+
+  .med-login-right-side {
+    padding: 18px;
+  }
+
+  .med-login-form {
+    padding: 24px 18px;
+  }
 }

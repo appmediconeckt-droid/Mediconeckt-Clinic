@@ -1,7 +1,7 @@
 import { useState, useEffect } from "react";
 import { useDispatch, useSelector } from 'react-redux';
 import { Link, useNavigate } from "react-router-dom";
-import { FaEye, FaEyeSlash, FaUserMd, FaStethoscope, FaPhone, FaEnvelope, FaLock, FaUser, FaArrowLeft as FaLeftArrow } from "react-icons/fa";
+import { FaCheckCircle, FaEye, FaEyeSlash, FaUserMd, FaStethoscope, FaPhone, FaEnvelope, FaLock, FaUser, FaArrowLeft as FaLeftArrow } from "react-icons/fa";
 import "./Signup.css";
 import { motion } from "framer-motion";
 import logo from '../image/Mediconect Logo-2.png';
@@ -158,8 +158,15 @@ export default function Signup() {
               transition={{ delay: 0.2, duration: 0.3 }}
             />
           </div>
-          {/* <h1 className="medi-right-logo-text">MediConeckt+</h1>
-          <p className="medi-right-tagline text-black">Healthcare Redefined</p> */}
+          <div className="medi-signup-brand-copy">
+            <h1>Doctor Registration</h1>
+            <p>Create your professional profile and start managing appointments securely.</p>
+          </div>
+          <div className="medi-signup-brand-points">
+            <span><FaCheckCircle /> Verified Profile</span>
+            <span><FaStethoscope /> Specialty Setup</span>
+            <span><FaUserMd /> Doctor Dashboard</span>
+          </div>
         </div>
       </div>
       <div className="medi-signup-left-side">

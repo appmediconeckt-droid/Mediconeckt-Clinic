@@ -763,3 +763,499 @@
 .medi-signup-left-side::-webkit-scrollbar-thumb:hover {
   background: #94a3b8;
 }
+
+/* Landing page aligned registration theme */
+.medi-signup-container {
+  min-height: 100vh;
+  height: auto;
+  padding: 12px;
+  background: #eef1f6;
+  overflow: hidden;
+  font-family: Inter, "Segoe UI", Arial, sans-serif;
+  letter-spacing: 0;
+}
+
+.medi-signup-right-side {
+  order: 1;
+  flex: 0.9;
+  min-height: calc(100vh - 24px);
+  background: #0568de !important;
+  border-radius: 14px 0 0 14px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  overflow: hidden;
+  position: relative;
+}
+
+.medi-signup-right-side::after {
+  content: "";
+  position: absolute;
+  left: 34px;
+  right: 34px;
+  bottom: 34px;
+  height: 140px;
+  border-radius: 16px;
+  background: rgba(255, 255, 255, 0.12);
+}
+
+.medi-right-logo-container,
+.medi-right-logo-wrapper {
+  position: relative;
+  z-index: 1;
+  width: 100%;
+  text-align: center;
+}
+
+.medi-right-logo-wrapper img {
+  max-width: min(380px, 82%);
+  height: auto;
+  filter: drop-shadow(0 12px 20px rgba(4, 36, 82, 0.2));
+}
+
+.medi-signup-left-side {
+  order: 2;
+  flex: 1.2;
+  min-height: calc(100vh - 24px);
+  padding: 34px;
+  background: #f3f6fa !important;
+  border-radius: 0 14px 14px 0;
+}
+
+.medi-signup-form-wrapper {
+  max-width: 860px;
+  margin: 0 auto;
+  padding: 30px;
+  border: 1px solid #e1e7f0;
+  border-radius: 14px;
+  background: #ffffff;
+  box-shadow: 0 18px 38px rgba(15, 23, 42, 0.12);
+}
+
+.med-back-button {
+  margin-bottom: 18px;
+}
+
+.med-back-link {
+  display: inline-flex;
+  align-items: center;
+  gap: 8px;
+  min-height: 34px;
+  padding: 0 14px;
+  border-radius: 999px;
+  background: #eef6ff;
+  color: #0568de;
+  text-decoration: none;
+  font-size: 13px;
+  font-weight: 900;
+}
+
+.medi-signup-logo {
+  width: 54px;
+  height: 54px;
+  margin: 0 auto 16px;
+  border-radius: 50%;
+  background: #0568de;
+  color: #ffffff;
+  justify-content: center;
+}
+
+.medi-signup-logo-icon {
+  color: #ffffff;
+  font-size: 24px;
+}
+
+.medi-form-header-section {
+  margin-bottom: 28px;
+}
+
+.medi-form-header-section h2 {
+  color: #17233d;
+  font-size: 30px;
+  font-weight: 900;
+}
+
+.medi-form-subtitle {
+  color: #52627f;
+}
+
+.medi-form-label {
+  color: #17233d;
+  font-weight: 800;
+}
+
+.medi-input-icon,
+.medi-terms-link,
+.medi-login-text {
+  color: #0568de;
+}
+
+.medi-form-input,
+.medi-select-input {
+  min-height: 46px;
+  border: 1px solid #dbe3f1;
+  border-radius: 8px;
+  background: #f8fbff;
+  color: #17233d;
+  box-shadow: none;
+}
+
+.medi-form-input:focus,
+.medi-select-input:focus {
+  border-color: #0568de;
+  background: #ffffff;
+  box-shadow: 0 0 0 3px rgba(5, 104, 222, 0.12);
+}
+
+.medi-password-requirements,
+.medi-terms-section {
+  border: 1px solid #e1e7f0;
+  border-radius: 10px;
+  background: #f8fbff;
+}
+
+.medi-requirement-item.valid {
+  color: #0568de;
+}
+
+.medi-signup-button {
+  min-height: 46px;
+  border-radius: 999px;
+  background: #0568de !important;
+  box-shadow: 0 14px 24px rgba(5, 104, 222, 0.22);
+  font-weight: 900;
+  letter-spacing: 0;
+}
+
+.medi-signup-button:hover {
+  background: #045abd !important;
+  transform: translateY(-1px);
+}
+
+.medi-login-link {
+  text-align: center;
+}
+
+.medi-otp-modal-overlay {
+  background: rgba(6, 26, 61, 0.52);
+}
+
+.medi-otp-modal {
+  border-radius: 14px;
+  border: 1px solid #e1e7f0;
+  box-shadow: 0 22px 50px rgba(6, 26, 61, 0.22);
+}
+
+@media (max-width: 980px) {
+  .medi-signup-container {
+    flex-direction: column;
+    overflow-y: auto;
+  }
+
+  .medi-signup-right-side,
+  .medi-signup-left-side {
+    min-height: auto;
+    border-radius: 14px;
+  }
+
+  .medi-signup-right-side {
+    padding: 34px 20px;
+  }
+}
+
+@media (max-width: 640px) {
+  .medi-signup-container {
+    padding: 8px;
+  }
+
+  .medi-signup-left-side {
+    padding: 14px;
+  }
+
+  .medi-signup-form-wrapper {
+    padding: 22px 16px;
+  }
+
+  .medi-form-row {
+    grid-template-columns: 1fr;
+    gap: 0;
+  }
+}
+
+/* Final doctor registration polish */
+.medi-signup-container {
+  align-items: stretch;
+}
+
+.medi-signup-right-side {
+  background: linear-gradient(135deg, #045abf 0%, #0568de 48%, #0878f2 100%) !important;
+}
+
+.medi-signup-right-side::before,
+.medi-signup-right-side::after {
+  content: none !important;
+  display: none !important;
+}
+
+.medi-right-logo-container {
+  min-height: 100%;
+  max-width: 520px;
+  padding: 34px;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+  gap: 22px;
+  text-align: center;
+}
+
+.medi-right-logo-wrapper {
+  width: min(360px, 100%);
+  min-height: 148px;
+  padding: 24px 28px;
+  border-radius: 14px;
+  background: rgba(255, 255, 255, 0.96);
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  box-shadow: 0 22px 44px rgba(4, 36, 82, 0.22);
+}
+
+.medi-right-logo-wrapper img {
+  max-width: min(300px, 100%) !important;
+  width: 100% !important;
+  height: auto !important;
+  filter: none;
+  object-fit: contain;
+}
+
+.medi-signup-brand-copy {
+  max-width: 420px;
+  color: #ffffff;
+}
+
+.medi-signup-brand-copy h1 {
+  margin: 0 0 10px;
+  color: #ffffff;
+  font-size: clamp(34px, 4vw, 48px);
+  line-height: 0.98;
+  font-weight: 900;
+}
+
+.medi-signup-brand-copy p {
+  margin: 0 auto;
+  max-width: 370px;
+  color: rgba(255, 255, 255, 0.84);
+  font-size: 15px;
+  line-height: 1.55;
+  font-weight: 600;
+}
+
+.medi-signup-brand-points {
+  display: flex;
+  flex-wrap: wrap;
+  justify-content: center;
+  gap: 10px;
+  max-width: 430px;
+}
+
+.medi-signup-brand-points span {
+  min-height: 34px;
+  padding: 0 14px;
+  border-radius: 999px;
+  background: rgba(255, 255, 255, 0.18);
+  color: #ffffff;
+  display: inline-flex;
+  align-items: center;
+  gap: 8px;
+  font-size: 12px;
+  font-weight: 900;
+}
+
+.medi-signup-left-side {
+  display: flex;
+  align-items: center;
+}
+
+.medi-signup-form-wrapper {
+  max-width: 760px;
+  padding: 28px;
+}
+
+.medi-form-header-section {
+  margin-bottom: 22px;
+}
+
+.medi-form-header-section h2 {
+  font-size: 28px;
+}
+
+.medi-form-row {
+  gap: 18px;
+  margin-bottom: 0;
+}
+
+.medi-form-group {
+  margin-bottom: 18px;
+}
+
+.medi-form-input,
+.medi-select-input {
+  padding: 0 14px;
+}
+
+.medi-password-requirements,
+.medi-terms-section {
+  padding: 14px 16px;
+  margin-bottom: 18px;
+}
+
+.medi-requirements-grid {
+  gap: 8px 14px;
+}
+
+.medi-requirement-item {
+  font-size: 12px;
+}
+
+.medi-signup-button {
+  width: 100%;
+}
+
+@media (max-width: 980px) {
+  .medi-right-logo-container {
+    padding: 30px;
+  }
+
+  .medi-signup-left-side {
+    align-items: stretch;
+  }
+}
+
+@media (max-width: 640px) {
+  .medi-right-logo-container {
+    padding: 22px;
+  }
+
+  .medi-right-logo-wrapper {
+    min-height: 112px;
+    padding: 20px;
+  }
+
+  .medi-signup-brand-copy h1 {
+    font-size: 32px;
+  }
+
+  .medi-signup-form-wrapper {
+    padding: 22px 16px;
+  }
+}
+
+/* Desktop fit fixes for doctor registration */
+.medi-signup-container,
+.medi-signup-container * {
+  box-sizing: border-box;
+}
+
+.medi-signup-right-side,
+.medi-signup-left-side {
+  height: calc(100vh - 24px);
+  min-height: 0;
+}
+
+.medi-right-logo-container {
+  min-height: 0;
+  height: 100%;
+  padding: 28px;
+  gap: 18px;
+}
+
+.medi-right-logo-wrapper {
+  width: min(330px, 100%);
+  height: 170px;
+  min-height: 170px;
+  padding: 18px 24px;
+  overflow: hidden;
+}
+
+.medi-right-logo-wrapper img {
+  max-width: min(300px, 100%) !important;
+  max-height: 136px !important;
+  width: 100% !important;
+  height: auto !important;
+  object-fit: contain;
+}
+
+.medi-signup-brand-copy h1 {
+  font-size: clamp(36px, 3.8vw, 46px);
+}
+
+.medi-signup-brand-copy p {
+  max-width: 390px;
+  font-size: 14px;
+}
+
+.medi-signup-brand-points {
+  max-width: 620px;
+}
+
+.medi-signup-brand-points span {
+  min-height: 32px;
+  padding: 0 13px;
+  font-size: 11px;
+}
+
+.medi-signup-left-side {
+  padding: 24px 34px;
+  overflow-y: auto;
+}
+
+.medi-signup-form-wrapper {
+  max-width: 760px;
+  padding: 24px 28px;
+}
+
+.medi-signup-logo {
+  width: 48px;
+  height: 48px;
+  margin-top: 56px;
+  margin-bottom: 14px;
+}
+
+.medi-form-header-section {
+  margin-bottom: 18px;
+}
+
+.medi-form-header-section h2 {
+  font-size: 26px;
+}
+
+.medi-form-subtitle {
+  font-size: 14px;
+}
+
+.medi-form-group {
+  margin-bottom: 14px;
+}
+
+.medi-form-input,
+.medi-select-input {
+  min-height: 42px;
+}
+
+.medi-password-requirements,
+.medi-terms-section {
+  margin-bottom: 14px;
+  padding: 12px 16px;
+}
+
+@media (max-width: 640px) {
+  .medi-right-logo-wrapper {
+    height: 150px;
+    min-height: 150px;
+  }
+
+  .medi-right-logo-wrapper img {
+    max-height: 118px !important;
+  }
+}

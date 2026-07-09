@@ -1354,3 +1354,456 @@
   padding: 10px;
   font-size: 15px;
 }
+
+/* Landing page aligned patient registration theme */
+.med-patient-signup-container {
+  min-height: 100vh;
+  height: auto;
+  padding: 12px;
+  background: #eef1f6 !important;
+  overflow: hidden;
+  font-family: Inter, "Segoe UI", Arial, sans-serif;
+  letter-spacing: 0;
+}
+
+.med-patient-signup-container .medi-signup-right-side {
+  order: 1;
+  flex: 0.9;
+  min-height: calc(100vh - 24px);
+  background: #0568de !important;
+  border-radius: 14px 0 0 14px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  overflow: hidden;
+  position: relative;
+}
+
+.med-patient-signup-container .medi-signup-right-side::after {
+  content: "";
+  position: absolute;
+  left: 34px;
+  right: 34px;
+  bottom: 34px;
+  height: 140px;
+  border-radius: 16px;
+  background: rgba(255, 255, 255, 0.12);
+}
+
+.med-patient-signup-container .medi-right-logo-container,
+.med-patient-signup-container .medi-right-logo-wrapper {
+  position: relative;
+  z-index: 1;
+  width: 100%;
+  text-align: center;
+}
+
+.med-patient-signup-container .medi-right-logo-wrapper img {
+  max-width: min(380px, 82%);
+  height: auto;
+  filter: drop-shadow(0 12px 20px rgba(4, 36, 82, 0.2));
+}
+
+.med-patient-left-side {
+  order: 2;
+  flex: 1.25;
+  min-height: calc(100vh - 24px);
+  padding: 34px;
+  background: #f3f6fa !important;
+  border-radius: 0 14px 14px 0;
+  box-shadow: none;
+}
+
+.med-patient-form-wrapper {
+  max-width: 900px;
+  margin: 0 auto;
+  padding: 30px;
+  border: 1px solid #e1e7f0;
+  border-radius: 14px;
+  background: #ffffff;
+  box-shadow: 0 18px 38px rgba(15, 23, 42, 0.12);
+  animation: none;
+}
+
+.med-back-link {
+  display: inline-flex;
+  align-items: center;
+  gap: 8px;
+  min-height: 34px;
+  padding: 0 14px;
+  border-radius: 999px;
+  background: #eef6ff;
+  color: #0568de;
+  text-decoration: none;
+  font-size: 13px;
+  font-weight: 900;
+  transform: none;
+}
+
+.med-back-link:hover {
+  color: #0568de;
+  background: #e2f0ff;
+  transform: translateX(-2px);
+}
+
+.med-progress-steps {
+  padding: 14px;
+  border: 1px solid #e1e7f0;
+  border-radius: 10px;
+  background: #f8fbff;
+  box-shadow: none;
+}
+
+.med-step-number {
+  width: 42px;
+  height: 42px;
+  background: #e8eef7;
+  border: 0;
+  color: #52627f;
+  font-size: 18px;
+}
+
+.med-step.active .med-step-number {
+  background: #0568de;
+  color: #ffffff;
+  border: 0;
+  box-shadow: 0 10px 20px rgba(5, 104, 222, 0.22);
+  animation: none;
+}
+
+.med-step.active .med-step-title {
+  color: #0568de;
+  text-shadow: none;
+}
+
+.med-step-connector,
+.med-step.active + .med-step-connector {
+  background: #dbe3f1;
+}
+
+.med-form-header h2 {
+  color: #17233d;
+  font-size: 30px;
+  font-weight: 900;
+  background: none;
+  -webkit-text-fill-color: initial;
+}
+
+.med-form-subtitle {
+  color: #52627f;
+}
+
+.med-form-section {
+  margin-bottom: 26px;
+  padding-bottom: 24px;
+  border-bottom: 1px solid #e1e7f0;
+}
+
+.med-section-title {
+  color: #17233d;
+  font-size: 18px;
+  font-weight: 900;
+}
+
+.med-section-icon,
+.med-input-icon,
+.med-login-text,
+.med-security-icon {
+  color: #0568de;
+}
+
+.med-input-label {
+  color: #17233d;
+  font-weight: 800;
+}
+
+.med-input-field,
+.med-select-field,
+.med-textarea-field,
+.med-otp-input {
+  border: 1px solid #dbe3f1;
+  border-radius: 8px;
+  background-color: #f8fbff;
+  color: #17233d;
+  box-shadow: none;
+}
+
+.med-input-field:focus,
+.med-select-field:focus,
+.med-textarea-field:focus,
+.med-otp-input:focus {
+  border-color: #0568de;
+  background-color: #ffffff;
+  box-shadow: 0 0 0 3px rgba(5, 104, 222, 0.12);
+}
+
+.med-phone-prefix {
+  border-color: #dbe3f1;
+  background: #eef6ff;
+  color: #0568de;
+  font-weight: 900;
+}
+
+.med-next-button,
+.med-submit-button,
+.med-verify-button {
+  min-height: 44px;
+  border-radius: 999px;
+  background: #0568de !important;
+  box-shadow: 0 14px 24px rgba(5, 104, 222, 0.22);
+  font-weight: 900;
+  letter-spacing: 0;
+}
+
+.med-next-button:hover,
+.med-submit-button:hover,
+.med-verify-button:hover {
+  background: #045abd !important;
+  transform: translateY(-1px);
+}
+
+.med-back-button-secondary,
+.med-resend-button {
+  min-height: 42px;
+  border-radius: 999px;
+  border: 1px solid #dbe3f1;
+  background: #ffffff;
+  color: #0568de;
+  font-weight: 900;
+}
+
+.med-otp-section {
+  border: 1px solid #e1e7f0;
+  border-radius: 10px;
+  background: #f8fbff;
+  box-shadow: none;
+}
+
+.med-login-link {
+  text-align: center;
+}
+
+@media (max-width: 980px) {
+  .med-patient-signup-container {
+    flex-direction: column;
+    overflow-y: auto;
+  }
+
+  .med-patient-signup-container .medi-signup-right-side,
+  .med-patient-left-side {
+    min-height: auto;
+    border-radius: 14px;
+  }
+
+  .med-patient-signup-container .medi-signup-right-side {
+    padding: 34px 20px;
+  }
+}
+
+@media (max-width: 640px) {
+  .med-patient-signup-container {
+    padding: 8px;
+  }
+
+  .med-patient-left-side {
+    padding: 14px;
+  }
+
+  .med-patient-form-wrapper {
+    padding: 22px 16px;
+  }
+
+  .med-progress-steps {
+    flex-direction: column;
+    gap: 10px;
+  }
+
+  .med-step-connector {
+    display: none;
+  }
+}
+
+/* Final patient registration polish */
+.med-patient-signup-container,
+.med-patient-signup-container * {
+  box-sizing: border-box;
+}
+
+.med-patient-signup-container .medi-signup-right-side,
+.med-patient-left-side {
+  height: calc(100vh - 24px);
+  min-height: 0;
+}
+
+.med-patient-signup-container .medi-signup-right-side {
+  background: linear-gradient(135deg, #045abf 0%, #0568de 48%, #0878f2 100%) !important;
+}
+
+.med-patient-signup-container .medi-signup-right-side::before,
+.med-patient-signup-container .medi-signup-right-side::after {
+  content: none !important;
+  display: none !important;
+}
+
+.med-patient-signup-container .medi-right-logo-container {
+  min-height: 0;
+  height: 100%;
+  max-width: 520px;
+  padding: 28px;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+  gap: 18px;
+  text-align: center;
+}
+
+.med-patient-signup-container .medi-right-logo-wrapper {
+  width: min(330px, 100%);
+  height: 170px;
+  min-height: 170px;
+  padding: 18px 24px;
+  border-radius: 14px;
+  background: rgba(255, 255, 255, 0.96);
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  overflow: hidden;
+  box-shadow: 0 22px 44px rgba(4, 36, 82, 0.22);
+}
+
+.med-patient-signup-container .medi-right-logo-wrapper img {
+  max-width: min(300px, 100%) !important;
+  max-height: 136px !important;
+  width: 100% !important;
+  height: auto !important;
+  object-fit: contain;
+  filter: none;
+}
+
+.patient-signup-brand-copy {
+  max-width: 420px;
+  color: #ffffff;
+}
+
+.patient-signup-brand-copy h1 {
+  margin: 0 0 10px;
+  color: #ffffff;
+  font-size: clamp(36px, 3.8vw, 46px);
+  line-height: 0.98;
+  font-weight: 900;
+}
+
+.patient-signup-brand-copy p {
+  margin: 0 auto;
+  max-width: 390px;
+  color: rgba(255, 255, 255, 0.84);
+  font-size: 14px;
+  line-height: 1.55;
+  font-weight: 600;
+}
+
+.patient-signup-brand-points {
+  display: flex;
+  flex-wrap: wrap;
+  justify-content: center;
+  gap: 10px;
+  max-width: 620px;
+}
+
+.patient-signup-brand-points span {
+  min-height: 32px;
+  padding: 0 13px;
+  border-radius: 999px;
+  background: rgba(255, 255, 255, 0.18);
+  color: #ffffff;
+  display: inline-flex;
+  align-items: center;
+  gap: 8px;
+  font-size: 11px;
+  font-weight: 900;
+}
+
+.med-patient-left-side {
+  padding: 24px 34px;
+  overflow-y: auto;
+}
+
+.med-patient-form-wrapper {
+  max-width: 820px;
+  padding: 24px 28px;
+}
+
+.med-back-button {
+  margin-bottom: 16px;
+}
+
+.med-progress-steps {
+  margin-bottom: 22px;
+}
+
+.med-form-header {
+  margin-bottom: 22px;
+}
+
+.med-form-header h2 {
+  font-size: 28px;
+}
+
+.med-form-subtitle {
+  font-size: 14px;
+}
+
+.med-form-section {
+  margin-bottom: 22px;
+  padding-bottom: 20px;
+}
+
+.med-section-title {
+  margin-bottom: 16px;
+}
+
+.med-input-group {
+  margin-bottom: 14px;
+}
+
+.med-input-field,
+.med-select-field,
+.med-textarea-field {
+  min-height: 42px;
+}
+
+.med-textarea-field {
+  min-height: 78px;
+}
+
+@media (max-width: 980px) {
+  .med-patient-signup-container .medi-signup-right-side,
+  .med-patient-left-side {
+    height: auto;
+    min-height: auto;
+  }
+
+  .med-patient-signup-container .medi-right-logo-container {
+    padding: 30px;
+  }
+}
+
+@media (max-width: 640px) {
+  .med-patient-signup-container .medi-right-logo-container {
+    padding: 22px;
+  }
+
+  .med-patient-signup-container .medi-right-logo-wrapper {
+    height: 150px;
+    min-height: 150px;
+  }
+
+  .med-patient-signup-container .medi-right-logo-wrapper img {
+    max-height: 118px !important;
+  }
+
+  .patient-signup-brand-copy h1 {
+    font-size: 32px;
+  }
+}

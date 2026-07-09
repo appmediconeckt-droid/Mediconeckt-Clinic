@@ -122,16 +122,26 @@ export default function Login() {
   };
 
   const getNotificationMessage = (message) => {
-    if (!message) return "Something went wrong";
+    if (!message) return "Invalid email/phone or password";
     if (typeof message === "string") return message;
+    if (Array.isArray(message)) {
+      return getNotificationMessage(message[0]);
+    }
 
-    return (
+    const nestedMessage =
       message.message ||
       message.error ||
+      message.detail ||
       message.errors?.[0]?.message ||
       message.errors?.[0] ||
-      "Something went wrong"
-    );
+      message.data?.message ||
+      message.data?.error;
+
+    if (nestedMessage && nestedMessage !== message) {
+      return getNotificationMessage(nestedMessage);
+    }
+
+    return "Invalid email/phone or password";
   };
 
   // Handle role selection
@@ -176,23 +186,24 @@ export default function Login() {
   device_verified: true,
 };
 
-    // dispatch login
     (async () => {
-      const resultAction = await dispatch(loginUser(payload));
+      try {
+        const resultAction = await dispatch(loginUser(payload));
 
-      if (loginUser.fulfilled.match(resultAction)) {
-        setLoginSuccess(true);
-        setTimeout(() => {
-          setLoginSuccess(false);
-          // navigate by role, prefer returned role if available
-          const returnedRole = resultAction.payload?.user?.role || userRole;
-          navigate(rolePaths[returnedRole] || '/');
-        }, 800);
-      } else {
-        const msg = getNotificationMessage(
-          resultAction.payload || resultAction.error?.message || 'Invalid email or password'
-        );
-        showNotification('error', msg);
+        if (loginUser.fulfilled.match(resultAction)) {
+          setLoginSuccess(true);
+          setTimeout(() => {
+            setLoginSuccess(false);
+            const returnedRole = resultAction.payload?.user?.role || resultAction.payload?.data?.user?.role || userRole;
+            navigate(rolePaths[returnedRole] || '/');
+          }, 800);
+          return;
+        }
+
+        const msg = getNotificationMessage(resultAction.payload || resultAction.error);
+        showNotification('error', msg || 'Invalid email/phone or password');
+      } catch (loginError) {
+        showNotification('error', getNotificationMessage(loginError));
       }
     })();
   };
@@ -227,7 +238,18 @@ export default function Login() {
           transition={{ duration: 0.5 }}
           className="med-logo-container"
         >
-          <img src={logo} width={300} alt="Mediconect Logo" className="med-logo" />
+          <div className="med-login-brand-card">
+            <img src={logo} width={300} alt="Mediconect Logo" className="med-logo" />
+          </div>
+          <div className="med-login-brand-copy">
+            <h1>Welcome to Mediconeckt</h1>
+            <p>Access appointments, records, and care teams from one secure place.</p>
+          </div>
+          <div className="med-login-brand-points">
+            <span><FaCheckCircle /> Secure Login</span>
+            <span><FaUserMd /> Doctor Access</span>
+            <span><FaUserInjured /> Patient Care</span>
+          </div>
         </motion.div>
         
         {/* Role indicator for signup flow */}
@@ -385,8 +407,11 @@ export default function Login() {
               <button 
                 type="submit" 
                 className={`med-login-button ${userRole ? 'med-login-has-role' : ''} ${roleFromSignup ? 'med-login-from-signup' : ''} ${userRole === 'superadmin' ? 'med-superadmin-button' : ''}`}
+                disabled={status === "loading"}
               >
-                {userRole 
+                {status === "loading"
+                  ? "SIGNING IN..."
+                  : userRole 
                   ? `SIGN IN AS ${getDisplayRole().toUpperCase()}` 
                   : 'SIGN IN'}
               </button>

@@ -57,16 +57,21 @@ export const loginUser = createAsyncThunk(
     } catch (error) {
       const errorData = error.response?.data;
 
-      let message = 'Login failed';
+      let message = error.response?.status === 401 ? 'Invalid email/phone or password' : 'Login failed';
       if (typeof errorData === 'string') {
         message = errorData;
       } else if (errorData?.message) {
         message = errorData.message;
+      } else if (errorData?.error) {
+        message = errorData.error;
+      } else if (Array.isArray(errorData?.errors) && errorData.errors.length) {
+        const firstError = errorData.errors[0];
+        message = typeof firstError === 'string' ? firstError : firstError?.message || message;
       } else if (error.message) {
         message = error.message;
       }
 
-      return thunkAPI.rejectWithValue(message);
+      return thunkAPI.rejectWithValue(typeof message === 'string' ? message : 'Invalid email/phone or password');
     }
   }
 );
