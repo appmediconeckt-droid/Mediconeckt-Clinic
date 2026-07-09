@@ -125,6 +125,7 @@ function App() {
     location.pathname === "/doctor" ||
     location.pathname === "/signup" ||
     location.pathname === "/forgotpassword" ||
+    location.pathname === "/forgot-password" ||
     location.pathname === "/patientsignup" ||
     location.pathname === "/patient" ||
     location.pathname === "/appointmentbooking" ||
@@ -176,6 +177,7 @@ function App() {
           <Route path="/signup" element={<Signup />} />
           <Route path="/patientsignup" element={<PatientSignup />} />
           <Route path="/forgotpassword" element={<ForgotPassword />} />
+          <Route path="/forgot-password" element={<ForgotPassword />} />
           <Route path="/patient" element={<PatientLandingPage />} />
           <Route path="/appointmentbooking" element={<Walkin />} />
           <Route path="/walkinclinic" element={<WalkinClinic />} />
