@@ -2,6 +2,7 @@ import axios from 'axios';
 import { API_BASE_URL, getAuthHeaders } from './apiConfig';
 
 const CHAT_BASE_URL = `${API_BASE_URL}/chat`;
+const API_ORIGIN_URL = API_BASE_URL.replace(/\/api\/?$/, '');
 
 export const getStoredAuthUser = () => {
   try {
@@ -25,6 +26,21 @@ export const unwrapApiArray = (payload) => {
   if (Array.isArray(payload?.chats)) return payload.chats;
   if (Array.isArray(payload?.conversations)) return payload.conversations;
   return [];
+};
+
+export const unwrapApiObject = (payload) => {
+  if (payload?.data?.data && !Array.isArray(payload.data.data)) return payload.data.data;
+  if (payload?.data && !Array.isArray(payload.data)) return payload.data;
+  if (payload?.message && typeof payload.message === 'object') return payload.message;
+  if (payload?.attachment && typeof payload.attachment === 'object') return payload.attachment;
+  if (payload?.call && typeof payload.call === 'object') return payload.call;
+  return payload || {};
+};
+
+export const getAssetUrl = (path) => {
+  if (!path) return '';
+  if (/^https?:\/\//i.test(path) || path.startsWith('blob:')) return path;
+  return `${API_ORIGIN_URL}${String(path).startsWith('/') ? path : `/${path}`}`;
 };
 
 export const getChatDoctors = async () => {
@@ -60,6 +76,69 @@ export const sendMessage = async ({ receiverId, message }) => {
     }
   );
   return response.data;
+};
+
+export const sendAttachment = async ({ receiverId, message, file }) => {
+  const formData = new FormData();
+  formData.append('receiver_id', receiverId);
+  if (message) formData.append('message', message);
+  formData.append('attachment', file);
+  const headers = { ...getAuthHeaders() };
+  delete headers['Content-Type'];
+  delete headers['content-type'];
+
+  const response = await axios.post(`${CHAT_BASE_URL}/send-attachment`, formData, {
+    headers,
+  });
+
+  return response.data;
+};
+
+export const startCall = async ({ receiverId, callType }) => {
+  const response = await axios.post(
+    `${CHAT_BASE_URL}/calls/start`,
+    {
+      receiver_id: receiverId,
+      call_type: callType,
+    },
+    {
+      headers: getAuthHeaders(),
+    }
+  );
+
+  return response.data;
+};
+
+export const acceptCall = async (callId) => {
+  const response = await axios.patch(
+    `${CHAT_BASE_URL}/calls/${callId}/accept`,
+    {},
+    {
+      headers: getAuthHeaders(),
+    }
+  );
+
+  return response.data;
+};
+
+export const endCall = async ({ callId, status = 'ended' }) => {
+  const response = await axios.patch(
+    `${CHAT_BASE_URL}/calls/${callId}/end`,
+    { status },
+    {
+      headers: getAuthHeaders(),
+    }
+  );
+
+  return response.data;
+};
+
+export const getCallHistory = async (userId) => {
+  const response = await axios.get(`${CHAT_BASE_URL}/calls/history/${userId}`, {
+    headers: getAuthHeaders(),
+  });
+
+  return unwrapApiArray(response.data);
 };
 
 export const sendAiMessage = async (message) => {

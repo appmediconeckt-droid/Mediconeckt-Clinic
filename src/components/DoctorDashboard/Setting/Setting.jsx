@@ -363,6 +363,42 @@ export default function SettingsPage() {
             {active === "clinic" && <ClinicSettings />}
             {active === "payment" && <PaymentSettings />}
             {active === "profileQR" && <ProfileCard />}
+            {active === "Help" && (
+              <div className="settings-info-panel">
+                <h2>Help & Support</h2>
+                <p>Use these settings to keep your doctor profile, clinic details, payment options, and QR profile updated.</p>
+                <div className="settings-info-grid">
+                  <div>
+                    <strong>Profile</strong>
+                    <span>Update professional details, education, experience, awards, and availability.</span>
+                  </div>
+                  <div>
+                    <strong>Clinic</strong>
+                    <span>Add clinic contact information, location, and photos for patients.</span>
+                  </div>
+                  <div>
+                    <strong>Payment</strong>
+                    <span>Choose which payment methods are available for appointments.</span>
+                  </div>
+                </div>
+              </div>
+            )}
+            {active === "Privacy" && (
+              <div className="settings-info-panel">
+                <h2>Privacy</h2>
+                <p>Your doctor profile and clinic information are used to support appointment booking and patient communication.</p>
+                <div className="settings-info-grid">
+                  <div>
+                    <strong>Public Information</strong>
+                    <span>Only profile and clinic details intended for patients are displayed publicly.</span>
+                  </div>
+                  <div>
+                    <strong>Account Security</strong>
+                    <span>Change your password regularly and log out from shared devices.</span>
+                  </div>
+                </div>
+              </div>
+            )}
           </div>
         </div>
       </div>

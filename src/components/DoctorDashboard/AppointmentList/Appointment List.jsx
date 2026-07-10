@@ -10,6 +10,7 @@ export default function AppointmentList() {
   const [status, setStatus] = useState("idle");
   const [error, setError] = useState("");
   const [statusFilter, setStatusFilter] = useState("All");
+  const [hideCompleted, setHideCompleted] = useState(false);
   const [searchText, setSearchText] = useState("");
   const [selectedRows, setSelectedRows] = useState([]);
   const [selectedDate, setSelectedDate] = useState("");
@@ -27,7 +28,7 @@ export default function AppointmentList() {
     technician: "",
     location: "",
     type: "Clinic",
-    status: "Confirmed",
+    status: "Pending",
   });
 
   const getStoredAuthUser = () => {
@@ -67,7 +68,11 @@ export default function AppointmentList() {
     if (!value) return "";
     const date = new Date(value);
     if (Number.isNaN(date.getTime())) return String(value).slice(0, 10);
-    return date.toISOString().split("T")[0];
+
+    const year = date.getFullYear();
+    const month = String(date.getMonth() + 1).padStart(2, "0");
+    const day = String(date.getDate()).padStart(2, "0");
+    return `${year}-${month}-${day}`;
   };
 
   const formatDateLabel = (value) => {
@@ -107,7 +112,7 @@ export default function AppointmentList() {
 
   const normalizeStatus = (value) => {
     const statusValue = String(value || "Pending").toLowerCase();
-    if (statusValue === "confirmed" || statusValue === "booked" || statusValue === "approved") return "Confirmed";
+    if (statusValue === "confirmed" || statusValue === "accepted" || statusValue === "active") return "Confirmed";
     if (statusValue === "completed" || statusValue === "complete") return "Completed";
     if (statusValue === "cancelled" || statusValue === "canceled") return "Cancelled";
     return "Pending";
@@ -130,6 +135,13 @@ export default function AppointmentList() {
     return {
       id: appointment.id || appointment.appointment_id || appointment._id || index,
       doctorId: appointment.doctor_id || appointment.doctorId || doctor.id || doctor._id,
+      tokenNumber:
+        appointment.token_number ||
+        appointment.tokenNumber ||
+        appointment.token ||
+        appointment.appointment_token ||
+        appointment.appointmentToken ||
+        "N/A",
       patientName:
         appointment.patient_name ||
         patient.name ||
@@ -159,7 +171,7 @@ export default function AppointmentList() {
       time: formatTime(appointment.appointment_time || appointment.time || appointment.created_at),
       rawTime: appointment.appointment_time || appointment.time || appointment.created_at,
       type: normalizeType(appointment.consultation_mode || appointment.type || appointment.mode),
-      status: normalizeStatus(appointment.status || appointment.appointment_status),
+      status: normalizeStatus(appointment.appointment_status || appointment.status),
       test:
         appointment.test_name ||
         appointment.reason ||
@@ -222,15 +234,15 @@ export default function AppointmentList() {
 
   const getUiStatus = (appointmentStatus) => {
     if (appointmentStatus === "Confirmed") {
-      return { label: "Scheduled", className: "scheduled", icon: "fa-solid fa-calendar-check" };
+      return { label: "Confirmed", className: "confirmed", icon: "fa-solid fa-calendar-check" };
     }
     if (appointmentStatus === "Completed") {
-      return { label: "Visited", className: "visited", icon: "fa-solid fa-circle-check" };
+      return { label: "Completed", className: "completed", icon: "fa-solid fa-circle-check" };
     }
     if (appointmentStatus === "Cancelled") {
       return { label: "Cancelled", className: "cancelled", icon: "fa-solid fa-circle-xmark" };
     }
-    return { label: "Not confirmed", className: "not-confirmed", icon: "fa-solid fa-clock" };
+    return { label: "Pending", className: "pending", icon: "fa-solid fa-clock" };
   };
 
   const getTimeRange = (appointment) => {
@@ -243,15 +255,16 @@ export default function AppointmentList() {
 
   const filteredAppointments = appointments.filter((appointment) => {
     const matchesStatus = statusFilter === "All" || appointment.status === statusFilter;
+    const matchesCompletedVisibility = !hideCompleted || appointment.status !== "Completed";
     const matchesDate = !selectedDate || !appointment.rawDate || appointment.rawDate === selectedDate;
     const query = searchText.trim().toLowerCase();
     const matchesSearch =
       !query ||
-      [appointment.patientName, appointment.phone, appointment.test, appointment.technician, appointment.location]
+      [appointment.tokenNumber, appointment.patientName, appointment.phone, appointment.test, appointment.technician, appointment.location]
         .join(" ")
         .toLowerCase()
         .includes(query);
-    return matchesStatus && matchesDate && matchesSearch;
+    return matchesStatus && matchesCompletedVisibility && matchesDate && matchesSearch;
   });
 
   const allVisibleSelected =
@@ -269,12 +282,6 @@ export default function AppointmentList() {
 
   const toggleRow = (id) => {
     setSelectedRows((prev) => (prev.includes(id) ? prev.filter((rowId) => rowId !== id) : [...prev, id]));
-  };
-
-  const shiftSelectedDate = (days) => {
-    const base = selectedDate ? new Date(`${selectedDate}T00:00:00`) : new Date();
-    base.setDate(base.getDate() + days);
-    setSelectedDate(base.toISOString().split("T")[0]);
   };
 
   const updateNewAppointment = (field, value) => {
@@ -337,7 +344,7 @@ export default function AppointmentList() {
       technician: "",
       location: "",
       type: "Clinic",
-      status: "Confirmed",
+      status: "Pending",
     });
   };
 
@@ -381,27 +388,106 @@ export default function AppointmentList() {
     }
   };
 
+  const clearAllFilters = () => {
+    setStatusFilter("All");
+    setSearchText("");
+    setSelectedDate("");
+    setHideCompleted(false);
+  };
+
+  const activeFilterChips = [
+    statusFilter !== "All" && {
+      key: "status",
+      label: `Status: ${statusFilter}`,
+      onClear: () => setStatusFilter("All"),
+    },
+    selectedDate && {
+      key: "date",
+      label: `Date: ${formatDateLabel(selectedDate)}`,
+      onClear: () => setSelectedDate(""),
+    },
+    searchText.trim() && {
+      key: "search",
+      label: `Search: ${searchText.trim()}`,
+      onClear: () => setSearchText(""),
+    },
+    hideCompleted && {
+      key: "hide-completed",
+      label: "Hide completed",
+      onClear: () => setHideCompleted(false),
+    },
+  ].filter(Boolean);
+
   return (
     <div className="appointment-page">
-      <section className="appointment-toolbar">
+      <section className="appointment-header">
+        <div>
+          <h1>Appointments</h1>
+          <p>Showing: <strong>{filteredAppointments.length}</strong> of {appointments.length} appointments</p>
+        </div>
+        <button type="button" className="new-appointment-btn" onClick={() => setShowNewModal(true)}>
+            <i className="fa-solid fa-plus"></i>
+            New Appointment
+        </button>
+      </section>
+
+      <section className="appointment-toolbar" aria-label="Appointment filters">
         <div className="appointment-searchbar">
-          <select value={statusFilter} onChange={(event) => setStatusFilter(event.target.value)}>
-            <option>All</option>
-            <option>Confirmed</option>
-            <option>Pending</option>
-            <option>Completed</option>
-            <option>Cancelled</option>
-          </select>
           <label>
+            <span>Status</span>
+            <select value={statusFilter} onChange={(event) => setStatusFilter(event.target.value)}>
+              <option>All</option>
+              <option>Pending</option>
+              <option>Confirmed</option>
+              <option>Completed</option>
+              <option>Cancelled</option>
+            </select>
+          </label>
+
+          <label>
+            <span>Search</span>
+            <div className="appointment-search-input">
             <i className="fa-solid fa-magnifying-glass"></i>
             <input
               type="search"
-              placeholder="Search Text"
+              placeholder="Patient, phone, token, type..."
               value={searchText}
               onChange={(event) => setSearchText(event.target.value)}
             />
+            </div>
           </label>
-          <button type="button">Search</button>
+
+          <label className="date-picker-control">
+            <span>Date</span>
+            <input
+              type="date"
+              value={selectedDate}
+              title={formatDateLabel(selectedDate)}
+              onChange={(event) => setSelectedDate(event.target.value)}
+            />
+          </label>
+
+          <div className="appointment-date-actions" aria-label="Date shortcuts">
+            <button type="button" className="today-link" onClick={() => setSelectedDate(new Date().toISOString().split("T")[0])}>Today</button>
+          </div>
+
+          <label className="appointment-toggle">
+            <input
+              type="checkbox"
+              checked={hideCompleted}
+              onChange={(event) => setHideCompleted(event.target.checked)}
+            />
+            Hide completed
+          </label>
+
+          <button
+            type="button"
+            className="clear-filters-btn"
+            onClick={clearAllFilters}
+            disabled={activeFilterChips.length === 0}
+          >
+            Clear Filters
+          </button>
         </div>
       </section>
 
@@ -411,54 +497,17 @@ export default function AppointmentList() {
         </div>
       )}
 
-      <section className="appointment-header">
-        <div>
-          <h1>Appointments</h1>
-          <p>Showing: <strong>{filteredAppointments.length} Appointments</strong></p>
-        </div>
-        <div className="appointment-date-actions">
-          <button type="button" className="today-link" onClick={() => setSelectedDate(new Date().toISOString().split("T")[0])}>Today</button>
-          <button type="button" className="nav-round" aria-label="Previous date" onClick={() => shiftSelectedDate(-1)}>
-            <i className="fa-solid fa-chevron-left"></i>
-          </button>
-          <label className="date-picker-control">
-            <span>{formatDateLabel(selectedDate)}</span>
-            <input
-              type="date"
-              value={selectedDate}
-              onChange={(event) => setSelectedDate(event.target.value)}
-            />
-            <i className="fa-solid fa-chevron-down"></i>
-          </label>
-          {selectedDate && (
-            <button type="button" className="clear-date-btn" onClick={() => setSelectedDate("")}>
-              Clear
-            </button>
-          )}
-          <button type="button" className="nav-round" aria-label="Next date" onClick={() => shiftSelectedDate(1)}>
-            <i className="fa-solid fa-chevron-right"></i>
-          </button>
-          <button type="button" className="new-appointment-btn" onClick={() => setShowNewModal(true)}>
-            <i className="fa-solid fa-plus"></i>
-            New Appointment
-          </button>
-        </div>
-      </section>
-
       <section className="appointment-filter-row">
         <div className="filter-chips">
-          {["Life", "Health", "Helong-Term Disability", "Auto Insurance"].map((chip) => (
-            <button type="button" key={chip}>{chip} <i className="fa-solid fa-xmark"></i></button>
-          ))}
-          <button type="button" className="add-filter"><i className="fa-solid fa-plus"></i> Add Filter</button>
-          <button type="button" className="delete-filter"><i className="fa-solid fa-xmark"></i> Delete All Filters</button>
-        </div>
-        <div className="table-options">
-          <label><input type="checkbox" defaultChecked /> Hide visited</label>
-          <label><input type="checkbox" /> Show Empty</label>
-          <select defaultValue="Display Columns">
-            <option>Display Columns</option>
-          </select>
+          {activeFilterChips.length > 0 ? (
+            activeFilterChips.map((chip) => (
+              <button type="button" key={chip.key} onClick={chip.onClear}>
+                {chip.label} <i className="fa-solid fa-xmark"></i>
+              </button>
+            ))
+          ) : (
+            <span className="no-active-filters">No active filters</span>
+          )}
         </div>
       </section>
 
@@ -468,6 +517,7 @@ export default function AppointmentList() {
             <tr>
               <th className="check-cell"><input type="checkbox" checked={allVisibleSelected} onChange={toggleAllVisible} /></th>
               <th>Time <i className="fa-solid fa-arrow-up-short-wide"></i></th>
+              <th>Token</th>
               <th>Patient</th>
               <th>Phone No</th>
               <th>Test</th>
@@ -481,11 +531,11 @@ export default function AppointmentList() {
           <tbody>
             {status === "loading" ? (
               <tr>
-                <td colSpan="10" className="appointment-empty">Loading appointments...</td>
+                <td colSpan="11" className="appointment-empty">Loading appointments...</td>
               </tr>
             ) : filteredAppointments.length === 0 ? (
               <tr>
-                <td colSpan="10" className="appointment-empty">No appointments found</td>
+                <td colSpan="11" className="appointment-empty">No appointments found</td>
               </tr>
             ) : (
               filteredAppointments.map((appointment, index) => {
@@ -497,6 +547,7 @@ export default function AppointmentList() {
                       <input type="checkbox" checked={isSelected} onChange={() => toggleRow(appointment.id)} />
                     </td>
                     <td>{getTimeRange(appointment)}</td>
+                    <td>{appointment.tokenNumber}</td>
                     <td>{appointment.patientName}</td>
                     <td>{appointment.phone}</td>
                     <td className="test-cell">{appointment.test}</td>
@@ -534,6 +585,13 @@ export default function AppointmentList() {
             )}
           </tbody>
         </table>
+      </section>
+
+      <section className="appointment-header">
+         <div>
+          
+          <p>Showing: <strong>{filteredAppointments.length} Appointments</strong></p>
+        </div>
       </section>
 
       {showNewModal && (
@@ -621,9 +679,9 @@ export default function AppointmentList() {
               <label>
                 Status
                 <select value={newAppointment.status} onChange={(event) => updateNewAppointment("status", event.target.value)}>
-                  <option value="Confirmed">Scheduled</option>
-                  <option value="Pending">Not confirmed</option>
-                  <option value="Completed">Visited</option>
+                  <option value="Pending">Pending</option>
+                  <option value="Confirmed">Confirmed</option>
+                  <option value="Completed">Completed</option>
                   <option value="Cancelled">Cancelled</option>
                 </select>
               </label>
@@ -691,9 +749,9 @@ export default function AppointmentList() {
               <label>
                 Status
                 <select value={editAppointment.form.status} onChange={(event) => updateEditAppointment("status", event.target.value)}>
-                  <option value="Confirmed">Scheduled</option>
-                  <option value="Pending">Not confirmed</option>
-                  <option value="Completed">Visited</option>
+                  <option value="Pending">Pending</option>
+                  <option value="Confirmed">Confirmed</option>
+                  <option value="Completed">Completed</option>
                   <option value="Cancelled">Cancelled</option>
                 </select>
               </label>
@@ -722,6 +780,7 @@ export default function AppointmentList() {
 
             <div className="appointment-detail-grid">
               <div><span>Time</span><strong>{getTimeRange(viewAppointment)}</strong></div>
+              <div><span>Token</span><strong>{viewAppointment.tokenNumber}</strong></div>
               <div><span>Patient</span><strong>{viewAppointment.patientName}</strong></div>
               <div><span>Phone No</span><strong>{viewAppointment.phone}</strong></div>
               <div><span>Test</span><strong>{viewAppointment.test}</strong></div>
