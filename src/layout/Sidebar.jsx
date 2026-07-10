@@ -332,6 +332,20 @@ const Sidebar = ({ menuItemClick }) => {
             </li>
           )}
 
+          {effectiveRole === "doctor" && (
+            <li className={`menu-item doctor-setting-item ${isActive("/setting") ? "active" : ""}`}>
+              <div
+                className="menu-link menu-i"
+                onClick={() => {
+                  handleMenuNavigate("/setting");
+                }}
+              >
+                <i className="fa-solid fa-gear"></i>
+                <span className="menu-text">Setting</span>
+              </div>
+            </li>
+          )}
+
           {/* Logout Button */}
           <li className="menu-item logout-item">
             <div

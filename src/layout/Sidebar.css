@@ -850,6 +850,278 @@ body.doctor-theme-navbar.doctor-sidebar-menu-collapsed .right-side-content {
   padding-left: 101px;
 }
 
+/* Final compact doctor sidebar matching reference */
+.sidebar-container.doctor-theme.doctor-rail,
+.sidebar-container.doctor-theme.doctor-rail.collapsed,
+.sidebar-container.doctor-theme.doctor-rail.hover-expanded,
+body.doctor-sidebar-menu-collapsed .sidebar-container.doctor-theme.doctor-rail,
+body.doctor-sidebar-menu-collapsed .sidebar-container.doctor-theme.doctor-rail.collapsed,
+body.doctor-sidebar-menu-collapsed .sidebar-container.doctor-theme.doctor-rail.hover-expanded {
+  width: 148px !important;
+  background: #ffffff !important;
+  border-right: 1px solid #e8e7e7 !important;
+  box-shadow: none !important;
+}
+
+.sidebar-container.doctor-theme.doctor-rail .sidebar,
+body.doctor-sidebar-menu-collapsed .sidebar-container.doctor-theme.doctor-rail .sidebar {
+  align-items: stretch !important;
+  padding: 10px 10px 14px !important;
+}
+
+.sidebar-container.doctor-theme.doctor-rail .menu,
+body.doctor-sidebar-menu-collapsed .sidebar-container.doctor-theme.doctor-rail .menu {
+  align-items: stretch !important;
+  gap: 5px !important;
+  padding: 0 !important;
+  overflow-x: hidden !important;
+}
+
+.sidebar-container.doctor-theme.doctor-rail .menu-item,
+body.doctor-sidebar-menu-collapsed .sidebar-container.doctor-theme.doctor-rail .menu-item {
+  width: 100% !important;
+  height: 29px !important;
+  margin: 0 !important;
+  border-radius: 3px !important;
+  display: flex !important;
+}
+
+.sidebar-container.doctor-theme.doctor-rail .menu-link,
+body.doctor-sidebar-menu-collapsed .sidebar-container.doctor-theme.doctor-rail .menu-link {
+  width: 100% !important;
+  height: 29px !important;
+  padding: 0 10px !important;
+  gap: 9px !important;
+  border-radius: 3px !important;
+  justify-content: flex-start !important;
+  color: #333333 !important;
+  font-size: 11px !important;
+  line-height: 1 !important;
+  font-weight: 500 !important;
+  white-space: nowrap !important;
+}
+
+.sidebar-container.doctor-theme.doctor-rail .menu-link .fa-solid,
+body.doctor-sidebar-menu-collapsed .sidebar-container.doctor-theme.doctor-rail .menu-link .fa-solid {
+  flex: 0 0 12px !important;
+  width: 12px !important;
+  margin: 0 !important;
+  color: currentColor !important;
+  font-size: 10px !important;
+  line-height: 1 !important;
+  text-align: center !important;
+}
+
+.sidebar-container.doctor-theme.doctor-rail .menu-text,
+body.doctor-sidebar-menu-collapsed .sidebar-container.doctor-theme.doctor-rail .menu-text {
+  display: inline-block !important;
+  opacity: 1 !important;
+  visibility: visible !important;
+  overflow: hidden !important;
+  text-overflow: ellipsis !important;
+  white-space: nowrap !important;
+}
+
+.sidebar-container.doctor-theme.doctor-rail .menu-link:hover {
+  background: #f3f6fa !important;
+  color: #0568de !important;
+}
+
+.sidebar-container.doctor-theme.doctor-rail .menu-item.active .menu-link,
+body.doctor-sidebar-menu-collapsed .sidebar-container.doctor-theme.doctor-rail .menu-item.active .menu-link {
+  background: #0568de !important;
+  color: #ffffff !important;
+  box-shadow: none !important;
+}
+
+.sidebar-container.doctor-theme.doctor-rail .doctor-setting-item {
+  margin-top: auto !important;
+}
+
+.sidebar-container.doctor-theme.doctor-rail .logout-item .menu-text {
+  font-size: 0;
+}
+
+.sidebar-container.doctor-theme.doctor-rail .logout-item .menu-text::after {
+  content: "Log out";
+  font-size: 11px;
+}
+
+body.doctor-theme-navbar.sidebar-hover-expanded .right-side-content,
+body.doctor-theme-navbar.sidebar-collapsed .right-side-content,
+body.doctor-theme-navbar.doctor-sidebar-menu-collapsed .right-side-content,
+body.doctor-theme-navbar.doctor-sidebar-menu-collapsed .right-side-content.collapsed,
+body.doctor-theme-navbar.doctor-sidebar-menu-collapsed .right-side-content.doctor-layout-content,
+body.doctor-theme-navbar.doctor-sidebar-menu-collapsed .right-side-content.collapsed.doctor-layout-content {
+  padding-left: 148px !important;
+}
+
+/* Restore doctor sidebar hover behavior with corrected text/icon sizing */
+.sidebar-container.doctor-theme.doctor-rail,
+.sidebar-container.doctor-theme.doctor-rail.collapsed,
+.sidebar-container.doctor-theme.doctor-rail.hover-expanded {
+  width: 220px !important;
+}
+
+body.doctor-sidebar-menu-collapsed .sidebar-container.doctor-theme.doctor-rail,
+body.doctor-sidebar-menu-collapsed .sidebar-container.doctor-theme.doctor-rail.collapsed,
+body.doctor-sidebar-menu-collapsed .sidebar-container.doctor-theme.doctor-rail.hover-expanded {
+  width: 101px !important;
+}
+
+.sidebar-container.doctor-theme.doctor-rail .sidebar {
+  padding: 12px 12px 18px !important;
+}
+
+.sidebar-container.doctor-theme.doctor-rail .menu {
+  gap: 6px !important;
+}
+
+.sidebar-container.doctor-theme.doctor-rail .menu-item {
+  height: 36px !important;
+  border-radius: 8px !important;
+}
+
+.sidebar-container.doctor-theme.doctor-rail .menu-link {
+  height: 36px !important;
+  padding: 0 12px !important;
+  gap: 10px !important;
+  border-radius: 8px !important;
+  font-size: 14px !important;
+  font-weight: 700 !important;
+}
+
+.sidebar-container.doctor-theme.doctor-rail .menu-link .fa-solid {
+  flex: 0 0 18px !important;
+  width: 18px !important;
+  font-size: 15px !important;
+}
+
+.sidebar-container.doctor-theme.doctor-rail .menu-text {
+  display: inline-block !important;
+  opacity: 1 !important;
+  visibility: visible !important;
+  max-width: 160px !important;
+}
+
+body.doctor-sidebar-menu-collapsed .sidebar-container.doctor-theme.doctor-rail .sidebar {
+  align-items: center !important;
+  padding: 12px 0 18px !important;
+}
+
+body.doctor-sidebar-menu-collapsed .sidebar-container.doctor-theme.doctor-rail .menu {
+  align-items: center !important;
+  gap: 9px !important;
+}
+
+body.doctor-sidebar-menu-collapsed .sidebar-container.doctor-theme.doctor-rail .menu-item {
+  height: 42px !important;
+  justify-content: center !important;
+}
+
+body.doctor-sidebar-menu-collapsed .sidebar-container.doctor-theme.doctor-rail .menu-link {
+  width: 44px !important;
+  height: 42px !important;
+  padding: 0 !important;
+  justify-content: center !important;
+  gap: 0 !important;
+}
+
+body.doctor-sidebar-menu-collapsed .sidebar-container.doctor-theme.doctor-rail .menu-link .fa-solid {
+  flex: 0 0 auto !important;
+  width: auto !important;
+  font-size: 19px !important;
+}
+
+body.doctor-sidebar-menu-collapsed .sidebar-container.doctor-theme.doctor-rail .menu-text {
+  display: none !important;
+}
+
+body.doctor-theme-navbar.sidebar-hover-expanded .right-side-content,
+body.doctor-theme-navbar.sidebar-hover-expanded .right-side-content.doctor-layout-content {
+  padding-left: 220px !important;
+}
+
+body.doctor-theme-navbar.sidebar-collapsed .right-side-content,
+body.doctor-theme-navbar.doctor-sidebar-menu-collapsed .right-side-content,
+body.doctor-theme-navbar.doctor-sidebar-menu-collapsed .right-side-content.collapsed,
+body.doctor-theme-navbar.doctor-sidebar-menu-collapsed .right-side-content.doctor-layout-content,
+body.doctor-theme-navbar.doctor-sidebar-menu-collapsed .right-side-content.collapsed.doctor-layout-content {
+  padding-left: 101px !important;
+}
+
+/* Doctor dashboard content must move with the hover-expanded sidebar */
+body.doctor-theme-navbar:not(.doctor-sidebar-menu-collapsed) .right-side-content.doctor-layout-content,
+body.doctor-theme-navbar.sidebar-hover-expanded .right-side-content.doctor-layout-content {
+  margin-left: 220px !important;
+  max-width: calc(100vw - 220px) !important;
+  padding-left: 0 !important;
+  width: calc(100vw - 220px) !important;
+}
+
+body.doctor-theme-navbar.doctor-sidebar-menu-collapsed .right-side-content.doctor-layout-content,
+body.doctor-theme-navbar.doctor-sidebar-menu-collapsed .right-side-content.collapsed.doctor-layout-content,
+body.doctor-theme-navbar.sidebar-collapsed .right-side-content.doctor-layout-content {
+  margin-left: 101px !important;
+  max-width: calc(100vw - 101px) !important;
+  padding-left: 0 !important;
+  width: calc(100vw - 101px) !important;
+}
+
+body.doctor-theme-navbar:not(.doctor-sidebar-menu-collapsed) .right-side-content.doctor-layout-content,
+body.doctor-theme-navbar:not(.doctor-sidebar-menu-collapsed) .right-side-content.collapsed.doctor-layout-content {
+  margin-left: 220px !important;
+  max-width: calc(100vw - 220px) !important;
+  padding-left: 0 !important;
+  width: calc(100vw - 220px) !important;
+}
+
+/* Doctor sidebar: keep scrolling enabled but hide the visible scrollbar */
+.sidebar-container.doctor-theme.doctor-rail,
+.sidebar-container.doctor-theme.doctor-rail .sidebar,
+.sidebar-container.doctor-theme.doctor-rail .menu {
+  -ms-overflow-style: none !important;
+  scrollbar-width: none !important;
+}
+
+.sidebar-container.doctor-theme.doctor-rail::-webkit-scrollbar,
+.sidebar-container.doctor-theme.doctor-rail .sidebar::-webkit-scrollbar,
+.sidebar-container.doctor-theme.doctor-rail .menu::-webkit-scrollbar {
+  display: none !important;
+  height: 0 !important;
+  width: 0 !important;
+}
+
+.sidebar-container.doctor-theme.doctor-rail .logout-item,
+body.doctor-sidebar-menu-collapsed .sidebar-container.doctor-theme.doctor-rail .logout-item {
+  height: 50px !important;
+  margin-top: 8px !important;
+}
+
+.sidebar-container.doctor-theme.doctor-rail .logout-item .menu-link,
+body.doctor-sidebar-menu-collapsed .sidebar-container.doctor-theme.doctor-rail .logout-item .menu-link {
+  height: 50px !important;
+  border-radius: 10px !important;
+  font-size: 15px !important;
+}
+
+.sidebar-container.doctor-theme.doctor-rail .logout-item .menu-link .fa-solid {
+  font-size: 18px !important;
+}
+
+body.doctor-sidebar-menu-collapsed .sidebar-container.doctor-theme.doctor-rail .logout-item .menu-link {
+  width: 54px !important;
+}
+
+body.doctor-sidebar-menu-collapsed .sidebar-container.doctor-theme.doctor-rail .logout-item .menu-link .fa-solid {
+  font-size: 22px !important;
+}
+
+.sidebar-container.doctor-theme.doctor-rail .logout-item .menu-text::after {
+  font-size: 15px !important;
+  font-weight: 800 !important;
+}
+
 
 /* ========== SUPER ADMIN THEME (Premium Gold Theme) ========== */
 .sidebar-container.superadmin-theme {

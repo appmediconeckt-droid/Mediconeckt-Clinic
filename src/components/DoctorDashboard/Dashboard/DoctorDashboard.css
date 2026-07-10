@@ -1309,6 +1309,79 @@
   min-height: 100px;
 }
 
+.dd-complete-patient-meta {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 8px;
+  margin-top: 10px;
+}
+
+.dd-complete-patient-meta span {
+  background: #f0f5fb;
+  border: 1px solid #dbe7f3;
+  border-radius: 6px;
+  color: #334155;
+  font-size: 12px;
+  font-weight: 600;
+  padding: 5px 8px;
+}
+
+.dd-section-heading-row {
+  align-items: center;
+  display: flex;
+  gap: 12px;
+  justify-content: space-between;
+  margin-bottom: 8px;
+}
+
+.dd-medicine-card {
+  background: #fbfdff;
+  border: 1px solid #dfe8f3;
+  border-radius: 8px;
+  margin-bottom: 10px;
+  padding: 12px;
+}
+
+.dd-medicine-card-header {
+  align-items: center;
+  display: flex;
+  justify-content: space-between;
+  margin-bottom: 8px;
+}
+
+.dd-medicine-card-header strong {
+  color: #1e293b;
+  font-size: 13px;
+}
+
+.dd-medicine-card-header button {
+  align-items: center;
+  background: #fee2e2;
+  border: 0;
+  border-radius: 6px;
+  color: #b91c1c;
+  display: inline-flex;
+  height: 26px;
+  justify-content: center;
+  width: 26px;
+}
+
+.dd-medicine-timing-grid {
+  display: grid;
+  gap: 8px;
+  grid-template-columns: repeat(4, minmax(0, 1fr));
+}
+
+.dd-medicine-preview {
+  background: #f8fafc;
+  border: 1px dashed #cbd5e1;
+  border-radius: 6px;
+  color: #475569;
+  font-size: 12px;
+  margin-top: 10px;
+  padding: 8px;
+}
+
 .dd-follow-up-section,
 .dd-additional-notes-section {
   background: #f8fafc;

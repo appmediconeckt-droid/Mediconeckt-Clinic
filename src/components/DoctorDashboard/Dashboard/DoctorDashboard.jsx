@@ -2162,7 +2162,7 @@ import "jspdf-autotable";
 import html2canvas from "html2canvas";
 import { motion } from "framer-motion";
 import logo from '../../../image/Mediconect-Logo-4.png';
-import { API_BASE_URL } from "../../../redux/apiConfig";
+import { API_BASE_URL, getAuthHeaders } from "../../../redux/apiConfig";
 import axios from "axios";
 
 const DEFAULT_BREAK_MIN = 30;
@@ -2181,6 +2181,212 @@ const formatDuration = (ms) => {
   if (h > 0) return `${h}h ${pad(m)}m ${pad(s)}s`;
   if (m > 0) return `${m}m ${pad(s)}s`;
   return `${s}s`;
+};
+
+const normalizeApiList = (payload) => {
+  if (Array.isArray(payload)) return payload;
+  if (Array.isArray(payload?.data)) return payload.data;
+  if (Array.isArray(payload?.appointments)) return payload.appointments;
+  if (Array.isArray(payload?.result)) return payload.result;
+  if (Array.isArray(payload?.results)) return payload.results;
+  if (Array.isArray(payload?.data?.appointments)) return payload.data.appointments;
+  if (Array.isArray(payload?.data?.result)) return payload.data.result;
+  if (Array.isArray(payload?.data?.results)) return payload.data.results;
+  return [];
+};
+
+const pickFirst = (...values) => values.find((value) => value !== undefined && value !== null && value !== "");
+
+const getStoredAuthUser = () => {
+  try {
+    return JSON.parse(localStorage.getItem("authUser") || "null");
+  } catch {
+    return null;
+  }
+};
+
+const getDoctorIdFromUser = (user) => {
+  return pickFirst(
+    user?.id,
+    user?._id,
+    user?.doctor_id,
+    user?.doctorId,
+    user?.user_id,
+    user?.userId,
+    user?.user?.id,
+    user?.user?._id,
+    user?.data?.id,
+    user?.data?._id,
+    user?.data?.user?.id,
+    user?.data?.user?._id
+  );
+};
+
+const getAppointmentDateValue = (appointment) =>
+  pickFirst(
+    appointment?.appointment_date,
+    appointment?.appointmentDate,
+    appointment?.date,
+    appointment?.booking_date,
+    appointment?.bookingDate,
+    appointment?.scheduled_date,
+    appointment?.scheduledDate,
+    appointment?.created_at,
+    appointment?.createdAt
+  );
+
+const formatLocalDateKey = (value) => {
+  const date = value ? new Date(value) : new Date();
+  if (Number.isNaN(date.getTime())) return "";
+
+  const year = date.getFullYear();
+  const month = String(date.getMonth() + 1).padStart(2, "0");
+  const day = String(date.getDate()).padStart(2, "0");
+  return `${year}-${month}-${day}`;
+};
+
+const getAppointmentDateTime = (appointment) => {
+  const dateKey = formatLocalDateKey(getAppointmentDateValue(appointment));
+  if (!dateKey) return null;
+
+  const timeValue = pickFirst(
+    appointment?.appointment_time,
+    appointment?.appointmentTime,
+    appointment?.time,
+    appointment?.scheduled_time,
+    appointment?.scheduledTime,
+    appointment?.slot_time,
+    appointment?.slotTime
+  );
+  const normalizedTime = String(timeValue || "23:59:59").trim();
+  const [hours = "23", minutes = "59", seconds = "59"] = normalizedTime.split(":");
+  const dateTime = new Date(
+    Number(dateKey.slice(0, 4)),
+    Number(dateKey.slice(5, 7)) - 1,
+    Number(dateKey.slice(8, 10)),
+    Number(hours),
+    Number(minutes),
+    Number(seconds)
+  );
+
+  return Number.isNaN(dateTime.getTime()) ? null : dateTime;
+};
+
+const isTodayAppointment = (appointment) => {
+  const dateValue = getAppointmentDateValue(appointment);
+  if (!dateValue) return true;
+
+  const appointmentDateKey = formatLocalDateKey(dateValue);
+  if (!appointmentDateKey) return true;
+
+  return appointmentDateKey === formatLocalDateKey();
+};
+
+const isExpiredPendingAppointment = (appointment, nowMs = Date.now()) => {
+  if (normalizeAppointmentStatus(appointment) !== "pending") return false;
+
+  const appointmentDateTime = getAppointmentDateTime(appointment);
+  if (!appointmentDateTime) return false;
+
+  return appointmentDateTime.getTime() < nowMs;
+};
+
+const formatAppointmentTime = (appointment) => {
+  const explicitTime = pickFirst(
+    appointment?.time,
+    appointment?.scheduled_time,
+    appointment?.scheduledTime,
+    appointment?.appointment_time,
+    appointment?.appointmentTime,
+    appointment?.slot_time,
+    appointment?.slotTime
+  );
+
+  if (explicitTime) return explicitTime;
+
+  const dateValue = getAppointmentDateValue(appointment);
+  const date = dateValue ? new Date(dateValue) : null;
+  if (date && !Number.isNaN(date.getTime())) {
+    return date.toLocaleTimeString([], { hour: "2-digit", minute: "2-digit" });
+  }
+
+  return "Today";
+};
+
+const normalizeAppointmentStatus = (appointment, forcedStatus) => {
+  const rawStatus = pickFirst(forcedStatus, appointment?.appointment_status, appointment?.status);
+  const status = String(rawStatus || "pending").toLowerCase().trim().replace(/\s+/g, "-");
+
+  if (status === "completed" || status === "complete") return "completed";
+  if (status === "cancelled" || status === "canceled") return "cancelled";
+  if (status === "confirmed" || status === "accepted" || status === "active") return "confirmed";
+  if (status === "in-progress" || status === "in_progress") return "in-progress";
+  if (status === "scheduled" || status === "booked" || status === "approved" || status === "") return "pending";
+
+  return "pending";
+};
+
+const formatAppointment = (appointment, forcedStatus) => {
+  const patient = appointment?.patient || appointment?.patientData || appointment?.user || {};
+  const status = normalizeAppointmentStatus(appointment, forcedStatus);
+
+  return {
+    id: pickFirst(appointment?.id, appointment?._id, appointment?.appointment_id, appointment?.appointmentId),
+    name: pickFirst(
+      appointment?.patient_name,
+      appointment?.patientName,
+      appointment?.name,
+      patient?.full_name,
+      patient?.fullName,
+      patient?.name,
+      "Unknown"
+    ),
+    gender: pickFirst(appointment?.gender, appointment?.patient_gender, patient?.gender, "Not specified"),
+    issue: pickFirst(appointment?.reason, appointment?.issue, appointment?.symptoms, appointment?.description, "General Checkup"),
+    scheduledTime: formatAppointmentTime(appointment),
+    status,
+    phone: pickFirst(
+      appointment?.patient_phone,
+      appointment?.patientPhone,
+      appointment?.phone,
+      appointment?.mobile,
+      appointment?.phone_number,
+      appointment?.phoneNumber,
+      patient?.patient_phone,
+      patient?.patientPhone,
+      patient?.phone,
+      patient?.mobile,
+      patient?.phone_number,
+      patient?.phoneNumber,
+      "N/A"
+    ),
+    tokenNumber: pickFirst(
+      appointment?.token_number,
+      appointment?.tokenNumber,
+      appointment?.token,
+      appointment?.appointment_token,
+      appointment?.appointmentToken
+    ),
+    appointmentNo: pickFirst(
+      appointment?.appointment_no,
+      appointment?.appointmentNo,
+      appointment?.appointment_number,
+      appointment?.appointmentNumber
+    ),
+    bp: pickFirst(appointment?.blood_pressure, appointment?.bp, appointment?.bloodPressure, "Not recorded"),
+    temperature: pickFirst(appointment?.temperature, appointment?.temp),
+    bloodGroup: pickFirst(appointment?.blood_group, appointment?.bloodGroup, patient?.blood_group, patient?.bloodGroup, "Not recorded"),
+    patientId: pickFirst(appointment?.patient_id, appointment?.patientId, patient?.id, patient?._id),
+    startTime: pickFirst(appointment?.start_time, appointment?.startTime),
+    endTime: pickFirst(appointment?.end_time, appointment?.endTime),
+    durationMs: pickFirst(appointment?.duration_ms, appointment?.durationMs),
+    diagnosis: appointment?.diagnosis,
+    medicine: appointment?.medicine,
+    advice: appointment?.advice,
+    additionalNotes: pickFirst(appointment?.additional_notes, appointment?.additionalNotes),
+    followUpRequired: pickFirst(appointment?.follow_up_required, appointment?.followUpRequired, false),
+    followUpDate: pickFirst(appointment?.follow_up_date, appointment?.followUpDate),
+  };
 };
 
 // Color Themes (same as before - keeping it compact)
@@ -2367,8 +2573,36 @@ const COLOR_THEMES = [
   }
 ];
 
-// CompleteModal component (same as before)
-const CompleteModal = ({ show, onHide, form, setForm, onSave, patientName }) => {
+const MEDICINE_TIMINGS = ["Morning", "Afternoon", "Evening", "Night"];
+
+const createEmptyMedicine = () => ({
+  name: "",
+  dosage: "",
+  timings: [],
+  durationValue: "",
+  durationType: "Days",
+});
+
+const formatMedicineLine = (medicine) => {
+  const name = medicine.name?.trim() || "Medicine";
+  const dosage = medicine.dosage?.trim() || "Dosage";
+  const timing = medicine.timings?.length ? medicine.timings.join(", ") : "Select timing";
+  const durationValue = medicine.durationValue?.trim() || "?";
+  const durationType = (medicine.durationType || "Days").toLowerCase();
+  return `${name} - ${dosage} (${timing}) - ${durationValue} ${durationType}`;
+};
+
+const hasValidMedicine = (medicine) =>
+  Boolean(
+    medicine?.name?.trim() &&
+    medicine?.dosage?.trim() &&
+    medicine?.timings?.length &&
+    medicine?.durationValue?.trim() &&
+    medicine?.durationType
+  );
+
+// CompleteModal component
+const CompleteModal = ({ show, onHide, form, setForm, onSave, patientName, appointment }) => {
   const today = new Date();
   const minDate = today.toISOString().split('T')[0];
   
@@ -2377,17 +2611,83 @@ const CompleteModal = ({ show, onHide, form, setForm, onSave, patientName }) => 
   const defaultFollowUpDateStr = defaultFollowUpDate.toISOString().split('T')[0];
   
   React.useEffect(() => {
-    if (show && !form.followUpDate) {
+    if (!show) return;
+
+    if (!form.medicines?.length) {
+      setForm(prev => ({
+        ...prev,
+        medicines: [createEmptyMedicine()],
+      }));
+    }
+
+    if (!form.followUpDate) {
       setForm(prev => ({
         ...prev,
         followUpDate: defaultFollowUpDateStr,
         followUpRequired: false
       }));
     }
-  }, [show, defaultFollowUpDateStr, form.followUpDate]);
+  }, [show, defaultFollowUpDateStr, form.followUpDate, form.medicines?.length]);
 
   const handleInputChange = (field, value) => {
     setForm(prev => ({ ...prev, [field]: value }));
+  };
+
+  const medicines = form.medicines?.length ? form.medicines : [createEmptyMedicine()];
+  const updateMedicine = (index, field, value) => {
+    setForm(prev => {
+      const nextMedicines = (prev.medicines?.length ? prev.medicines : [createEmptyMedicine()]).map((medicine, idx) =>
+        idx === index ? { ...medicine, [field]: value } : medicine
+      );
+      return {
+        ...prev,
+        medicines: nextMedicines,
+        medicine: nextMedicines.map(formatMedicineLine).join("\n"),
+      };
+    });
+  };
+
+  const toggleMedicineTiming = (index, timing) => {
+    setForm(prev => {
+      const nextMedicines = (prev.medicines?.length ? prev.medicines : [createEmptyMedicine()]).map((medicine, idx) => {
+        if (idx !== index) return medicine;
+        const timings = medicine.timings || [];
+        return {
+          ...medicine,
+          timings: timings.includes(timing)
+            ? timings.filter((item) => item !== timing)
+            : [...timings, timing],
+        };
+      });
+      return {
+        ...prev,
+        medicines: nextMedicines,
+        medicine: nextMedicines.map(formatMedicineLine).join("\n"),
+      };
+    });
+  };
+
+  const addMedicine = () => {
+    setForm(prev => {
+      const nextMedicines = [...(prev.medicines?.length ? prev.medicines : [createEmptyMedicine()]), createEmptyMedicine()];
+      return {
+        ...prev,
+        medicines: nextMedicines,
+        medicine: nextMedicines.map(formatMedicineLine).join("\n"),
+      };
+    });
+  };
+
+  const removeMedicine = (index) => {
+    setForm(prev => {
+      const source = prev.medicines?.length ? prev.medicines : [createEmptyMedicine()];
+      const nextMedicines = source.length > 1 ? source.filter((_, idx) => idx !== index) : [createEmptyMedicine()];
+      return {
+        ...prev,
+        medicines: nextMedicines,
+        medicine: nextMedicines.map(formatMedicineLine).join("\n"),
+      };
+    });
   };
 
   const handleFollowUpToggle = (e) => {
@@ -2400,9 +2700,17 @@ const CompleteModal = ({ show, onHide, form, setForm, onSave, patientName }) => 
   };
 
   const handleSave = () => {
-    const finalForm = form.followUpRequired ? form : { ...form, followUpDate: "" };
+    const medicineText = medicines.map(formatMedicineLine).join("\n");
+    const finalForm = form.followUpRequired
+      ? { ...form, medicine: medicineText }
+      : { ...form, medicine: medicineText, followUpDate: "" };
     onSave(finalForm);
   };
+
+  const patientIdLabel = appointment?.id ? `P${String(appointment.id).padStart(3, "0")}` : "N/A";
+  const temperature = appointment?.temperature || appointment?.temp || "36";
+  const bloodPressure = appointment?.bp || appointment?.bloodPressure || "120/80 mmHg";
+  const canSave = Boolean(form.diagnosis?.trim() && form.advice?.trim() && medicines.every(hasValidMedicine));
 
   return (
     <Modal show={show} onHide={onHide} centered size="lg" className="dd-complete-modal">
@@ -2415,6 +2723,11 @@ const CompleteModal = ({ show, onHide, form, setForm, onSave, patientName }) => 
           <div className="dd-patient-name-display">
             <i className="bi bi-person-circle me-2"></i>
             <span className="fs-6 fw-bold">{patientName}</span>
+          </div>
+          <div className="dd-complete-patient-meta">
+            <span>ID: {patientIdLabel}</span>
+            <span>Temperature (°C): {temperature}</span>
+            <span>Blood Pressure: {bloodPressure}</span>
           </div>
         </div>
 
@@ -2443,23 +2756,110 @@ const CompleteModal = ({ show, onHide, form, setForm, onSave, patientName }) => 
 
           <Row className="mb-2">
             <Col md={12}>
-              <Form.Group>
-                <Form.Label className="dd-form-label">
-                  Prescribed Medicine <span className="text-danger">*</span>
-                </Form.Label>
-                <Form.Control
-                  as="textarea"
-                  rows={3}
-                  placeholder="Enter prescribed medicines..."
-                  value={form.medicine}
-                  onChange={(e) => handleInputChange("medicine", e.target.value)}
-                  className="dd-form-control-sm dd-medicine-textarea"
-                  required
-                />
-                <div className="dd-form-text text-muted mt-1">
-                  Medicine Name - Dosage - Frequency - Duration
+              <div className="dd-medicines-section">
+                <div className="dd-section-heading-row">
+                  <Form.Label className="dd-form-label mb-0">
+                    Prescribed Medicines <span className="text-danger">*</span>
+                  </Form.Label>
+                  <Button type="button" variant="outline-primary" size="sm" onClick={addMedicine}>
+                    <i className="bi bi-plus-circle me-1"></i>
+                    Add Medicine
+                  </Button>
                 </div>
-              </Form.Group>
+
+                {medicines.map((medicine, index) => (
+                  <div className="dd-medicine-card" key={`medicine-${index}`}>
+                    <div className="dd-medicine-card-header">
+                      <strong>Medicine #{index + 1}</strong>
+                      {medicines.length > 1 && (
+                        <button type="button" onClick={() => removeMedicine(index)} aria-label={`Remove medicine ${index + 1}`}>
+                          <i className="bi bi-x-lg"></i>
+                        </button>
+                      )}
+                    </div>
+
+                    <Row className="g-2">
+                      <Col md={6}>
+                        <Form.Group>
+                          <Form.Label className="dd-form-label">Medicine Name <span className="text-danger">*</span></Form.Label>
+                          <Form.Control
+                            value={medicine.name}
+                            placeholder="e.g., Paracetamol 500mg"
+                            onChange={(e) => updateMedicine(index, "name", e.target.value)}
+                            className="dd-form-control-sm"
+                            required
+                          />
+                        </Form.Group>
+                      </Col>
+                      <Col md={6}>
+                        <Form.Group>
+                          <Form.Label className="dd-form-label">Dosage <span className="text-danger">*</span></Form.Label>
+                          <Form.Control
+                            value={medicine.dosage}
+                            placeholder="e.g., 1 Tablet"
+                            onChange={(e) => updateMedicine(index, "dosage", e.target.value)}
+                            className="dd-form-control-sm"
+                            required
+                          />
+                        </Form.Group>
+                      </Col>
+                    </Row>
+
+                    <Form.Group className="mt-2">
+                      <Form.Label className="dd-form-label">Timing <span className="text-danger">*</span></Form.Label>
+                      <div className="dd-medicine-timing-grid">
+                        {MEDICINE_TIMINGS.map((timing) => (
+                          <Form.Check
+                            key={timing}
+                            type="checkbox"
+                            id={`medicine-${index}-${timing}`}
+                            label={timing}
+                            checked={medicine.timings?.includes(timing) || false}
+                            onChange={() => toggleMedicineTiming(index, timing)}
+                          />
+                        ))}
+                      </div>
+                    </Form.Group>
+
+                    <Row className="g-2 mt-1">
+                      <Col md={6}>
+                        <Form.Group>
+                          <Form.Label className="dd-form-label">Duration Value <span className="text-danger">*</span></Form.Label>
+                          <Form.Control
+                            value={medicine.durationValue}
+                            placeholder="e.g., 7"
+                            onChange={(e) => updateMedicine(index, "durationValue", e.target.value.replace(/[^\d]/g, ""))}
+                            className="dd-form-control-sm"
+                            required
+                          />
+                        </Form.Group>
+                      </Col>
+                      <Col md={6}>
+                        <Form.Group>
+                          <Form.Label className="dd-form-label">Duration Type <span className="text-danger">*</span></Form.Label>
+                          <Form.Select
+                            value={medicine.durationType}
+                            onChange={(e) => updateMedicine(index, "durationType", e.target.value)}
+                            className="dd-form-control-sm"
+                          >
+                            <option>Days</option>
+                            <option>Weeks</option>
+                            <option>Months</option>
+                          </Form.Select>
+                        </Form.Group>
+                      </Col>
+                    </Row>
+
+                    <div className="dd-medicine-preview">
+                      Preview: {formatMedicineLine(medicine)}
+                    </div>
+                  </div>
+                ))}
+
+                <div className="dd-form-text text-muted mt-1">
+                  Each medicine will be formatted as: Medicine Name - Dosage (Timing) - Duration
+                </div>
+              </div>
             </Col>
           </Row>
 
@@ -2576,7 +2976,7 @@ const CompleteModal = ({ show, onHide, form, setForm, onSave, patientName }) => 
               onClick={handleSave}
               className="dd-complete-save-btn"
               size="sm"
-              disabled={!form.diagnosis.trim() || !form.medicine.trim() || !form.advice.trim()}
+              disabled={!canSave}
             >
               <i className="bi bi-check-circle me-1"></i>
               Save & Continue
@@ -2904,19 +3304,24 @@ const DoctorDashboard = () => {
   const [completeForm, setCompleteForm] = useState({
     diagnosis: "",
     medicine: "",
+    medicines: [createEmptyMedicine()],
     advice: "",
     additionalNotes: "",
     followUpRequired: false,
     followUpDate: ""
   });
 
-  const authUser = localStorage.getItem('authUser')
-    ? JSON.parse(localStorage.getItem('authUser'))
-    : null;
+  const authUser = getStoredAuthUser();
 
-  // Get doctor ID from localStorage or URL params
-  const doctorId = authUser?.id || '3';
-  const doctorName = authUser?.name || 'Doctor';
+  const doctorId = getDoctorIdFromUser(authUser);
+  const doctorName = pickFirst(
+    authUser?.name,
+    authUser?.full_name,
+    authUser?.fullName,
+    authUser?.user?.name,
+    authUser?.data?.user?.name,
+    "Doctor"
+  );
 
   // Fetch appointments from API
   const fetchAppointments = async () => {
@@ -2924,68 +3329,42 @@ const DoctorDashboard = () => {
       setLoading(true);
       setError(null);
       
-      // Fetch today's appointments for this doctor
-      const response = await axios.get(`${API_BASE_URL}/appointments?doctor_id=${doctorId}`);
-      
-      if (response.data && response.data.length >= 0) {
-        // Filter appointments for today
-        const today = new Date().toISOString().split('T')[0];
-        const todayAppointments = response.data.filter(apt => {
-          const aptDate = new Date(apt.appointment_date || apt.date).toISOString().split('T')[0];
-          const rawStatus = (apt.status || '').toLowerCase();
-          const status = rawStatus || 'pending';
-          return aptDate === today && ['pending', 'confirmed', 'in-progress'].includes(status);
-        });
-        
-        // Transform API data to match component format
-        const formattedAppointments = todayAppointments.map(apt => ({
-          id: apt.id || apt._id,
-          name: apt.patient_name || apt.patientName || 'Unknown',
-          gender: apt.gender || apt.patient_gender || 'Not specified',
-          issue: apt.reason || apt.issue || 'General Checkup',
-          scheduledTime: apt.time || apt.scheduled_time || new Date(apt.appointment_date).toLocaleTimeString([], { hour: '2-digit', minute: '2-digit' }),
-          status: (apt.status || 'pending').toLowerCase(),
-          phone: apt.phone || apt.mobile || 'N/A',
-          bp: apt.blood_pressure || apt.bp || 'Not recorded',
-          bloodGroup: apt.blood_group || apt.bloodGroup || 'Not recorded',
-          patientId: apt.patient_id || apt.patientId
-        }));
-        
-        setAppointments(formattedAppointments);
-        
-        // Fetch completed appointments
-        const completedResponse = await axios.get(`${API_BASE_URL}/appointments?doctor_id=${doctorId}&status=completed`);
-        
-        if (completedResponse.data && completedResponse.data.length >= 0) {
-          const formattedCompleted = completedResponse.data.map(apt => ({
-            id: apt.id || apt._id,
-            name: apt.patient_name || apt.patientName || 'Unknown',
-            gender: apt.gender || apt.patient_gender || 'Not specified',
-            issue: apt.reason || apt.issue || 'General Checkup',
-            scheduledTime: apt.time || apt.scheduled_time,
-            status: 'completed',
-            phone: apt.phone || apt.mobile || 'N/A',
-            bp: apt.blood_pressure || apt.bp || 'Not recorded',
-            bloodGroup: apt.blood_group || apt.bloodGroup || 'Not recorded',
-            startTime: apt.start_time || apt.startTime,
-            endTime: apt.end_time || apt.endTime,
-            durationMs: apt.duration_ms || apt.durationMs,
-            diagnosis: apt.diagnosis,
-            medicine: apt.medicine,
-            advice: apt.advice,
-            additionalNotes: apt.additional_notes || apt.additionalNotes,
-            followUpRequired: apt.follow_up_required || apt.followUpRequired || false,
-            followUpDate: apt.follow_up_date || apt.followUpDate
-          }));
-          setCompleted(formattedCompleted);
-        }
-      } else {
+      if (!doctorId) {
         setAppointments([]);
         setCompleted([]);
+        setError("Doctor ID not found. Please login again.");
+        return;
       }
+
+      const response = await axios.get(`${API_BASE_URL}/appointments?doctor_id=${doctorId}`, {
+        headers: getAuthHeaders(),
+      });
+
+      const appointmentList = normalizeApiList(response.data);
+      const todayAppointments = appointmentList.filter((apt) => {
+        const status = normalizeAppointmentStatus(apt);
+        return (
+          isTodayAppointment(apt) &&
+          ["pending", "confirmed", "in-progress"].includes(status) &&
+          !isExpiredPendingAppointment(apt)
+        );
+      });
+
+      setAppointments(todayAppointments.map((apt) => formatAppointment(apt)));
+
+      const completedResponse = await axios.get(`${API_BASE_URL}/appointments?doctor_id=${doctorId}&appointment_status=completed`, {
+        headers: getAuthHeaders(),
+      });
+
+      const completedList = normalizeApiList(completedResponse.data);
+      setCompleted(
+        completedList
+          .filter((apt) => normalizeAppointmentStatus(apt) === "completed")
+          .map((apt) => formatAppointment(apt))
+      );
     } catch (err) {
       console.error('Error fetching appointments:', err);
-      setError('Error loading appointments. Please check if the server is running.');
+      setError(err.response?.data?.message || err.response?.data?.error || 'Error loading appointments. Please check if the server is running.');
     } finally {
       setLoading(false);
     }
@@ -2993,9 +3372,6 @@ const DoctorDashboard = () => {
 
   useEffect(() => {
     fetchAppointments();
-    // Refresh appointments every 30 seconds
-    const interval = setInterval(fetchAppointments, 30000);
-    return () => clearInterval(interval);
   }, [doctorId]);
 
   // Timer tick
@@ -3038,10 +3414,10 @@ const DoctorDashboard = () => {
 
     // Update appointment status in API
     try {
-      await axios.put(`${API_BASE_URL}/appointments/${selectedAppointment.id}/status`, {
-        status: 'in-progress',
-        start_time: startTime,
-        doctor_id: doctorId
+      await axios.patch(`${API_BASE_URL}/appointments/${selectedAppointment.id}`, {
+        appointment_status: "confirmed",
+      }, {
+        headers: getAuthHeaders(),
       });
     } catch (err) {
       console.error('Error updating appointment status:', err);
@@ -3158,6 +3534,7 @@ const DoctorDashboard = () => {
     setCompleteForm({
       diagnosis: "",
       medicine: "",
+      medicines: [createEmptyMedicine()],
       advice: "",
       additionalNotes: "",
       followUpRequired: false,
@@ -3205,14 +3582,10 @@ const DoctorDashboard = () => {
 
     // Update appointment status in API
     try {
-      await axios.put(`${API_BASE_URL}/appointments/${activeSession.appt.id}/complete`, {
-        end_time: endTime,
-        duration_ms: totalTreatmentMs,
-        diagnosis: "Not specified",
-        medicine: "Not specified",
-        advice: "Not specified",
-        status: 'completed',
-        doctor_id: doctorId
+      await axios.patch(`${API_BASE_URL}/appointments/${activeSession.appt.id}`, {
+        appointment_status: "completed",
+      }, {
+        headers: getAuthHeaders(),
       });
     } catch (err) {
       console.error('Error completing appointment:', err);
@@ -3243,6 +3616,7 @@ const DoctorDashboard = () => {
       durationMs: totalTreatmentMs,
       diagnosis: formData.diagnosis,
       medicine: formData.medicine,
+      medicines: formData.medicines || [],
       advice: formData.advice,
       additionalNotes: formData.additionalNotes || "",
       followUpRequired: formData.followUpRequired || false,
@@ -3261,17 +3635,19 @@ const DoctorDashboard = () => {
 
     // Update appointment status in API
     try {
-      await axios.put(`${API_BASE_URL}/appointments/${activeSession.appt.id}/complete`, {
+      await axios.patch(`${API_BASE_URL}/appointments/${activeSession.appt.id}`, {
+        appointment_status: "completed",
         end_time: endTime,
         duration_ms: totalTreatmentMs,
         diagnosis: formData.diagnosis,
         medicine: formData.medicine,
+        medicines: formData.medicines || [],
         advice: formData.advice,
         additional_notes: formData.additionalNotes || "",
         follow_up_required: formData.followUpRequired || false,
         follow_up_date: formData.followUpDate || "",
-        status: 'completed',
-        doctor_id: doctorId
+      }, {
+        headers: getAuthHeaders(),
       });
     } catch (err) {
       console.error('Error completing appointment:', err);
@@ -3309,7 +3685,7 @@ const DoctorDashboard = () => {
 
     // Update appointment in API
     try {
-      await axios.put(`${API_BASE_URL}/api/appointments/${editingAppointment.id}`, {
+      await axios.patch(`${API_BASE_URL}/appointments/${editingAppointment.id}`, {
         diagnosis: formData.diagnosis,
         medicine: formData.medicine,
         advice: formData.advice,
@@ -3317,6 +3693,8 @@ const DoctorDashboard = () => {
         follow_up_required: formData.followUpRequired,
         follow_up_date: formData.followUpDate,
         doctor_id: doctorId
+      }, {
+        headers: getAuthHeaders(),
       });
     } catch (err) {
       console.error('Error updating appointment:', err);
@@ -3401,10 +3779,14 @@ const DoctorDashboard = () => {
   const activeAppt = activeSession?.appt || null;
   const elapsedMs = computeElapsedMs();
   const breakRemainingMs = getBreakRemainingMs();
-  const pendingAppointments = appointments.filter((appt) => appt.status !== "in-progress");
+  const pendingAppointments = appointments.filter(
+    (appt) => appt.status === "pending" && !isExpiredPendingAppointment(appt, now)
+  );
   const inProgressAppointments = [
     ...(activeAppt ? [activeAppt] : []),
-    ...appointments.filter((appt) => appt.status === "in-progress" && appt.id !== activeAppt?.id),
+    ...appointments.filter(
+      (appt) => ["confirmed", "in-progress"].includes(appt.status) && appt.id !== activeAppt?.id
+    ),
   ];
   const visibleQueue =
     activeQueueTab === "completed"
@@ -3433,9 +3815,25 @@ const DoctorDashboard = () => {
 
   const StatusBadge = ({ status }) => {
     if (status === "pending") return <Badge bg="danger">Pending</Badge>;
+    if (status === "confirmed") return <Badge bg="primary">Confirmed</Badge>;
     if (status === "in-progress") return <Badge bg="primary">In Progress</Badge>;
     if (status === "completed") return <Badge bg="success">Completed</Badge>;
+    if (status === "cancelled") return <Badge bg="secondary">Cancelled</Badge>;
     return <Badge bg="secondary">{status}</Badge>;
+  };
+
+  const getQueueStatusLabel = (appt, isActive) => {
+    if (appt.status === "completed") return "Completed";
+    if (appt.status === "in-progress" || isActive) return "In Progress";
+    if (appt.status === "confirmed") return "Confirmed";
+    if (appt.status === "cancelled") return "Cancelled";
+    return "Pending";
+  };
+
+  const getTokenLabel = (appt) => {
+    if (appt?.tokenNumber) return `Token #${appt.tokenNumber}`;
+    if (appt?.appointmentNo) return appt.appointmentNo;
+    return `P${String(appt?.id || "").padStart(3, "0").slice(-3)}`;
   };
 
   if (loading) {
@@ -3549,9 +3947,9 @@ const DoctorDashboard = () => {
                       <div className="dd-queue-info">
                         <div className="dd-queue-title">
                           <strong>{appt.name}</strong>
-                          <span>P{String(appt.id).padStart(3, "0").slice(-3)}</span>
+                          <span>{getTokenLabel(appt)}</span>
                           <em className={appt.status === "completed" ? "complete" : ""}>
-                            {appt.status === "completed" ? "Completed" : appt.status === "in-progress" || isActive ? "In Progress" : "Pending"}
+                            {getQueueStatusLabel(appt, isActive)}
                           </em>
                         </div>
                         <div className="dd-queue-meta">
@@ -3612,7 +4010,7 @@ const DoctorDashboard = () => {
                 </div>
                 <div>
                   <h3>{nextPatient?.name || "No Patient"}</h3>
-                  <p>{nextPatient?.issue || "Queue is clear"}</p>
+                  <p>{nextPatient ? `${getTokenLabel(nextPatient)} - ${nextPatient.issue}` : "Queue is clear"}</p>
                 </div>
               </div>
               <button
@@ -3719,8 +4117,20 @@ const DoctorDashboard = () => {
                 <span className="dd-detail-value">{selectedAppointment?.scheduledTime}</span>
               </div>
               <div className="dd-patient-detail">
+                <span className="dd-detail-label">Token:</span>
+                <span className="dd-detail-value">{selectedAppointment ? getTokenLabel(selectedAppointment) : "N/A"}</span>
+              </div>
+              <div className="dd-patient-detail">
                 <span className="dd-detail-label">Phone:</span>
-                <span className="dd-detail-value">{selectedAppointment?.phone}</span>
+                <span className="dd-detail-value">
+                  {selectedAppointment?.phone && selectedAppointment.phone !== "N/A" ? (
+                    <a href={`tel:${selectedAppointment.phone}`} className="dd-phone-link">
+                      {selectedAppointment.phone}
+                    </a>
+                  ) : (
+                    "N/A"
+                  )}
+                </span>
               </div>
             </div>
           </div>
@@ -3779,6 +4189,7 @@ const DoctorDashboard = () => {
         setForm={setCompleteForm}
         onSave={saveCompleteModal}
         patientName={activeAppt?.name}
+        appointment={activeAppt}
       />
 
       {/* EDIT MODAL */}

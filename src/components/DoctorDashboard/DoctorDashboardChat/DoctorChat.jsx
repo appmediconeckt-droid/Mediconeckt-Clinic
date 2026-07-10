@@ -2,9 +2,9 @@
 import React, { useState, useEffect, useRef } from 'react';
 import { useParams, useNavigate } from 'react-router-dom';
 import { useSelector } from 'react-redux';
-import { FaArrowLeft, FaPaperPlane, FaPhone, FaUserMd, FaStethoscope, FaFile, FaPaperclip, FaImage, FaFilePdf, FaFileMedical } from 'react-icons/fa';
+import { FaArrowLeft, FaPaperPlane, FaPhone, FaVideo, FaUserMd, FaStethoscope, FaFile, FaPaperclip, FaImage, FaFilePdf, FaFileMedical } from 'react-icons/fa';
 import './DoctorChat.css';
-import { getChatList, getConversation, getCurrentUserId, sendMessage } from '../../../redux/chatApi';
+import { getAssetUrl, getChatList, getConversation, getCurrentUserId, sendAttachment, sendMessage, startCall, unwrapApiObject } from '../../../redux/chatApi';
 
 // Mock patient data
 const mockPatients = [
@@ -82,7 +82,9 @@ const PatientChat = () => {
   const [chatError, setChatError] = useState('');
   const [isSending, setIsSending] = useState(false);
   const [showFileOptions, setShowFileOptions] = useState(false);
+  const [activeCall, setActiveCall] = useState(null);
   const fileInputRef = useRef(null);
+  const callTimerRef = useRef(null);
 
   // Ref for auto-scrolling to latest message
   const messagesEndRef = useRef(null);
@@ -152,19 +154,48 @@ const PatientChat = () => {
     ]
   };
 
+  const getAttachmentFromMessage = (msg) => {
+    if (msg.file) return msg.file;
+    if (!msg.attachment_url) return null;
+
+    const rawType = msg.attachment_type || '';
+    return {
+      name: msg.attachment_name || msg.message || 'Attachment',
+      type: rawType.startsWith('image/') ? 'image' : rawType.includes('pdf') ? 'pdf' : 'document',
+      size: msg.attachment_size ? `${(Number(msg.attachment_size) / (1024 * 1024)).toFixed(1)} MB` : '',
+      url: getAssetUrl(msg.attachment_url),
+      mimeType: rawType,
+    };
+  };
+
+  const cleanAttachmentMessageText = (text, file) => {
+    const value = String(text || '').trim();
+    if (!value) return '';
+    const normalized = value.replace(/\\/g, '/').toLowerCase();
+    const fileUrl = String(file?.url || '').replace(/\\/g, '/').toLowerCase();
+    const fileName = String(file?.name || '').toLowerCase();
+
+    if (normalized.includes('/uploads/') || normalized === fileUrl || normalized === fileName) {
+      return '';
+    }
+
+    return value;
+  };
+
   const normalizeMessage = (msg, index) => {
     const currentUserId = getCurrentUserId(authUser);
     const senderId = msg.sender_id || msg.senderId || msg.from_user_id || msg.user_id;
     const senderRole = msg.sender || msg.sender_role || msg.role;
     const createdAt = msg.time || msg.created_at || msg.createdAt || new Date().toISOString();
     const date = new Date(createdAt);
+    const file = getAttachmentFromMessage(msg);
 
     return {
       id: msg.id || msg._id || index + 1,
-      text: msg.message || msg.text || msg.content || '',
+      text: cleanAttachmentMessageText(msg.message || msg.text || msg.content || '', file),
       sender: senderRole || (String(senderId) === String(currentUserId) ? 'doctor' : 'patient'),
       time: Number.isNaN(date.getTime()) ? createdAt : date.toLocaleTimeString([], { hour: '2-digit', minute: '2-digit' }),
-      file: msg.file,
+      file,
       senderName: msg.sender_name || msg.senderName,
       senderPhone: msg.sender_phone || msg.senderPhone || msg.phone || msg.phone_number,
     };
@@ -218,7 +249,7 @@ const PatientChat = () => {
           condition: patient.condition || patient.diagnosis || patientItem?.condition || 'No condition',
           status: patient.status || patientItem?.status || 'Stable',
           lastVisit: patient.lastVisit || patient.last_visit || patientItem?.last_visit || patient.created_at || '',
-          phone: patient.phone || patient.phone_number || '',
+          phone: patient.contact_number || patient.phone || patient.phone_number || '',
           avatarColor: '#3498db',
           bloodGroup: patient.bloodGroup || patient.blood_group || '',
         } : fallbackPatient || (firstPatientMessage ? {
@@ -257,6 +288,43 @@ const PatientChat = () => {
     messagesEndRef.current?.scrollIntoView({ behavior: "smooth" });
   };
 
+  const startTimedCall = async (callType) => {
+    if (!currentPatient?.id) {
+      setChatError(`Please select a patient before starting a ${callType} call`);
+      return;
+    }
+
+    setChatError('');
+
+    try {
+      const response = await startCall({ receiverId: currentPatient.id, callType });
+      const timeoutSeconds = response.ring_timeout_seconds || 30;
+      setActiveCall({
+        id: response.data?.id,
+        type: callType,
+        status: 'ringing',
+        timeoutSeconds,
+      });
+
+      window.clearTimeout(callTimerRef.current);
+      callTimerRef.current = window.setTimeout(() => {
+        setActiveCall((call) => call?.status === 'ringing'
+          ? { ...call, status: 'missed' }
+          : call);
+      }, timeoutSeconds * 1000);
+    } catch (err) {
+      setChatError(err.response?.data?.message || err.message || `Failed to start ${callType} call`);
+    }
+  };
+
+  const handlePhoneCall = () => {
+    startTimedCall('voice');
+  };
+
+  const handleVideoCall = () => {
+    startTimedCall('video');
+  };
+
   const handleSendMessage = async (e) => {
     e.preventDefault();
     if (message.trim()) {
@@ -290,7 +358,7 @@ const PatientChat = () => {
     }
   };
 
-  const handleFileUpload = (e) => {
+  const handleFileUpload = async (e) => {
     const file = e.target.files[0];
     if (file) {
       const fileSize = (file.size / (1024 * 1024)).toFixed(1) + ' MB';
@@ -298,7 +366,7 @@ const PatientChat = () => {
       const fileName = file.name;
 
       const newMessage = {
-        id: messages.length + 1,
+        id: `file-${Date.now()}`,
         text: `File: ${fileName}`,
         sender: 'doctor',
         time: new Date().toLocaleTimeString([], { hour: '2-digit', minute: '2-digit' }),
@@ -308,8 +376,26 @@ const PatientChat = () => {
           size: fileSize
         }
       };
-      setMessages([...messages, newMessage]);
+      setMessages((prev) => [...prev, newMessage]);
       setShowFileOptions(false);
+      setChatError('');
+
+      try {
+        const response = await sendAttachment({
+          receiverId: activePatientId,
+          file,
+        });
+        const savedMessage = unwrapApiObject(response);
+        setMessages((prev) =>
+          prev.map((msg) =>
+            msg.id === newMessage.id ? normalizeMessage(savedMessage, prev.length) : msg
+          )
+        );
+      } catch (err) {
+        setChatError(err.response?.data?.message || err.message || 'Failed to upload attachment');
+      } finally {
+        e.target.value = '';
+      }
     }
   };
 
@@ -524,9 +610,8 @@ const PatientChat = () => {
               <p>{currentPatient.age}{currentPatient.gender?.[0] || 'M'} • Blood {currentPatient.bloodGroup || 'O+'} • {currentPatient.condition}</p>
             </div>
             <div className="dc-profile-actions">
-              <button type="button"><FaPhone /></button>
-              <button type="button"><i className="fas fa-video"></i></button>
-              <button type="button" className="profile">View Profile</button>
+              <button type="button" onClick={handlePhoneCall} title="Voice call"><FaPhone /></button>
+              <button type="button" onClick={handleVideoCall} title="Video call"><FaVideo /></button>
             </div>
           </div>
 
@@ -548,6 +633,11 @@ const PatientChat = () => {
                         <div className="file-info">
                           <span className="file-name">{msg.file.name}</span>
                           <span className="file-size">{msg.file.size}</span>
+                          {msg.file.url && (
+                            <a href={msg.file.url} target="_blank" rel="noreferrer" className="file-download-link">
+                              Open attachment
+                            </a>
+                          )}
                         </div>
                       </div>
                     )}
@@ -574,6 +664,14 @@ const PatientChat = () => {
                 <button className="file-option-btn" onClick={() => handleFileSelect('document')} type="button"><FaFilePdf /> Document</button>
                 <button className="file-option-btn" onClick={() => handleFileSelect('medical')} type="button"><FaFileMedical /> Medical Record</button>
               </div>
+            </div>
+          )}
+
+          {activeCall && (
+            <div className={`dc-call-status ${activeCall.status}`}>
+              {activeCall.status === 'ringing'
+                ? `${activeCall.type === 'video' ? 'Video' : 'Voice'} call ringing... auto cut in ${activeCall.timeoutSeconds}s if not accepted`
+                : `${activeCall.type === 'video' ? 'Video' : 'Voice'} call missed / auto cut`}
             </div>
           )}
 

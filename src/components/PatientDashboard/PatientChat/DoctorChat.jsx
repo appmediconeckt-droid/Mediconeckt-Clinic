@@ -2,7 +2,7 @@ import React, { useState, useEffect, useRef } from 'react';
 import { useParams, useNavigate } from 'react-router-dom';
 import { useSelector } from 'react-redux';
 import './DoctorChat.css';
-import { getChatDoctors, getConversation, getCurrentUserId, sendMessage } from '../../../redux/chatApi';
+import { getChatDoctors, getConversation, getCurrentUserId, sendMessage, startCall } from '../../../redux/chatApi';
 
 const DoctorChat = () => {
     const { doctorId } = useParams();
@@ -13,6 +13,8 @@ const DoctorChat = () => {
     const [isVideoActive, setIsVideoActive] = useState(false);
     const [isVoiceActive, setIsVoiceActive] = useState(false);
     const [appointmentDetails, setAppointmentDetails] = useState(null);
+    const [activeCall, setActiveCall] = useState(null);
+    const callTimerRef = useRef(null);
 
     // Fetch appointment details
     useEffect(() => {
@@ -49,11 +51,37 @@ const DoctorChat = () => {
         fetchAppointmentDetails();
     }, [doctorId]);
     
+    const startTimedCall = async (callType) => {
+        if (!activeDoctor?.id) {
+            setChatError(`Please select a doctor before starting a ${callType} call`);
+            return;
+        }
+
+        try {
+            const response = await startCall({ receiverId: activeDoctor.id, callType });
+            const timeoutSeconds = response.ring_timeout_seconds || 30;
+            setActiveCall({
+                id: response.data?.id,
+                type: callType,
+                status: 'ringing',
+                timeoutSeconds,
+            });
+
+            window.clearTimeout(callTimerRef.current);
+            callTimerRef.current = window.setTimeout(() => {
+                setActiveCall((call) => call?.status === 'ringing'
+                    ? { ...call, status: 'missed' }
+                    : call);
+            }, timeoutSeconds * 1000);
+        } catch (err) {
+            setChatError(err.response?.data?.message || err.message || `Failed to start ${callType} call`);
+        }
+    };
+
     // Handle video call button click
     const handleVideoCall = () => {
         if (appointmentType === 'video') {
-            alert(`Starting video call with ${activeDoctor?.name || 'doctor'}...`);
-            // Add actual video call logic here
+            startTimedCall('video');
         } else if (appointmentType === 'voice') {
             alert('This is a voice appointment. Please use the voice call button.');
         } else {
@@ -64,8 +92,7 @@ const DoctorChat = () => {
     // Handle voice call button click
     const handleVoiceCall = () => {
         if (appointmentType === 'voice') {
-            alert(`Starting voice call with ${activeDoctor?.name || 'doctor'}...`);
-            // Add actual voice call logic here
+            startTimedCall('voice');
         } else if (appointmentType === 'video') {
             alert('This is a video appointment. Please use the video call button.');
         } else {
@@ -245,6 +272,20 @@ const DoctorChat = () => {
     const [chatError, setChatError] = useState('');
     const [isSending, setIsSending] = useState(false);
 
+    const getAttachmentFromMessage = (msg) => {
+        if (msg.file) return msg.file;
+        if (!msg.attachment_url) return null;
+
+        const rawType = msg.attachment_type || '';
+        return {
+            name: msg.attachment_name || msg.message || 'Attachment',
+            type: rawType.startsWith('image/') ? 'image' : rawType.includes('pdf') ? 'pdf' : 'document',
+            size: msg.attachment_size ? `${(Number(msg.attachment_size) / (1024 * 1024)).toFixed(1)} MB` : '',
+            url: msg.attachment_url,
+            mimeType: rawType,
+        };
+    };
+
     const normalizeMessage = (msg, index) => {
         const currentUserId = getCurrentUserId(authUser);
         const senderId = msg.sender_id || msg.senderId || msg.from_user_id || msg.user_id;
@@ -259,6 +300,7 @@ const DoctorChat = () => {
             sender: senderRole || (String(senderId) === String(currentUserId) ? 'patient' : 'doctor'),
             senderName: msg.sender_name || msg.senderName,
             senderPhone: msg.sender_phone || msg.senderPhone || msg.phone || msg.phone_number,
+            file: getAttachmentFromMessage(msg),
         };
     };
 
@@ -599,6 +641,17 @@ const DoctorChat = () => {
                                                     )}
                                                 </div>
                                                 <p className="dc-message-text">{message.text}</p>
+                                                {message.file && (
+                                                    <div className="file-attachment">
+                                                        <strong>{message.file.name}</strong>
+                                                        {message.file.size && <span> {message.file.size}</span>}
+                                                        {message.file.url && (
+                                                            <a href={message.file.url} target="_blank" rel="noreferrer">
+                                                                Open attachment
+                                                            </a>
+                                                        )}
+                                                    </div>
+                                                )}
                                             </div>
                                             <div className="dc-message-footer">
                                                 <span className="dc-message-time">{message.time}</span>
@@ -617,6 +670,14 @@ const DoctorChat = () => {
                                         )}
                                     </div>
                                 ))}
+
+                                {activeCall && (
+                                    <div className={`dc-call-status ${activeCall.status}`}>
+                                        {activeCall.status === 'ringing'
+                                            ? `${activeCall.type === 'video' ? 'Video' : 'Voice'} call ringing... auto cut in ${activeCall.timeoutSeconds}s if not accepted`
+                                            : `${activeCall.type === 'video' ? 'Video' : 'Voice'} call missed / auto cut`}
+                                    </div>
+                                )}
 
                                 {/* Typing indicator */}
                                 {isTyping && (
