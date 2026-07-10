@@ -1,4 +1,240 @@
 /* ============================================================
+   DOCTOR PROFILE MODAL
+   ============================================================ */
+.docprof-overlay {
+  position: fixed;
+  inset: 0;
+  background: rgba(17, 24, 39, 0.5);
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  z-index: 1000;
+  padding: 20px;
+}
+
+.docprof-modal {
+  position: relative;
+  width: 100%;
+  max-width: 560px;
+  max-height: 90vh;
+  overflow-y: auto;
+  background: #ffffff;
+  border-radius: 18px;
+  padding: 26px;
+  box-shadow: 0 20px 50px rgba(0, 0, 0, 0.25);
+  font-family: "Inter", "Segoe UI", sans-serif;
+}
+
+.docprof-close {
+  position: absolute;
+  top: 16px;
+  right: 16px;
+  width: 32px;
+  height: 32px;
+  border: none;
+  background: #f3f4f6;
+  color: #6b7280;
+  border-radius: 50%;
+  cursor: pointer;
+  font-size: 15px;
+}
+
+.docprof-close:hover { background: #e5e7eb; color: #111827; }
+
+/* Header */
+.docprof-head {
+  display: flex;
+  gap: 16px;
+  padding-bottom: 20px;
+  border-bottom: 1px solid #eef0f2;
+}
+
+.docprof-avatar-wrap { position: relative; flex-shrink: 0; }
+
+.docprof-avatar {
+  width: 76px;
+  height: 76px;
+  border-radius: 50%;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  color: #ffffff;
+  font-size: 26px;
+  font-weight: 700;
+}
+
+.docprof-online {
+  position: absolute;
+  bottom: 4px;
+  right: 4px;
+  width: 15px;
+  height: 15px;
+  border-radius: 50%;
+  background: #16a34a;
+  border: 2px solid #ffffff;
+}
+
+.docprof-headinfo { flex: 1; min-width: 0; }
+
+.docprof-name {
+  font-size: 20px;
+  font-weight: 800;
+  color: #111827;
+  margin: 0 0 2px;
+}
+
+.docprof-specialty {
+  font-size: 13px;
+  font-weight: 600;
+  color: #006B2C;
+  margin-bottom: 4px;
+}
+
+.docprof-hospital {
+  font-size: 13px;
+  color: #6b7280;
+  margin-bottom: 6px;
+}
+
+.docprof-hospital i { color: #9ca3af; margin-right: 4px; }
+
+.docprof-meta {
+  display: flex;
+  align-items: center;
+  gap: 8px;
+  font-size: 13px;
+  color: #374151;
+  margin-bottom: 8px;
+}
+
+.docprof-rating { font-weight: 600; }
+.docprof-rating i { color: #f59e0b; }
+.docprof-rating span { color: #9ca3af; font-weight: 400; }
+.docprof-dot { color: #d1d5db; }
+
+.docprof-avail {
+  display: inline-block;
+  font-size: 10px;
+  font-weight: 700;
+  padding: 4px 10px;
+  border-radius: 20px;
+}
+
+.docprof-avail.today { background: #E8F8ED; color: #067647; }
+.docprof-avail.tomorrow { background: #f3f4f6; color: #6b7280; }
+
+/* Stats */
+.docprof-stats {
+  display: grid;
+  grid-template-columns: repeat(3, 1fr);
+  gap: 12px;
+  margin: 18px 0;
+}
+
+.docprof-stat {
+  display: flex;
+  align-items: center;
+  gap: 10px;
+  background: #f7f8fa;
+  border-radius: 10px;
+  padding: 12px;
+}
+
+.docprof-stat i { color: #006B2C; font-size: 15px; }
+.docprof-stat span { display: block; font-size: 11px; color: #9ca3af; }
+.docprof-stat strong { font-size: 13px; color: #111827; }
+
+/* Sections */
+.docprof-section { margin-bottom: 18px; }
+
+.docprof-section-title {
+  font-size: 14px;
+  font-weight: 700;
+  color: #111827;
+  margin: 0 0 10px;
+}
+
+.docprof-modes { display: flex; flex-wrap: wrap; gap: 10px; }
+
+.docprof-mode {
+  display: inline-flex;
+  align-items: center;
+  gap: 7px;
+  font-size: 13px;
+  font-weight: 600;
+  padding: 8px 14px;
+  border-radius: 20px;
+}
+
+.docprof-mode.ok { background: #E8F8ED; color: #067647; }
+.docprof-mode.no { background: #fdecec; color: #dc2626; text-decoration: line-through; }
+
+.docprof-slots { display: flex; flex-wrap: wrap; gap: 8px; }
+
+.docprof-slot {
+  border: 1px solid #e2e5ea;
+  border-radius: 8px;
+  padding: 8px 12px;
+  font-size: 12px;
+  font-weight: 500;
+  color: #374151;
+}
+
+.docprof-slot.more { color: #006B2C; font-weight: 600; border-color: transparent; }
+
+.docprof-about {
+  font-size: 13px;
+  color: #6b7280;
+  line-height: 1.6;
+  margin: 0;
+}
+
+/* Actions */
+.docprof-actions {
+  display: flex;
+  gap: 12px;
+  margin-top: 22px;
+}
+
+.docprof-btn-book {
+  flex: 2;
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  gap: 8px;
+  background: #006B2C;
+  color: #ffffff;
+  border: none;
+  border-radius: 10px;
+  padding: 12px;
+  font-size: 14px;
+  font-weight: 600;
+  cursor: pointer;
+  transition: background 0.2s ease;
+}
+
+.docprof-btn-book:hover { background: #00551f; }
+
+.docprof-btn-close {
+  flex: 1;
+  background: #ffffff;
+  color: #374151;
+  border: 1px solid #e2e5ea;
+  border-radius: 10px;
+  padding: 12px;
+  font-size: 14px;
+  font-weight: 600;
+  cursor: pointer;
+}
+
+.docprof-btn-close:hover { border-color: #9ca3af; }
+
+@media (max-width: 520px) {
+  .docprof-stats { grid-template-columns: 1fr; }
+  .docprof-actions { flex-direction: column; }
+}
+
+/* ============================================================
    PATIENT — BOOK AN APPOINTMENT PAGE
    Palette: primary #006B2C, gradient #006B2C→#00D156, tint #F5FBF9
    ============================================================ */
@@ -23,7 +259,7 @@
 .appt-title {
   font-size: 28px;
   font-weight: 800;
-  color: #006B2C;
+  color: #111827;
   margin: 0 0 6px;
 }
 
@@ -159,6 +395,52 @@
 .appt-chip-caret {
   font-size: 10px;
   opacity: 0.7;
+}
+
+/* Filter dropdowns */
+.appt-filter-wrap {
+  position: relative;
+}
+
+.appt-dropdown {
+  position: absolute;
+  top: calc(100% + 6px);
+  left: 0;
+  min-width: 200px;
+  background: #ffffff;
+  border: 1px solid #e2e5ea;
+  border-radius: 10px;
+  box-shadow: 0 10px 30px rgba(0, 0, 0, 0.14);
+  padding: 6px;
+  z-index: 40;
+}
+
+.appt-dd-item {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  padding: 9px 12px;
+  border-radius: 8px;
+  font-size: 13px;
+  color: #374151;
+  cursor: pointer;
+  transition: background 0.12s ease;
+}
+
+.appt-dd-item:hover {
+  background: #f4fbf6;
+  color: #006B2C;
+}
+
+.appt-dd-item.sel {
+  background: #E8F8ED;
+  color: #006B2C;
+  font-weight: 600;
+}
+
+.appt-dd-item i {
+  color: #006B2C;
+  font-size: 11px;
 }
 
 .appt-clear {

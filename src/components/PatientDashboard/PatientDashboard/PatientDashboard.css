@@ -104,17 +104,18 @@
   }
 }
 
-/* ===== Patient Profile Card (exact Figma specs) ===== */
+/* ===== Patient Profile Card ===== */
 .patient-profile-card {
   display: flex;
   align-items: center;
-  justify-content: space-between;
-  gap: 32px;
+  justify-content: flex-start;
+  gap: 24px;
   width: 100%;
   padding: 20px 24px;
   border-radius: 20px;
   margin-bottom: 0;
-  background: #FFFFFF;
+  background: linear-gradient(180deg, #ffffff 0%, #f9fdfb 100%);
+  border: 1px solid #edf2ee;
   box-shadow: 0px 4px 20px 0px rgba(0, 0, 0, 0.05);
   flex-wrap: wrap;
 }
@@ -182,13 +183,22 @@
 
 .ppc-details {
   display: flex;
-  gap: 40px;
+  gap: 24px;
   flex-wrap: wrap;
+  margin-top: 4px;
 }
 
 .ppc-detail {
+  display: inline-flex;
+  align-items: center;
+  gap: 6px;
   font-size: 14px;
   color: #6b7280;
+}
+
+.ppc-detail i {
+  color: #006B2C;
+  font-size: 13px;
 }
 
 .ppc-detail strong {

@@ -118,20 +118,11 @@ const PatientDashboard = ({
                   <span className={`ppc-badge ppc-badge-${patientStatus}`}>{patientStatus.toUpperCase()}</span>
                 </div>
                 <div className="ppc-details">
-                  <span className="ppc-detail">Age: <strong>{profileAge}</strong></span>
-                  <span className="ppc-detail">Gender: <strong>{profileGender}</strong></span>
+                  <span className="ppc-detail"><i className="fa-solid fa-cake-candles"></i> Age: <strong>{profileAge}</strong></span>
+                  <span className="ppc-detail"><i className="fa-solid fa-venus-mars"></i> Gender: <strong>{profileGender}</strong></span>
+                  <span className="ppc-detail"><i className="fa-regular fa-calendar-check"></i> Last Visit: <strong>{profileLastVisit}</strong></span>
                 </div>
-                <div className="ppc-detail ppc-lastvisit">Last Visit: <strong>{profileLastVisit}</strong></div>
               </div>
-            </div>
-
-            <div className="ppc-actions">
-              <button className="ppc-btn ppc-btn-primary">
-                <i className="fa-regular fa-calendar-check"></i> Book Appointment
-              </button>
-              <button className="ppc-btn ppc-btn-outline">
-                <i className="fa-solid fa-pen"></i> Edit Profile
-              </button>
             </div>
           </div>
 
@@ -228,16 +219,6 @@ const PatientDashboard = ({
             </section>
           </div>
 
-          {/* Clinical Notes */}
-          <section className="pd-card">
-            <h3 className="pd-card-title">
-              <i className="fa-solid fa-file-lines pd-title-icon"></i> Clinical Notes
-            </h3>
-            <div className="clinical-note">
-              <i className="fa-solid fa-circle-check"></i> Follow-up in 7 days
-            </div>
-          </section>
-
         </div>
 
         {/* ---------- RIGHT SIDEBAR ---------- */}
@@ -254,6 +235,15 @@ const PatientDashboard = ({
             <h3 className="pd-side-title">Registration Info</h3>
             <div className="side-row"><span className="side-key">PATIENT SINCE</span><span className="side-val">2024</span></div>
             <div className="side-row"><span className="side-key">CLINIC</span><span className="side-val">Main Hospital</span></div>
+          </section>
+
+          <section className="pd-side-card">
+            <h3 className="pd-side-title">
+              <i className="fa-solid fa-file-lines pd-title-icon"></i> Clinical Notes
+            </h3>
+            <div className="clinical-note">
+              <i className="fa-solid fa-circle-check"></i> Follow-up in 7 days
+            </div>
           </section>
         </aside>
 

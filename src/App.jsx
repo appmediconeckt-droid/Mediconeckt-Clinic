@@ -23,6 +23,7 @@ import WalkInAppointment from "./components/DoctorDashboard/Walk-in/WalkInAppoin
 import PatientLandingPage from "./authtication/patientLandingPage";
 import PatientDashboard from "./components/PatientDashboard/PatientDashboard/PatientDashboard";
 import PatientAppointment from "./components/PatientDashboard/BookAppointment/PatientAppointment";
+import PatientProfile from "./components/PatientDashboard/PatientProfile/PatientProfile";
 import AppointmentBooking from "./components/PatientDashboard/BookAppointment/AppointmentBookingModal";
 import Walkin from "./authtication/Walkin";
 import PatientNotification from "./components/PatientDashboard/Notification/PatientNotification";
@@ -285,6 +286,7 @@ function App() {
               <Route path="/patient-appointment" element={<AppointmentBooking />} />
               <Route path="/patient-notifications" element={<PatientNotification />} />
               <Route path="/patient-settings" element={<PatientSettingsPage />} />
+              <Route path="/patient-profile" element={<PatientProfile />} />
               <Route path="/doctor-sms" element={<PatientSms />} />
               <Route path="/doctor-chat/:doctorId" element={<DoctorChatPanel />} />
               <Route path="/chatbot" element={<Chatbot />} />

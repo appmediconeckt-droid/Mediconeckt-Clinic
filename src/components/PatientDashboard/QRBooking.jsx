@@ -1,6 +1,6 @@
 import React, { useState, useEffect } from 'react';
 import { useLocation } from 'react-router-dom';
-import '../PatientDashboard/BookAppointment/AppointmentBookingModal.css';
+import './QRBooking.css';
 import { API_BASE_URL, getAuthHeaders } from '../../redux/apiConfig';
 import axios from 'axios';
 

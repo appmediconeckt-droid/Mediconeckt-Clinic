@@ -1,10 +1,17 @@
-import React, { useState } from 'react';
+import React, { useState, useEffect } from 'react';
 import './AppointmentBookingModal.css';
 
 const AppointmentBookingModal = ({ doctorData, onClose }) => {
   // Default selections match the Figma screenshot (Wed 18, 01:30 PM)
   const [selectedDate, setSelectedDate] = useState({ date: 18, day: 'Wed' });
   const [selectedTime, setSelectedTime] = useState('01:30 PM');
+  const [clinicOpen, setClinicOpen] = useState(false);
+  const [modeOpen, setModeOpen] = useState(false);
+  const [selectedClinicId, setSelectedClinicId] = useState(1);
+  const [selectedModeId, setSelectedModeId] = useState('in-clinic');
+  const [step, setStep] = useState('select');          // 'select' | 'payment' | 'success'
+  const [paymentMethod, setPaymentMethod] = useState('Cash');
+  const [token] = useState(() => Math.floor(Math.random() * 20) + 1);
 
   const doctor = {
     name: 'Dr. Sarah Jenkins',
@@ -17,17 +24,28 @@ const AppointmentBookingModal = ({ doctorData, onClose }) => {
     consultationFee: 150,
   };
 
-  const clinic = {
-    name: 'City Medical Clinic',
-    address: '123 Health Ave, Medical District.',
-    type: 'In-Clinic Consultation',
-  };
-
   const patient = {
     name: 'Alex Mercer (You)',
     email: 'alex.m@example.com',
     phone: '+1 (555) 123-4567',
   };
+
+  // Clinics (selectable)
+  const clinics = [
+    { id: 1, name: 'City Medical Clinic', address: '456 North Ave, Healthcare Complex', days: 'Mon, Tue, Wed, Thu, Fri', timings: '9:00 AM - 5:00 PM', fee: 150 },
+    { id: 2, name: 'Northside Hospital', address: '456 North Ave, Healthcare Complex', days: 'Mon, Wed, Fri, Sat', timings: '10:00 AM - 6:00 PM', fee: 180 },
+  ];
+
+  // Consultation modes (selectable)
+  const modes = [
+    { id: 'in-clinic', name: 'In-Clinic Visit', desc: 'Visit the clinic in person for consultation', icon: 'fa-hospital', fee: 0 },
+    { id: 'video', name: 'Video Consultation', desc: 'Connect with doctor via video call', icon: 'fa-video', fee: 10 },
+    { id: 'voice', name: 'Voice Consultation', desc: 'Talk with your doctor over a voice call', icon: 'fa-phone', fee: 5 },
+  ];
+
+  const selectedClinic = clinics.find((c) => c.id === selectedClinicId) || clinics[0];
+  const selectedMode = modes.find((m) => m.id === selectedModeId) || modes[0];
+  const totalFee = selectedClinic.fee + selectedMode.fee;
 
   // Calendar dates — Oct 2023
   const calendarDates = [
@@ -69,25 +87,178 @@ const AppointmentBookingModal = ({ doctorData, onClose }) => {
     if (!slot.disabled) setSelectedTime(slot.time);
   };
 
-  const handleConfirm = () => {
-    if (selectedDate && selectedTime) {
-      alert(`Appointment confirmed for ${selectedDate.day}, Oct ${selectedDate.date} at ${selectedTime}`);
-      onClose?.();
-    }
+  const paymentMethods = [
+    { id: 'Card', label: 'Credit/Debit Card', icon: 'fa-credit-card' },
+    { id: 'UPI', label: 'UPI Payment', icon: 'fa-mobile-screen-button' },
+    { id: 'Cash', label: 'Cash at Clinic', icon: 'fa-money-bill-wave' },
+    { id: 'Insurance', label: 'Insurance', icon: 'fa-shield-heart' },
+  ];
+
+  const dateStr = selectedDate ? `${selectedDate.day}, Oct ${selectedDate.date}` : '';
+  const patientName = patient.name.replace(' (You)', '') || 'Not Provided';
+
+  const goToPayment = () => {
+    if (selectedDate && selectedTime) setStep('payment');
   };
+
+  const confirmBooking = () => setStep('success');
+
+  const bookAnother = () => onClose?.();
+
+  // After success, auto-return to the appointments page
+  useEffect(() => {
+    if (step === 'success') {
+      const t = setTimeout(() => onClose?.(), 6000);
+      return () => clearTimeout(t);
+    }
+  }, [step]);
 
   const summarySteps = [
     {
       key: 'datetime', icon: 'fa-calendar', label: 'Date & Time',
       value: selectedDate && selectedTime ? `Wed, Oct ${selectedDate.date} • ${selectedTime}` : null,
-      active: true,
+      active: false,
     },
-    { key: 'consultation', icon: 'fa-hospital', label: 'Consultation', value: 'In-Clinic Visit', active: false },
+    {
+      key: 'clinic', icon: 'fa-hospital', label: 'Selected Clinic',
+      value: selectedClinic.name, active: false,
+    },
+    {
+      key: 'mode', icon: selectedMode.icon, label: 'Consultation Mode',
+      value: `${selectedMode.name}${selectedMode.fee > 0 ? ` +$${selectedMode.fee}` : ''}`, active: false,
+    },
     { key: 'patient', icon: 'fa-user', label: 'Patient Info', value: patient.name.replace(' (You)', ''), active: false },
     { key: 'review', icon: 'fa-clipboard-check', label: 'Review', value: null, active: false },
     { key: 'payment', icon: 'fa-credit-card', label: 'Payment', value: null, active: false },
   ];
 
+  /* ===== Success screen ===== */
+  if (step === 'success') {
+    return (
+      <div className="abm-page abm-success-page">
+        <div className="abm-success">
+          <div className="abm-success-hero">
+            <div className="abm-success-icon"><i className="fa-solid fa-check"></i></div>
+            <h2 className="abm-success-title">Appointment Booked Successfully!</h2>
+            <p className="abm-success-sub">A confirmation email with all the details has been sent to you.</p>
+          </div>
+
+          <div className="abm-success-card">
+            <div className="abm-success-token">
+              <div className="abm-success-token-left">
+                <span className="abm-success-token-label"><i className="fa-solid fa-ticket"></i> Token Number</span>
+                <span className="abm-success-token-note">Arrive 15 minutes early</span>
+              </div>
+              <span className="abm-success-token-num">#{token}</span>
+            </div>
+
+            <div className="abm-success-grid">
+              <div className="abm-pay-row"><span><i className="fa-solid fa-user"></i> Patient</span><strong>{patientName}</strong></div>
+              <div className="abm-pay-row"><span><i className="fa-solid fa-user-doctor"></i> Doctor</span><strong>{doctor.name}</strong></div>
+              <div className="abm-pay-row"><span><i className="fa-solid fa-hospital"></i> Clinic</span><strong>{selectedClinic.name}</strong></div>
+              <div className="abm-pay-row"><span><i className={`fa-solid ${selectedMode.icon}`}></i> Consultation Mode</span><strong>{selectedMode.name}</strong></div>
+              <div className="abm-pay-row"><span><i className="fa-regular fa-calendar"></i> Date</span><strong>{dateStr}</strong></div>
+              <div className="abm-pay-row"><span><i className="fa-regular fa-clock"></i> Time</span><strong>{selectedTime}</strong></div>
+            </div>
+
+            <div className="abm-pay-row abm-pay-total abm-success-total"><span>Total Fee Paid</span><strong>${totalFee}</strong></div>
+          </div>
+
+          <button className="abm-confirm abm-success-btn" onClick={bookAnother}>
+            <i className="fa-solid fa-plus"></i> Book Another Appointment
+          </button>
+          <div className="abm-success-redirect">
+            <i className="fa-solid fa-rotate-right"></i> Redirecting to appointments…
+          </div>
+        </div>
+      </div>
+    );
+  }
+
+  /* ===== Review & Payment screen ===== */
+  if (step === 'payment') {
+    return (
+      <div className="abm-page abm-pay-page">
+        <div className="abm-pay">
+          <div className="abm-pay-header">
+            <h2 className="abm-pay-heading">Review &amp; Payment</h2>
+            <p className="abm-pay-subheading">Please review your appointment details before confirming</p>
+          </div>
+
+          <div className="abm-pay-grid">
+            {/* ---- Left: details + payment ---- */}
+            <div className="abm-pay-main">
+              {/* Appointment summary */}
+              <div className="abm-pay-card">
+                <h3 className="abm-pay-card-title"><i className="fa-regular fa-calendar-check"></i> Appointment Summary</h3>
+                <div className="abm-pay-rows2">
+                  <div className="abm-pay-row"><span><i className="fa-solid fa-user"></i> Patient</span><strong>{patientName}</strong></div>
+                  <div className="abm-pay-row"><span><i className="fa-solid fa-user-doctor"></i> Doctor</span><strong>{doctor.name}</strong></div>
+                  <div className="abm-pay-row"><span><i className="fa-solid fa-hospital"></i> Clinic</span><strong>{selectedClinic.name}</strong></div>
+                  <div className="abm-pay-row"><span><i className={`fa-solid ${selectedMode.icon}`}></i> Mode</span><strong>{selectedMode.name}</strong></div>
+                  <div className="abm-pay-row"><span><i className="fa-regular fa-calendar"></i> Date</span><strong>{dateStr}</strong></div>
+                  <div className="abm-pay-row"><span><i className="fa-regular fa-clock"></i> Time</span><strong>{selectedTime}</strong></div>
+                </div>
+              </div>
+
+              {/* Payment methods */}
+              <div className="abm-pay-card">
+                <h3 className="abm-pay-card-title"><i className="fa-solid fa-wallet"></i> Choose Payment Method</h3>
+                <div className="abm-pay-methods">
+                  {paymentMethods.map((pm) => (
+                    <button
+                      key={pm.id}
+                      className={`abm-pay-method ${paymentMethod === pm.id ? 'selected' : ''}`}
+                      onClick={() => setPaymentMethod(pm.id)}
+                    >
+                      <span className="abm-pay-method-ic"><i className={`fa-solid ${pm.icon}`}></i></span>
+                      <span className="abm-pay-method-label">{pm.label}</span>
+                      <span className="abm-pay-method-radio">
+                        {paymentMethod === pm.id && <i className="fa-solid fa-check"></i>}
+                      </span>
+                    </button>
+                  ))}
+                </div>
+              </div>
+
+              <div className="abm-pay-info">
+                <i className="fa-solid fa-circle-info"></i>
+                <span>Your appointment will be confirmed immediately after payment. You will receive a confirmation email with all details.</span>
+              </div>
+            </div>
+
+            {/* ---- Right: token + fee + confirm (sticky) ---- */}
+            <aside className="abm-pay-side">
+              <div className="abm-token-banner">
+                <div className="abm-token-ic"><i className="fa-solid fa-ticket"></i></div>
+                <div className="abm-token-label">Your Token Number</div>
+                <div className="abm-token-num">#{token}</div>
+                <div className="abm-token-note"><i className="fa-regular fa-clock"></i> Arrive 15 minutes early</div>
+              </div>
+
+              <div className="abm-pay-card">
+                <h3 className="abm-pay-card-title"><i className="fa-solid fa-receipt"></i> Fee Breakdown</h3>
+                <div className="abm-pay-row"><span>Consultation Fee</span><strong>${selectedClinic.fee}</strong></div>
+                {selectedMode.fee > 0 && (
+                  <div className="abm-pay-row"><span>{selectedMode.name}</span><strong>+${selectedMode.fee}</strong></div>
+                )}
+                <div className="abm-pay-row abm-pay-total"><span>Total</span><strong>${totalFee}</strong></div>
+              </div>
+
+              <button className="abm-btn-confirm2 abm-pay-confirm-full" onClick={confirmBooking}>
+                <i className="fa-solid fa-lock"></i> Confirm &amp; Book · ${totalFee}
+              </button>
+              <button className="abm-btn-back2 abm-pay-back-full" onClick={() => setStep('select')}>
+                <i className="fa-solid fa-arrow-left"></i> Back
+              </button>
+            </aside>
+          </div>
+        </div>
+      </div>
+    );
+  }
+
+  /* ===== Step 1: Selection ===== */
   return (
     <div className="abm-page">
       <div className="abm-grid">
@@ -116,30 +287,91 @@ const AppointmentBookingModal = ({ doctorData, onClose }) => {
               </div>
             </div>
 
-            {/* Clinic + Patient stacked */}
+            {/* Clinic details */}
             <div className="abm-side-stack">
-              <div className="abm-card abm-clinic">
-                <div className="abm-clinic-thumb"><i className="fa-solid fa-hospital"></i></div>
-                <div>
-                  <div className="abm-clinic-name">{clinic.name}</div>
-                  <div className="abm-clinic-addr">{clinic.address}</div>
-                  <div className="abm-clinic-type">{clinic.type}</div>
-                </div>
-              </div>
-
-              <div className="abm-card abm-patient">
-                <div className="abm-patient-ic"><i className="fa-solid fa-user"></i></div>
-                <div className="abm-patient-info">
-                  <div className="abm-patient-name">{patient.name}</div>
-                  <div className="abm-patient-contact">{patient.email} • {patient.phone.split(' ').slice(0, 2).join(' ')}</div>
-                  <div className="abm-patient-contact">{patient.phone.split(' ').slice(2).join(' ')}</div>
-                </div>
-                <button className="abm-patient-edit" aria-label="Edit"><i className="fa-solid fa-pen"></i></button>
+              <div className="abm-card abm-clinic-details">
+                <div className="abm-cd-title"><i className="fa-solid fa-hospital"></i> Clinic Details</div>
+                <div className="abm-cd-row"><span className="abm-cd-key">Location:</span> {selectedClinic.address}</div>
+                <div className="abm-cd-row"><span className="abm-cd-key">Available Days:</span> {selectedClinic.days}</div>
+                <div className="abm-cd-row"><span className="abm-cd-key">Timings:</span> {selectedClinic.timings}</div>
+                <div className="abm-cd-row"><span className="abm-cd-key">Consultation Fee:</span> ${selectedClinic.fee}</div>
               </div>
             </div>
           </div>
 
           {/* ---- Booking Form (date picker) ---- */}
+          {/* Clinic + Consultation Mode selectors */}
+          <div className="abm-selectors">
+            {/* Clinic dropdown */}
+            <div className="abm-select">
+              <button className="abm-select-head" onClick={() => { setClinicOpen(!clinicOpen); setModeOpen(false); }}>
+                <span className="abm-select-icon"><i className="fa-solid fa-hospital"></i></span>
+                <span className="abm-select-headtext">
+                  <span className="abm-select-eyebrow">CLINIC</span>
+                  <span className="abm-select-current">{selectedClinic.name}</span>
+                </span>
+                <i className={`fa-solid fa-chevron-${clinicOpen ? 'up' : 'down'} abm-select-caret`}></i>
+              </button>
+
+              {clinicOpen && (
+                <div className="abm-select-body">
+                  <div className="abm-select-subtitle"><i className="fa-solid fa-hospital"></i> Select Clinic for {doctor.name}</div>
+                  {clinics.map((c) => (
+                    <div
+                      key={c.id}
+                      className={`abm-opt-card ${selectedClinicId === c.id ? 'selected' : ''}`}
+                      onClick={() => { setSelectedClinicId(c.id); setClinicOpen(false); }}
+                    >
+                      <div className="abm-opt-main">
+                        <div className="abm-opt-name"><span className="abm-opt-dot"></span> {c.name}</div>
+                        <div className="abm-opt-addr">{c.address}</div>
+                        <div className="abm-opt-tags">
+                          <span className="abm-opt-tag blue"><i className="fa-regular fa-calendar"></i> {c.days}</span>
+                          <span className="abm-opt-tag gray"><i className="fa-regular fa-clock"></i> {c.timings}</span>
+                          <span className="abm-opt-tag green"><i className="fa-solid fa-money-bill"></i> ${c.fee}</span>
+                        </div>
+                      </div>
+                      {selectedClinicId === c.id && <span className="abm-opt-check"><i className="fa-solid fa-check"></i></span>}
+                    </div>
+                  ))}
+                </div>
+              )}
+            </div>
+
+            {/* Consultation Mode dropdown */}
+            <div className="abm-select">
+              <button className="abm-select-head" onClick={() => { setModeOpen(!modeOpen); setClinicOpen(false); }}>
+                <span className="abm-select-icon"><i className={`fa-solid ${selectedMode.icon}`}></i></span>
+                <span className="abm-select-headtext">
+                  <span className="abm-select-eyebrow">CONSULTATION MODE</span>
+                  <span className="abm-select-current">{selectedMode.name}</span>
+                </span>
+                <i className={`fa-solid fa-chevron-${modeOpen ? 'up' : 'down'} abm-select-caret`}></i>
+              </button>
+
+              {modeOpen && (
+                <div className="abm-select-body">
+                  <div className="abm-select-subtitle"><i className="fa-solid fa-comment-medical"></i> Select Consultation Mode</div>
+                  {modes.map((m) => (
+                    <div
+                      key={m.id}
+                      className={`abm-opt-card ${selectedModeId === m.id ? 'selected' : ''}`}
+                      onClick={() => { setSelectedModeId(m.id); setModeOpen(false); }}
+                    >
+                      <div className="abm-opt-mode-ic"><i className={`fa-solid ${m.icon}`}></i></div>
+                      <div className="abm-opt-main">
+                        <div className="abm-opt-name">{m.name}</div>
+                        <div className="abm-opt-addr">{m.desc}</div>
+                        <span className="abm-opt-fee">Additional Fee: ${m.fee}</span>
+                      </div>
+                      {selectedModeId === m.id && <span className="abm-opt-check"><i className="fa-solid fa-check"></i></span>}
+                    </div>
+                  ))}
+                </div>
+              )}
+            </div>
+          </div>
+
           <div className="abm-main">
           <div className="abm-section-head">
             <h3 className="abm-section-title">Choose Appointment Date</h3>
@@ -239,12 +471,12 @@ const AppointmentBookingModal = ({ doctorData, onClose }) => {
 
           <div className="abm-total">
             <span className="abm-total-label">Total Fee</span>
-            <span className="abm-total-amount">${doctor.consultationFee}.00</span>
+            <span className="abm-total-amount">${totalFee}.00</span>
           </div>
 
           <button
             className="abm-confirm"
-            onClick={handleConfirm}
+            onClick={goToPayment}
             disabled={!selectedDate || !selectedTime}
           >
             Confirm Selection <i className="fa-solid fa-arrow-right"></i>
