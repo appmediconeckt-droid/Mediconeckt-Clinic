@@ -18,6 +18,7 @@ const PatientSms = () => {
   const fileInputRef = useRef(null);
   const camVideoRef = useRef(null);
   const camStreamRef = useRef(null);
+  const chatBodyRef = useRef(null);
   const [showCamera, setShowCamera] = useState(false);
 
   // Input extras
@@ -113,6 +114,13 @@ const PatientSms = () => {
     ]);
     setMessageText('');
   };
+
+  // Auto-scroll chat to the latest message (like WhatsApp)
+  useEffect(() => {
+    if (chatBodyRef.current) {
+      chatBodyRef.current.scrollTop = chatBodyRef.current.scrollHeight;
+    }
+  }, [messages, selectedId]);
 
   const nowTime = () => new Date().toLocaleTimeString([], { hour: "2-digit", minute: "2-digit" });
 
@@ -325,7 +333,7 @@ const PatientSms = () => {
                   {!activeConv.isLab && <i className="fa-solid fa-circle-check msg-verified"></i>}
                 </div>
                 <div className="msg-chat-meta">
-                  {activeConv.role} • St. Mary's Hospital • <i className="fa-solid fa-star"></i> 4.9
+                  {activeConv.role} • St. Mary's Hospital
                 </div>
               </div>
             </div>
@@ -335,7 +343,7 @@ const PatientSms = () => {
             </div>
           </div>
 
-          <div className="msg-chat-body">
+          <div className="msg-chat-body" ref={chatBodyRef}>
             <div className="msg-day"><span>Today</span></div>
 
             {messages.map((m) => (
@@ -396,7 +404,6 @@ const PatientSms = () => {
               )}
             </div>
             <button className="msg-input-icon" onClick={() => fileInputRef.current?.click()} title="Attach file"><i className="fa-solid fa-paperclip"></i></button>
-            <button className="msg-input-icon" onClick={() => fileInputRef.current?.click()} title="Attach document"><i className="fa-regular fa-file"></i></button>
             <button className="msg-input-icon" onClick={() => setShowCamera(true)} title="Open camera"><i className="fa-solid fa-camera"></i></button>
 
             <input ref={fileInputRef} type="file" hidden onChange={(e) => handleFileSelect(e, "file")} />

@@ -2,12 +2,22 @@
    PATIENT — MESSAGES (Doctor SMS) PAGE
    Palette: primary #006B2C, gradient #006B2C→#00D156, tint #F5FBF9
    ============================================================ */
+/* Make the messages page fill its wrapper exactly so the PAGE never scrolls */
+.right-side-content:has(.msg-page) {
+  height: calc(100vh - 64px);   /* wrapper already has margin-top: 64px */
+  min-height: 0;
+  padding-bottom: 0;
+  overflow: hidden;
+}
+
 .msg-page {
-  padding: 24px 28px;
+  padding: 20px 24px;
   font-family: "Inter", "Segoe UI", sans-serif;
   color: #111827;
   background: #F5FBF9;
-  min-height: 100%;
+  height: 100%;                 /* fill the wrapper */
+  box-sizing: border-box;
+  overflow: hidden;             /* page never scrolls — only inner boxes do */
   display: flex;
   flex-direction: column;
 }
@@ -151,6 +161,8 @@
   flex-direction: column;
   gap: 6px;
   overflow-y: auto;
+  flex: 1;
+  min-height: 0;
 }
 
 .msg-conv {
@@ -373,12 +385,25 @@
 /* ---- Chat body ---- */
 .msg-chat-body {
   flex: 1;
+  min-height: 0;              /* allow the flex child to shrink so it can scroll */
   overflow-y: auto;
   padding: 20px;
   display: flex;
   flex-direction: column;
   gap: 16px;
   background: #fbfdfc;
+  scrollbar-width: none;         /* Firefox — hide scrollbar */
+  -ms-overflow-style: none;      /* IE/Edge */
+}
+
+.msg-chat-body::-webkit-scrollbar,
+.msg-conversations::-webkit-scrollbar {
+  display: none;                 /* Chrome/Safari — hide scrollbar */
+}
+
+.msg-conversations {
+  scrollbar-width: none;
+  -ms-overflow-style: none;
 }
 
 .msg-day {

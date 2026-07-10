@@ -1,4 +1,6 @@
-import React, { useState } from 'react';
+import React, { useState, useEffect, useRef } from 'react';
+import { useNavigate } from 'react-router-dom';
+import { Html5Qrcode } from 'html5-qrcode';
 import './PatientAppointment.css';
 import AppointmentBooking from './AppointmentBookingModal';
 
@@ -8,6 +10,11 @@ const PatientAppointment = () => {
   const [showBookingModal, setShowBookingModal] = useState(false);
   const [selectedDoctor, setSelectedDoctor] = useState(null);
   const [profileDoctor, setProfileDoctor] = useState(null);
+  const [showQR, setShowQR] = useState(false);
+  const [qrError, setQrError] = useState('');
+  const [qrScanning, setQrScanning] = useState(false);
+  const qrFileRef = useRef(null);
+  const navigate = useNavigate();
   // Filters
   const [openFilter, setOpenFilter] = useState(null);          // 'specialty' | 'location' | 'consultation' | null
   const [selectedSpecialty, setSelectedSpecialty] = useState('');
@@ -137,6 +144,44 @@ const PatientAppointment = () => {
     setSelectedDoctor(null);
   };
 
+  // ---- QR scanner ----
+  const handleScanned = (text) => {
+    let target = '/qrappointment';
+    try {
+      if (/^https?:\/\//i.test(text)) {
+        const u = new URL(text);
+        target = `/qrappointment${u.search || ''}`;
+      } else if (text.includes('=')) {
+        target = `/qrappointment?${text}`;
+      } else {
+        target = `/qrappointment?doctorId=${encodeURIComponent(text)}`;
+      }
+    } catch {
+      target = `/qrappointment?doctorId=${encodeURIComponent(text)}`;
+    }
+    setShowQR(false);
+    navigate(target);
+  };
+
+  // Decode a QR from an uploaded image file (no camera)
+  const handleQrFile = async (e) => {
+    const file = e.target.files?.[0];
+    if (!file) return;
+    setQrError('');
+    setQrScanning(true);
+    const scanner = new Html5Qrcode('qr-reader-file');
+    try {
+      const decodedText = await scanner.scanFile(file, false);
+      handleScanned(decodedText);
+    } catch {
+      setQrError('No QR code found in that image. Please upload a clear QR photo.');
+    } finally {
+      try { await scanner.clear(); } catch { /* ignore */ }
+      setQrScanning(false);
+      if (e.target) e.target.value = '';
+    }
+  };
+
   if (showBookingModal && selectedDoctor) {
     return (
       <AppointmentBooking
@@ -180,6 +225,9 @@ const PatientAppointment = () => {
               <span>Available Today</span>
             </div>
           </div>
+          <button className="appt-qr-btn" onClick={() => setShowQR(true)}>
+            <i className="fa-solid fa-qrcode"></i> Scan QR
+          </button>
         </div>
       </div>
 
@@ -373,6 +421,45 @@ const PatientAppointment = () => {
           </div>
         )}
       </div>
+
+      {/* ===== QR Upload Modal ===== */}
+      {showQR && (
+        <div className="qr-overlay" onClick={() => setShowQR(false)}>
+          <div className="qr-modal" onClick={(e) => e.stopPropagation()}>
+            <div className="qr-head">
+              <h3><i className="fa-solid fa-qrcode"></i> Scan Appointment QR</h3>
+              <button className="qr-close" onClick={() => setShowQR(false)}><i className="fa-solid fa-xmark"></i></button>
+            </div>
+
+            <div
+              className="qr-drop"
+              onClick={() => qrFileRef.current?.click()}
+            >
+              <i className="fa-solid fa-qrcode qr-drop-icon"></i>
+              <div className="qr-drop-title">{qrScanning ? 'Reading QR…' : 'Upload QR image'}</div>
+              <div className="qr-drop-sub">Click to choose a QR photo from your device</div>
+            </div>
+
+            <input
+              ref={qrFileRef}
+              type="file"
+              accept="image/*"
+              hidden
+              onChange={handleQrFile}
+            />
+            {/* hidden container required by html5-qrcode scanFile */}
+            <div id="qr-reader-file" style={{ display: 'none' }}></div>
+
+            <button className="qr-upload-btn" onClick={() => qrFileRef.current?.click()} disabled={qrScanning}>
+              <i className="fa-solid fa-image"></i> {qrScanning ? 'Scanning…' : 'Choose QR Image'}
+            </button>
+
+            {qrError
+              ? <p className="qr-hint qr-err">{qrError}</p>
+              : <p className="qr-hint">Upload a photo of the doctor's or clinic's QR code to book instantly.</p>}
+          </div>
+        </div>
+      )}
 
       {/* ===== Doctor Profile Modal ===== */}
       {profileDoctor && (
