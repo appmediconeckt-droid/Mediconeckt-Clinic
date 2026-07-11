@@ -125,17 +125,6 @@ function Walkin() {
 
       </div>
 
-      {/* ===== Footer ===== */}
-      <footer className="welcome-footer">
-        <img src={logo} alt="Mediconeckt" className="welcome-footer-logo" />
-        <div className="welcome-footer-links">
-          <a href="#help">Need Help?</a>
-          <a href="#support">Contact Support</a>
-          <a href="#privacy">Privacy Policy</a>
-        </div>
-        <span className="welcome-copy">© 2024 Mediconeckt. All rights reserved.</span>
-      </footer>
-
       {/* ===== Choose Appointment Type Modal ===== */}
       {showAppointmentModal && (
         <div className="apt-modal-overlay" onClick={closeModal}>

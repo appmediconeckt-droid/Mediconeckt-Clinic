@@ -20,6 +20,7 @@ const PatientSms = () => {
   const camStreamRef = useRef(null);
   const chatBodyRef = useRef(null);
   const [showCamera, setShowCamera] = useState(false);
+  const [capturedPhoto, setCapturedPhoto] = useState(null); // data URL — preview before sending
 
   // Input extras
   const [showEmoji, setShowEmoji] = useState(false);
@@ -168,6 +169,7 @@ const PatientSms = () => {
     };
   }, [showCamera]);
 
+  // Capture a still into a preview — does NOT send yet
   const capturePhoto = () => {
     const video = camVideoRef.current;
     if (!video || !video.videoWidth) return;
@@ -175,11 +177,26 @@ const PatientSms = () => {
     canvas.width = video.videoWidth;
     canvas.height = video.videoHeight;
     canvas.getContext("2d").drawImage(video, 0, 0);
-    const url = canvas.toDataURL("image/png");
+    setCapturedPhoto(canvas.toDataURL("image/png"));
+  };
+
+  // Discard the captured still and go back to the live camera
+  const retakePhoto = () => setCapturedPhoto(null);
+
+  // Confirm the preview — send it as an image message
+  const sendCapturedPhoto = () => {
+    if (!capturedPhoto) return;
     setMessages((prev) => [
       ...prev,
-      { id: prev.length + 1, from: "me", time: nowTime(), attachment: { type: "image", name: "photo.png", url } },
+      { id: prev.length + 1, from: "me", time: nowTime(), attachment: { type: "image", name: "photo.png", url: capturedPhoto } },
     ]);
+    setCapturedPhoto(null);
+    setShowCamera(false);
+  };
+
+  // Close the camera entirely (also clears any preview)
+  const closeCamera = () => {
+    setCapturedPhoto(null);
     setShowCamera(false);
   };
 
@@ -423,21 +440,34 @@ const PatientSms = () => {
 
       {/* ===== Camera capture modal ===== */}
       {showCamera && (
-        <div className="msg-modal-overlay" onClick={() => setShowCamera(false)}>
+        <div className="msg-modal-overlay" onClick={closeCamera}>
           <div className="cam-modal" onClick={(e) => e.stopPropagation()}>
             <div className="msg-modal-head">
-              <h3>Take a Photo</h3>
-              <button className="msg-modal-close" onClick={() => setShowCamera(false)}><i className="fa-solid fa-xmark"></i></button>
+              <h3>{capturedPhoto ? "Preview Photo" : "Take a Photo"}</h3>
+              <button className="msg-modal-close" onClick={closeCamera}><i className="fa-solid fa-xmark"></i></button>
             </div>
             <div className="cam-preview">
-              <video ref={camVideoRef} autoPlay playsInline muted></video>
+              {/* Keep the video mounted so the stream stays alive; hide it while previewing */}
+              <video ref={camVideoRef} autoPlay playsInline muted style={{ display: capturedPhoto ? 'none' : 'block' }}></video>
+              {capturedPhoto && <img src={capturedPhoto} alt="Captured preview" className="cam-shot" />}
             </div>
-            <div className="cam-actions">
-              <button className="pset-btn-outline cam-cancel" onClick={() => setShowCamera(false)}>Cancel</button>
-              <button className="cam-capture" onClick={capturePhoto}>
-                <i className="fa-solid fa-camera"></i> Capture
-              </button>
-            </div>
+            {capturedPhoto ? (
+              <div className="cam-actions">
+                <button className="pset-btn-outline cam-cancel" onClick={retakePhoto}>
+                  <i className="fa-solid fa-rotate-left"></i> Retake
+                </button>
+                <button className="cam-capture" onClick={sendCapturedPhoto}>
+                  <i className="fa-solid fa-paper-plane"></i> Send
+                </button>
+              </div>
+            ) : (
+              <div className="cam-actions">
+                <button className="pset-btn-outline cam-cancel" onClick={closeCamera}>Cancel</button>
+                <button className="cam-capture" onClick={capturePhoto}>
+                  <i className="fa-solid fa-camera"></i> Capture
+                </button>
+              </div>
+            )}
           </div>
         </div>
       )}

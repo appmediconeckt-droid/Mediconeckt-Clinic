@@ -378,7 +378,7 @@ const PatientAppointment = () => {
             <div className="doc-card-top">
               <div className="doc-avatar-wrap">
                 <div className="doc-avatar" style={{ background: doc.color }}>{doc.initials}</div>
-                {doc.availableToday && <span className="doc-online"></span>}
+                <span className={`doc-online ${doc.onlineAvail ? 'on' : 'off'}`}></span>
               </div>
 
               <div className="doc-main">
@@ -496,7 +496,7 @@ const PatientAppointment = () => {
             <div className="docprof-head">
               <div className="docprof-avatar-wrap">
                 <div className="docprof-avatar" style={{ background: profileDoctor.color }}>{profileDoctor.initials}</div>
-                {profileDoctor.availableToday && <span className="docprof-online"></span>}
+                <span className={`docprof-online ${profileDoctor.onlineAvail ? 'on' : 'off'}`}></span>
               </div>
               <div className="docprof-headinfo">
                 <h2 className="docprof-name">{profileDoctor.name}</h2>
@@ -538,7 +538,17 @@ const PatientAppointment = () => {
               </h4>
               <div className="docprof-slots">
                 {profileDoctor.slots.map((s) => <span key={s} className="docprof-slot">{s}</span>)}
-                {profileDoctor.moreSlots > 0 && <span className="docprof-slot more">+{profileDoctor.moreSlots} more</span>}
+                {expandedSlots.includes(profileDoctor.id) &&
+                  profileDoctor.extraSlots.map((s) => <span key={s} className="docprof-slot">{s}</span>)}
+                {profileDoctor.moreSlots > 0 && (
+                  <button
+                    type="button"
+                    className="docprof-slot more"
+                    onClick={() => toggleSlots(profileDoctor.id)}
+                  >
+                    {expandedSlots.includes(profileDoctor.id) ? 'Show less' : `+${profileDoctor.moreSlots} more`}
+                  </button>
+                )}
               </div>
             </div>
 

@@ -10,6 +10,24 @@
   min-height: 100%;
 }
 
+.pset-page-head {
+  margin-bottom: 20px;
+}
+
+.pset-page-title {
+  font-size: 28px;
+  font-weight: 800;
+  color: #111827;
+  margin: 0 0 6px;
+}
+
+.pset-page-sub {
+  font-size: 14px;
+  color: #6b7280;
+  margin: 0;
+  max-width: 560px;
+}
+
 .pset-grid {
   display: grid;
   grid-template-columns: 240px minmax(0, 1fr) 280px;

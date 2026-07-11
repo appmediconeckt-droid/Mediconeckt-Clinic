@@ -403,6 +403,15 @@ export default function PatientSettingsPage() {
 
   return (
     <div className="pset-page">
+
+      {/* ===== Page Header ===== */}
+      <div className="pset-page-head">
+        <h1 className="pset-page-title">Settings</h1>
+        <p className="pset-page-sub">
+          Manage your profile, appointments, medical records, and account preferences.
+        </p>
+      </div>
+
       <div className={`pset-grid ${active === "appointments" ? "" : "pset-grid-2"}`}>
 
         {/* Left menu */}
