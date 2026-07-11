@@ -210,6 +210,47 @@ export default function PatientDetailsPage() {
       "General consultation";
   };
 
+  const parseMedicines = (value) => {
+    if (Array.isArray(value)) return value;
+    if (typeof value !== "string" || !value.trim()) return [];
+    try {
+      const parsed = JSON.parse(value);
+      return Array.isArray(parsed) ? parsed : [];
+    } catch {
+      return [];
+    }
+  };
+
+  const formatMedicines = (appointment) => {
+    if (appointment.medicine && String(appointment.medicine).trim()) {
+      return String(appointment.medicine).trim();
+    }
+    const medicines = parseMedicines(appointment.medicines);
+    if (!medicines.length) return appointment.tablets || appointment.medication || "N/A";
+    return medicines.map((medicine) => {
+      const timing = Array.isArray(medicine.timings) && medicine.timings.length
+        ? medicine.timings.join(", ")
+        : "Timing not specified";
+      const duration = medicine.durationValue
+        ? ` - ${medicine.durationValue} ${medicine.durationType || "days"}`
+        : "";
+      return `${medicine.name || "Medicine"}${medicine.dosage ? ` - ${medicine.dosage}` : ""} (${timing})${duration}`;
+    }).join("\n");
+  };
+
+  const getMedicineDuration = (appointment) => {
+    const medicines = parseMedicines(appointment.medicines);
+    const durations = medicines
+      .filter((medicine) => medicine.durationValue)
+      .map((medicine) => `${medicine.durationValue} ${medicine.durationType || "Days"}`);
+    return durations.length ? durations.join(", ") : appointment.days || appointment.duration || "N/A";
+  };
+
+  const hasFollowUp = (appointment) => {
+    const value = appointment.follow_up_required ?? appointment.followUpRequired;
+    return value === true || value === 1 || value === "1" || String(value).toLowerCase() === "true" || Boolean(appointment.follow_up_date || appointment.followUpDate);
+  };
+
   const normalizeRecord = (appointment) => {
     const createdAt = appointment.appointment_date || appointment.date || appointment.created_at || appointment.createdAt;
     const appointmentTime = appointment.appointment_time || appointment.time || createdAt;
@@ -218,15 +259,17 @@ export default function PatientDetailsPage() {
       date: formatDate(createdAt),
       time: formatTime(appointmentTime),
       bp: appointment.bp || appointment.blood_pressure || "N/A",
-      pulse: appointment.pulse || "N/A",
+      pulse: appointment.pulse || appointment.heart_rate || appointment.heartRate || "N/A",
       temperature: appointment.temperature || "N/A",
       problem: getProblem(appointment),
-      diagnosis: appointment.diagnosis || appointment.status || "N/A",
-      tablets: appointment.tablets || appointment.medicine || appointment.medication || "N/A",
-      days: appointment.days || appointment.duration || "N/A",
+      diagnosis: appointment.diagnosis || "N/A",
+      tablets: formatMedicines(appointment),
+      days: getMedicineDuration(appointment),
       doctor: appointment.doctor_name || appointment.doctor?.name || authUser?.full_name || authUser?.name || "Doctor",
-      prescription: appointment.prescription || appointment.advice || appointment.notes || "N/A",
-      followUp: appointment.follow_up || appointment.followUp || "N/A",
+      prescription: appointment.prescription || appointment.advice || appointment.additional_notes || appointment.additionalNotes || appointment.notes || "N/A",
+      followUp: hasFollowUp(appointment)
+        ? formatDate(appointment.follow_up_date || appointment.followUpDate || appointment.follow_up || appointment.followUp)
+        : "Not required",
     };
   };
 

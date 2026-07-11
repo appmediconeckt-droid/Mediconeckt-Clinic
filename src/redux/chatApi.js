@@ -39,8 +39,13 @@ export const unwrapApiObject = (payload) => {
 
 export const getAssetUrl = (path) => {
   if (!path) return '';
-  if (/^https?:\/\//i.test(path) || path.startsWith('blob:')) return path;
-  return `${API_ORIGIN_URL}${String(path).startsWith('/') ? path : `/${path}`}`;
+  let normalizedPath = String(path).replace(/\\/g, '/');
+  if (/^https?:\/\//i.test(normalizedPath) || normalizedPath.startsWith('blob:')) return normalizedPath;
+  // APIs sometimes return an absolute server filesystem path. Only the public
+  // uploads/files portion belongs in a browser URL.
+  const publicPathMatch = normalizedPath.match(/\/(uploads?|attachments?|files?|media)\/.*$/i);
+  if (publicPathMatch) normalizedPath = publicPathMatch[0];
+  return `${API_ORIGIN_URL}${normalizedPath.startsWith('/') ? normalizedPath : `/${normalizedPath}`}`;
 };
 
 export const getChatDoctors = async () => {

@@ -1850,6 +1850,26 @@
   grid-column: 1 / -1;
 }
 
+.appointment-payment-section {
+  background: #f8fbff;
+  border: 1px solid #dbe6f5;
+  border-radius: 12px;
+  padding: 16px;
+}
+
+.appointment-payment-heading {
+  align-items: center;
+  display: flex;
+  justify-content: space-between;
+  margin-bottom: 14px;
+}
+
+.appointment-payment-heading span { color: #17233d; font-size: 15px; font-weight: 900; }
+.appointment-payment-heading i { color: var(--doctor-primary, #004ac6); margin-right: 7px; }
+.appointment-payment-heading small { color: #64748b; }
+.appointment-payment-grid { display: grid; gap: 14px; grid-template-columns: repeat(2, minmax(0, 1fr)); }
+.appointment-payment-empty { color: #b45309; margin: 0; }
+
 .appointment-modal-actions {
   display: flex;
   gap: 12px;
@@ -1910,6 +1930,8 @@
 }
 
 @media (max-width: 900px) {
+  .appointment-payment-grid { grid-template-columns: 1fr; }
+  .appointment-payment-heading { align-items: flex-start; flex-direction: column; gap: 4px; }
   .appointment-header,
   .appointment-filter-row {
     align-items: flex-start;

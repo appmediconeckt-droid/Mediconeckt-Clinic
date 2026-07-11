@@ -4,8 +4,6 @@ import { motion } from "framer-motion";
 import logo from '../image/Mediconect-Logo-4.png';
 
 const Navbar = ({ toggleSidebar }) => {
-  const [showAvatarModal, setShowAvatarModal] = useState(false);
-  const [isEmergencyActive, setIsEmergencyActive] = useState(false);
   const [alarmVolume, setAlarmVolume] = useState(0.7);
   const [showVolumeControl, setShowVolumeControl] = useState(false);
   const [userRole, setUserRole] = useState(null);
@@ -196,18 +194,10 @@ const Navbar = ({ toggleSidebar }) => {
     }
   };
 
-  // Handle emergency click - Only for Doctor and Super Admin
-  const handleEmergencyClick = () => {
-    if (effectiveRole === "doctor" || effectiveRole === "superadmin") {
-      setIsEmergencyActive(!isEmergencyActive);
-      // Add emergency logic here
-    }
-  };
-
   // Handle profile image click - Different routes based on role
   const handleProfileClick = () => {
     if (effectiveRole === "doctor") {
-      setShowAvatarModal(true);
+      navigate("/doctorprofile");
     } else if (userRole === "patient") {
       navigate("/patient-profile");
     } else if (userRole === "superadmin") {
@@ -350,40 +340,6 @@ const Navbar = ({ toggleSidebar }) => {
               </div>
             ) : (
             <div className="nav-main-icon d-flex align-items-center">
-              {/* Emergency Icon - Only for DOCTOR and SUPER ADMIN roles */}
-              {(effectiveRole === "doctor") && (
-                <div className="emergency-container position-relative d-flex ">
-                  <button
-                    onClick={handleEmergencyClick}
-                    className="emergency-icon doctor-break-action mb-4"
-                    style={{
-                      background: "transparent",
-                      border: "none",
-                      cursor: "pointer",
-                      padding: "5px",
-                      borderRadius: "50%",
-                      transition: "all 0.3s ease",
-                      
-                    }}
-                  >
-                    <i className="fa-solid fa-mug-saucer" style={{ fontSize: "15px" }}></i>
-                    <span>Take Break</span>
-                  </button>
-                  {isEmergencyActive && false && (
-                    <span className="emergency-alert" style={{
-                      position: "absolute",
-                      top: "-5px",
-                      right: "-5px",
-                      width: "10px",
-                      height: "10px",
-                      borderRadius: "50%",
-                      background: userRole === "superadmin" ? "#ff0000" : "#dc2626",
-                      animation: "pulse 1s infinite"
-                    }}></span>
-                  )}
-                </div>
-              )}
-
               {effectiveRole === "doctor" && (
                 <button type="button" className="doctor-nav-round mb-4" aria-label="Theme">
                   <i className="fa-solid fa-sun"></i>
@@ -425,7 +381,13 @@ const Navbar = ({ toggleSidebar }) => {
                 <div
                   className="fw-bold p-1 rounded-4 profile d-flex align-items-center"
                   style={{ cursor: "pointer" }}
-                  onClick={() => setShowAvatarModal(!showAvatarModal)}
+                  onClick={handleProfileClick}
+                  role="button"
+                  tabIndex={0}
+                  aria-label="Open profile"
+                  onKeyDown={(event) => {
+                    if (event.key === "Enter" || event.key === " ") handleProfileClick();
+                  }}
                 >
                   <div className="position-relative mb-3">
                     <img
@@ -830,13 +792,6 @@ const Navbar = ({ toggleSidebar }) => {
         }
       `}</style>
 
-      {/* Backdrop to close modal when clicking outside */}
-      {showAvatarModal && (
-        <div
-          className="avatar-modal-backdrop"
-          onClick={() => setShowAvatarModal(false)}
-        />
-      )}
     </>
   );
 };

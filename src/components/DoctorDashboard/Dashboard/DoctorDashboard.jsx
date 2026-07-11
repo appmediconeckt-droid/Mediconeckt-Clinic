@@ -2601,14 +2601,49 @@ const hasValidMedicine = (medicine) =>
     medicine?.durationType
   );
 
+const toDateInputValue = (date) => {
+  const year = date.getFullYear();
+  const month = String(date.getMonth() + 1).padStart(2, "0");
+  const day = String(date.getDate()).padStart(2, "0");
+  return `${year}-${month}-${day}`;
+};
+
+const parseAppointmentBaseDate = (appointment) => {
+  const rawDate = pickFirst(
+    appointment?.rawDate,
+    appointment?.appointment_date,
+    appointment?.appointmentDate,
+    appointment?.date,
+    appointment?.created_at,
+    appointment?.createdAt
+  );
+  const parsedDate = rawDate ? new Date(rawDate) : new Date();
+  return Number.isNaN(parsedDate.getTime()) ? new Date() : parsedDate;
+};
+
+const getMedicineDurationDays = (medicine) => {
+  const value = Number(medicine?.durationValue || 0);
+  if (!value) return 0;
+
+  const type = String(medicine?.durationType || "Days").toLowerCase();
+  if (type.startsWith("week")) return value * 7;
+  if (type.startsWith("month")) return value * 30;
+  return value;
+};
+
+const getFollowUpDateFromMedicines = (medicines, appointment) => {
+  const maxDurationDays = Math.max(0, ...(medicines || []).map(getMedicineDurationDays));
+  const baseDate = parseAppointmentBaseDate(appointment);
+  baseDate.setHours(0, 0, 0, 0);
+  baseDate.setDate(baseDate.getDate() + maxDurationDays);
+  return toDateInputValue(baseDate);
+};
+
 // CompleteModal component
 const CompleteModal = ({ show, onHide, form, setForm, onSave, patientName, appointment }) => {
   const today = new Date();
-  const minDate = today.toISOString().split('T')[0];
-  
-  const defaultFollowUpDate = new Date(today);
-  defaultFollowUpDate.setDate(today.getDate() + 7);
-  const defaultFollowUpDateStr = defaultFollowUpDate.toISOString().split('T')[0];
+  const minDate = toDateInputValue(today);
+  const defaultFollowUpDateStr = getFollowUpDateFromMedicines(form.medicines || [createEmptyMedicine()], appointment);
   
   React.useEffect(() => {
     if (!show) return;
@@ -2639,10 +2674,12 @@ const CompleteModal = ({ show, onHide, form, setForm, onSave, patientName, appoi
       const nextMedicines = (prev.medicines?.length ? prev.medicines : [createEmptyMedicine()]).map((medicine, idx) =>
         idx === index ? { ...medicine, [field]: value } : medicine
       );
+      const nextFollowUpDate = getFollowUpDateFromMedicines(nextMedicines, appointment);
       return {
         ...prev,
         medicines: nextMedicines,
         medicine: nextMedicines.map(formatMedicineLine).join("\n"),
+        followUpDate: prev.followUpRequired ? nextFollowUpDate : prev.followUpDate,
       };
     });
   };
@@ -2663,6 +2700,7 @@ const CompleteModal = ({ show, onHide, form, setForm, onSave, patientName, appoi
         ...prev,
         medicines: nextMedicines,
         medicine: nextMedicines.map(formatMedicineLine).join("\n"),
+        followUpDate: prev.followUpRequired ? getFollowUpDateFromMedicines(nextMedicines, appointment) : prev.followUpDate,
       };
     });
   };
@@ -2674,6 +2712,7 @@ const CompleteModal = ({ show, onHide, form, setForm, onSave, patientName, appoi
         ...prev,
         medicines: nextMedicines,
         medicine: nextMedicines.map(formatMedicineLine).join("\n"),
+        followUpDate: prev.followUpRequired ? getFollowUpDateFromMedicines(nextMedicines, appointment) : prev.followUpDate,
       };
     });
   };
@@ -2686,6 +2725,7 @@ const CompleteModal = ({ show, onHide, form, setForm, onSave, patientName, appoi
         ...prev,
         medicines: nextMedicines,
         medicine: nextMedicines.map(formatMedicineLine).join("\n"),
+        followUpDate: prev.followUpRequired ? getFollowUpDateFromMedicines(nextMedicines, appointment) : prev.followUpDate,
       };
     });
   };
@@ -2695,7 +2735,7 @@ const CompleteModal = ({ show, onHide, form, setForm, onSave, patientName, appoi
     setForm(prev => ({ 
       ...prev, 
       followUpRequired: isChecked,
-      followUpDate: isChecked ? prev.followUpDate || defaultFollowUpDateStr : ""
+      followUpDate: isChecked ? getFollowUpDateFromMedicines(prev.medicines || medicines, appointment) : ""
     }));
   };
 
@@ -3526,15 +3566,13 @@ const DoctorDashboard = () => {
 
   // Open complete modal
   const handleChecked = () => {
-    const today = new Date();
-    const defaultFollowUpDate = new Date(today);
-    defaultFollowUpDate.setDate(today.getDate() + 7);
-    const defaultFollowUpDateStr = defaultFollowUpDate.toISOString().split('T')[0];
+    const defaultMedicines = [createEmptyMedicine()];
+    const defaultFollowUpDateStr = getFollowUpDateFromMedicines(defaultMedicines, activeAppt);
     
     setCompleteForm({
       diagnosis: "",
       medicine: "",
-      medicines: [createEmptyMedicine()],
+      medicines: defaultMedicines,
       advice: "",
       additionalNotes: "",
       followUpRequired: false,

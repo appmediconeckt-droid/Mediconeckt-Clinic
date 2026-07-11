@@ -1254,10 +1254,21 @@ i.empty {
   box-shadow: inset 0 0 0 1px #b9c8f5;
 }
 
+.portal-day-cell.recurring {
+  background: #eef8ff;
+  box-shadow: inset 0 0 0 1px #9fd5ff;
+}
+
+.portal-day-cell.unavailable {
+  background: #fff1f2;
+  box-shadow: inset 0 0 0 2px #ef4444;
+  color: #991b1b;
+}
+
 .portal-day-cell em {
   background: #ffffff;
   border-radius: 4px;
-  bottom: 10px;
+  bottom: 32px;
   color: var(--doctor-primary);
   font-size: 10px;
   font-style: normal;
@@ -1267,11 +1278,26 @@ i.empty {
   right: 12px;
 }
 
+.portal-day-cell em.unavailable-label {
+  color: #dc2626;
+  font-weight: 900;
+}
+
 .portal-day-cell small {
-  bottom: 12px;
+  bottom: 10px;
   color: #a3a8b3;
   font-size: 10px;
+  left: 12px;
+  max-width: calc(100% - 24px);
+  overflow: hidden;
   position: absolute;
+  text-overflow: ellipsis;
+  white-space: nowrap;
+}
+
+.portal-day-cell:not(.recurring) em,
+.portal-day-cell em.unavailable-label {
+  bottom: 10px;
 }
 
 .calendar-side-panel {
@@ -1452,19 +1478,75 @@ i.empty {
 
 .slot-preview-list {
   display: grid;
-  gap: 10px;
-  grid-template-columns: repeat(auto-fit, minmax(160px, 1fr));
+  gap: 22px;
+  grid-template-columns: repeat(3, minmax(0, 1fr));
 }
 
 .slot-preview-list article {
-  border: 1px solid #e3e7f1;
-  border-radius: 8px;
-  padding: 12px;
+  background: #fff;
+  border: 1px solid #edf1f7;
+  border-radius: 12px;
+  min-height: 108px;
+  padding: 18px;
 }
 
 .slot-preview-list strong,
 .slot-preview-list span {
   display: block;
+}
+
+.slot-preview-list small {
+  background: #087cf0;
+  border-radius: 999px;
+  color: #fff;
+  display: inline-flex;
+  font-size: 11px;
+  font-weight: 700;
+  margin: 8px 6px 0 0;
+  padding: 4px 8px;
+}
+
+.slot-preview-list article > span {
+  color: #94a3b8;
+  float: right;
+  font-size: 12px;
+  margin-top: -18px;
+}
+
+.slot-time-pills {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 6px;
+  margin-top: 10px;
+}
+
+.slot-time-pills small {
+  margin: 0;
+}
+
+.slot-preview-list article:has(.slot-unavailable-message) {
+  background: #fff7f7;
+  border-color: #fecaca;
+}
+
+.slot-preview-list article:has(.slot-unavailable-message) > span {
+  color: #dc2626;
+  font-weight: 800;
+}
+
+.slot-unavailable-message {
+  align-items: center;
+  color: #b91c1c;
+  display: flex;
+  gap: 8px;
+  margin-top: 16px;
+}
+
+.slot-unavailable-message small {
+  background: transparent;
+  color: #b91c1c;
+  margin: 0;
+  padding: 0;
 }
 
 .calendar-bottom-bar {
@@ -1550,6 +1632,86 @@ i.empty {
   max-width: 560px;
   padding: 24px;
   width: 100%;
+}
+
+.calendar-unavailable-card {
+  max-height: calc(100vh - 120px);
+  overflow-y: auto;
+}
+
+.calendar-unavailable-panel {
+  background: #fff7f7;
+  border: 1px solid #fecaca;
+  border-radius: 10px;
+  display: grid;
+  gap: 12px;
+  padding: 14px;
+}
+
+.calendar-unavailable-panel label {
+  color: #202633;
+  display: grid;
+  font-size: 13px;
+  font-weight: 800;
+  gap: 8px;
+}
+
+.calendar-unavailable-panel textarea {
+  border: 1px solid #f3b4b4;
+  border-radius: 8px;
+  color: #202838;
+  padding: 10px 12px;
+  resize: vertical;
+  width: 100%;
+}
+
+.calendar-danger-btn {
+  align-items: center;
+  background: #dc2626;
+  border: 0;
+  border-radius: 8px;
+  color: #ffffff;
+  display: inline-flex;
+  font-weight: 800;
+  height: 42px;
+  justify-content: center;
+  padding: 0 18px;
+}
+
+.calendar-unavailable-note,
+.calendar-empty-note {
+  color: #647085;
+  font-size: 12px;
+  margin: 0;
+}
+
+.calendar-modal-section-title {
+  color: #202633;
+  font-size: 15px;
+  font-weight: 900;
+  margin: 16px 0 10px;
+}
+
+.calendar-modal-range-list {
+  display: grid;
+  gap: 8px;
+}
+
+.calendar-modal-range-list .time-range-row {
+  grid-template-columns: 18px 1fr 20px 1fr 32px;
+  margin-bottom: 0;
+}
+
+.calendar-modal-range-list .time-range-row button {
+  align-items: center;
+  background: #fee2e2;
+  border: 0;
+  border-radius: 6px;
+  color: #dc2626;
+  display: inline-flex;
+  height: 28px;
+  justify-content: center;
+  width: 28px;
 }
 
 .calendar-modal-title {
@@ -1658,6 +1820,10 @@ i.empty {
   }
 
   .calendar-side-panel {
+    grid-template-columns: 1fr;
+  }
+
+  .slot-preview-list {
     grid-template-columns: 1fr;
   }
 

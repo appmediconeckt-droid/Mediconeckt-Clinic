@@ -1389,3 +1389,6 @@
     width: 100%;
   }
 }
+.pd-medication-details {
+  white-space: pre-line;
+}

@@ -19,6 +19,7 @@ export default function AppointmentList() {
   const [viewAppointment, setViewAppointment] = useState(null);
   const [editAppointment, setEditAppointment] = useState(null);
   const [reloadKey, setReloadKey] = useState(0);
+  const [paymentSettings, setPaymentSettings] = useState({ onlinePayment: true, upiBank: false, cash: true });
   const [newAppointment, setNewAppointment] = useState({
     patientName: "",
     phone: "",
@@ -29,6 +30,10 @@ export default function AppointmentList() {
     location: "",
     type: "Clinic",
     status: "Pending",
+    paymentMethod: "cash",
+    paymentAmount: "",
+    paymentReference: "",
+    paymentStatus: "pending",
   });
 
   const getStoredAuthUser = () => {
@@ -42,6 +47,30 @@ export default function AppointmentList() {
   const getDoctorId = () => {
     const user = authUser || getStoredAuthUser() || {};
     return user.doctor_id || user.doctorId || user.id || user._id || user.user_id || user.userId || "";
+  };
+
+  const loadPaymentSettings = () => {
+    try {
+      const stored = JSON.parse(localStorage.getItem(`doctorPaymentSettings:${getDoctorId() || "doctor"}`) || "null");
+      const next = { onlinePayment: true, upiBank: false, cash: true, ...(stored || {}) };
+      setPaymentSettings(next);
+      return next;
+    } catch {
+      return { onlinePayment: true, upiBank: false, cash: true };
+    }
+  };
+
+  const getEnabledPaymentMethods = (settings = paymentSettings) => [
+    settings.cash && { value: "cash", label: "Cash" },
+    settings.upiBank && { value: "upi", label: "UPI / Bank Transfer" },
+    settings.onlinePayment && { value: "online", label: "Online Payment" },
+  ].filter(Boolean);
+
+  const openNewAppointmentModal = () => {
+    const settings = loadPaymentSettings();
+    const firstMethod = getEnabledPaymentMethods(settings)[0]?.value || "";
+    setNewAppointment((previous) => ({ ...previous, paymentMethod: firstMethod, paymentAmount: "", paymentReference: "", paymentStatus: "pending" }));
+    setShowNewModal(true);
   };
 
   const unwrapApiArray = (payload) => {
@@ -191,6 +220,10 @@ export default function AppointmentList() {
         clinic.location ||
         clinic.clinic_address ||
         "N/A",
+      paymentMethod: String(appointment.payment_method || appointment.paymentMethod || "").toLowerCase(),
+      paymentAmount: appointment.payment_amount || appointment.amount_paid || appointment.consultation_fee || appointment.paymentAmount || "",
+      paymentReference: appointment.payment_reference || appointment.transaction_id || appointment.upi_reference || appointment.paymentReference || "",
+      paymentStatus: String(appointment.payment_status || appointment.paymentStatus || "pending").toLowerCase(),
     };
   };
 
@@ -307,6 +340,10 @@ export default function AppointmentList() {
     location: appointment.location === "N/A" ? "" : appointment.location,
     type: appointment.type === "N/A" ? "Clinic" : appointment.type,
     status: appointment.status || "Confirmed",
+    paymentMethod: appointment.paymentMethod || "",
+    paymentAmount: appointment.paymentAmount || "",
+    paymentReference: appointment.paymentReference || "",
+    paymentStatus: appointment.paymentStatus || "pending",
   });
 
   const buildAppointmentFromForm = (form, existing = {}) => ({
@@ -326,10 +363,19 @@ export default function AppointmentList() {
     test: form.test || form.type,
     technician: form.technician || "N/A",
     location: form.location || "N/A",
+    paymentMethod: form.paymentMethod,
+    paymentAmount: form.paymentAmount,
+    paymentReference: form.paymentReference,
+    paymentStatus: form.paymentStatus,
   });
 
   const handleCreateAppointment = (event) => {
     event.preventDefault();
+    if (!newAppointment.paymentMethod) return alert("Enable and select a payment method in Payment Settings first.");
+    if (!(Number(newAppointment.paymentAmount) > 0)) return alert("Enter a valid payment amount.");
+    if (newAppointment.paymentMethod !== "cash" && !newAppointment.paymentReference.trim()) {
+      return alert("Enter the UPI or online transaction reference number.");
+    }
     const localAppointment = buildAppointmentFromForm(newAppointment);
 
     setAppointments((prev) => [localAppointment, ...prev]);
@@ -345,11 +391,22 @@ export default function AppointmentList() {
       location: "",
       type: "Clinic",
       status: "Pending",
+      paymentMethod: getEnabledPaymentMethods()[0]?.value || "",
+      paymentAmount: "",
+      paymentReference: "",
+      paymentStatus: "pending",
     });
   };
 
   const openEditAppointment = (appointment) => {
-    setEditAppointment({ id: appointment.id, form: appointmentToForm(appointment) });
+    const settings = loadPaymentSettings();
+    const enabledMethods = getEnabledPaymentMethods(settings);
+    const form = appointmentToForm(appointment);
+    if (!enabledMethods.some((method) => method.value === form.paymentMethod)) {
+      form.paymentMethod = enabledMethods[0]?.value || "";
+      form.paymentReference = "";
+    }
+    setEditAppointment({ id: appointment.id, form });
     setViewAppointment(null);
     setActiveActionsId(null);
   };
@@ -360,6 +417,11 @@ export default function AppointmentList() {
 
   const handleUpdateAppointment = (event) => {
     event.preventDefault();
+    if (!editAppointment.form.paymentMethod) return alert("Select a payment method.");
+    if (!(Number(editAppointment.form.paymentAmount) > 0)) return alert("Enter a valid payment amount.");
+    if (editAppointment.form.paymentMethod !== "cash" && !editAppointment.form.paymentReference.trim()) {
+      return alert("Enter the UPI or online transaction reference number.");
+    }
     setAppointments((prev) =>
       prev.map((appointment) =>
         appointment.id === editAppointment.id
@@ -425,7 +487,7 @@ export default function AppointmentList() {
           <h1>Appointments</h1>
           <p>Showing: <strong>{filteredAppointments.length}</strong> of {appointments.length} appointments</p>
         </div>
-        <button type="button" className="new-appointment-btn" onClick={() => setShowNewModal(true)}>
+        <button type="button" className="new-appointment-btn" onClick={openNewAppointmentModal}>
             <i className="fa-solid fa-plus"></i>
             New Appointment
         </button>
@@ -685,6 +747,17 @@ export default function AppointmentList() {
                   <option value="Cancelled">Cancelled</option>
                 </select>
               </label>
+              <div className="appointment-payment-section wide-field">
+                <div className="appointment-payment-heading"><span><i className="fa-solid fa-wallet" /> Payment Details</span><small>Methods enabled in Doctor Settings</small></div>
+                {getEnabledPaymentMethods().length ? (
+                  <div className="appointment-payment-grid">
+                    <label>Payment Method<select value={newAppointment.paymentMethod} onChange={(event) => updateNewAppointment("paymentMethod", event.target.value)}>{getEnabledPaymentMethods().map((method) => <option key={method.value} value={method.value}>{method.label}</option>)}</select></label>
+                    <label>{newAppointment.paymentMethod === "cash" ? "Cash Amount" : "Payment Amount"}<input type="number" min="1" step="0.01" required value={newAppointment.paymentAmount} onChange={(event) => updateNewAppointment("paymentAmount", event.target.value)} placeholder="Enter amount" /></label>
+                    {newAppointment.paymentMethod !== "cash" && <label>{newAppointment.paymentMethod === "upi" ? "UPI Reference ID" : "Transaction ID"}<input required value={newAppointment.paymentReference} onChange={(event) => updateNewAppointment("paymentReference", event.target.value)} placeholder="Enter payment reference" /></label>}
+                    <label>Payment Status<select value={newAppointment.paymentStatus} onChange={(event) => updateNewAppointment("paymentStatus", event.target.value)}><option value="pending">Pending</option><option value="paid">Paid</option><option value="partial">Partially Paid</option></select></label>
+                  </div>
+                ) : <p className="appointment-payment-empty">No payment method is enabled. Enable one from Settings → Payment.</p>}
+              </div>
             </div>
 
             <div className="appointment-modal-actions">
@@ -755,6 +828,15 @@ export default function AppointmentList() {
                   <option value="Cancelled">Cancelled</option>
                 </select>
               </label>
+              <div className="appointment-payment-section wide-field">
+                <div className="appointment-payment-heading"><span><i className="fa-solid fa-wallet" /> Payment Details</span><small>Methods enabled in Doctor Settings</small></div>
+                <div className="appointment-payment-grid">
+                  <label>Payment Method<select value={editAppointment.form.paymentMethod} onChange={(event) => { updateEditAppointment("paymentMethod", event.target.value); updateEditAppointment("paymentReference", ""); }}>{getEnabledPaymentMethods().map((method) => <option key={method.value} value={method.value}>{method.label}</option>)}</select></label>
+                  <label>{editAppointment.form.paymentMethod === "cash" ? "Cash Amount" : "Payment Amount"}<input type="number" min="1" step="0.01" required value={editAppointment.form.paymentAmount} onChange={(event) => updateEditAppointment("paymentAmount", event.target.value)} /></label>
+                  {editAppointment.form.paymentMethod !== "cash" && <label>{editAppointment.form.paymentMethod === "upi" ? "UPI Reference ID" : "Transaction ID"}<input required value={editAppointment.form.paymentReference} onChange={(event) => updateEditAppointment("paymentReference", event.target.value)} /></label>}
+                  <label>Payment Status<select value={editAppointment.form.paymentStatus} onChange={(event) => updateEditAppointment("paymentStatus", event.target.value)}><option value="pending">Pending</option><option value="paid">Paid</option><option value="partial">Partially Paid</option></select></label>
+                </div>
+              </div>
             </div>
 
             <div className="appointment-modal-actions">
@@ -786,6 +868,10 @@ export default function AppointmentList() {
               <div><span>Test</span><strong>{viewAppointment.test}</strong></div>
               <div><span>Technician</span><strong>{viewAppointment.technician}</strong></div>
               <div><span>Status</span><strong>{getUiStatus(viewAppointment.status).label}</strong></div>
+              <div><span>Payment Method</span><strong>{viewAppointment.paymentMethod ? viewAppointment.paymentMethod.toUpperCase() : "N/A"}</strong></div>
+              <div><span>Amount</span><strong>{viewAppointment.paymentAmount ? `₹${viewAppointment.paymentAmount}` : "N/A"}</strong></div>
+              <div><span>Payment Status</span><strong>{viewAppointment.paymentStatus || "N/A"}</strong></div>
+              {viewAppointment.paymentReference && <div><span>Payment Reference</span><strong>{viewAppointment.paymentReference}</strong></div>}
               <div className="wide-field"><span>Location</span><strong>{viewAppointment.location}</strong></div>
             </div>
 

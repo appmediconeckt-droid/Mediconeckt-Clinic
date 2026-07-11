@@ -1,6 +1,6 @@
 /* DoctorProfileFlow.css */
 :root {
-  --primary-color: #3498db;
+  --primary-color: var(--doctor-primary, #004ac6);
   --secondary-color: #2ecc71;
   --danger-color: #e74c3c;
   --warning-color: #f39c12;
@@ -12,9 +12,10 @@
 }
 
 .doctor-profile-container {
-  
   margin: 0 auto;
-  /* padding: 20px; */
+  padding-top: 20px;
+  padding-left: 24px;
+  padding-right: 16px;
   background-color: #fff;
   min-height: 100vh;
 }
@@ -614,6 +615,12 @@
 
 /* Responsive Design */
 @media (max-width: 768px) {
+  .doctor-profile-container {
+    padding-top: 14px;
+    padding-left: 12px;
+    padding-right: 12px;
+  }
+
   .profile-tables {
     grid-template-columns: 1fr;
   }
@@ -667,4 +674,114 @@
   .profile-card {
     padding: 1.5rem;
   }
+}
+
+/* Keep every profile action aligned with the Doctor Portal palette. */
+.doctor-profile-container .save-btn,
+.doctor-profile-container .complete-btn,
+.doctor-profile-container .btn-edit-section,
+.doctor-profile-container .modal-footer .btn-primary {
+  background: var(--doctor-gradient, linear-gradient(135deg, #004ac6, #0070fa));
+  border: 1px solid var(--doctor-primary, #004ac6);
+  color: #fff;
+  box-shadow: 0 6px 14px rgba(var(--doctor-primary-rgb, 0, 74, 198), 0.2);
+}
+
+.doctor-profile-container .save-btn:hover,
+.doctor-profile-container .complete-btn:hover,
+.doctor-profile-container .btn-edit-section:hover,
+.doctor-profile-container .modal-footer .btn-primary:hover {
+  background: var(--doctor-primary, #004ac6);
+  border-color: var(--doctor-primary, #004ac6);
+  color: #fff;
+  box-shadow: 0 8px 18px rgba(var(--doctor-primary-rgb, 0, 74, 198), 0.3);
+  transform: translateY(-2px);
+}
+
+.doctor-profile-container .btn-edit-profile {
+  background: #fff;
+  border: 1px solid var(--doctor-primary, #004ac6);
+  color: var(--doctor-primary, #004ac6);
+}
+
+.doctor-profile-container .btn-edit-profile:hover {
+  background: var(--doctor-primary, #004ac6);
+  color: #fff;
+}
+
+.doctor-profile-container .btn-secondary,
+.doctor-profile-container .btn-outline-secondary {
+  background: #fff;
+  border: 1px solid var(--doctor-primary, #004ac6);
+  color: var(--doctor-primary, #004ac6);
+  flex: 0 0 auto;
+  border-radius: 10px;
+  height: auto !important;
+  line-height: normal;
+  min-height: 48px !important;
+  min-width: 0;
+  padding: 12px 30px;
+  width: auto !important;
+}
+
+.doctor-profile-container .profile-form-actions .save-btn,
+.doctor-profile-container .profile-form-actions .btn-secondary {
+  align-items: center;
+  display: inline-flex;
+  height: 48px !important;
+  justify-content: center;
+  margin-top: 0;
+  min-height: 48px !important;
+  padding-bottom: 12px;
+  padding-top: 12px;
+}
+
+.doctor-profile-container .btn-secondary:hover,
+.doctor-profile-container .btn-outline-secondary:hover {
+  background: rgba(var(--doctor-primary-rgb, 0, 74, 198), 0.08);
+  border-color: var(--doctor-primary, #004ac6);
+  color: var(--doctor-primary, #004ac6);
+}
+
+.doctor-profile-container button:focus-visible {
+  box-shadow: 0 0 0 3px rgba(var(--doctor-primary-rgb, 0, 74, 198), 0.24);
+  outline: none;
+}
+
+.profile-contact-verification {
+  align-items: center;
+  display: grid;
+  gap: 7px;
+  grid-template-columns: auto minmax(70px, 1fr) auto;
+  margin-top: 8px;
+}
+
+.profile-contact-verification button {
+  background: var(--doctor-primary, #004ac6);
+  border: 1px solid var(--doctor-primary, #004ac6);
+  border-radius: 7px;
+  color: #fff;
+  font-size: 12px;
+  font-weight: 800;
+  min-height: 34px;
+  padding: 0 10px;
+  white-space: nowrap;
+}
+
+.profile-contact-verification input {
+  border: 1px solid #cbd5e1;
+  border-radius: 7px;
+  height: 34px;
+  min-width: 0;
+  padding: 0 9px;
+  width: 100%;
+}
+
+.profile-contact-verification small {
+  color: #b45309;
+  grid-column: 1 / -1;
+}
+
+.profile-contact-verification small.verified {
+  color: #15803d;
 }
