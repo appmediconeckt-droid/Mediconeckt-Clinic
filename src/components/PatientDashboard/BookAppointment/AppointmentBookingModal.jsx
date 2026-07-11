@@ -1,7 +1,11 @@
 import React, { useState, useEffect } from 'react';
+import { useLocation } from 'react-router-dom';
 import './AppointmentBookingModal.css';
 
 const AppointmentBookingModal = ({ doctorData, onClose }) => {
+  const location = useLocation();
+  // Doctor passed in via prop (modal) or router state (reschedule redirect)
+  const incoming = doctorData || location.state?.doctor || null;
   // Default selections match the Figma screenshot (Wed 18, 01:30 PM)
   const [selectedDate, setSelectedDate] = useState({ date: 18, day: 'Wed' });
   const [selectedTime, setSelectedTime] = useState('01:30 PM');
@@ -14,14 +18,14 @@ const AppointmentBookingModal = ({ doctorData, onClose }) => {
   const [token] = useState(() => Math.floor(Math.random() * 20) + 1);
 
   const doctor = {
-    name: 'Dr. Sarah Jenkins',
-    specialty: 'Cardiologist',
-    experience: '15 Years Exp',
-    rating: 4.9,
-    reviews: '120+ reviews',
-    languages: 'English, Spanish',
-    nextAvailable: 'Today',
-    consultationFee: 150,
+    name: incoming?.name || 'Dr. Sarah Jenkins',
+    specialty: incoming?.specialty || 'Cardiologist',
+    experience: incoming?.experience || '15 Years Exp',
+    rating: incoming?.rating || 4.9,
+    reviews: incoming?.reviews || '120+ reviews',
+    languages: incoming?.languages || 'English, Spanish',
+    nextAvailable: incoming?.nextAvailable || 'Today',
+    consultationFee: incoming?.consultationFee || 150,
   };
 
   const patient = {

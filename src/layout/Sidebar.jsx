@@ -318,7 +318,7 @@ const Sidebar = ({ menuItemClick }) => {
 
           {/* Patient bottom items (Settings) pinned above logout */}
           {userRole === "patient" && (
-            <li className="menu-item patient-bottom-settings">
+            <li className={`menu-item patient-bottom-settings ${isActive(patientBottomItems[0].path) ? "active" : ""}`}>
               <div
                 className="menu-link menu-i"
                 onClick={() => {
