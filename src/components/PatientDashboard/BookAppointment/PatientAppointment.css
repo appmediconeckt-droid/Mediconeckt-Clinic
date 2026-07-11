@@ -851,6 +851,8 @@
   color: #006B2C;
   font-weight: 600;
   border-color: transparent;
+  background: transparent;
+  font-family: inherit;
 }
 
 /* Actions */

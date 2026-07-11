@@ -269,7 +269,7 @@ export default function PatientSettingsPage() {
               <button className="pset-btn-primary" onClick={() => setDetailsAppt(a)}>View Details</button>
               {a.status !== "Cancelled" && a.tab === "Upcoming" && (
                 <>
-                  <button className="pset-btn-outline" onClick={() => openReschedule(a)}>Reschedule</button>
+                  <button className="pset-btn-outline" onClick={() => navigate("/patientappointment")}>Reschedule</button>
                   <button className="pset-btn-cancel" onClick={() => cancelAppointment(a.id)}>Cancel</button>
                 </>
               )}

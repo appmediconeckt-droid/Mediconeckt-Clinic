@@ -21,6 +21,13 @@ const PatientAppointment = () => {
   const [selectedLocation, setSelectedLocation] = useState('');
   const [consultationType, setConsultationType] = useState(''); // '' | 'in-clinic' | 'online'
   const [availableToday, setAvailableToday] = useState(false);
+  const [expandedSlots, setExpandedSlots] = useState([]); // doctor ids with all slots shown
+
+  const toggleSlots = (id) => {
+    setExpandedSlots((prev) =>
+      prev.includes(id) ? prev.filter((x) => x !== id) : [...prev, id]
+    );
+  };
 
   // --- Mock doctors (static, matches screenshot) ---
   const doctors = [
@@ -41,6 +48,7 @@ const PatientAppointment = () => {
       onlineAvail: true,
       clinicText: 'In-Clinic Avail',
       slots: ['09:00 AM', '10:30 AM', '11:45 AM'],
+      extraSlots: ['01:00 PM', '02:15 PM', '03:30 PM', '04:45 PM', '05:30 PM'],
       moreSlots: 5,
     },
     {
@@ -60,6 +68,7 @@ const PatientAppointment = () => {
       onlineAvail: false,
       clinicText: 'In-Clinic Only',
       slots: ['08:00 AM', '01:15 PM', '03:30 PM'],
+      extraSlots: [],
       moreSlots: 0,
     },
     {
@@ -79,6 +88,7 @@ const PatientAppointment = () => {
       onlineAvail: true,
       clinicText: 'In-Clinic Avail',
       slots: ['10:00 AM', '12:30 PM', '02:15 PM'],
+      extraSlots: ['03:00 PM', '04:15 PM', '05:00 PM', '06:30 PM'],
       moreSlots: 4,
     },
     {
@@ -98,6 +108,7 @@ const PatientAppointment = () => {
       onlineAvail: true,
       clinicText: 'In-Clinic Avail',
       slots: ['09:30 AM', '11:00 AM', '04:00 PM'],
+      extraSlots: ['12:15 PM', '01:30 PM', '02:45 PM', '05:15 PM', '06:00 PM', '07:00 PM'],
       moreSlots: 6,
     },
   ];
@@ -405,7 +416,19 @@ const PatientAppointment = () => {
               {doc.slots.map((s) => (
                 <span className="doc-slot" key={s}>{s}</span>
               ))}
-              {doc.moreSlots > 0 && <span className="doc-slot doc-slot-more">+{doc.moreSlots} More</span>}
+              {expandedSlots.includes(doc.id) &&
+                doc.extraSlots.map((s) => (
+                  <span className="doc-slot" key={s}>{s}</span>
+                ))}
+              {doc.moreSlots > 0 && (
+                <button
+                  type="button"
+                  className="doc-slot doc-slot-more"
+                  onClick={() => toggleSlots(doc.id)}
+                >
+                  {expandedSlots.includes(doc.id) ? 'Show Less' : `+${doc.moreSlots} More`}
+                </button>
+              )}
             </div>
 
             <div className="doc-actions">
