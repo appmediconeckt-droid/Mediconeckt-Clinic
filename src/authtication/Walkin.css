@@ -316,10 +316,10 @@
   background: #FFFFFF;
   border: 2px solid #C3C6D7;
   border-radius: 24px;
-  padding: 17px 17px 22px;   /* little extra space at the bottom */
+  padding: 20px 20px 26px;   /* little extra space at the bottom */
   flex: 1 1 0;
-  max-width: 440px;
-  height: 400px;
+  max-width: 490px;
+  height: 450px;
   display: flex;
   flex-direction: column;
   box-shadow: 0px 10px 15px -3px rgba(0, 0, 0, 0.25);
@@ -333,7 +333,7 @@
 
 .welcome-card-img {
   border-radius: 12px;
-  height: 200px;
+  height: 225px;
   flex-shrink: 0;
   display: flex;
   align-items: center;

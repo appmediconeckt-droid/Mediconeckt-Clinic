@@ -1,0 +1,588 @@
+/* ============================================================
+   ONLINE / QR APPOINTMENT BOOKING WIZARD
+   Palette: primary #006B2C, gradient #006B2C→#00D156, tint #F5FBF9
+   ============================================================ */
+.apt-booking-container {
+  max-width: 1040px;
+  margin: 0 auto;
+  padding: 28px 24px 48px;
+  font-family: "Inter", "Segoe UI", sans-serif;
+  color: #111827;
+  background: #F5FBF9;
+  min-height: 100vh;
+}
+
+/* ---- Header / doctor info ---- */
+.apt-booking-header {
+  background: #ffffff;
+  border: 1px solid #edf2ee;
+  border-radius: 16px;
+  padding: 22px 24px;
+  margin-bottom: 20px;
+  box-shadow: 0 4px 16px rgba(0, 0, 0, 0.04);
+}
+
+.apt-doctor-info-section { margin-bottom: 4px; }
+
+.apt-doctor-name {
+  font-size: 20px;
+  font-weight: 800;
+  color: #111827;
+  margin: 0 0 4px;
+}
+
+.apt-doctor-specialty {
+  font-size: 14px;
+  font-weight: 600;
+  color: #006B2C;
+  margin-bottom: 4px;
+}
+
+.apt-doctor-experience,
+.apt-doctor-languages {
+  font-size: 13px;
+  color: #6b7280;
+}
+
+.apt-loading-message,
+.apt-error-message {
+  font-size: 14px;
+  padding: 10px 14px;
+  border-radius: 10px;
+  margin-bottom: 12px;
+}
+
+.apt-loading-message { background: #eef7f1; color: #006B2C; }
+.apt-error-message { background: #fdecec; color: #dc2626; }
+
+/* ---- Clinic selection ---- */
+.apt-clinic-selection-container { margin-top: 14px; }
+
+.apt-clinic-dropdown-section { position: relative; }
+
+.apt-clinic-dropdown-toggle {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  width: 100%;
+  background: #ffffff;
+  border: 1px solid #e2e5ea;
+  border-radius: 10px;
+  padding: 12px 16px;
+  font-size: 14px;
+  font-weight: 500;
+  color: #374151;
+  cursor: pointer;
+  transition: border-color 0.15s ease;
+}
+
+.apt-clinic-dropdown-toggle:hover { border-color: #006B2C; }
+
+.apt-clinic-dropdown-menu {
+  position: absolute;
+  top: calc(100% + 6px);
+  left: 0;
+  right: 0;
+  background: #ffffff;
+  border: 1px solid #e2e5ea;
+  border-radius: 12px;
+  box-shadow: 0 10px 30px rgba(0, 0, 0, 0.12);
+  z-index: 30;
+  overflow: hidden;
+}
+
+.apt-clinic-options-list { max-height: 280px; overflow-y: auto; }
+
+.apt-clinic-option {
+  display: flex;
+  flex-direction: column;
+  gap: 3px;
+  padding: 12px 16px;
+  cursor: pointer;
+  border-bottom: 1px solid #f2f4f6;
+  transition: background 0.15s ease;
+}
+
+.apt-clinic-option:hover { background: #f4fbf6; }
+.apt-clinic-option.apt-selected { background: #E8F8ED; }
+
+.apt-clinic-details-card,
+.apt-single-clinic-display {
+  background: #f4fbf6;
+  border: 1px solid #d7efe0;
+  border-radius: 12px;
+  padding: 14px 16px;
+  margin-top: 12px;
+}
+
+.apt-clinic-name {
+  font-size: 14px;
+  font-weight: 700;
+  color: #111827;
+}
+
+.apt-clinic-info { font-size: 13px; color: #6b7280; margin-top: 2px; }
+
+.apt-clinic-badge,
+.apt-clinic-tag {
+  display: inline-flex;
+  align-items: center;
+  gap: 6px;
+  background: #E8F8ED;
+  color: #067647;
+  font-size: 12px;
+  font-weight: 600;
+  padding: 4px 12px;
+  border-radius: 20px;
+}
+
+.apt-clinic-tag { color: #ffffff; }
+
+.apt-clinic-availability-note {
+  display: flex;
+  align-items: center;
+  gap: 8px;
+  background: #eef7f1;
+  border-radius: 10px;
+  padding: 10px 14px;
+  font-size: 13px;
+  color: #15803d;
+  margin-bottom: 16px;
+}
+
+.apt-clinic-availability-note i { color: #16a34a; }
+
+/* ---- Patient info banner ---- */
+.apt-patient-info-banner {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 18px;
+  background: #ffffff;
+  border: 1px solid #edf2ee;
+  border-radius: 12px;
+  padding: 14px 18px;
+  margin-bottom: 20px;
+  box-shadow: 0 2px 10px rgba(0, 0, 0, 0.03);
+}
+
+.apt-patient-info-item {
+  display: inline-flex;
+  align-items: center;
+  gap: 8px;
+  font-size: 13px;
+  color: #374151;
+}
+
+.apt-patient-info-item i { color: #006B2C; }
+
+/* ---- Progress bar ---- */
+.apt-booking-progress {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  position: relative;
+  margin: 8px 0 26px;
+  padding: 0 10px;
+}
+
+.apt-booking-progress::before {
+  content: "";
+  position: absolute;
+  top: 13px;
+  left: 40px;
+  right: 40px;
+  height: 2px;
+  background: #e2e5ea;
+  z-index: 0;
+}
+
+.apt-progress-step {
+  position: relative;
+  z-index: 1;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  gap: 8px;
+  flex: 1;
+}
+
+.apt-step-circle {
+  width: 28px;
+  height: 28px;
+  border-radius: 50%;
+  background: #ffffff;
+  border: 2px solid #d1d5db;
+  transition: all 0.2s ease;
+}
+
+.apt-progress-step.active .apt-step-circle {
+  background: #006B2C;
+  border-color: #006B2C;
+  box-shadow: 0 0 0 4px rgba(0, 107, 44, 0.15);
+}
+
+.apt-step-label {
+  font-size: 12px;
+  font-weight: 600;
+  color: #9ca3af;
+}
+
+.apt-progress-step.active .apt-step-label { color: #006B2C; }
+
+/* ---- Booking step content ---- */
+.apt-booking-content {
+  background: #ffffff;
+  border: 1px solid #edf2ee;
+  border-radius: 16px;
+  padding: 24px;
+  box-shadow: 0 4px 20px rgba(0, 0, 0, 0.05);
+}
+
+.apt-booking-step { animation: aptFade 0.2s ease; }
+
+@keyframes aptFade {
+  from { opacity: 0; transform: translateY(4px); }
+  to { opacity: 1; transform: translateY(0); }
+}
+
+.apt-step-title {
+  display: flex;
+  align-items: center;
+  gap: 10px;
+  font-size: 17px;
+  font-weight: 700;
+  color: #111827;
+  margin-bottom: 18px;
+}
+
+.apt-step-title i { color: #006B2C; }
+
+/* ---- Calendar ---- */
+.apt-calendar-container { margin-bottom: 16px; }
+
+.apt-calendar-dates {
+  display: grid;
+  grid-template-columns: repeat(auto-fill, minmax(84px, 1fr));
+  gap: 10px;
+}
+
+.apt-date-btn {
+  position: relative;
+  border: 1px solid #e2e5ea;
+  background: #ffffff;
+  border-radius: 12px;
+  padding: 12px 6px;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  gap: 2px;
+  cursor: pointer;
+  transition: all 0.15s ease;
+}
+
+.apt-date-btn:hover:not(.unavailable) { border-color: #006B2C; }
+
+.apt-date-btn.selected {
+  background: #006B2C;
+  border-color: #006B2C;
+}
+
+.apt-date-btn.selected .apt-date-day,
+.apt-date-btn.selected .apt-date-number,
+.apt-date-btn.selected .apt-date-month { color: #ffffff; }
+
+.apt-date-day { font-size: 11px; font-weight: 500; color: #9ca3af; }
+.apt-date-number { font-size: 18px; font-weight: 700; color: #374151; }
+.apt-date-month { font-size: 11px; color: #9ca3af; }
+
+.apt-date-btn.unavailable {
+  background: #f9fafb;
+  cursor: not-allowed;
+  opacity: 0.7;
+}
+
+.apt-date-unavailable-overlay {
+  position: absolute;
+  top: 4px;
+  right: 6px;
+  color: #dc2626;
+  font-size: 10px;
+}
+
+.apt-selected-info,
+.apt-selected-date-info {
+  display: flex;
+  align-items: center;
+  gap: 8px;
+  font-size: 13px;
+  font-weight: 500;
+  color: #374151;
+  background: #f4fbf6;
+  border-radius: 10px;
+  padding: 10px 14px;
+  margin-top: 16px;
+  flex-wrap: wrap;
+}
+
+.apt-selected-info i,
+.apt-selected-date-info i { color: #006B2C; }
+
+/* ---- Time slots ---- */
+.apt-time-selection { margin-top: 6px; }
+
+.apt-time-slots-grid {
+  display: grid;
+  grid-template-columns: repeat(auto-fill, minmax(110px, 1fr));
+  gap: 10px;
+}
+
+.apt-time-slot {
+  position: relative;
+  border: 1px solid #e2e5ea;
+  background: #ffffff;
+  border-radius: 10px;
+  padding: 12px;
+  font-size: 13px;
+  font-weight: 600;
+  color: #374151;
+  cursor: pointer;
+  transition: all 0.15s ease;
+}
+
+.apt-time-slot:hover:not(.unavailable) {
+  border-color: #006B2C;
+  color: #006B2C;
+}
+
+.apt-time-slot.selected {
+  background: #006B2C;
+  border-color: #006B2C;
+  color: #ffffff;
+}
+
+.apt-time-slot.unavailable {
+  background: #f9fafb;
+  color: #d1d5db;
+  cursor: not-allowed;
+  text-decoration: line-through;
+}
+
+.apt-slot-badge {
+  position: absolute;
+  top: -8px;
+  right: -6px;
+  background: #f59e0b;
+  color: #ffffff;
+  font-size: 9px;
+  font-weight: 700;
+  padding: 2px 6px;
+  border-radius: 10px;
+}
+
+/* ---- Payment options ---- */
+.apt-payment-methods,
+.apt-payment-options {
+  display: grid;
+  grid-template-columns: repeat(auto-fill, minmax(180px, 1fr));
+  gap: 12px;
+  margin-top: 6px;
+}
+
+.apt-payment-option {
+  display: flex;
+  align-items: center;
+  gap: 10px;
+  border: 1px solid #e2e5ea;
+  border-radius: 12px;
+  padding: 14px 16px;
+  font-size: 14px;
+  font-weight: 500;
+  color: #374151;
+  cursor: pointer;
+  transition: all 0.15s ease;
+}
+
+.apt-payment-option:hover { border-color: #006B2C; }
+
+.apt-payment-option.selected {
+  border-color: #006B2C;
+  background: #f4fbf6;
+  color: #006B2C;
+  font-weight: 600;
+}
+
+/* ---- Summary ---- */
+.apt-appointment-summary,
+.apt-summary-card {
+  background: #f7f8fa;
+  border: 1px solid #eef0f2;
+  border-radius: 12px;
+  padding: 18px;
+  margin-top: 8px;
+}
+
+.apt-summary-details { display: flex; flex-direction: column; gap: 10px; }
+
+.apt-summary-item,
+.apt-detail-item {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  font-size: 14px;
+  color: #374151;
+}
+
+.apt-summary-item strong,
+.apt-detail-item strong { color: #111827; font-weight: 700; }
+
+/* ---- Actions ---- */
+.apt-booking-actions {
+  display: flex;
+  gap: 14px;
+  margin-top: 24px;
+}
+
+.apt-btn-back {
+  flex: 1;
+  background: #ffffff;
+  color: #374151;
+  border: 1px solid #e2e5ea;
+  border-radius: 10px;
+  padding: 13px;
+  font-size: 14px;
+  font-weight: 600;
+  cursor: pointer;
+  transition: all 0.2s ease;
+}
+
+.apt-btn-back:hover { border-color: #9ca3af; }
+
+.apt-btn-book,
+.apt-new-appointment-btn {
+  flex: 2;
+  background: linear-gradient(90deg, #006B2C 0%, #00D156 100%);
+  color: #ffffff;
+  border: none;
+  border-radius: 10px;
+  padding: 13px;
+  font-size: 14px;
+  font-weight: 700;
+  cursor: pointer;
+  transition: filter 0.2s ease;
+}
+
+.apt-btn-book:hover:not(:disabled),
+.apt-new-appointment-btn:hover { filter: brightness(0.96); }
+
+.apt-btn-book:disabled { opacity: 0.6; cursor: not-allowed; }
+
+/* ---- Confirmation / token ---- */
+.apt-confirmation-card,
+.apt-token-card,
+.apt-token-display {
+  background: linear-gradient(135deg, #006B2C 0%, #00D156 100%);
+  border-radius: 16px;
+  padding: 28px 24px;
+  text-align: center;
+  color: #ffffff;
+}
+
+.apt-confirmation-icon {
+  width: 64px;
+  height: 64px;
+  border-radius: 50%;
+  background: rgba(255, 255, 255, 0.2);
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  font-size: 30px;
+  margin: 0 auto 16px;
+}
+
+.apt-token-label,
+.apt-token-note { font-size: 13px; opacity: 0.9; }
+
+.apt-token-number,
+.apt-token-highlight {
+  font-size: 28px;
+  font-weight: 800;
+  letter-spacing: 1px;
+  background: rgba(255, 255, 255, 0.2);
+  border-radius: 10px;
+  padding: 12px;
+  margin: 12px 0;
+  display: inline-block;
+}
+
+.apt-confirmation-details,
+.apt-token-info {
+  display: grid;
+  gap: 8px;
+  text-align: left;
+  margin-top: 16px;
+}
+
+.apt-confirmation-details .apt-detail-item,
+.apt-token-info div {
+  background: rgba(255, 255, 255, 0.15);
+  border-radius: 8px;
+  padding: 8px 12px;
+  color: #ffffff;
+}
+
+.apt-booking-note {
+  font-size: 12px;
+  color: #6b7280;
+  text-align: center;
+  margin-top: 14px;
+}
+
+.apt-badge {
+  display: inline-flex;
+  align-items: center;
+  gap: 5px;
+  font-size: 11px;
+  font-weight: 700;
+  padding: 4px 10px;
+  border-radius: 20px;
+  background: #E8F8ED;
+  color: #067647;
+}
+
+/* ============================================================
+   Utility classes (Bootstrap-like, apt- prefixed)
+   ============================================================ */
+.apt-d-flex { display: flex; }
+.apt-align-items-center { align-items: center; }
+.apt-align-items-start { align-items: flex-start; }
+.apt-justify-content-between { justify-content: space-between; }
+.apt-flex-wrap { flex-wrap: wrap; }
+.apt-gap-2 { gap: 8px; }
+.apt-gap-3 { gap: 16px; }
+.apt-mb-0 { margin-bottom: 0; }
+.apt-mb-1 { margin-bottom: 4px; }
+.apt-mb-2 { margin-bottom: 8px; }
+.apt-mb-3 { margin-bottom: 16px; }
+.apt-mt-2 { margin-top: 8px; }
+.apt-p-3 { padding: 16px; }
+.apt-p-4 { padding: 24px; }
+.apt-rounded { border-radius: 10px; }
+.apt-rounded-circle { border-radius: 50%; }
+.apt-shadow-lg { box-shadow: 0 10px 30px rgba(0, 0, 0, 0.1); }
+.apt-text-muted { color: #9ca3af; }
+.apt-text-start { text-align: left; }
+.apt-text-success { color: #067647; }
+.apt-fw-bold { font-weight: 700; }
+.apt-small { font-size: 12px; }
+.apt-bg-secondary { background: #f3f4f6; }
+.apt-bg-success { background: #E8F8ED; }
+.apt-row { display: flex; flex-wrap: wrap; gap: 16px; }
+.apt-col-md-6 { flex: 1 1 calc(50% - 8px); min-width: 220px; }
+
+/* ---- Responsive ---- */
+@media (max-width: 600px) {
+  .apt-booking-container { padding: 18px 14px 40px; }
+  .apt-booking-content { padding: 18px; }
+  .apt-booking-actions { flex-direction: column; }
+  .apt-step-label { font-size: 11px; }
+}

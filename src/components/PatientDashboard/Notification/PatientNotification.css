@@ -144,6 +144,47 @@
   color: #006B2C;
 }
 
+.notif-chip.active {
+  background: #E8F8ED;
+  border-color: #006B2C;
+  color: #006B2C;
+  font-weight: 600;
+}
+
+.notif-caret { font-size: 10px; opacity: 0.7; }
+
+/* Filter dropdowns */
+.notif-filter-wrap { position: relative; }
+
+.notif-dropdown {
+  position: absolute;
+  top: calc(100% + 6px);
+  left: 0;
+  min-width: 180px;
+  background: #ffffff;
+  border: 1px solid #e2e5ea;
+  border-radius: 10px;
+  box-shadow: 0 10px 30px rgba(0, 0, 0, 0.14);
+  padding: 6px;
+  z-index: 40;
+}
+
+.notif-dd-item {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  padding: 9px 12px;
+  border-radius: 8px;
+  font-size: 13px;
+  color: #374151;
+  cursor: pointer;
+  transition: background 0.12s ease;
+}
+
+.notif-dd-item:hover { background: #f4fbf6; color: #006B2C; }
+.notif-dd-item.sel { background: #E8F8ED; color: #006B2C; font-weight: 600; }
+.notif-dd-item i { color: #006B2C; font-size: 11px; }
+
 .notif-toolbar-right {
   margin-left: auto;
   display: flex;
@@ -316,13 +357,15 @@
 }
 
 .notif-priority {
-  background: #fde2e2;
-  color: #dc2626;
   font-size: 11px;
   font-weight: 700;
   padding: 4px 12px;
   border-radius: 20px;
 }
+
+.notif-priority.prio-high { background: #fde2e2; color: #dc2626; }
+.notif-priority.prio-medium { background: #fef3c7; color: #b45309; }
+.notif-priority.prio-low { background: #e5e9f0; color: #6b7280; }
 
 .notif-menu {
   background: none;
@@ -338,6 +381,42 @@
   background: #f3f4f6;
   color: #374151;
 }
+
+.notif-menu-wrap { position: relative; }
+
+.notif-item-menu {
+  position: absolute;
+  top: calc(100% + 4px);
+  right: 0;
+  min-width: 170px;
+  background: #ffffff;
+  border: 1px solid #e2e5ea;
+  border-radius: 10px;
+  box-shadow: 0 10px 30px rgba(0, 0, 0, 0.16);
+  padding: 6px;
+  z-index: 50;
+}
+
+.notif-item-menu-opt {
+  display: flex;
+  align-items: center;
+  gap: 10px;
+  padding: 9px 12px;
+  border-radius: 8px;
+  font-size: 13px;
+  font-weight: 500;
+  color: #374151;
+  cursor: pointer;
+  transition: background 0.12s ease;
+}
+
+.notif-item-menu-opt i { width: 16px; text-align: center; color: #6b7280; }
+.notif-item-menu-opt:hover { background: #f4fbf6; color: #006B2C; }
+.notif-item-menu-opt:hover i { color: #006B2C; }
+
+.notif-item-menu-opt.danger { color: #dc2626; }
+.notif-item-menu-opt.danger i { color: #dc2626; }
+.notif-item-menu-opt.danger:hover { background: #fdecec; color: #dc2626; }
 
 /* ---- Empty ---- */
 .notif-empty {

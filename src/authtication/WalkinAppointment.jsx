@@ -201,30 +201,7 @@ function AppointmentForm() {
         <p>Fill in your details to confirm appointment</p>
       </div>
 
-      {/* Doctor Information Card */}
-      {doctorInfo.doctorName && (
-        <div className="doctor-info-card">
-          <div className="doctor-info-header">
-            <div className="doctor-avatar">
-              👨‍⚕️
-            </div>
-            <div className="doctor-details">
-              <h2>{doctorInfo.doctorName}</h2>
-              <div className="doctor-specialty">{doctorInfo.doctorSpecialty}</div>
-              <div className="doctor-location">
-                📍 {doctorInfo.clinicName} • {doctorInfo.location}
-              </div>
-            </div>
-          </div>
-          <div className="clinic-info">
-            <h4>Clinic Information</h4>
-            <p><strong>Contact:</strong> {doctorInfo.contact}</p>
-            <p><strong>Timings:</strong> {doctorInfo.timings}</p>
-            <p><strong>Consultation Fee:</strong> {doctorInfo.fees}</p>
-          </div>
-        </div>
-      )}
-
+      <div className="walkin-layout">
       {/* Appointment Form */}
       <form onSubmit={handleSubmit} className="simple-form-container">
         <div className="form-row">
@@ -452,6 +429,39 @@ function AppointmentForm() {
           </button>
         </div>
       </form>
+
+      {/* Right info sidebar */}
+      <aside className="walkin-aside">
+        {doctorInfo.doctorName && (
+          <div className="doctor-info-card">
+            <div className="doctor-info-header">
+              <div className="doctor-avatar">👨‍⚕️</div>
+              <div className="doctor-details">
+                <h2>{doctorInfo.doctorName}</h2>
+                <div className="doctor-specialty">{doctorInfo.doctorSpecialty}</div>
+                <div className="doctor-location">📍 {doctorInfo.clinicName} • {doctorInfo.location}</div>
+              </div>
+            </div>
+            <div className="clinic-info">
+              <h4>Clinic Information</h4>
+              <p><strong>Contact:</strong> {doctorInfo.contact}</p>
+              <p><strong>Timings:</strong> {doctorInfo.timings}</p>
+              <p><strong>Consultation Fee:</strong> {doctorInfo.fees}</p>
+            </div>
+          </div>
+        )}
+
+        <div className="walkin-tips">
+          <h4><i className="fa-solid fa-circle-info"></i> What to expect</h4>
+          <ul>
+            <li><i className="fa-solid fa-check"></i> Fill your details &amp; verify your phone via OTP</li>
+            <li><i className="fa-solid fa-check"></i> Get an instant appointment token</li>
+            <li><i className="fa-solid fa-check"></i> Estimated wait: 15–30 minutes</li>
+            <li><i className="fa-solid fa-check"></i> Carry a valid ID &amp; past reports if any</li>
+          </ul>
+        </div>
+      </aside>
+      </div>
     </div>
   );
 }

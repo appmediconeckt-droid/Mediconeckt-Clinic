@@ -271,6 +271,9 @@ const DoctorChat = () => {
     const [chatStatus, setChatStatus] = useState('loading');
     const [chatError, setChatError] = useState('');
     const [isSending, setIsSending] = useState(false);
+    const [imagePreview, setImagePreview] = useState(null); // { url, name, size } — shown before sending
+    const fileInputRef = useRef(null);   // gallery / attach
+    const cameraInputRef = useRef(null); // live device camera
 
     const getAttachmentFromMessage = (msg) => {
         if (msg.file) return msg.file;
@@ -430,6 +433,63 @@ const DoctorChat = () => {
         } finally {
             setIsSending(false);
             setIsTyping(false);
+        }
+    };
+
+    // Paperclip → pick an existing image from gallery/files
+    const handleAttachClick = () => {
+        fileInputRef.current?.click();
+    };
+
+    // Camera → open the device camera to capture a photo
+    const handleCameraClick = () => {
+        cameraInputRef.current?.click();
+    };
+
+    // A file was chosen — show a preview first, do NOT send yet
+    const handleImageSelect = (e) => {
+        const file = e.target.files?.[0];
+        e.target.value = ''; // allow picking the same file again later
+        if (!file || !file.type.startsWith('image/')) return;
+        const url = URL.createObjectURL(file);
+        setImagePreview({
+            url,
+            name: file.name,
+            size: `${(file.size / (1024 * 1024)).toFixed(1)} MB`,
+        });
+    };
+
+    // User denied the preview — discard the image
+    const cancelImagePreview = () => {
+        if (imagePreview?.url) URL.revokeObjectURL(imagePreview.url);
+        setImagePreview(null);
+    };
+
+    // User confirmed the preview — send the image
+    const handleSendImage = async () => {
+        if (!imagePreview || !activeDoctor) return;
+
+        const caption = newMessage.trim();
+        const newMsg = {
+            id: `local-${Date.now()}`,
+            text: caption,
+            time: new Date().toLocaleTimeString([], { hour: '2-digit', minute: '2-digit' }),
+            sender: "patient",
+            file: { name: imagePreview.name, type: 'image', url: imagePreview.url, size: imagePreview.size },
+        };
+
+        setMessages((prev) => [...prev, newMsg]);
+        setImagePreview(null);
+        setNewMessage("");
+        setIsSending(true);
+        setChatError('');
+
+        try {
+            await sendMessage({ receiverId: doctorId, message: caption });
+        } catch (err) {
+            setChatError(err.response?.data?.message || err.message || 'Failed to send image');
+        } finally {
+            setIsSending(false);
         }
     };
 
@@ -642,15 +702,25 @@ const DoctorChat = () => {
                                                 </div>
                                                 <p className="dc-message-text">{message.text}</p>
                                                 {message.file && (
-                                                    <div className="file-attachment">
-                                                        <strong>{message.file.name}</strong>
-                                                        {message.file.size && <span> {message.file.size}</span>}
-                                                        {message.file.url && (
-                                                            <a href={message.file.url} target="_blank" rel="noreferrer">
-                                                                Open attachment
-                                                            </a>
-                                                        )}
-                                                    </div>
+                                                    message.file.type === 'image' && message.file.url ? (
+                                                        <a href={message.file.url} target="_blank" rel="noreferrer">
+                                                            <img
+                                                                className="dc-message-image"
+                                                                src={message.file.url}
+                                                                alt={message.file.name || 'image'}
+                                                            />
+                                                        </a>
+                                                    ) : (
+                                                        <div className="file-attachment">
+                                                            <strong>{message.file.name}</strong>
+                                                            {message.file.size && <span> {message.file.size}</span>}
+                                                            {message.file.url && (
+                                                                <a href={message.file.url} target="_blank" rel="noreferrer">
+                                                                    Open attachment
+                                                                </a>
+                                                            )}
+                                                        </div>
+                                                    )
                                                 )}
                                             </div>
                                             <div className="dc-message-footer">
@@ -702,13 +772,49 @@ const DoctorChat = () => {
                     </div>
                 </div>
 
+                {/* Image preview (shown before sending — user can Send or Cancel) */}
+                {imagePreview && (
+                    <div className="dc-image-preview">
+                        <div className="dc-image-preview-thumb">
+                            <img src={imagePreview.url} alt={imagePreview.name} />
+                        </div>
+                        <div className="dc-image-preview-info">
+                            <span className="dc-image-preview-name">{imagePreview.name}</span>
+                            <span className="dc-image-preview-size">{imagePreview.size}</span>
+                        </div>
+                        <div className="dc-image-preview-actions">
+                            <button className="dc-image-preview-cancel" onClick={cancelImagePreview} disabled={isSending}>
+                                Cancel
+                            </button>
+                            <button className="dc-image-preview-send" onClick={handleSendImage} disabled={isSending}>
+                                <i className="fas fa-paper-plane"></i> Send
+                            </button>
+                        </div>
+                    </div>
+                )}
+
                 {/* Fixed Input Area */}
                 <div className="dc-input-area">
+                    <input
+                        type="file"
+                        accept="image/*"
+                        ref={fileInputRef}
+                        style={{ display: 'none' }}
+                        onChange={handleImageSelect}
+                    />
+                    <input
+                        type="file"
+                        accept="image/*"
+                        capture="environment"
+                        ref={cameraInputRef}
+                        style={{ display: 'none' }}
+                        onChange={handleImageSelect}
+                    />
                     <div className="dc-input-tools">
-                        <button className="dc-tool-btn">
+                        <button className="dc-tool-btn" onClick={handleAttachClick}>
                             <i className="fas fa-paperclip"></i>
                         </button>
-                        <button className="dc-tool-btn">
+                        <button className="dc-tool-btn" onClick={handleCameraClick}>
                             <i className="fas fa-camera"></i>
                         </button>
                         <button className="dc-tool-btn">

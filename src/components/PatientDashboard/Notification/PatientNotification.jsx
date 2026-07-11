@@ -45,25 +45,62 @@ export default function PatientNotification() {
     },
   ]);
 
+  // Filters
+  const [openMenu, setOpenMenu] = useState(null);        // 'type' | 'priority' | 'sort'
+  const [filterType, setFilterType] = useState("");
+  const [filterPriority, setFilterPriority] = useState("");
+  const [sortOrder, setSortOrder] = useState("newest");  // 'newest' | 'oldest'
+
   const total = items.length;
   const unread = items.filter((i) => !i.read).length;
   const highPriority = items.filter((i) => i.priority === "High").length;
 
+  // Sortable timestamp from day + time
+  const toTs = (day, time) => {
+    const dayRank = day === "Today" ? 2 : day === "Yesterday" ? 1 : 0;
+    const m = time.match(/(\d+):(\d+)\s*(AM|PM)/i);
+    let h = parseInt(m[1], 10);
+    const min = parseInt(m[2], 10);
+    if (/PM/i.test(m[3]) && h !== 12) h += 12;
+    if (/AM/i.test(m[3]) && h === 12) h = 0;
+    return dayRank * 10000 + h * 60 + min;
+  };
+
   const filtered = items.filter((i) => {
-    const matchesTab =
-      activeTab === "All" ? true : activeTab === "Unread" ? !i.read : i.read;
+    const matchesTab = activeTab === "All" ? true : activeTab === "Unread" ? !i.read : i.read;
     const matchesSearch =
       i.title.toLowerCase().includes(searchTerm.toLowerCase()) ||
       i.message.toLowerCase().includes(searchTerm.toLowerCase());
-    return matchesTab && matchesSearch;
+    const matchesType = !filterType || i.type === filterType;
+    const matchesPriority = !filterPriority || i.priority === filterPriority;
+    return matchesTab && matchesSearch && matchesType && matchesPriority;
   });
 
-  const days = ["Today", "Yesterday"];
+  const sorted = [...filtered].sort((a, b) =>
+    sortOrder === "newest" ? toTs(b.day, b.time) - toTs(a.day, a.time) : toTs(a.day, a.time) - toTs(b.day, b.time)
+  );
+
+  const days = sortOrder === "newest" ? ["Today", "Yesterday"] : ["Yesterday", "Today"];
+
+  const typeOptions = [
+    { v: "", label: "All Types" },
+    { v: "emergency", label: "Emergency" },
+    { v: "appointment", label: "Appointment" },
+    { v: "lab", label: "Lab Results" },
+    { v: "reminder", label: "Reminder" },
+    { v: "message", label: "Message" },
+  ];
+  const priorityOptions = ["High", "Medium", "Low"];
+
+  const typeLabel = filterType ? typeOptions.find((t) => t.v === filterType)?.label : "Type";
+
+  const [openItemMenu, setOpenItemMenu] = useState(null);
 
   const markAllRead = () => setItems((prev) => prev.map((i) => ({ ...i, read: true })));
   const clearRead = () => setItems((prev) => prev.filter((i) => !i.read));
   const toggleRead = (id) =>
     setItems((prev) => prev.map((i) => (i.id === id ? { ...i, read: !i.read } : i)));
+  const deleteItem = (id) => setItems((prev) => prev.filter((i) => i.id !== id));
 
   return (
     <div className="notif-page">
@@ -103,9 +140,59 @@ export default function PatientNotification() {
             onChange={(e) => setSearchTerm(e.target.value)}
           />
         </div>
-        <button className="notif-chip"><i className="fa-solid fa-sliders"></i> Type</button>
-        <button className="notif-chip"><i className="fa-solid fa-flag"></i> Priority</button>
-        <button className="notif-chip"><i className="fa-solid fa-arrow-down-wide-short"></i> Newest First</button>
+        {/* Type filter */}
+        <div className="notif-filter-wrap">
+          <button className={`notif-chip ${filterType ? "active" : ""}`} onClick={() => setOpenMenu(openMenu === "type" ? null : "type")}>
+            <i className="fa-solid fa-sliders"></i> {typeLabel}
+            <i className="fa-solid fa-chevron-down notif-caret"></i>
+          </button>
+          {openMenu === "type" && (
+            <div className="notif-dropdown">
+              {typeOptions.map((t) => (
+                <div key={t.v || "all"} className={`notif-dd-item ${filterType === t.v ? "sel" : ""}`} onClick={() => { setFilterType(t.v); setOpenMenu(null); }}>
+                  {t.label}{filterType === t.v && <i className="fa-solid fa-check"></i>}
+                </div>
+              ))}
+            </div>
+          )}
+        </div>
+
+        {/* Priority filter */}
+        <div className="notif-filter-wrap">
+          <button className={`notif-chip ${filterPriority ? "active" : ""}`} onClick={() => setOpenMenu(openMenu === "priority" ? null : "priority")}>
+            <i className="fa-solid fa-flag"></i> {filterPriority || "Priority"}
+            <i className="fa-solid fa-chevron-down notif-caret"></i>
+          </button>
+          {openMenu === "priority" && (
+            <div className="notif-dropdown">
+              <div className={`notif-dd-item ${!filterPriority ? "sel" : ""}`} onClick={() => { setFilterPriority(""); setOpenMenu(null); }}>All Priorities</div>
+              {priorityOptions.map((p) => (
+                <div key={p} className={`notif-dd-item ${filterPriority === p ? "sel" : ""}`} onClick={() => { setFilterPriority(p); setOpenMenu(null); }}>
+                  {p}{filterPriority === p && <i className="fa-solid fa-check"></i>}
+                </div>
+              ))}
+            </div>
+          )}
+        </div>
+
+        {/* Sort */}
+        <div className="notif-filter-wrap">
+          <button className="notif-chip" onClick={() => setOpenMenu(openMenu === "sort" ? null : "sort")}>
+            <i className="fa-solid fa-arrow-down-wide-short"></i> {sortOrder === "newest" ? "Newest First" : "Oldest First"}
+            <i className="fa-solid fa-chevron-down notif-caret"></i>
+          </button>
+          {openMenu === "sort" && (
+            <div className="notif-dropdown">
+              <div className={`notif-dd-item ${sortOrder === "newest" ? "sel" : ""}`} onClick={() => { setSortOrder("newest"); setOpenMenu(null); }}>
+                Newest First{sortOrder === "newest" && <i className="fa-solid fa-check"></i>}
+              </div>
+              <div className={`notif-dd-item ${sortOrder === "oldest" ? "sel" : ""}`} onClick={() => { setSortOrder("oldest"); setOpenMenu(null); }}>
+                Oldest First{sortOrder === "oldest" && <i className="fa-solid fa-check"></i>}
+              </div>
+            </div>
+          )}
+        </div>
+
         <div className="notif-toolbar-right">
           <button className="notif-mark" onClick={markAllRead}>Mark All as Read</button>
           <button className="notif-clear" onClick={clearRead}>Clear Read</button>
@@ -127,7 +214,7 @@ export default function PatientNotification() {
 
       {/* ===== Grouped list ===== */}
       {days.map((day) => {
-        const dayItems = filtered.filter((i) => i.day === day);
+        const dayItems = sorted.filter((i) => i.day === day);
         if (dayItems.length === 0) return null;
         return (
           <div className="notif-group" key={day}>
@@ -152,10 +239,23 @@ export default function PatientNotification() {
                     <div className="notif-source">{n.source}</div>
                   </div>
                   <div className="notif-right">
-                    {n.priority === "High" && <span className="notif-priority">High</span>}
-                    <button className="notif-menu" onClick={() => toggleRead(n.id)} aria-label="Options">
-                      <i className="fa-solid fa-ellipsis-vertical"></i>
-                    </button>
+                    <span className={`notif-priority prio-${n.priority.toLowerCase()}`}>{n.priority}</span>
+                    <div className="notif-menu-wrap">
+                      <button className="notif-menu" onClick={() => setOpenItemMenu(openItemMenu === n.id ? null : n.id)} aria-label="Options">
+                        <i className="fa-solid fa-ellipsis-vertical"></i>
+                      </button>
+                      {openItemMenu === n.id && (
+                        <div className="notif-item-menu">
+                          <div className="notif-item-menu-opt" onClick={() => { toggleRead(n.id); setOpenItemMenu(null); }}>
+                            <i className={`fa-solid ${n.read ? "fa-envelope" : "fa-envelope-open"}`}></i>
+                            Mark as {n.read ? "Unread" : "Read"}
+                          </div>
+                          <div className="notif-item-menu-opt danger" onClick={() => { deleteItem(n.id); setOpenItemMenu(null); }}>
+                            <i className="fa-solid fa-trash-can"></i> Delete
+                          </div>
+                        </div>
+                      )}
+                    </div>
                   </div>
                 </div>
               );
@@ -164,10 +264,10 @@ export default function PatientNotification() {
         );
       })}
 
-      {filtered.length === 0 && (
+      {sorted.length === 0 && (
         <div className="notif-empty">
           <i className="fa-regular fa-bell-slash"></i>
-          <p>No notifications</p>
+          <p>No notifications match your filters</p>
         </div>
       )}
     </div>

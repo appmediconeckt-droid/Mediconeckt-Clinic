@@ -311,15 +311,6 @@ const Navbar = ({ toggleSidebar }) => {
                   <span className="patient-nav-dot"></span>
                 </button>
 
-                {/* Help / Settings */}
-                <button
-                  className="patient-nav-icon-btn"
-                  onClick={() => navigate("/patient-settings")}
-                  aria-label="Help"
-                >
-                  <i className="fa-regular fa-circle-question"></i>
-                </button>
-
                 {/* Profile */}
                 <div
                   className="patient-nav-profile"
