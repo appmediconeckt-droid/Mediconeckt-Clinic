@@ -1,7 +1,7 @@
 import React, { useEffect, useState } from "react";
 import { useSelector } from "react-redux";
 import axios from "axios";
-import { CheckCircle, Clock, XCircle, Plus, Users, Stethoscope, CircleCheck, CircleX, Search, CalendarDays, SlidersHorizontal, Link2 } from "lucide-react";
+import { CheckCircle, Clock, XCircle, Users, Stethoscope, CircleCheck, CircleX, Search, CalendarDays, SlidersHorizontal, Link2 } from "lucide-react";
 import { API_BASE_URL, getAuthHeaders } from "../../../redux/apiConfig";
 import "./WalkInAppointment.css";
 
@@ -50,7 +50,7 @@ export default function WalkInAppointment() {
   };
 
   const formatAppointmentDate = (value) => {
-    if (!value) return new Date().toLocaleDateString();
+    if (!value) return "—";
     const date = new Date(value);
     if (Number.isNaN(date.getTime())) return value;
     return date.toLocaleDateString();
@@ -67,18 +67,39 @@ export default function WalkInAppointment() {
     const createdAt = item.created_at || item.createdAt || item.date || item.appointment_date;
     return {
       id: item.id || item._id,
-      name: item.name || item.patient_name || item.patientName || item.full_name || "",
-      phone: item.phone || item.contact_number || item.contact_number || "",
+      name:
+        item.patient_name ||
+        item.patientName ||
+        item.walkin_patient_name ||
+        item.walkinPatientName ||
+        item.visitor_name ||
+        item.visitorName ||
+        item.name ||
+        item.full_name ||
+        "",
+      phone: item.phone_number || item.phone || item.contact_number || "",
       gender: item.gender || "Not specified",
       problem: item.problem || item.symptoms || item.reason || item.description || "",
       type: item.type || "WALK_IN",
       status: (item.status || "BOOKED").toUpperCase(),
       date: formatAppointmentDate(createdAt),
       time: item.time || item.appointment_time || formatAppointmentTime(createdAt),
-      doctor: item.doctor_name || item.doctor?.name || item.doctor || "Dr. Sarah Chen",
-      department: item.department || item.dept || "General Medicine",
-      priority: item.priority || "Low",
-      token: item.token || item.queue_token || item.queueToken || "",
+      doctor: item.doctor_name || item.doctor?.name || item.doctor || "Not assigned",
+      department: item.department || item.dept || "Not assigned",
+      priority: item.priority || "Not specified",
+      token:
+        item.token_number ||
+        item.tokenNumber ||
+        item.token_no ||
+        item.tokenNo ||
+        item.walkin_token ||
+        item.walkinToken ||
+        item.queue_token ||
+        item.queueToken ||
+        item.appointment_token ||
+        item.appointmentToken ||
+        item.token ||
+        "",
     };
   };
 
@@ -175,12 +196,13 @@ export default function WalkInAppointment() {
     }
 
     const payload = {
-      patient_name: formData.name,
-      contact_number: formData.phone,
+      patient_name: formData.name.trim(),
+      phone_number: formData.phone.trim(),
+      symptoms: formData.problem.trim(),
+      doctor_id: doctorId,
       gender: formData.gender || "Not specified",
-      symptoms: formData.problem,
-      doctor_name: formData.doctor,
-      department: formData.department,
+      doctor_name: formData.doctor.trim(),
+      department: formData.department.trim(),
       priority: formData.priority,
       status: "booked",
     };
@@ -204,7 +226,7 @@ export default function WalkInAppointment() {
     try {
       setApiError("");
       const response = await axios.patch(`${WALKIN_BASE_URL}/${id}`, {
-        status: "CANCELLED",
+        status: "cancelled",
         doctor_id: doctorId,
       }, {
         headers: getAuthHeaders(),
@@ -248,19 +270,15 @@ export default function WalkInAppointment() {
     return appointments.filter(apt => apt.status === status).length;
   };
 
-  const getToken = (apt, index) => apt.token || `#${143 - index}`;
-  const currentToken = appointments.length ? getToken(appointments[0], 0) : "#142";
+  const getToken = (apt) => apt.token || "—";
+  const currentToken = appointments.length ? getToken(appointments[0]) : "—";
   const waitingCount = appointments.filter(apt => ["BOOKED", "WAITING"].includes(apt.status)).length;
   const consultationCount = getStatusCount("IN_CONSULTATION");
   const completedCount = getStatusCount("COMPLETED");
   const cancelledCount = getStatusCount("CANCELLED");
-  const displayRows = appointments.length
-    ? appointments
-    : [
-        { id: "demo-1", name: "Michael Johnson", phone: "+1 (555) 123-4567", doctor: "Dr. Sarah Chen", department: "General Medicine", time: "10:15 AM", priority: "High", status: "BOOKED" },
-        { id: "demo-2", name: "Emma Lawson", phone: "+1 (555) 987-6543", doctor: "Dr. James Wilson", department: "Orthopedics", time: "09:45 AM", priority: "Low", status: "IN_CONSULTATION" },
-        { id: "demo-3", name: "Robert Davis", phone: "+1 (555) 222-3333", doctor: "Dr. Sarah Chen", department: "General Medicine", time: "09:15 AM", priority: "Med", status: "COMPLETED" },
-      ];
+  const nextDoctor = appointments.find((appointment) =>
+    ["BOOKED", "WAITING", "IN_CONSULTATION"].includes(appointment.status)
+  )?.doctor || "—";
 
   return (
     <div className="walkin-main walkin-portal">
@@ -299,7 +317,7 @@ export default function WalkInAppointment() {
               </div>
               <div className="walkin-form-group">
                 <label htmlFor="doctor">Doctor</label>
-                <input id="doctor" name="doctor" value={formData.doctor} onChange={handleInputChange} placeholder="Dr. Sarah Chen" />
+                <input id="doctor" name="doctor" value={formData.doctor} onChange={handleInputChange} placeholder="Enter doctor name" />
               </div>
               <div className="walkin-form-group">
                 <label htmlFor="department">Department</label>
@@ -341,33 +359,30 @@ export default function WalkInAppointment() {
           <h1>Walk-in Appointments</h1>
           <p>Manage same-day patient appointments and live queue status.</p>
         </div>
-        <button type="button" className="walkin-new-btn" onClick={openModal}>
-          <Plus size={15} /> New Walk-in Appointment
-        </button>
       </header>
 
       {apiError && <div className="walkin-api-error">{apiError}</div>}
 
       <section className="walkin-summary-grid">
-        <article><div className="blue"><Users size={20} /></div><strong>{appointments.length || 124}</strong><span>Total Walk-ins</span></article>
-        <article><div className="orange"><Clock size={20} /></div><strong>{waitingCount || 12}</strong><span>Waiting</span></article>
-        <article><div className="green"><Stethoscope size={20} /></div><strong>{consultationCount || 8}</strong><span>In Consultation</span></article>
-        <article><div className="teal"><CircleCheck size={20} /></div><strong>{completedCount || 96}</strong><span>Completed</span></article>
-        <article><div className="red"><CircleX size={20} /></div><strong>{cancelledCount || 8}</strong><span>Cancelled</span></article>
+        <article><div className="blue"><Users size={20} /></div><strong>{appointments.length}</strong><span>Total Walk-ins</span></article>
+        <article><div className="orange"><Clock size={20} /></div><strong>{waitingCount}</strong><span>Waiting</span></article>
+        <article><div className="green"><Stethoscope size={20} /></div><strong>{consultationCount}</strong><span>In Consultation</span></article>
+        <article><div className="teal"><CircleCheck size={20} /></div><strong>{completedCount}</strong><span>Completed</span></article>
+        <article><div className="red"><CircleX size={20} /></div><strong>{cancelledCount}</strong><span>Cancelled</span></article>
       </section>
 
       <section className="walkin-live-bar">
         <div className="walkin-live-label"><Link2 size={18} /> Live Queue Status</div>
         <div className="walkin-live-stat"><span>Current Token</span><strong>{currentToken}</strong></div>
-        <div className="walkin-live-stat"><span>Avg Wait</span><strong className="orange-text">18m</strong></div>
-        <div className="walkin-live-stat"><span>Next Doctor Available</span><strong>Dr. Sarah</strong></div>
-        <div className="walkin-live-stat"><span>Est. Max Wait</span><strong>22m</strong></div>
+        <div className="walkin-live-stat"><span>Avg Wait</span><strong className="orange-text">—</strong></div>
+        <div className="walkin-live-stat"><span>Next Doctor Available</span><strong>{nextDoctor}</strong></div>
+        <div className="walkin-live-stat"><span>Est. Max Wait</span><strong>—</strong></div>
       </section>
 
       <section className="walkin-table-card">
         <div className="walkin-table-toolbar">
           <label><Search size={16} /><input placeholder="Search patient name, phone..." /></label>
-          <label><CalendarDays size={16} /><input type="date" defaultValue="2023-10-27" /></label>
+          <label><CalendarDays size={16} /><input type="date" /></label>
           <select defaultValue=""><option value="">All Doctors</option></select>
           <select defaultValue=""><option value="">All Departments</option></select>
           <select defaultValue=""><option value="">Status: All</option></select>
@@ -390,10 +405,12 @@ export default function WalkInAppointment() {
             <tbody>
               {status === "loading" ? (
                 <tr><td colSpan="7" className="walkin-empty-row">Loading appointments...</td></tr>
+              ) : appointments.length === 0 ? (
+                <tr><td colSpan="7" className="walkin-empty-row">No walk-in appointments found</td></tr>
               ) : (
-                displayRows.map((apt, index) => (
+                appointments.map((apt) => (
                   <tr key={apt.id}>
-                    <td className="walkin-token">{getToken(apt, index)}</td>
+                    <td className="walkin-token">{getToken(apt)}</td>
                     <td>
                       <div className="walkin-patient-cell">
                         <span>{apt.name?.split(" ").map((part) => part[0]).slice(0, 2).join("") || "NA"}</span>
@@ -401,7 +418,7 @@ export default function WalkInAppointment() {
                       </div>
                     </td>
                     <td><div className="walkin-doctor-cell"><strong>{apt.doctor}</strong><small>{apt.department}</small></div></td>
-                    <td><div className="walkin-time-cell"><strong>{apt.time || "10:15 AM"}</strong>{index === 0 && <small>Waiting :22m</small>}</div></td>
+                    <td><div className="walkin-time-cell"><strong>{apt.time || "—"}</strong></div></td>
                     <td><span className={`walkin-priority ${String(apt.priority).toLowerCase()}`}>{apt.priority}</span></td>
                     <td>{renderStatusBadge(apt.status)}</td>
                     <td>
@@ -409,7 +426,6 @@ export default function WalkInAppointment() {
                         <button
                           onClick={() => cancelAppointment(apt.id)}
                           className="walkin-action-btn walkin-btn-cancel"
-                          disabled={String(apt.id).startsWith("demo-")}
                           type="button"
                         >
                           Cancel
@@ -417,7 +433,6 @@ export default function WalkInAppointment() {
                         <button
                           onClick={() => deleteAppointment(apt.id)}
                           className="walkin-action-btn walkin-btn-delete"
-                          disabled={String(apt.id).startsWith("demo-")}
                           type="button"
                         >
                           Delete

@@ -6,6 +6,36 @@ import "bootstrap-icons/font/bootstrap-icons.css";
 import "./ActivateProfile.css";
 import { API_BASE_URL, getAuthHeaders } from "../../../redux/apiConfig";
 
+const PERSONAL_REQUIRED_FIELDS = [
+  "name",
+  "email",
+  "mobile",
+  "dob",
+  "gender",
+  "currentAddress",
+  "permanentAddress",
+  "aadhaar",
+  "pan",
+];
+
+const PROFESSIONAL_REQUIRED_FIELDS = [
+  "qualification",
+  "experience",
+  "languages",
+  "about",
+  "expertise",
+];
+
+const hasProfileValue = (value) => {
+  if (Array.isArray(value)) {
+    return value.some((item) => String(item ?? "").trim() !== "");
+  }
+  return value !== null && value !== undefined && String(value).trim() !== "";
+};
+
+const isSectionComplete = (profileData, requiredFields) =>
+  requiredFields.every((field) => hasProfileValue(profileData?.[field]));
+
 export default function DoctorProfileFlow() {
   const authUser = useSelector((state) => state.auth?.user);
   const [profile, setProfile] = useState({
@@ -29,8 +59,14 @@ export default function DoctorProfileFlow() {
     expertise: "",
   });
 
-  const [statusPersonal, setStatusPersonal] = useState("Incomplete");
-  const [statusProfessional, setStatusProfessional] = useState("Incomplete");
+  // Completion is derived from the current profile values so it can never
+  // become stale after loading, editing, or saving the profile.
+  const statusPersonal = isSectionComplete(profile, PERSONAL_REQUIRED_FIELDS)
+    ? "Completed"
+    : "Incomplete";
+  const statusProfessional = isSectionComplete(profile, PROFESSIONAL_REQUIRED_FIELDS)
+    ? "Completed"
+    : "Incomplete";
   const [editingSection, setEditingSection] = useState(null);
   const [editFormData, setEditFormData] = useState({});
   const [isEditMode, setIsEditMode] = useState(false);
@@ -126,39 +162,11 @@ export default function DoctorProfileFlow() {
   }, [profile, profileStatus, doctorId]);
 
   const validatePersonal = (profileData = profile) => {
-    if (
-      profileData.name &&
-      profileData.email &&
-      profileData.mobile &&
-      profileData.dob &&
-      profileData.gender &&
-      profileData.currentAddress &&
-      profileData.permanentAddress &&
-      profileData.aadhaar &&
-      profileData.pan
-    ) {
-      setStatusPersonal("Completed");
-      return true;
-    } else {
-      setStatusPersonal("Incomplete");
-      return false;
-    }
+    return isSectionComplete(profileData, PERSONAL_REQUIRED_FIELDS);
   };
 
   const validateProfessional = (profileData = profile) => {
-    if (
-      profileData.qualification &&
-      profileData.experience &&
-      profileData.languages &&
-      profileData.about &&
-      profileData.expertise
-    ) {
-      setStatusProfessional("Completed");
-      return true;
-    } else {
-      setStatusProfessional("Incomplete");
-      return false;
-    }
+    return isSectionComplete(profileData, PROFESSIONAL_REQUIRED_FIELDS);
   };
 
   const validateAllSections = (profileData = profile) => {
@@ -657,7 +665,7 @@ export default function DoctorProfileFlow() {
               <i className="bi bi-x-circle me-2"></i>
               Cancel
             </button>
-            <button className="save-btn" onClick={validatePersonal}>
+            <button className="save-btn" onClick={() => validatePersonal(profile)}>
 
 
               <i className="bi bi-check-circle me-2"></i>
@@ -738,7 +746,7 @@ export default function DoctorProfileFlow() {
               Cancel
             </button>
 
-            <button className="save-btn" onClick={validateProfessional}>
+            <button className="save-btn" onClick={() => validateProfessional(profile)}>
               <i className="bi bi-check-circle me-2"></i>
               Save Professional Details
             </button>

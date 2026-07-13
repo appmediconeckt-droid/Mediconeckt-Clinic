@@ -803,7 +803,16 @@ function PatientList() {
               </div>
             )}
 
-            <div className="sms-call-controls">
+            <div className="sms-call-controRequest URL
+https://s5jl7g4z-5000.inc1.devtunnels.ms/api/users/doctor-profile/3
+Request Method
+PUT
+Status Code
+200 OK
+Remote Address
+20.207.70.99:443
+Referrer Policy
+strict-origin-when-cross-originls">
               <button
                 type="button"
                 className={activeCall.isMuted ? "active" : ""}

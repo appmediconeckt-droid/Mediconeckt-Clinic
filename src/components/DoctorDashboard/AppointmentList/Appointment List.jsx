@@ -189,9 +189,13 @@ export default function AppointmentList() {
         "N/A",
       phone:
         appointment.patient_phone ||
+        appointment.phone_number ||
+        appointment.phoneNumber ||
         appointment.phone ||
         appointment.mobile ||
         patient.patient_phone ||
+        patient.phone_number ||
+        patient.phoneNumber ||
         patient.phone ||
         patient.mobile ||
         "N/A",
@@ -450,6 +454,24 @@ export default function AppointmentList() {
     }
   };
 
+  const handleCallAppointment = (appointment) => {
+    const rawPhone = String(appointment?.phone || "").trim();
+    if (!rawPhone || rawPhone.toUpperCase() === "N/A") {
+      setError(`Phone number is not available for ${appointment?.patientName || "this patient"}.`);
+      return;
+    }
+
+    const digits = rawPhone.replace(/\D/g, "");
+    if (digits.length < 7) {
+      setError(`Invalid phone number for ${appointment?.patientName || "this patient"}.`);
+      return;
+    }
+
+    setError("");
+    const dialNumber = rawPhone.startsWith("+") ? `+${digits}` : digits;
+    window.location.href = `tel:${dialNumber}`;
+  };
+
   const clearAllFilters = () => {
     setStatusFilter("All");
     setSearchText("");
@@ -487,10 +509,6 @@ export default function AppointmentList() {
           <h1>Appointments</h1>
           <p>Showing: <strong>{filteredAppointments.length}</strong> of {appointments.length} appointments</p>
         </div>
-        <button type="button" className="new-appointment-btn" onClick={openNewAppointmentModal}>
-            <i className="fa-solid fa-plus"></i>
-            New Appointment
-        </button>
       </section>
 
       <section className="appointment-toolbar" aria-label="Appointment filters">
@@ -622,7 +640,13 @@ export default function AppointmentList() {
                       </span>
                     </td>
                     <td>
-                      <button type="button" className="call-btn" aria-label={`Call ${appointment.patientName}`}>
+                      <button
+                        type="button"
+                        className="call-btn"
+                        aria-label={`Call ${appointment.patientName}`}
+                        title={`Call ${appointment.phone}`}
+                        onClick={() => handleCallAppointment(appointment)}
+                      >
                         <i className="fa-solid fa-phone"></i>
                       </button>
                     </td>
