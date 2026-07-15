@@ -1078,7 +1078,6 @@ function PatientList() {
 
       {activeCall && (
         <div className="sms-call-overlay" role="dialog" aria-modal="true">
-          {activeCall.type === "voice" && <audio autoPlay ref={(node) => { if (node && rtc.remoteStream) node.srcObject = rtc.remoteStream; }} />}
           <div className={`sms-call-card ${activeCall.type}`}>
             <div className="sms-call-top">
               <span>{activeCall.type === "video" ? "Video call" : "Voice call"}</span>
