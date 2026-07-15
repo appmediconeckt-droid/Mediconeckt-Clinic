@@ -19,12 +19,39 @@ export const getCurrentUserId = (authUser) => {
 
 export const unwrapApiArray = (payload) => {
   if (Array.isArray(payload)) return payload;
-  if (Array.isArray(payload?.data)) return payload.data;
-  if (Array.isArray(payload?.data?.data)) return payload.data.data;
-  if (Array.isArray(payload?.messages)) return payload.messages;
-  if (Array.isArray(payload?.doctors)) return payload.doctors;
-  if (Array.isArray(payload?.chats)) return payload.chats;
-  if (Array.isArray(payload?.conversations)) return payload.conversations;
+  if (!payload || typeof payload !== 'object') return [];
+
+  // Common wrappers, including nested under `data`
+  const candidates = [
+    payload.data,
+    payload.data?.data,
+    payload.messages,
+    payload.data?.messages,
+    payload.conversation,
+    payload.data?.conversation,
+    payload.conversations,
+    payload.data?.conversations,
+    payload.doctors,
+    payload.data?.doctors,
+    payload.chats,
+    payload.data?.chats,
+    payload.result,
+    payload.data?.result,
+    payload.results,
+    payload.items,
+    payload.rows,
+  ];
+  for (const c of candidates) if (Array.isArray(c)) return c;
+
+  // Last resort: first array found one/two levels deep
+  for (const v of Object.values(payload)) {
+    if (Array.isArray(v)) return v;
+    if (v && typeof v === 'object') {
+      for (const inner of Object.values(v)) {
+        if (Array.isArray(inner)) return inner;
+      }
+    }
+  }
   return [];
 };
 
@@ -61,7 +88,9 @@ export const getConversation = async (userId) => {
   const response = await axios.get(`${CHAT_BASE_URL}/conversation/${userId}`, {
     headers: getAuthHeaders(),
   });
-  return unwrapApiArray(response.data);
+  const list = unwrapApiArray(response.data);
+  console.log('[chatApi] /conversation/' + userId, '| raw:', response.data, '| unwrapped:', list.length, 'messages');
+  return list;
 };
 
 export const sendMessage = async ({ receiverId, message }) => {

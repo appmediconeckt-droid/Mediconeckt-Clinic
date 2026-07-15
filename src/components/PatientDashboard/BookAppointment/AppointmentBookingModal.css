@@ -334,6 +334,17 @@
 }
 
 .abm-btn-confirm2:hover { filter: brightness(0.96); }
+.abm-btn-confirm2:disabled { opacity: 0.6; cursor: not-allowed; filter: none; }
+
+.abm-pay-error {
+  margin: 10px 0 0;
+  padding: 10px 12px;
+  background: #fef2f2;
+  border: 1px solid #fecaca;
+  color: #b91c1c;
+  border-radius: 8px;
+  font-size: 13px;
+}
 
 /* Success screen — full width */
 .abm-success-page {
@@ -1235,6 +1246,20 @@
 .abm-confirm:disabled {
   opacity: 0.5;
   cursor: not-allowed;
+}
+
+.abm-no-clinic {
+  display: flex;
+  align-items: flex-start;
+  gap: 8px;
+  margin: 0 0 12px;
+  padding: 10px 12px;
+  background: #fef2f2;
+  border: 1px solid #fecaca;
+  color: #b91c1c;
+  border-radius: 8px;
+  font-size: 13px;
+  line-height: 1.4;
 }
 
 /* ---- Responsive ---- */

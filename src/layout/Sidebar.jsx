@@ -80,7 +80,7 @@ const Sidebar = ({ menuItemClick }) => {
   // `img` uses an image file from public/ as the icon instead of a Font Awesome icon.
   const patientMenuItems = [
     { path: "/patientdashboard", img: "/Vector.png", text: "Dashboard" },
-    { path: "/patientappointment", icon: "fa-calendar", text: "My Appointments" },
+    { path: "/patientappointment", icon: "fa-calendar", text: "Appointments" },
     { path: "/doctor-sms", img: "/Vector%20(1).png", text: "Doctor SMS" },
   ];
 

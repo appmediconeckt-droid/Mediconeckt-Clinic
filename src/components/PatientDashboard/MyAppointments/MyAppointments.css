@@ -1,0 +1,406 @@
+.mya-page {
+  padding: 24px 28px;
+  font-family: "Inter", "Segoe UI", sans-serif;
+  color: #111827;
+  background: #F5FBF9;
+  min-height: 100%;
+}
+
+/* ---- Header ---- */
+.mya-head {
+  display: flex;
+  align-items: flex-start;
+  justify-content: space-between;
+  gap: 24px;
+  flex-wrap: wrap;
+  margin-bottom: 20px;
+}
+
+.mya-title {
+  font-size: 28px;
+  font-weight: 800;
+  color: #111827;
+  margin: 0 0 6px;
+}
+
+.mya-sub {
+  font-size: 14px;
+  color: #6b7280;
+  margin: 0;
+  max-width: 560px;
+}
+
+.mya-book-btn {
+  display: inline-flex;
+  align-items: center;
+  gap: 8px;
+  background: #006B2C;
+  color: #ffffff;
+  border: none;
+  border-radius: 10px;
+  padding: 10px 18px;
+  font-size: 14px;
+  font-weight: 600;
+  cursor: pointer;
+  transition: background 0.15s ease;
+}
+
+.mya-book-btn:hover { background: #00551f; }
+
+/* ---- Segmented nav: Book Appointment | My Appointments ---- */
+.appt-seg {
+  display: inline-flex;
+  align-items: center;
+  gap: 4px;
+  background: #ffffff;
+  border: 1px solid #e2e5ea;
+  border-radius: 12px;
+  padding: 4px;
+  box-shadow: 0 2px 10px rgba(0, 0, 0, 0.04);
+}
+
+.appt-seg-btn {
+  display: inline-flex;
+  align-items: center;
+  gap: 8px;
+  border: none;
+  background: transparent;
+  color: #374151;
+  font-family: inherit;
+  font-size: 13px;
+  font-weight: 600;
+  white-space: nowrap;
+  padding: 10px 18px;
+  border-radius: 9px;
+  cursor: pointer;
+  transition: background 0.15s ease, color 0.15s ease;
+}
+
+.appt-seg-btn:hover:not(.active) {
+  background: #F5FBF9;
+  color: #006B2C;
+}
+
+.appt-seg-btn.active {
+  background: linear-gradient(90deg, #006B2C 0%, #00D156 100%);
+  color: #ffffff;
+  box-shadow: 0 2px 8px rgba(0, 107, 44, 0.25);
+}
+
+@media (max-width: 640px) {
+  .appt-seg { width: 100%; }
+  .appt-seg-btn { flex: 1; justify-content: center; padding: 10px 12px; }
+}
+
+/* ---- Tabs ---- */
+.mya-tabs {
+  display: flex;
+  gap: 8px;
+  flex-wrap: wrap;
+  margin-bottom: 18px;
+}
+
+.mya-tab {
+  display: inline-flex;
+  align-items: center;
+  gap: 8px;
+  background: #ffffff;
+  border: 1px solid #e2e5ea;
+  border-radius: 999px;
+  padding: 8px 16px;
+  font-size: 13px;
+  font-weight: 600;
+  color: #374151;
+  cursor: pointer;
+  font-family: inherit;
+  transition: all 0.15s ease;
+}
+
+.mya-tab:hover { border-color: #006B2C; color: #006B2C; }
+
+.mya-tab.active {
+  background: #006B2C;
+  border-color: #006B2C;
+  color: #ffffff;
+}
+
+.mya-tab-count {
+  background: rgba(0, 0, 0, 0.08);
+  border-radius: 999px;
+  padding: 1px 8px;
+  font-size: 12px;
+}
+
+.mya-tab.active .mya-tab-count { background: rgba(255, 255, 255, 0.25); }
+
+/* ---- List ---- */
+.mya-list {
+  display: flex;
+  flex-direction: column;
+  gap: 14px;
+}
+
+.mya-card {
+  position: relative;
+  overflow: hidden;
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: 18px;
+  flex-wrap: wrap;
+  background: #ffffff;
+  border: 1px solid #e8e7e7;
+  border-radius: 14px;
+  padding: 18px 20px 18px 24px;
+  box-shadow: 0 2px 10px rgba(0, 0, 0, 0.04);
+  transition: box-shadow 0.18s ease, transform 0.18s ease;
+}
+
+.mya-card:hover {
+  box-shadow: 0 8px 22px rgba(0, 0, 0, 0.08);
+  transform: translateY(-2px);
+}
+
+/* Status accent bar down the left edge */
+.mya-card::before {
+  content: "";
+  position: absolute;
+  left: 0;
+  top: 0;
+  bottom: 0;
+  width: 5px;
+  background: #d1d5db;
+}
+
+.mya-card-confirmed::before { background: #16a34a; }
+.mya-card-pending::before   { background: #f59e0b; }
+.mya-card-completed::before { background: #6366f1; }
+.mya-card-cancelled::before { background: #ef4444; }
+
+.mya-card-cancelled { opacity: 0.75; }
+
+.mya-card-left {
+  display: flex;
+  align-items: flex-start;
+  gap: 14px;
+  min-width: 0;
+  flex: 1;
+}
+
+.mya-avatar {
+  flex-shrink: 0;
+  width: 52px;
+  height: 52px;
+  border-radius: 50%;
+  background: #0d9488;
+  color: #ffffff;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  font-size: 16px;
+  font-weight: 700;
+}
+
+.mya-info { min-width: 0; }
+
+.mya-name-row {
+  display: flex;
+  align-items: center;
+  gap: 10px;
+  flex-wrap: wrap;
+  margin-bottom: 2px;
+}
+
+.mya-doctor {
+  font-size: 16px;
+  font-weight: 700;
+  color: #111827;
+  margin: 0;
+}
+
+.mya-specialty {
+  display: block;
+  font-size: 13px;
+  color: #6b7280;
+  margin-bottom: 8px;
+}
+
+.mya-meta {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 8px;
+}
+
+.mya-chip {
+  display: inline-flex;
+  align-items: center;
+  gap: 6px;
+  background: #f9fafb;
+  border: 1px solid #eef0f2;
+  border-radius: 8px;
+  padding: 5px 10px;
+  font-size: 12.5px;
+  font-weight: 500;
+  color: #374151;
+}
+
+.mya-chip i { color: #9ca3af; font-size: 12px; }
+
+/* Date & time are the primary facts — tint them green */
+.mya-chip-date,
+.mya-chip-time {
+  background: #F5FBF9;
+  border-color: #cdeeda;
+  color: #006B2C;
+  font-weight: 600;
+}
+
+.mya-chip-date i,
+.mya-chip-time i { color: #006B2C; }
+
+/* ---- Status pills ---- */
+.mya-status {
+  font-size: 11px;
+  font-weight: 700;
+  letter-spacing: 0.4px;
+  text-transform: uppercase;
+  border-radius: 999px;
+  padding: 3px 10px;
+}
+
+.mya-status-confirmed { background: #dcfce7; color: #15803d; }
+.mya-status-pending   { background: #fef3c7; color: #b45309; }
+.mya-status-completed { background: #e0e7ff; color: #4338ca; }
+.mya-status-cancelled { background: #fee2e2; color: #b91c1c; }
+
+/* ---- Right side ---- */
+.mya-card-right {
+  display: flex;
+  align-items: center;
+  gap: 18px;
+  flex-shrink: 0;
+  padding-left: 18px;
+  border-left: 1px dashed #eef0f2;
+}
+
+.mya-pay-col {
+  display: flex;
+  flex-direction: column;
+  align-items: flex-end;
+  gap: 6px;
+}
+
+.mya-token {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  background: #F5FBF9;
+  border: 1px solid #cdeeda;
+  border-radius: 10px;
+  padding: 8px 14px;
+}
+
+.mya-token-label {
+  font-size: 11px;
+  font-weight: 600;
+  color: #6b7280;
+  text-transform: uppercase;
+  letter-spacing: 0.4px;
+}
+
+.mya-token-num {
+  font-size: 18px;
+  font-weight: 800;
+  color: #006B2C;
+}
+
+.mya-fee {
+  font-size: 16px;
+  font-weight: 700;
+  color: #111827;
+}
+
+.mya-pay {
+  display: inline-flex;
+  align-items: center;
+  gap: 6px;
+  font-size: 12px;
+  color: #6b7280;
+  border: 1px solid #e2e5ea;
+  border-radius: 6px;
+  padding: 4px 8px;
+  white-space: nowrap;
+}
+
+.mya-pay i { font-size: 11px; color: #9ca3af; }
+
+/* ---- Empty / error ---- */
+.mya-empty {
+  text-align: center;
+  padding: 60px 20px;
+  color: #9ca3af;
+  background: #ffffff;
+  border: 1px solid #e8e7e7;
+  border-radius: 14px;
+}
+
+.mya-empty i { font-size: 40px; margin-bottom: 12px; }
+
+.mya-empty h3 {
+  font-size: 18px;
+  color: #374151;
+  margin: 0 0 6px;
+}
+
+.mya-empty p {
+  font-size: 14px;
+  margin: 0 0 16px;
+}
+
+/* ---- Loading skeleton (shimmer) ---- */
+.mya-skel {
+  position: relative;
+  overflow: hidden;
+  display: block;
+  background: #e9edf1;
+  border-radius: 8px;
+}
+
+.mya-skel::after {
+  content: "";
+  position: absolute;
+  inset: 0;
+  transform: translateX(-100%);
+  background: linear-gradient(
+    90deg,
+    rgba(255, 255, 255, 0) 0%,
+    rgba(255, 255, 255, 0.65) 50%,
+    rgba(255, 255, 255, 0) 100%
+  );
+  animation: mya-shimmer 1.4s infinite;
+}
+
+@keyframes mya-shimmer {
+  100% { transform: translateX(100%); }
+}
+
+.mya-skel-avatar { width: 52px; height: 52px; border-radius: 50%; flex-shrink: 0; }
+.mya-skel-line   { height: 13px; margin-bottom: 9px; }
+.mya-skel-chips  { display: flex; gap: 8px; flex-wrap: wrap; margin-top: 4px; }
+.mya-skel-chip   { width: 96px; height: 26px; border-radius: 8px; }
+.mya-skel-token  { width: 78px; height: 52px; border-radius: 10px; }
+
+/* ---- Responsive ---- */
+@media (max-width: 640px) {
+  .mya-page { padding: 16px; }
+  .mya-card { align-items: flex-start; }
+  .mya-card-right {
+    width: 100%;
+    justify-content: space-between;
+    padding-left: 0;
+    padding-top: 14px;
+    border-left: none;
+    border-top: 1px dashed #eef0f2;
+  }
+  .mya-pay-col { align-items: flex-end; }
+}

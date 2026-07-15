@@ -72,9 +72,9 @@ export default function LandingPage() {
     <div className="mc-landing-page" id="top">
       <div className="mc-landing-shell">
         <header className="mc-site-header">
-          <button className="mc-brand" type="button" onClick={() => navigate("/")}>
+          <a className="mc-brand" href="https://mediconeckt.com/" target="_blank" rel="noopener noreferrer">
             <img src={logo} alt="Mediconeckt" />
-          </button>
+          </a>
 
           <nav className="mc-nav-pills" aria-label="Primary navigation">
             <a className="mc-nav-link mc-nav-link-active" href="#top">

@@ -4,6 +4,14 @@
   color: #061a3d;
   font-family: Inter, "Segoe UI", Arial, sans-serif;
   letter-spacing: 0;
+  scroll-behavior: smooth;
+}
+
+/* Leave a little breathing space above a section when reached via nav anchors */
+.mc-features,
+.mc-why,
+.mc-footer {
+  scroll-margin-top: 40px;
 }
 
 .mc-landing-shell {
@@ -30,6 +38,14 @@
   cursor: pointer;
   display: inline-flex;
   align-items: center;
+  outline: none;
+  text-decoration: none;
+  -webkit-tap-highlight-color: transparent;
+}
+
+.mc-brand:focus,
+.mc-brand:focus-visible {
+  outline: none;
 }
 
 .mc-brand img {

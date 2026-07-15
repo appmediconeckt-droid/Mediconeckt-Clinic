@@ -1161,21 +1161,36 @@
 .msg-filter-opt i { color: #006B2C; font-size: 11px; }
 
 /* Attachment bubbles */
-.msg-bubble-img { padding: 4px !important; }
+.msg-bubble-img {
+  padding: 4px !important;
+  display: block;
+  cursor: zoom-in;
+  line-height: 0;
+}
+
 .msg-bubble-img img {
   display: block;
-  max-width: 220px;
-  max-height: 220px;
+  max-width: 240px;
+  max-height: 240px;
+  width: 100%;
+  object-fit: cover;
   border-radius: 10px;
+  transition: opacity 0.15s ease;
 }
+
+.msg-bubble-img:hover img { opacity: 0.9; }
 
 .msg-bubble-file {
   display: flex;
   align-items: center;
   gap: 10px;
   text-decoration: none;
-  color: #ffffff !important;
 }
+
+/* Outgoing bubbles are green → white text; incoming are light → dark text */
+.msg-bubble-file.msg-bubble-out { color: #ffffff !important; }
+.msg-bubble-file.msg-bubble-in { color: #111827 !important; }
+.msg-bubble-file.msg-bubble-in i { color: #006B2C; }
 
 .msg-bubble-file i { font-size: 18px; }
 .msg-file-info { display: flex; flex-direction: column; }
@@ -1243,6 +1258,15 @@
   padding: 20px;
   box-shadow: 0 20px 50px rgba(0, 0, 0, 0.3);
 }
+
+.msg-conv-state {
+  padding: 24px 16px;
+  text-align: center;
+  font-size: 13px;
+  color: #9ca3af;
+}
+
+.msg-conv-state-err { color: #b91c1c; }
 
 .cam-preview {
   margin: 14px 0;

@@ -1,8 +1,9 @@
-import React, { useState, useEffect, useRef } from 'react';
+import React, { useState, useEffect } from 'react';
 import { useNavigate } from 'react-router-dom';
-import { Html5Qrcode } from 'html5-qrcode';
+import { useDispatch, useSelector } from 'react-redux';
 import './PatientAppointment.css';
 import AppointmentBooking from './AppointmentBookingModal';
+import { fetchDoctors } from '../../../redux/doctorsSlice';
 
 const PatientAppointment = () => {
   const [searchTerm, setSearchTerm] = useState('');
@@ -10,10 +11,6 @@ const PatientAppointment = () => {
   const [showBookingModal, setShowBookingModal] = useState(false);
   const [selectedDoctor, setSelectedDoctor] = useState(null);
   const [profileDoctor, setProfileDoctor] = useState(null);
-  const [showQR, setShowQR] = useState(false);
-  const [qrError, setQrError] = useState('');
-  const [qrScanning, setQrScanning] = useState(false);
-  const qrFileRef = useRef(null);
   const navigate = useNavigate();
   // Filters
   const [openFilter, setOpenFilter] = useState(null);          // 'specialty' | 'location' | 'consultation' | null
@@ -29,89 +26,59 @@ const PatientAppointment = () => {
     );
   };
 
-  // --- Mock doctors (static, matches screenshot) ---
-  const doctors = [
-    {
-      id: 1,
-      name: 'Dr. Sarah Jenkins',
-      initials: 'SJ',
-      color: '#0d9488',
-      specialty: 'Cardiology Specialist',
-      hospital: 'City General Hospital',
-      location: 'New York',
-      rating: 4.9,
-      reviews: 324,
-      experience: '15 Yrs Exp',
-      availableToday: true,
-      distance: '2.4 miles away',
-      fee: '$150 Consult',
-      onlineAvail: true,
-      clinicText: 'In-Clinic Avail',
-      slots: ['09:00 AM', '10:30 AM', '11:45 AM'],
-      extraSlots: ['01:00 PM', '02:15 PM', '03:30 PM', '04:45 PM', '05:30 PM'],
-      moreSlots: 5,
-    },
-    {
-      id: 2,
-      name: 'Dr. Michael Chen',
-      initials: 'MC',
-      color: '#2563eb',
-      specialty: 'Dermatology',
-      hospital: 'Skin Care Wellness Center',
-      location: 'Los Angeles',
-      rating: 4.8,
-      reviews: 189,
-      experience: '8 Yrs Exp',
-      availableToday: false,
-      distance: '5.1 miles away',
-      fee: '$120 Consult',
-      onlineAvail: false,
-      clinicText: 'In-Clinic Only',
-      slots: ['08:00 AM', '01:15 PM', '03:30 PM'],
-      extraSlots: [],
-      moreSlots: 0,
-    },
-    {
-      id: 3,
-      name: 'Dr. Emily Carter',
-      initials: 'EC',
-      color: '#7c3aed',
-      specialty: 'Pediatrics',
-      hospital: 'Sunrise Children’s Clinic',
-      location: 'Chicago',
-      rating: 4.7,
-      reviews: 256,
-      experience: '11 Yrs Exp',
-      availableToday: true,
-      distance: '3.2 miles away',
-      fee: '$100 Consult',
-      onlineAvail: true,
-      clinicText: 'In-Clinic Avail',
-      slots: ['10:00 AM', '12:30 PM', '02:15 PM'],
-      extraSlots: ['03:00 PM', '04:15 PM', '05:00 PM', '06:30 PM'],
-      moreSlots: 4,
-    },
-    {
-      id: 4,
-      name: 'Dr. James Wilson',
-      initials: 'JW',
-      color: '#ea580c',
-      specialty: 'Orthopedics',
-      hospital: 'Metro Bone & Joint Center',
-      location: 'New York',
-      rating: 4.6,
-      reviews: 142,
-      experience: '20 Yrs Exp',
-      availableToday: true,
-      distance: '1.8 miles away',
-      fee: '$180 Consult',
-      onlineAvail: true,
-      clinicText: 'In-Clinic Avail',
-      slots: ['09:30 AM', '11:00 AM', '04:00 PM'],
-      extraSlots: ['12:15 PM', '01:30 PM', '02:45 PM', '05:15 PM', '06:00 PM', '07:00 PM'],
-      moreSlots: 6,
-    },
-  ];
+  // ---- Fetch real doctors from /api/users?role=doctor ----
+  const dispatch = useDispatch();
+  const { list: apiDoctors = [], status: doctorsStatus } = useSelector(
+    (state) => state.doctors || { list: [], status: 'idle' }
+  );
+
+  useEffect(() => {
+    if (doctorsStatus === 'idle') dispatch(fetchDoctors());
+  }, [doctorsStatus, dispatch]);
+
+  const cardColors = ['#0d9488', '#2563eb', '#7c3aed', '#ea580c', '#db2777', '#0891b2'];
+
+  const initialsOf = (name = '') =>
+    name.replace(/^Dr\.?\s*/i, '')
+      .split(' ').filter(Boolean).map((w) => w[0]).join('').toUpperCase().slice(0, 2) || 'DR';
+
+  // Map an API user object into the doctor-card shape (safe fallbacks for missing fields)
+  const mapApiDoctor = (d, i) => {
+    const rawName = d.full_name || d.name || d.fullname || d.username || 'Doctor';
+    const displayName = /^dr\.?\s/i.test(rawName) ? rawName : `Dr. ${rawName}`;
+    const extraSlots = Array.isArray(d.extraSlots) ? d.extraSlots : [];
+    const feeVal = d.consultation_fee ?? d.fee ?? d.consultationFee;
+    const expVal = d.experience ?? d.experience_years ?? d.years_of_experience;
+    const online = d.onlineAvail ?? d.online_available ?? d.is_online ?? true;
+    return {
+      id: d._id || d.id || i + 1,
+      name: displayName,
+      initials: initialsOf(displayName),
+      color: cardColors[i % cardColors.length],
+      specialty: d.specialization || d.specialty || d.department || 'General Physician',
+      hospital: d.hospital || d.clinic_name || d.clinic || d.hospital_name || 'Mediconeckt Clinic',
+      location: d.location || d.city || d.address || '',
+      rating: d.rating || 4.8,
+      reviews: d.reviews || d.review_count || 0,
+      experience: expVal != null ? `${expVal} Yrs Exp` : 'Experienced',
+      availableToday: d.availableToday ?? d.available_today ?? true,
+      distance: d.distance || '',
+      fee: feeVal != null ? `$${feeVal} Consult` : 'Consult',
+      onlineAvail: online,
+      clinicText: online ? 'In-Clinic Avail' : 'In-Clinic Only',
+      slots: Array.isArray(d.slots) && d.slots.length ? d.slots : ['09:00 AM', '10:30 AM', '11:45 AM'],
+      extraSlots,
+      moreSlots: extraSlots.length,
+    };
+  };
+
+  // Only real doctors from the API
+  const doctors = apiDoctors.map(mapApiDoctor);
+  const doctorsLoading = doctorsStatus === 'loading' || doctorsStatus === 'idle';
+
+  // Header stats — real counts from the API
+  const totalDoctors = doctors.length;
+  const availableTodayCount = doctors.filter((d) => d.availableToday).length;
 
   // Unique dropdown options
   const specialtyOptions = [...new Set(doctors.map((d) => d.specialty))];
@@ -155,44 +122,6 @@ const PatientAppointment = () => {
     setSelectedDoctor(null);
   };
 
-  // ---- QR scanner ----
-  const handleScanned = (text) => {
-    let target = '/qrappointment';
-    try {
-      if (/^https?:\/\//i.test(text)) {
-        const u = new URL(text);
-        target = `/qrappointment${u.search || ''}`;
-      } else if (text.includes('=')) {
-        target = `/qrappointment?${text}`;
-      } else {
-        target = `/qrappointment?doctorId=${encodeURIComponent(text)}`;
-      }
-    } catch {
-      target = `/qrappointment?doctorId=${encodeURIComponent(text)}`;
-    }
-    setShowQR(false);
-    navigate(target);
-  };
-
-  // Decode a QR from an uploaded image file (no camera)
-  const handleQrFile = async (e) => {
-    const file = e.target.files?.[0];
-    if (!file) return;
-    setQrError('');
-    setQrScanning(true);
-    const scanner = new Html5Qrcode('qr-reader-file');
-    try {
-      const decodedText = await scanner.scanFile(file, false);
-      handleScanned(decodedText);
-    } catch {
-      setQrError('No QR code found in that image. Please upload a clear QR photo.');
-    } finally {
-      try { await scanner.clear(); } catch { /* ignore */ }
-      setQrScanning(false);
-      if (e.target) e.target.value = '';
-    }
-  };
-
   if (showBookingModal && selectedDoctor) {
     return (
       <AppointmentBooking
@@ -225,20 +154,36 @@ const PatientAppointment = () => {
           <div className="appt-stat">
             <i className="fa-solid fa-user-doctor"></i>
             <div className="appt-stat-body">
-              <strong>126</strong>
+              <strong>{totalDoctors}</strong>
               <span>Doctors</span>
             </div>
           </div>
           <div className="appt-stat">
             <span className="appt-stat-dot"></span>
             <div className="appt-stat-body">
-              <strong>48</strong>
+              <strong>{availableTodayCount}</strong>
               <span>Available Today</span>
             </div>
           </div>
-          <button className="appt-qr-btn" onClick={() => setShowQR(true)}>
-            <i className="fa-solid fa-qrcode"></i> Scan QR
-          </button>
+          {/* Segmented nav: Book Appointment | My Appointments */}
+          <div className="appt-seg" role="tablist" aria-label="Appointment pages">
+            <button
+              className="appt-seg-btn active"
+              role="tab"
+              aria-selected="true"
+              onClick={() => navigate('/patientappointment')}
+            >
+              <i className="fa-solid fa-calendar-plus"></i> Book Appointment
+            </button>
+            <button
+              className="appt-seg-btn"
+              role="tab"
+              aria-selected="false"
+              onClick={() => navigate('/my-appointments')}
+            >
+              <i className="fa-regular fa-calendar-check"></i> My Appointments
+            </button>
+          </div>
         </div>
       </div>
 
@@ -371,6 +316,39 @@ const PatientAppointment = () => {
       </div>
 
       {/* ===== Doctor cards ===== */}
+      {doctorsLoading ? (
+        <div className={`appt-grid ${viewMode === 'list' ? 'appt-grid-list' : ''}`}>
+          {[1, 2, 3, 4].map((i) => (
+            <div className="doc-card" key={i}>
+              <div className="doc-card-top">
+                <div className="appt-skel appt-skel-avatar"></div>
+                <div style={{ flex: 1 }}>
+                  <div className="appt-skel appt-skel-line" style={{ width: '55%', height: 16 }}></div>
+                  <div className="appt-skel appt-skel-line" style={{ width: '40%' }}></div>
+                  <div className="appt-skel appt-skel-line" style={{ width: '65%' }}></div>
+                </div>
+              </div>
+              <div className="appt-skel appt-skel-line" style={{ width: '30%', marginTop: 14 }}></div>
+              <div className="doc-slots">
+                {[1, 2, 3].map((s) => (
+                  <span className="appt-skel appt-skel-slot" key={s}></span>
+                ))}
+              </div>
+              <div className="doc-actions">
+                <span className="appt-skel appt-skel-btn"></span>
+                <span className="appt-skel appt-skel-btn"></span>
+              </div>
+            </div>
+          ))}
+        </div>
+      ) : doctorsStatus === 'failed' ? (
+        <div className="appt-no-results">
+          <i className="fa-solid fa-triangle-exclamation"></i>
+          <h3>Couldn't load doctors</h3>
+          <p>Please check your connection and try again.</p>
+          <button className="doc-book" onClick={() => dispatch(fetchDoctors())}>Retry</button>
+        </div>
+      ) : (
       <div className={`appt-grid ${viewMode === 'list' ? 'appt-grid-list' : ''}`}>
         {filteredDoctors.length > 0 ? filteredDoctors.map((doc) => (
           <div className="doc-card" key={doc.id}>
@@ -444,44 +422,6 @@ const PatientAppointment = () => {
           </div>
         )}
       </div>
-
-      {/* ===== QR Upload Modal ===== */}
-      {showQR && (
-        <div className="qr-overlay" onClick={() => setShowQR(false)}>
-          <div className="qr-modal" onClick={(e) => e.stopPropagation()}>
-            <div className="qr-head">
-              <h3><i className="fa-solid fa-qrcode"></i> Scan Appointment QR</h3>
-              <button className="qr-close" onClick={() => setShowQR(false)}><i className="fa-solid fa-xmark"></i></button>
-            </div>
-
-            <div
-              className="qr-drop"
-              onClick={() => qrFileRef.current?.click()}
-            >
-              <i className="fa-solid fa-qrcode qr-drop-icon"></i>
-              <div className="qr-drop-title">{qrScanning ? 'Reading QR…' : 'Upload QR image'}</div>
-              <div className="qr-drop-sub">Click to choose a QR photo from your device</div>
-            </div>
-
-            <input
-              ref={qrFileRef}
-              type="file"
-              accept="image/*"
-              hidden
-              onChange={handleQrFile}
-            />
-            {/* hidden container required by html5-qrcode scanFile */}
-            <div id="qr-reader-file" style={{ display: 'none' }}></div>
-
-            <button className="qr-upload-btn" onClick={() => qrFileRef.current?.click()} disabled={qrScanning}>
-              <i className="fa-solid fa-image"></i> {qrScanning ? 'Scanning…' : 'Choose QR Image'}
-            </button>
-
-            {qrError
-              ? <p className="qr-hint qr-err">{qrError}</p>
-              : <p className="qr-hint">Upload a photo of the doctor's or clinic's QR code to book instantly.</p>}
-          </div>
-        </div>
       )}
 
       {/* ===== Doctor Profile Modal ===== */}
