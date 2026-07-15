@@ -1,11 +1,15 @@
 import React, { useState } from 'react';
 import { useLocation, useNavigate } from 'react-router-dom';
+import axios from 'axios';
+import { API_BASE_URL } from '../redux/apiConfig';
 import './WalkinAppointment.css';
 
 function AppointmentForm() {
   const location = useLocation();
   const navigate = useNavigate();
   const doctorInfo = location.state || {};
+  const doctorId = new URLSearchParams(location.search).get('doctorId') ||
+    doctorInfo.doctorId || doctorInfo.doctor_id || doctorInfo.id || '';
 
   const [formData, setFormData] = useState({
     patientName: '',
@@ -13,6 +17,7 @@ function AppointmentForm() {
     problem: '',
     dateOfBirth: '',
     age: '',
+    location: '',
     gender: '',
     appointmentTime: '',
     email: ''
@@ -26,25 +31,31 @@ function AppointmentForm() {
   const [errors, setErrors] = useState({});
   const [isSubmitting, setIsSubmitting] = useState(false);
   const [appointmentToken, setAppointmentToken] = useState('');
+  const [apiError, setApiError] = useState('');
+
+  const calculateAge = (dateOfBirth) => {
+    if (!dateOfBirth) return '';
+    const [year, month, day] = dateOfBirth.split('-').map(Number);
+    const birthDate = new Date(year, month - 1, day);
+    const today = new Date();
+    if (Number.isNaN(birthDate.getTime()) || birthDate > today) return '';
+
+    let calculatedAge = today.getFullYear() - birthDate.getFullYear();
+    const birthdayPending =
+      today.getMonth() < birthDate.getMonth() ||
+      (today.getMonth() === birthDate.getMonth() && today.getDate() < birthDate.getDate());
+    if (birthdayPending) calculatedAge -= 1;
+    return String(calculatedAge);
+  };
 
   const handleInputChange = (e) => {
     const { name, value } = e.target;
     setFormData(prev => ({
       ...prev,
-      [name]: value
+      [name]: value,
+      ...(name === 'dateOfBirth' ? { age: calculateAge(value) } : {})
     }));
-
-    // Auto-calculate age from date of birth
-    if (name === 'dateOfBirth' && value) {
-      const birthDate = new Date(value);
-      const today = new Date();
-      let age = today.getFullYear() - birthDate.getFullYear();
-      const monthDiff = today.getMonth() - birthDate.getMonth();
-      if (monthDiff < 0 || (monthDiff === 0 && today.getDate() < birthDate.getDate())) {
-        age--;
-      }
-      setFormData(prev => ({ ...prev, age: age.toString() }));
-    }
+    if (apiError) setApiError('');
 
     // Clear error for this field
     if (errors[name]) {
@@ -71,6 +82,12 @@ function AppointmentForm() {
 
     if (!formData.dateOfBirth) {
       newErrors.dateOfBirth = 'Date of birth is required';
+    } else if (new Date(`${formData.dateOfBirth}T00:00:00`) > new Date()) {
+      newErrors.dateOfBirth = 'Date of birth cannot be in the future';
+    }
+
+    if (!formData.location.trim()) {
+      newErrors.location = 'Location or address is required';
     }
 
     if (!formData.gender) {
@@ -128,39 +145,76 @@ function AppointmentForm() {
     }
   };
 
-  const handleSubmit = (e) => {
+  const handleSubmit = async (e) => {
     e.preventDefault();
 
     if (!validateForm()) {
       return;
     }
 
-    setIsSubmitting(true);
+    if (!doctorId) {
+      setApiError('Doctor information is missing. Please scan the doctor QR code again.');
+      return;
+    }
 
-    // Generate appointment token
-    const token = `TKN-${Date.now().toString().slice(-6)}-${Math.floor(Math.random() * 100)}`;
-    setAppointmentToken(token);
-
-    // Save to localStorage
-    const appointmentData = {
-      token,
-      timestamp: new Date().toISOString(),
-      doctorInfo,
-      patientInfo: formData,
-      status: 'confirmed',
-      estimatedWait: '15-30 minutes'
+    const payload = {
+      patient_name: formData.patientName.trim(),
+      phone_number: formData.contactNumber.trim(),
+      symptoms: formData.problem.trim(),
+      doctor_id: doctorId,
+      date_of_birth: formData.dateOfBirth,
+      age: formData.age ? Number(formData.age) : undefined,
+      location: formData.location.trim(),
+      gender: formData.gender,
+      appointment_time: formData.appointmentTime || undefined,
+      email: formData.email.trim() || undefined,
+      status: 'booked'
     };
 
-    localStorage.setItem('appointmentData', JSON.stringify(appointmentData));
+    try {
+      setIsSubmitting(true);
+      setApiError('');
+      const response = await axios.post(`${API_BASE_URL}/walkin-appointments`, payload, {
+        // QR walk-ins are guest bookings. Do not attach a previously logged-in
+        // patient's token; the entered patient_name must remain authoritative.
+        headers: { 'Content-Type': 'application/json' },
+      });
+      const createdAppointment = response.data?.data || response.data?.appointment || response.data || {};
+      const token = createdAppointment.token_number ||
+        createdAppointment.tokenNumber ||
+        createdAppointment.token_no ||
+        createdAppointment.tokenNo ||
+        createdAppointment.walkin_token ||
+        createdAppointment.walkinToken ||
+        createdAppointment.queue_token ||
+        createdAppointment.queueToken ||
+        createdAppointment.appointment_token ||
+        createdAppointment.appointmentToken ||
+        createdAppointment.token ||
+        createdAppointment.id ||
+        createdAppointment._id ||
+        'Booked';
 
-    // Show success
-    setTimeout(() => {
+      setAppointmentToken(String(token));
+      const appointmentData = {
+        ...createdAppointment,
+        token,
+        doctorId,
+        doctorInfo,
+        patientInfo: formData,
+      };
+      localStorage.setItem('appointmentData', JSON.stringify(appointmentData));
+      alert(`Appointment booked successfully!${token !== 'Booked' ? `\nYour Token: ${token}` : ''}`);
+    } catch (error) {
+      setApiError(
+        error.response?.data?.message ||
+        error.response?.data?.error ||
+        error.message ||
+        'Unable to book walk-in appointment'
+      );
+    } finally {
       setIsSubmitting(false);
-      alert(`Appointment booked successfully!\nYour Token: ${token}`);
-      
-      // Optionally navigate to confirmation page
-      // navigate('/confirmation', { state: appointmentData });
-    }, 1500);
+    }
   };
 
   const handleReset = () => {
@@ -170,6 +224,7 @@ function AppointmentForm() {
       problem: '',
       dateOfBirth: '',
       age: '',
+      location: '',
       gender: '',
       appointmentTime: '',
       email: ''
@@ -180,6 +235,7 @@ function AppointmentForm() {
     setIsOtpVerified(false);
     setErrors({});
     setAppointmentToken('');
+    setApiError('');
   };
 
   const formatTime = (seconds) => {
@@ -203,7 +259,7 @@ function AppointmentForm() {
 
       <div className="walkin-layout">
       {/* Appointment Form */}
-      <form onSubmit={handleSubmit} className="simple-form-container">
+      <form onSubmit={handleSubmit} className="simple-form-container" autoComplete="off">
         <div className="form-row">
           <div className="form-group">
             <label htmlFor="patientName" className="form-label">
@@ -217,6 +273,7 @@ function AppointmentForm() {
               onChange={handleInputChange}
               className="form-input"
               placeholder="Enter full name"
+              autoComplete="off"
             />
             {errors.patientName && <span className="error-message">{errors.patientName}</span>}
           </div>
@@ -267,6 +324,7 @@ function AppointmentForm() {
               value={formData.dateOfBirth}
               onChange={handleInputChange}
               className="form-input"
+              max={new Date().toISOString().split('T')[0]}
             />
             {errors.dateOfBirth && <span className="error-message">{errors.dateOfBirth}</span>}
           </div>
@@ -285,6 +343,22 @@ function AppointmentForm() {
               placeholder="Auto-calculated"
             />
           </div>
+        </div>
+
+        <div className="form-group">
+          <label htmlFor="location" className="form-label">
+            Location / Address *
+          </label>
+          <textarea
+            id="location"
+            name="location"
+            value={formData.location}
+            onChange={handleInputChange}
+            className="form-input"
+            placeholder="Enter your complete address or location"
+            rows="2"
+          />
+          {errors.location && <span className="error-message">{errors.location}</span>}
         </div>
 
         <div className="form-row">
@@ -411,6 +485,7 @@ function AppointmentForm() {
         )}
 
         {/* Form Actions */}
+        {apiError && <div className="error-message walkin-submit-error">{apiError}</div>}
         <div className="form-actions">
           <button
             type="button"

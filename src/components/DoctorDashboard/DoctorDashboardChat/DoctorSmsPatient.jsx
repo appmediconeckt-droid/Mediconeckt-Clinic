@@ -21,6 +21,7 @@ import {
   startCall as startChatCall,
   unwrapApiObject,
 } from "../../../redux/chatApi";
+import { getAuthHeaders } from "../../../redux/apiConfig";
 import "./DoctorSmsPatient.css";
 
 const getInitials = (name) =>
@@ -49,22 +50,37 @@ const getFirstValue = (...values) => values.find((value) => value !== undefined 
 
 const normalizeAttachment = (source, fallbackFile) => {
   const data = unwrapApiObject(source);
-  const attachment = data.attachment || data.file || data.message || data;
+  const rawAttachment = data.attachment || data.file || data.media || data.document;
+  const messageValue = typeof data.message === "string" ? data.message.trim() : "";
+  const normalizedMessagePath = messageValue.replace(/\\/g, "/");
+  const looksLikeFilePath = /(^|\/)(uploads?|attachments?|files?|media)\//i.test(normalizedMessagePath) || /\.(png|jpe?g|gif|webp|bmp|svg|pdf|docx?|xlsx?|csv|txt|zip|rar)(\?.*)?$/i.test(normalizedMessagePath);
+  const attachment = typeof rawAttachment === "string"
+    ? { url: rawAttachment.replace(/\\/g, "/") }
+    : rawAttachment || (looksLikeFilePath ? { url: normalizedMessagePath } : data);
   const url = getFirstValue(
     attachment.attachment_url,
     attachment.attachmentUrl,
+    attachment.attachment_path,
+    attachment.attachmentPath,
     attachment.file_url,
     attachment.fileUrl,
+    attachment.file_path,
+    attachment.filePath,
+    attachment.media_url,
+    attachment.mediaUrl,
     attachment.url,
     fallbackFile?.url
   );
+  const normalizedUrl = String(url || "").replace(/\\/g, "/");
+  const derivedName = normalizedUrl ? decodeURIComponent(normalizedUrl.split("/").pop()?.split("?")[0] || "") : "";
   const name = getFirstValue(
     attachment.attachment_name,
     attachment.attachmentName,
     attachment.file_name,
     attachment.fileName,
     attachment.name,
-    fallbackFile?.name
+    fallbackFile?.name,
+    derivedName
   );
   const type = getFirstValue(attachment.attachment_type, attachment.attachmentType, attachment.file_type, attachment.type, fallbackFile?.type);
   const size = getFirstValue(attachment.attachment_size, attachment.attachmentSize, attachment.file_size, attachment.size, fallbackFile?.size);
@@ -75,7 +91,7 @@ const normalizeAttachment = (source, fallbackFile) => {
     name: name || "Attachment",
     type: String(type || "").startsWith("image/") ? "image" : type || "document",
     size: typeof size === "number" ? formatFileSize(size) : size || "",
-    url: getAssetUrl(url),
+    url: getAssetUrl(normalizedUrl),
   };
 };
 
@@ -86,7 +102,8 @@ const cleanAttachmentMessageText = (text, file) => {
   const fileUrl = String(file?.url || "").replace(/\\/g, "/").toLowerCase();
   const fileName = String(file?.name || "").toLowerCase();
 
-  if (normalized.includes("/uploads/") || normalized === fileUrl || normalized === fileName) {
+  const pathOnlyMessage = /(^|\/)(uploads?|attachments?|files?|media)\//i.test(normalized) || /\.(png|jpe?g|gif|webp|bmp|svg|pdf|docx?|xlsx?|csv|txt|zip|rar)(\?.*)?$/i.test(normalized);
+  if (pathOnlyMessage || normalized.includes("/uploads/") || normalized === fileUrl || normalized === fileName) {
     return "";
   }
 
@@ -97,6 +114,57 @@ const getLastMessageText = (item) => {
   const lastMessage = item.lastMessage || item.last_message || item.latest_message;
   if (typeof lastMessage === "string") return lastMessage;
   return lastMessage?.message || lastMessage?.text || item.message || item.content || "No messages yet";
+};
+
+const AttachmentPreviewImage = ({ file }) => {
+  const candidates = useMemo(() => {
+    const primary = String(file?.url || "");
+    if (!primary) return [];
+    const apiFallback = primary.includes("/api/")
+      ? primary
+      : primary.replace(/(https?:\/\/[^/]+)\/(uploads?|attachments?|files?|media)\//i, "$1/api/$2/");
+    return Array.from(new Set([primary, apiFallback].filter(Boolean)));
+  }, [file?.url]);
+  const [previewUrl, setPreviewUrl] = useState("");
+
+  useEffect(() => {
+    let active = true;
+    let objectUrl = "";
+    const loadAuthenticatedImage = async () => {
+      const headers = { ...getAuthHeaders() };
+      delete headers["Content-Type"];
+      delete headers["content-type"];
+      for (const candidate of candidates) {
+        try {
+          const response = await fetch(candidate, { headers });
+          if (!response.ok) continue;
+          const blob = await response.blob();
+          const knownImageFile = /\.(png|jpe?g|gif|webp|bmp|svg)(\?.*)?$/i.test(file?.name || candidate);
+          if (!blob.type.startsWith("image/") && !knownImageFile) continue;
+          objectUrl = URL.createObjectURL(blob);
+          if (active) setPreviewUrl(objectUrl);
+          return;
+        } catch {
+          // Try the next supported asset URL.
+        }
+      }
+      if (active) setPreviewUrl("");
+    };
+    setPreviewUrl("");
+    loadAuthenticatedImage();
+    return () => {
+      active = false;
+      if (objectUrl) URL.revokeObjectURL(objectUrl);
+    };
+  }, [candidates]);
+
+  if (!previewUrl) return null;
+
+  return (
+    <a href={previewUrl} target="_blank" rel="noreferrer" className="sms-file-preview" title="Open attachment">
+      <img src={previewUrl} alt="Attachment preview" />
+    </a>
+  );
 };
 
 const normalizeChatMessage = (msg, index, currentUserId) => {
@@ -125,12 +193,21 @@ function PatientList() {
   const [status, setStatus] = useState("loading");
   const [error, setError] = useState("");
   const [isSending, setIsSending] = useState(false);
+  const [pendingAttachment, setPendingAttachment] = useState(null);
   const [activeCall, setActiveCall] = useState(null);
   const [callSeconds, setCallSeconds] = useState(0);
   const messageAreaRef = useRef(null);
   const fileInputRef = useRef(null);
   const videoPreviewRef = useRef(null);
   const mediaStreamRef = useRef(null);
+
+  useEffect(() => {
+    setPendingAttachment((current) => {
+      if (current?.previewUrl) URL.revokeObjectURL(current.previewUrl);
+      return null;
+    });
+    if (fileInputRef.current) fileInputRef.current.value = "";
+  }, [selectedPatientId]);
 
   useEffect(() => {
     const loadPatients = async () => {
@@ -191,9 +268,33 @@ function PatientList() {
       try {
         const conversation = await getConversation(selectedPatientId);
         const currentUserId = getCurrentUserId();
+        const serverMessages = conversation.map((item, index) => normalizeChatMessage(item, index, currentUserId));
         setMessagesByPatient((prev) => ({
           ...prev,
-          [selectedPatientId]: conversation.map((item, index) => normalizeChatMessage(item, index, currentUserId)),
+          [selectedPatientId]: (() => {
+            const currentMessages = prev[selectedPatientId] || [];
+            const currentById = new Map(currentMessages.map((message) => [String(message.id), message]));
+            const mergedServerMessages = serverMessages.map((serverMessage) => {
+              const currentMessage = currentById.get(String(serverMessage.id));
+              if (!currentMessage) return serverMessage;
+              currentById.delete(String(serverMessage.id));
+              const currentHasUsablePreview = currentMessage.file?.url?.startsWith("blob:");
+              return {
+                ...serverMessage,
+                file: currentHasUsablePreview ? currentMessage.file : serverMessage.file || currentMessage.file,
+                text: serverMessage.text || currentMessage.text,
+              };
+            });
+            // Keep optimistic messages not included in an older/in-flight GET
+            // response. This prevents a valid image preview disappearing after
+            // one or two seconds.
+            const optimisticMessages = Array.from(currentById.values()).filter((message) =>
+              String(message.id).startsWith("local-") ||
+              String(message.id).startsWith("file-") ||
+              message.file?.url?.startsWith("blob:")
+            );
+            return [...mergedServerMessages, ...optimisticMessages];
+          })(),
         }));
       } catch (err) {
         setError(err.response?.data?.message || err.message || "Failed to load conversation");
@@ -308,10 +409,43 @@ function PatientList() {
 
   const sendLocalMessage = async (event) => {
     event.preventDefault();
-    if (!message.trim() || !selectedPatient?.id || isSending) return;
+    if ((!message.trim() && !pendingAttachment) || !selectedPatient?.id || isSending) return;
 
     const messageText = message.trim();
     const receiverId = selectedPatient.receiverId || selectedPatient.id;
+    if (pendingAttachment) {
+      try {
+        setIsSending(true);
+        setError("");
+        const { file, previewUrl } = pendingAttachment;
+        const fallbackFile = { name: file.name, type: file.type, size: file.size, url: previewUrl };
+        const response = await sendAttachment({ receiverId, message: messageText, file });
+        const uploadedFile = normalizeAttachment(response, fallbackFile) || {
+          name: file.name,
+          type: file.type.startsWith("image/") ? "image" : "document",
+          size: formatFileSize(file.size),
+          url: previewUrl,
+        };
+        const uploadedData = unwrapApiObject(response);
+        const uploadedMessage = {
+          id: getFirstValue(uploadedData.id, uploadedData.message_id, uploadedData._id, `file-${Date.now()}`),
+          sender: "doctor",
+          text: cleanAttachmentMessageText(getFirstValue(uploadedData.message, uploadedData.text, messageText, ""), uploadedFile),
+          file: uploadedFile,
+          time: "Just now",
+        };
+        setMessagesByPatient((prev) => ({ ...prev, [selectedPatient.id]: [...(prev[selectedPatient.id] || []), uploadedMessage] }));
+        setPatients((prev) => prev.map((patient) => String(patient.id) === String(selectedPatient.id) ? { ...patient, lastMessage: uploadedFile.name, messageTime: "Just now" } : patient));
+        setPendingAttachment(null);
+        setMessage("");
+        if (fileInputRef.current) fileInputRef.current.value = "";
+      } catch (err) {
+        setError(err.response?.data?.message || err.message || "Failed to upload attachment");
+      } finally {
+        setIsSending(false);
+      }
+      return;
+    }
     const localMessage = {
       id: `local-${Date.now()}`,
       sender: "doctor",
@@ -433,11 +567,7 @@ function PatientList() {
 
     return (
       <div className={`sms-file-attachment ${isImage ? "image" : ""}`}>
-        {isImage && file.url && (
-          <a href={file.url} target="_blank" rel="noreferrer" className="sms-file-preview" title="Open attachment">
-            <img src={file.url} alt={file.name || "Attachment"} />
-          </a>
-        )}
+        {isImage && file.url && <AttachmentPreviewImage file={file} />}
         <div className="sms-file-details">
           <FaPaperclip />
           {file.url ? (
@@ -477,57 +607,18 @@ function PatientList() {
     fileInputRef.current?.click();
   };
 
-  const handleAttachmentChange = async (event) => {
+  const handleAttachmentChange = (event) => {
     const file = event.target.files?.[0];
     if (!file || !selectedPatient?.id) return;
-
-    const receiverId = selectedPatient.receiverId || selectedPatient.id;
-    const caption = message.trim();
     setError("");
+    if (pendingAttachment?.previewUrl) URL.revokeObjectURL(pendingAttachment.previewUrl);
+    setPendingAttachment({ file, previewUrl: URL.createObjectURL(file) });
+  };
 
-    try {
-      setIsSending(true);
-      const localPreviewUrl = URL.createObjectURL(file);
-      const fallbackFile = {
-        name: file.name,
-        type: file.type,
-        size: file.size,
-        url: localPreviewUrl,
-      };
-      const response = await sendAttachment({ receiverId, message: caption, file });
-      const uploadedFile = normalizeAttachment(response, fallbackFile) || {
-        name: file.name,
-        type: file.type.startsWith("image/") ? "image" : "document",
-        size: formatFileSize(file.size),
-        url: localPreviewUrl,
-      };
-      const uploadedData = unwrapApiObject(response);
-      const uploadedMessage = {
-        id: getFirstValue(uploadedData.id, uploadedData.message_id, uploadedData._id, `file-${Date.now()}`),
-        sender: "doctor",
-        text: cleanAttachmentMessageText(getFirstValue(uploadedData.message, uploadedData.text, caption, ""), uploadedFile),
-        file: uploadedFile,
-        time: "Just now",
-      };
-
-      setMessagesByPatient((prev) => ({
-        ...prev,
-        [selectedPatient.id]: [...(prev[selectedPatient.id] || []), uploadedMessage],
-      }));
-      setPatients((prev) =>
-        prev.map((patient) =>
-          String(patient.id) === String(selectedPatient.id)
-            ? { ...patient, lastMessage: uploadedFile.name, messageTime: "Just now" }
-            : patient
-        )
-      );
-      setMessage("");
-    } catch (err) {
-      setError(err.response?.data?.message || err.message || "Failed to upload attachment");
-    } finally {
-      setIsSending(false);
-      event.target.value = "";
-    }
+  const removePendingAttachment = () => {
+    if (pendingAttachment?.previewUrl) URL.revokeObjectURL(pendingAttachment.previewUrl);
+    setPendingAttachment(null);
+    if (fileInputRef.current) fileInputRef.current.value = "";
   };
 
   return (
@@ -538,10 +629,10 @@ function PatientList() {
       </header>
 
       <section className="sms-stats-grid">
-        <article><span className="sms-stat-icon critical">△</span><b>Live</b><strong>{criticalCount}</strong><h3>Critical Patients</h3><p>Require immediate attention</p></article>
-        <article><span className="sms-stat-icon unread">✉</span><b className="blue">Live</b><strong>{unreadCount}</strong><h3>Unread Messages</h3><p>New patient inquiries</p></article>
-        <article><span className="sms-stat-icon waiting">▣</span><b className="muted">Live</b><strong>{waitingCount}</strong><h3>Waiting for Reply</h3><p>Awaiting clinical response</p></article>
-        <article><span className="sms-stat-icon resolved">✓</span><b className="green">Live</b><strong>{resolvedCount}</strong><h3>Resolved Today</h3><p>Closed conversations</p></article>
+        <article><span className="sms-stat-icon critical">△</span><b>Live</b><strong>{criticalCount}</strong><h3>Critical Patients</h3></article>
+        <article><span className="sms-stat-icon unread">✉</span><b className="blue">Live</b><strong>{unreadCount}</strong><h3>Unread Messages</h3></article>
+        <article><span className="sms-stat-icon waiting">▣</span><b className="muted">Live</b><strong>{waitingCount}</strong><h3>Waiting for Reply</h3></article>
+        <article><span className="sms-stat-icon resolved">✓</span><b className="green">Live</b><strong>{resolvedCount}</strong><h3>Resolved Today</h3></article>
       </section>
 
       <div className="sms-filter-bar">
@@ -667,12 +758,20 @@ function PatientList() {
 
           <input ref={fileInputRef} type="file" className="sms-hidden-file-input" onChange={handleAttachmentChange} />
 
+          {pendingAttachment && (
+            <div className="sms-pending-attachment">
+              <FaPaperclip />
+              <span><strong>{pendingAttachment.file.name}</strong><small>{formatFileSize(pendingAttachment.file.size)} · Ready to send</small></span>
+              <button type="button" onClick={removePendingAttachment} aria-label="Remove attachment"><i className="fa-solid fa-xmark" /></button>
+            </div>
+          )}
+
           <form className="sms-message-form" onSubmit={sendLocalMessage}>
             <button type="button" onClick={handleAttachmentClick} disabled={!selectedPatient?.id} title="Attach file"><FaPaperclip /></button>
             <button type="button">☺</button>
             <input value={message} onChange={(event) => setMessage(event.target.value)} placeholder={`Type a message to ${selectedPatient?.name?.split(" ")[0] || "patient"}...`} />
             <button type="button">♩</button>
-            <button className="send" type="submit" disabled={!message.trim() || isSending}><FaPaperPlane /></button>
+            <button className="send" type="submit" disabled={(!message.trim() && !pendingAttachment) || isSending}><FaPaperPlane /></button>
           </form>
         </section>
       </div>
@@ -704,7 +803,16 @@ function PatientList() {
               </div>
             )}
 
-            <div className="sms-call-controls">
+            <div className="sms-call-controRequest URL
+https://s5jl7g4z-5000.inc1.devtunnels.ms/api/users/doctor-profile/3
+Request Method
+PUT
+Status Code
+200 OK
+Remote Address
+20.207.70.99:443
+Referrer Policy
+strict-origin-when-cross-originls">
               <button
                 type="button"
                 className={activeCall.isMuted ? "active" : ""}

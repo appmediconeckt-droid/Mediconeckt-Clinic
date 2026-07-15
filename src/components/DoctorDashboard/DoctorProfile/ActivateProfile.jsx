@@ -1,9 +1,43 @@
 import React, { useState, useEffect } from "react";
+import { useSelector } from "react-redux";
+import axios from "axios";
 import "bootstrap/dist/css/bootstrap.min.css";
 import "bootstrap-icons/font/bootstrap-icons.css";
 import "./ActivateProfile.css";
+import { API_BASE_URL, getAuthHeaders } from "../../../redux/apiConfig";
+
+const PERSONAL_REQUIRED_FIELDS = [
+  "name",
+  "email",
+  "mobile",
+  "dob",
+  "gender",
+  "currentAddress",
+  "permanentAddress",
+  "aadhaar",
+  "pan",
+];
+
+const PROFESSIONAL_REQUIRED_FIELDS = [
+  "qualification",
+  "experience",
+  "languages",
+  "about",
+  "expertise",
+];
+
+const hasProfileValue = (value) => {
+  if (Array.isArray(value)) {
+    return value.some((item) => String(item ?? "").trim() !== "");
+  }
+  return value !== null && value !== undefined && String(value).trim() !== "";
+};
+
+const isSectionComplete = (profileData, requiredFields) =>
+  requiredFields.every((field) => hasProfileValue(profileData?.[field]));
 
 export default function DoctorProfileFlow() {
+  const authUser = useSelector((state) => state.auth?.user);
   const [profile, setProfile] = useState({
     // PERSONAL DETAILS
     name: "",
@@ -25,60 +59,114 @@ export default function DoctorProfileFlow() {
     expertise: "",
   });
 
-  const [statusPersonal, setStatusPersonal] = useState("Incomplete");
-  const [statusProfessional, setStatusProfessional] = useState("Incomplete");
+  // Completion is derived from the current profile values so it can never
+  // become stale after loading, editing, or saving the profile.
+  const statusPersonal = isSectionComplete(profile, PERSONAL_REQUIRED_FIELDS)
+    ? "Completed"
+    : "Incomplete";
+  const statusProfessional = isSectionComplete(profile, PROFESSIONAL_REQUIRED_FIELDS)
+    ? "Completed"
+    : "Incomplete";
   const [editingSection, setEditingSection] = useState(null);
   const [editFormData, setEditFormData] = useState({});
   const [isEditMode, setIsEditMode] = useState(false);
+  const [profileStatus, setProfileStatus] = useState("loading");
+  const [profileError, setProfileError] = useState("");
+  const [savedContact, setSavedContact] = useState({ email: "", mobile: "" });
+  const [verification, setVerification] = useState({
+    email: { otp: "", sent: false, verified: true, loading: false, message: "" },
+    mobile: { otp: "", sent: false, verified: true, loading: false, message: "" },
+  });
+  const [savingProfile, setSavingProfile] = useState(false);
 
-  // Load saved profile from localStorage
-  useEffect(() => {
-    const savedProfile = localStorage.getItem('doctorProfile');
-    if (savedProfile) {
-      setProfile(JSON.parse(savedProfile));
-      validateAllSections(JSON.parse(savedProfile));
+  const storedAuthUser = (() => {
+    try {
+      return JSON.parse(localStorage.getItem("authUser") || "null");
+    } catch {
+      return null;
     }
-  }, []);
+  })();
+  const currentUser = authUser || storedAuthUser || {};
+  const doctorId = currentUser.doctor_id || currentUser.doctorId || currentUser.id || currentUser._id || currentUser.user_id || currentUser.userId;
+
+  const getImageUrl = (value) => {
+    if (!value) return null;
+    if (/^(https?:|data:|blob:)/i.test(value)) return value;
+    return `${API_BASE_URL.replace(/\/api\/?$/, "")}/${String(value).replace(/^\/+/, "")}`;
+  };
+
+  const mapApiProfile = (data = {}) => ({
+    name: data.full_name || data.fullName || data.name || "",
+    email: data.email || data.email_address || "",
+    mobile: data.mobile || data.phone || data.phone_number || data.contact_number || "",
+    dob: data.dob ? String(data.dob).slice(0, 10) : data.date_of_birth ? String(data.date_of_birth).slice(0, 10) : "",
+    gender: data.gender || "",
+    currentAddress: data.current_address || data.currentAddress || data.address || "",
+    permanentAddress: data.permanent_address || data.permanentAddress || "",
+    aadhaar: data.aadhaar || data.aadhaar_number || "",
+    pan: data.pan || data.pan_number || "",
+    photo: getImageUrl(data.profileImage || data.profilePic || data.profile_pic || data.profile_image || data.profile_photo),
+    qualification: data.qualification || data.medical_degree || "",
+    experience: data.experience || data.years_of_experience || "",
+    languages: Array.isArray(data.languages) ? data.languages.join(", ") : data.languages || "",
+    about: data.about_doctor || data.about || data.professional_summary || "",
+    expertise: Array.isArray(data.expertise) ? data.expertise.join(", ") : data.expertise || data.specialization || "",
+  });
+
+  // Load the authenticated doctor's profile from the API. Local storage is a
+  // fallback only, so the navbar profile always reflects backend data.
+  useEffect(() => {
+    let active = true;
+    const loadProfile = async () => {
+      const savedProfile = localStorage.getItem(`doctorProfile:${doctorId || "doctor"}`) || localStorage.getItem("doctorProfile");
+      if (!doctorId) {
+        if (savedProfile) setProfile(JSON.parse(savedProfile));
+        setProfileStatus("failed");
+        setProfileError("Doctor ID not found. Please login again.");
+        return;
+      }
+      try {
+        setProfileStatus("loading");
+        setProfileError("");
+        const response = await axios.get(`${API_BASE_URL}/users/doctor-profile/${doctorId}`, {
+          headers: getAuthHeaders(),
+        });
+        if (!active) return;
+        const data = response.data?.data || response.data?.profile || response.data || {};
+        const mappedProfile = mapApiProfile(data);
+        setProfile(mappedProfile);
+        setSavedContact({ email: mappedProfile.email, mobile: mappedProfile.mobile });
+        validateAllSections(mappedProfile);
+        localStorage.setItem(`doctorProfile:${doctorId}`, JSON.stringify(mappedProfile));
+        setProfileStatus("succeeded");
+      } catch (error) {
+        if (!active) return;
+        if (savedProfile) {
+          const cached = JSON.parse(savedProfile);
+          setProfile(cached);
+          validateAllSections(cached);
+        }
+        setProfileStatus("failed");
+        setProfileError(error.response?.data?.message || error.response?.data?.error || "Failed to load doctor profile");
+      }
+    };
+    loadProfile();
+    return () => { active = false; };
+  }, [doctorId]);
 
   // Save profile to localStorage
   useEffect(() => {
-    localStorage.setItem('doctorProfile', JSON.stringify(profile));
-  }, [profile]);
-
-  const validatePersonal = () => {
-    if (
-      profile.name &&
-      profile.email &&
-      profile.mobile &&
-      profile.dob &&
-      profile.gender &&
-      profile.currentAddress &&
-      profile.permanentAddress &&
-      profile.aadhaar &&
-      profile.pan
-    ) {
-      setStatusPersonal("Completed");
-      return true;
-    } else {
-      setStatusPersonal("Incomplete");
-      return false;
+    if (profileStatus !== "loading") {
+      localStorage.setItem(`doctorProfile:${doctorId || "doctor"}`, JSON.stringify(profile));
     }
+  }, [profile, profileStatus, doctorId]);
+
+  const validatePersonal = (profileData = profile) => {
+    return isSectionComplete(profileData, PERSONAL_REQUIRED_FIELDS);
   };
 
-  const validateProfessional = () => {
-    if (
-      profile.qualification &&
-      profile.experience &&
-      profile.languages &&
-      profile.about &&
-      profile.expertise
-    ) {
-      setStatusProfessional("Completed");
-      return true;
-    } else {
-      setStatusProfessional("Incomplete");
-      return false;
-    }
+  const validateProfessional = (profileData = profile) => {
+    return isSectionComplete(profileData, PROFESSIONAL_REQUIRED_FIELDS);
   };
 
   const validateAllSections = (profileData = profile) => {
@@ -137,6 +225,127 @@ export default function DoctorProfileFlow() {
 
   const handleEditProfileClick = () => {
     setIsEditMode(true);
+  };
+
+  const contactChanged = (type) => String(profile[type] || "").trim() !== String(savedContact[type] || "").trim();
+
+  const updateContact = (type, value) => {
+    setProfile((previous) => ({ ...previous, [type]: value }));
+    setVerification((previous) => ({
+      ...previous,
+      [type]: { otp: "", sent: false, verified: false, loading: false, message: "Verification required" },
+    }));
+  };
+
+  const STATIC_OTP = "123456";
+
+  const callOtpEndpoint = async (action, payload) => {
+    // Registration currently uses the same static OTP test flow and does not
+    // call an OTP backend endpoint. Keep profile verification consistent until
+    // a real send/verify service is introduced.
+    await new Promise((resolve) => setTimeout(resolve, 250));
+    if (action === "send") return { success: true };
+    if (String(payload?.otp || "").trim() !== STATIC_OTP) {
+      throw new Error(`Invalid OTP. Use ${STATIC_OTP} in test mode.`);
+    }
+    return { success: true };
+  };
+
+  const sendContactOtp = async (type) => {
+    const value = String(profile[type] || "").trim();
+    if (type === "email" && !/^\S+@\S+\.\S+$/.test(value)) {
+      setVerification((previous) => ({ ...previous, email: { ...previous.email, message: "Enter a valid email address" } }));
+      return;
+    }
+    if (type === "mobile" && !/^\+?[0-9]{10,15}$/.test(value.replace(/[\s-]/g, ""))) {
+      setVerification((previous) => ({ ...previous, mobile: { ...previous.mobile, message: "Enter a valid phone number" } }));
+      return;
+    }
+    setVerification((previous) => ({ ...previous, [type]: { ...previous[type], loading: true, message: "" } }));
+    try {
+      await callOtpEndpoint("send", {
+        doctor_id: doctorId,
+        type: type === "mobile" ? "phone" : "email",
+        value,
+        email: type === "email" ? value : undefined,
+        phone: type === "mobile" ? value : undefined,
+      });
+      setVerification((previous) => ({
+        ...previous,
+        [type]: { ...previous[type], sent: true, verified: false, loading: false, message: `OTP sent to ${value}. Test OTP: ${STATIC_OTP}` },
+      }));
+    } catch (error) {
+      setVerification((previous) => ({
+        ...previous,
+        [type]: { ...previous[type], loading: false, message: error.response?.data?.message || error.message || "Unable to send OTP" },
+      }));
+    }
+  };
+
+  const verifyContactOtp = async (type) => {
+    const state = verification[type];
+    if (!/^\d{4,6}$/.test(state.otp)) {
+      setVerification((previous) => ({ ...previous, [type]: { ...previous[type], message: "Enter a valid OTP" } }));
+      return;
+    }
+    setVerification((previous) => ({ ...previous, [type]: { ...previous[type], loading: true, message: "" } }));
+    try {
+      const value = String(profile[type] || "").trim();
+      await callOtpEndpoint("verify", {
+        doctor_id: doctorId,
+        type: type === "mobile" ? "phone" : "email",
+        value,
+        otp: state.otp,
+        email: type === "email" ? value : undefined,
+        phone: type === "mobile" ? value : undefined,
+      });
+      setVerification((previous) => ({
+        ...previous,
+        [type]: { ...previous[type], verified: true, loading: false, message: "Verified successfully" },
+      }));
+    } catch (error) {
+      setVerification((previous) => ({
+        ...previous,
+        [type]: { ...previous[type], verified: false, loading: false, message: error.response?.data?.message || error.message || "Invalid or expired OTP" },
+      }));
+    }
+  };
+
+  const saveProfileToApi = async () => {
+    const emailNeedsVerification = contactChanged("email") && !verification.email.verified;
+    const mobileNeedsVerification = contactChanged("mobile") && !verification.mobile.verified;
+    if (emailNeedsVerification || mobileNeedsVerification) {
+      setProfileError("Please verify the changed email address and phone number before saving.");
+      return;
+    }
+    try {
+      setSavingProfile(true);
+      setProfileError("");
+      await axios.put(`${API_BASE_URL}/users/doctor-profile/${doctorId}`, {
+        full_name: profile.name,
+        email: profile.email,
+        phone: profile.mobile,
+        dob: profile.dob,
+        gender: profile.gender,
+        current_address: profile.currentAddress,
+        permanent_address: profile.permanentAddress,
+        aadhaar_number: profile.aadhaar,
+        pan_number: profile.pan,
+        qualification: profile.qualification,
+        experience: profile.experience,
+        languages: profile.languages,
+        about_doctor: profile.about,
+        expertise: profile.expertise,
+      }, { headers: getAuthHeaders() });
+      setSavedContact({ email: profile.email, mobile: profile.mobile });
+      setIsEditMode(false);
+      setProfileStatus("succeeded");
+      localStorage.setItem(`doctorProfile:${doctorId}`, JSON.stringify(profile));
+    } catch (error) {
+      setProfileError(error.response?.data?.message || "Profile update failed");
+    } finally {
+      setSavingProfile(false);
+    }
   };
 
   // Render Professional Profile View
@@ -322,9 +531,20 @@ export default function DoctorProfileFlow() {
                 className="form-input form-control"
                 type="email"
                 value={profile.email}
-                onChange={(e) => setProfile({ ...profile, email: e.target.value })}
+                onChange={(e) => updateContact("email", e.target.value)}
                 placeholder="Enter your email"
               />
+              {contactChanged("email") && (
+                <div className="profile-contact-verification">
+                  <button type="button" onClick={() => sendContactOtp("email")} disabled={verification.email.loading}>
+                    {verification.email.loading ? "Please wait..." : verification.email.sent ? "Resend OTP" : "Send OTP"}
+                  </button>
+                  {verification.email.sent && !verification.email.verified && (
+                    <><input inputMode="numeric" maxLength="6" value={verification.email.otp} onChange={(e) => setVerification((previous) => ({ ...previous, email: { ...previous.email, otp: e.target.value.replace(/\D/g, "") } }))} placeholder="OTP" /><button type="button" onClick={() => verifyContactOtp("email")}>Verify</button></>
+                  )}
+                  <small className={verification.email.verified ? "verified" : ""}>{verification.email.message}</small>
+                </div>
+              )}
             </div>
 
             <div className="col-md-4 mb-3">
@@ -333,9 +553,20 @@ export default function DoctorProfileFlow() {
                 className="form-input form-control"
                 type="tel"
                 value={profile.mobile}
-                onChange={(e) => setProfile({ ...profile, mobile: e.target.value })}
+                onChange={(e) => updateContact("mobile", e.target.value)}
                 placeholder="Enter mobile number"
               />
+              {contactChanged("mobile") && (
+                <div className="profile-contact-verification">
+                  <button type="button" onClick={() => sendContactOtp("mobile")} disabled={verification.mobile.loading}>
+                    {verification.mobile.loading ? "Please wait..." : verification.mobile.sent ? "Resend OTP" : "Send OTP"}
+                  </button>
+                  {verification.mobile.sent && !verification.mobile.verified && (
+                    <><input inputMode="numeric" maxLength="6" value={verification.mobile.otp} onChange={(e) => setVerification((previous) => ({ ...previous, mobile: { ...previous.mobile, otp: e.target.value.replace(/\D/g, "") } }))} placeholder="OTP" /><button type="button" onClick={() => verifyContactOtp("mobile")}>Verify</button></>
+                  )}
+                  <small className={verification.mobile.verified ? "verified" : ""}>{verification.mobile.message}</small>
+                </div>
+              )}
             </div>
           </div>
 
@@ -429,12 +660,12 @@ export default function DoctorProfileFlow() {
             />
           </div>
 
-          <div className="d-flex justify-content-between mt-3">
+          <div className="d-flex justify-content-between align-items-center mt-3 profile-form-actions">
             <button className="btn btn-secondary" onClick={() => setIsEditMode(false)}>
               <i className="bi bi-x-circle me-2"></i>
               Cancel
             </button>
-            <button className="save-btn" onClick={validatePersonal}>
+            <button className="save-btn" onClick={() => validatePersonal(profile)}>
 
 
               <i className="bi bi-check-circle me-2"></i>
@@ -509,13 +740,13 @@ export default function DoctorProfileFlow() {
             </div>
           </div>
 
-          <div className="d-flex justify-content-between mt-3">
+          <div className="d-flex justify-content-between align-items-center mt-3 profile-form-actions">
             <button className="btn btn-secondary" onClick={() => setIsEditMode(false)}>
               <i className="bi bi-x-circle me-2"></i>
               Cancel
             </button>
 
-            <button className="save-btn" onClick={validateProfessional}>
+            <button className="save-btn" onClick={() => validateProfessional(profile)}>
               <i className="bi bi-check-circle me-2"></i>
               Save Professional Details
             </button>
@@ -523,9 +754,9 @@ export default function DoctorProfileFlow() {
 
         </div>
         <div className="text-center">
-          <button className="save-btn" onClick={() => setIsEditMode(false)}>
+          <button className="save-btn" onClick={saveProfileToApi} disabled={savingProfile}>
           <i className="bi bi-check-circle me-2"></i>
-          Save
+          {savingProfile ? "Saving..." : "Save"}
         </button>
         </div>
         {/* FINAL STATUS */}
@@ -632,6 +863,12 @@ export default function DoctorProfileFlow() {
 
   return (
     <div className="doctor-profile-container">
+      {profileStatus === "loading" && (
+        <div className="alert alert-info" role="status">Loading doctor profile...</div>
+      )}
+      {profileError && (
+        <div className="alert alert-warning" role="alert">{profileError}</div>
+      )}
       {isEditMode ? renderEditForm() : renderProfileView()}
       {renderEditModal()}
     </div>

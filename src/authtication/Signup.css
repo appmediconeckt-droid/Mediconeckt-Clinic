@@ -833,6 +833,7 @@
 }
 
 .med-back-button {
+  margin-top: 24px;
   margin-bottom: 18px;
 }
 
@@ -1074,7 +1075,7 @@
 
 .medi-signup-left-side {
   display: flex;
-  align-items: center;
+  align-items: flex-start;
 }
 
 .medi-signup-form-wrapper {

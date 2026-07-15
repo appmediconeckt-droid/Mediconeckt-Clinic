@@ -2184,18 +2184,98 @@ const formatDuration = (ms) => {
 };
 
 const normalizeApiList = (payload) => {
-  if (Array.isArray(payload)) return payload;
-  if (Array.isArray(payload?.data)) return payload.data;
-  if (Array.isArray(payload?.appointments)) return payload.appointments;
-  if (Array.isArray(payload?.result)) return payload.result;
-  if (Array.isArray(payload?.results)) return payload.results;
-  if (Array.isArray(payload?.data?.appointments)) return payload.data.appointments;
-  if (Array.isArray(payload?.data?.result)) return payload.data.result;
-  if (Array.isArray(payload?.data?.results)) return payload.data.results;
-  return [];
+  const rows = [];
+  const visited = new Set();
+  const collectionKeys = new Set([
+    "data",
+    "appointments",
+    "online",
+    "online_appointments",
+    "onlineAppointments",
+    "walkin",
+    "walk_in",
+    "walk_in_appointments",
+    "walkin_appointments",
+    "walkInAppointments",
+    "walkinAppointments",
+    "walkins",
+    "result",
+    "results",
+  ]);
+
+  const getSourceHint = (key, currentHint) => {
+    const normalizedKey = String(key || "").toLowerCase();
+    if (normalizedKey.includes("walkin") || normalizedKey.includes("walk_in")) return "walkin";
+    if (normalizedKey.includes("online")) return "online";
+    return currentHint;
+  };
+
+  const collect = (value, sourceHint = "") => {
+    if (!value || typeof value !== "object" || visited.has(value)) return;
+    visited.add(value);
+
+    if (Array.isArray(value)) {
+      value.forEach((item) => {
+        if (item && typeof item === "object") {
+          rows.push(sourceHint ? { ...item, __appointmentSource: sourceHint } : item);
+        }
+      });
+      return;
+    }
+
+    Object.entries(value).forEach(([key, nestedValue]) => {
+      if (collectionKeys.has(key)) {
+        collect(nestedValue, getSourceHint(key, sourceHint));
+      }
+    });
+  };
+
+  collect(payload);
+  return rows;
 };
 
 const pickFirst = (...values) => values.find((value) => value !== undefined && value !== null && value !== "");
+
+const getAppointmentSource = (appointment) => {
+  const rawType = String(pickFirst(
+    appointment?.__appointmentSource,
+    appointment?.appointment_source,
+    appointment?.appointmentSource,
+    appointment?.source,
+    appointment?.record_type,
+    appointment?.recordType,
+    appointment?.appointment_type,
+    appointment?.appointmentType,
+    appointment?.booking_type,
+    appointment?.bookingType,
+    appointment?.consultation_mode,
+    appointment?.consultationMode,
+    appointment?.type,
+    ""
+  )).toLowerCase();
+  const hasWalkInIdentity = Boolean(
+    appointment?.walkin_appointment_id ||
+    appointment?.walkinAppointmentId ||
+    appointment?.walkin_id ||
+    appointment?.walkinId
+  );
+
+  return rawType.includes("walk") || hasWalkInIdentity ? "walkin" : "online";
+};
+
+const getAppointmentApiUrl = (appointment) =>
+  `${API_BASE_URL}/${getAppointmentSource(appointment) === "walkin" ? "walkin-appointments" : "appointments"}/${appointment.apiId || appointment.id}`;
+
+const getStatusUpdatePayload = (appointment, status, extraFields = {}) => {
+  if (getAppointmentSource(appointment) === "walkin") {
+    // The walk-in API accepts only lowercase booked/cancelled/completed.
+    // Starting a consultation stays `booked` on the API while the dashboard
+    // keeps the active consultation state locally.
+    const walkInStatus = status === "in-progress" ? "booked" : status.toLowerCase();
+    return { ...extraFields, status: walkInStatus };
+  }
+  return { ...extraFields, appointment_status: status };
+};
 
 const getStoredAuthUser = () => {
   try {
@@ -2231,6 +2311,12 @@ const getAppointmentDateValue = (appointment) =>
     appointment?.bookingDate,
     appointment?.scheduled_date,
     appointment?.scheduledDate,
+    appointment?.walkin_date,
+    appointment?.walkinDate,
+    appointment?.visit_date,
+    appointment?.visitDate,
+    appointment?.check_in_at,
+    appointment?.checkInAt,
     appointment?.created_at,
     appointment?.createdAt
   );
@@ -2256,7 +2342,9 @@ const getAppointmentDateTime = (appointment) => {
     appointment?.scheduled_time,
     appointment?.scheduledTime,
     appointment?.slot_time,
-    appointment?.slotTime
+    appointment?.slotTime,
+    appointment?.check_in_time,
+    appointment?.checkInTime
   );
   const normalizedTime = String(timeValue || "23:59:59").trim();
   const [hours = "23", minutes = "59", seconds = "59"] = normalizedTime.split(":");
@@ -2284,6 +2372,9 @@ const isTodayAppointment = (appointment) => {
 
 const isExpiredPendingAppointment = (appointment, nowMs = Date.now()) => {
   if (normalizeAppointmentStatus(appointment) !== "pending") return false;
+  // Walk-ins stay in the doctor's queue until their status is explicitly
+  // changed; their check-in/preferred time must not make them disappear.
+  if (getAppointmentSource(appointment) === "walkin") return false;
 
   const appointmentDateTime = getAppointmentDateTime(appointment);
   if (!appointmentDateTime) return false;
@@ -2299,7 +2390,9 @@ const formatAppointmentTime = (appointment) => {
     appointment?.appointment_time,
     appointment?.appointmentTime,
     appointment?.slot_time,
-    appointment?.slotTime
+    appointment?.slotTime,
+    appointment?.check_in_time,
+    appointment?.checkInTime
   );
 
   if (explicitTime) return explicitTime;
@@ -2314,14 +2407,20 @@ const formatAppointmentTime = (appointment) => {
 };
 
 const normalizeAppointmentStatus = (appointment, forcedStatus) => {
-  const rawStatus = pickFirst(forcedStatus, appointment?.appointment_status, appointment?.status);
+  const rawStatus = pickFirst(
+    forcedStatus,
+    appointment?.appointment_status,
+    appointment?.walkin_status,
+    appointment?.queue_status,
+    appointment?.status
+  );
   const status = String(rawStatus || "pending").toLowerCase().trim().replace(/\s+/g, "-");
 
   if (status === "completed" || status === "complete") return "completed";
   if (status === "cancelled" || status === "canceled") return "cancelled";
   if (status === "confirmed" || status === "accepted" || status === "active") return "confirmed";
-  if (status === "in-progress" || status === "in_progress") return "in-progress";
-  if (status === "scheduled" || status === "booked" || status === "approved" || status === "") return "pending";
+  if (status === "in-progress" || status === "in_progress" || status === "in-consultation" || status === "in_consultation") return "in-progress";
+  if (status === "scheduled" || status === "booked" || status === "approved" || status === "waiting" || status === "queued" || status === "") return "pending";
 
   return "pending";
 };
@@ -2329,12 +2428,30 @@ const normalizeAppointmentStatus = (appointment, forcedStatus) => {
 const formatAppointment = (appointment, forcedStatus) => {
   const patient = appointment?.patient || appointment?.patientData || appointment?.user || {};
   const status = normalizeAppointmentStatus(appointment, forcedStatus);
+  const appointmentSource = getAppointmentSource(appointment);
+  const apiId = pickFirst(
+    appointment?.id,
+    appointment?._id,
+    appointment?.appointment_id,
+    appointment?.appointmentId,
+    appointment?.walkin_appointment_id,
+    appointment?.walkinAppointmentId,
+    appointment?.walkin_id,
+    appointment?.walkinId
+  );
 
   return {
-    id: pickFirst(appointment?.id, appointment?._id, appointment?.appointment_id, appointment?.appointmentId),
+    id: `${appointmentSource}-${apiId}`,
+    apiId,
+    appointmentSource,
+    appointmentType: appointmentSource === "walkin" ? "Walk-in" : "Online",
     name: pickFirst(
       appointment?.patient_name,
       appointment?.patientName,
+      appointment?.walkin_patient_name,
+      appointment?.walkinPatientName,
+      appointment?.visitor_name,
+      appointment?.visitorName,
       appointment?.name,
       patient?.full_name,
       patient?.fullName,
@@ -2601,14 +2718,49 @@ const hasValidMedicine = (medicine) =>
     medicine?.durationType
   );
 
+const toDateInputValue = (date) => {
+  const year = date.getFullYear();
+  const month = String(date.getMonth() + 1).padStart(2, "0");
+  const day = String(date.getDate()).padStart(2, "0");
+  return `${year}-${month}-${day}`;
+};
+
+const parseAppointmentBaseDate = (appointment) => {
+  const rawDate = pickFirst(
+    appointment?.rawDate,
+    appointment?.appointment_date,
+    appointment?.appointmentDate,
+    appointment?.date,
+    appointment?.created_at,
+    appointment?.createdAt
+  );
+  const parsedDate = rawDate ? new Date(rawDate) : new Date();
+  return Number.isNaN(parsedDate.getTime()) ? new Date() : parsedDate;
+};
+
+const getMedicineDurationDays = (medicine) => {
+  const value = Number(medicine?.durationValue || 0);
+  if (!value) return 0;
+
+  const type = String(medicine?.durationType || "Days").toLowerCase();
+  if (type.startsWith("week")) return value * 7;
+  if (type.startsWith("month")) return value * 30;
+  return value;
+};
+
+const getFollowUpDateFromMedicines = (medicines, appointment) => {
+  const maxDurationDays = Math.max(0, ...(medicines || []).map(getMedicineDurationDays));
+  const baseDate = parseAppointmentBaseDate(appointment);
+  baseDate.setHours(0, 0, 0, 0);
+  baseDate.setDate(baseDate.getDate() + maxDurationDays);
+  return toDateInputValue(baseDate);
+};
+
 // CompleteModal component
 const CompleteModal = ({ show, onHide, form, setForm, onSave, patientName, appointment }) => {
   const today = new Date();
-  const minDate = today.toISOString().split('T')[0];
-  
-  const defaultFollowUpDate = new Date(today);
-  defaultFollowUpDate.setDate(today.getDate() + 7);
-  const defaultFollowUpDateStr = defaultFollowUpDate.toISOString().split('T')[0];
+  const minDate = toDateInputValue(today);
+  const defaultFollowUpDateStr = getFollowUpDateFromMedicines(form.medicines || [createEmptyMedicine()], appointment);
   
   React.useEffect(() => {
     if (!show) return;
@@ -2639,10 +2791,12 @@ const CompleteModal = ({ show, onHide, form, setForm, onSave, patientName, appoi
       const nextMedicines = (prev.medicines?.length ? prev.medicines : [createEmptyMedicine()]).map((medicine, idx) =>
         idx === index ? { ...medicine, [field]: value } : medicine
       );
+      const nextFollowUpDate = getFollowUpDateFromMedicines(nextMedicines, appointment);
       return {
         ...prev,
         medicines: nextMedicines,
         medicine: nextMedicines.map(formatMedicineLine).join("\n"),
+        followUpDate: prev.followUpRequired ? nextFollowUpDate : prev.followUpDate,
       };
     });
   };
@@ -2663,6 +2817,7 @@ const CompleteModal = ({ show, onHide, form, setForm, onSave, patientName, appoi
         ...prev,
         medicines: nextMedicines,
         medicine: nextMedicines.map(formatMedicineLine).join("\n"),
+        followUpDate: prev.followUpRequired ? getFollowUpDateFromMedicines(nextMedicines, appointment) : prev.followUpDate,
       };
     });
   };
@@ -2674,6 +2829,7 @@ const CompleteModal = ({ show, onHide, form, setForm, onSave, patientName, appoi
         ...prev,
         medicines: nextMedicines,
         medicine: nextMedicines.map(formatMedicineLine).join("\n"),
+        followUpDate: prev.followUpRequired ? getFollowUpDateFromMedicines(nextMedicines, appointment) : prev.followUpDate,
       };
     });
   };
@@ -2686,6 +2842,7 @@ const CompleteModal = ({ show, onHide, form, setForm, onSave, patientName, appoi
         ...prev,
         medicines: nextMedicines,
         medicine: nextMedicines.map(formatMedicineLine).join("\n"),
+        followUpDate: prev.followUpRequired ? getFollowUpDateFromMedicines(nextMedicines, appointment) : prev.followUpDate,
       };
     });
   };
@@ -2695,7 +2852,7 @@ const CompleteModal = ({ show, onHide, form, setForm, onSave, patientName, appoi
     setForm(prev => ({ 
       ...prev, 
       followUpRequired: isChecked,
-      followUpDate: isChecked ? prev.followUpDate || defaultFollowUpDateStr : ""
+      followUpDate: isChecked ? getFollowUpDateFromMedicines(prev.medicines || medicines, appointment) : ""
     }));
   };
 
@@ -3414,9 +3571,10 @@ const DoctorDashboard = () => {
 
     // Update appointment status in API
     try {
-      await axios.patch(`${API_BASE_URL}/appointments/${selectedAppointment.id}`, {
-        appointment_status: "confirmed",
-      }, {
+      await axios.patch(getAppointmentApiUrl(selectedAppointment), getStatusUpdatePayload(
+        selectedAppointment,
+        "in-progress"
+      ), {
         headers: getAuthHeaders(),
       });
     } catch (err) {
@@ -3526,15 +3684,13 @@ const DoctorDashboard = () => {
 
   // Open complete modal
   const handleChecked = () => {
-    const today = new Date();
-    const defaultFollowUpDate = new Date(today);
-    defaultFollowUpDate.setDate(today.getDate() + 7);
-    const defaultFollowUpDateStr = defaultFollowUpDate.toISOString().split('T')[0];
+    const defaultMedicines = [createEmptyMedicine()];
+    const defaultFollowUpDateStr = getFollowUpDateFromMedicines(defaultMedicines, activeAppt);
     
     setCompleteForm({
       diagnosis: "",
       medicine: "",
-      medicines: [createEmptyMedicine()],
+      medicines: defaultMedicines,
       advice: "",
       additionalNotes: "",
       followUpRequired: false,
@@ -3582,9 +3738,10 @@ const DoctorDashboard = () => {
 
     // Update appointment status in API
     try {
-      await axios.patch(`${API_BASE_URL}/appointments/${activeSession.appt.id}`, {
-        appointment_status: "completed",
-      }, {
+      await axios.patch(getAppointmentApiUrl(activeSession.appt), getStatusUpdatePayload(
+        activeSession.appt,
+        "completed"
+      ), {
         headers: getAuthHeaders(),
       });
     } catch (err) {
@@ -3635,8 +3792,7 @@ const DoctorDashboard = () => {
 
     // Update appointment status in API
     try {
-      await axios.patch(`${API_BASE_URL}/appointments/${activeSession.appt.id}`, {
-        appointment_status: "completed",
+      await axios.patch(getAppointmentApiUrl(activeSession.appt), getStatusUpdatePayload(activeSession.appt, "completed", {
         end_time: endTime,
         duration_ms: totalTreatmentMs,
         diagnosis: formData.diagnosis,
@@ -3646,7 +3802,7 @@ const DoctorDashboard = () => {
         additional_notes: formData.additionalNotes || "",
         follow_up_required: formData.followUpRequired || false,
         follow_up_date: formData.followUpDate || "",
-      }, {
+      }), {
         headers: getAuthHeaders(),
       });
     } catch (err) {
@@ -3685,7 +3841,7 @@ const DoctorDashboard = () => {
 
     // Update appointment in API
     try {
-      await axios.patch(`${API_BASE_URL}/appointments/${editingAppointment.id}`, {
+      await axios.patch(getAppointmentApiUrl(editingAppointment), {
         diagnosis: formData.diagnosis,
         medicine: formData.medicine,
         advice: formData.advice,
@@ -3953,6 +4109,7 @@ const DoctorDashboard = () => {
                           </em>
                         </div>
                         <div className="dd-queue-meta">
+                          <span>{appt.appointmentType}</span>
                           <span>{appt.gender}</span>
                           <span className="issue">{appt.issue}</span>
                           <span><i className="bi bi-clock"></i>{appt.scheduledTime || (appt.endTime ? formatTimeOfDay(appt.endTime) : "Today")}</span>
