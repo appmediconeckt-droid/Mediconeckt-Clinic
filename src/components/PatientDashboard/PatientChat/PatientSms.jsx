@@ -13,6 +13,7 @@ import {
   endCall as apiEndCall,
 } from '../../../redux/chatApi';
 import useCallSocket from '../../../hooks/useCallSocket';
+import useWebRTCCall from '../../../hooks/useWebRTCCall';
 import './PatientSms.css';
 
 const PatientSms = () => {
@@ -31,15 +32,30 @@ const PatientSms = () => {
   const [videoOff, setVideoOff] = useState(false);
   const [speakerOn, setSpeakerOn] = useState(true);
   const selfVideoRef = useRef(null);
+  const remoteVideoRef = useRef(null);
   const streamRef = useRef(null);
   const fileInputRef = useRef(null);
   const camVideoRef = useRef(null);
   const camStreamRef = useRef(null);
   const chatBodyRef = useRef(null);
+  const rtc = useWebRTCCall({ callId, peerUserId: selectedId, callType });
+
+  useEffect(() => {
+    if (selfVideoRef.current && rtc.localStream) selfVideoRef.current.srcObject = rtc.localStream;
+    if (remoteVideoRef.current && rtc.remoteStream) remoteVideoRef.current.srcObject = rtc.remoteStream;
+  }, [rtc.localStream, rtc.remoteStream, callType]);
+
+  useEffect(() => {
+    if (callStatus === 'accepted' && callDirection === 'outgoing') rtc.startOffer();
+  }, [callStatus, callDirection, callId]);
 
   useCallSocket({
     onRinging: (call) => {
+      const currentUserId = getCurrentUserId();
       const callerId = call?.caller_id ?? call?.callerId ?? call?.sender_id ?? call?.user_id;
+      const receiverId = call?.receiver_id ?? call?.receiverId ?? call?.callee_id ?? call?.calleeId;
+      if (receiverId && String(receiverId) !== String(currentUserId)) return;
+      if (!receiverId && callerId && String(callerId) === String(currentUserId)) return;
       if (callerId) setSelectedId(callerId);
       setCallId(call?.id ?? call?._id ?? call?.call_id ?? call?.callId ?? null);
       setCallType(call?.call_type ?? call?.callType ?? call?.type ?? 'voice');
@@ -477,6 +493,7 @@ const PatientSms = () => {
   const acceptIncomingCall = async () => {
     if (!callId) return;
     try {
+      await rtc.getLocalMedia(callType);
       await apiAcceptCall(callId);
       setCallStatus('accepted');
     } catch (err) {
@@ -753,10 +770,12 @@ const PatientSms = () => {
       {/* ===== Call overlay ===== */}
       {callType && (
         <div className={`call-overlay ${callType}`}>
+          {callType === 'voice' && <audio autoPlay ref={(node) => { if (node && rtc.remoteStream) node.srcObject = rtc.remoteStream; }} />}
           {callType === 'video' ? (
             <div className="wa-video">
               {/* Remote (doctor) fills the screen */}
               <div className="wa-remote">
+                <video ref={remoteVideoRef} autoPlay playsInline className="wa-remote-video" style={{ width: '100%', height: '100%', objectFit: 'cover', display: rtc.remoteStream ? 'block' : 'none' }} />
                 <div className="wa-remote-avatar" style={{ background: activeConv.color }}>{activeConv.initials}</div>
                 <div className="wa-remote-name">{activeConv.name}</div>
                 <div className="wa-remote-sub">{callLabel}</div>

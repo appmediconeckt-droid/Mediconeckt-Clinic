@@ -25,6 +25,7 @@ import {
   unwrapApiObject,
 } from "../../../redux/chatApi";
 import useCallSocket from "../../../hooks/useCallSocket";
+import useWebRTCCall from "../../../hooks/useWebRTCCall";
 import { API_BASE_URL, getAuthHeaders } from "../../../redux/apiConfig";
 import "./DoctorSmsPatient.css";
 
@@ -384,11 +385,26 @@ function PatientList() {
   const messageAreaRef = useRef(null);
   const fileInputRef = useRef(null);
   const videoPreviewRef = useRef(null);
+  const remoteVideoRef = useRef(null);
   const mediaStreamRef = useRef(null);
+  const rtc = useWebRTCCall({ callId: activeCall?.id, peerUserId: selectedPatientId, callType: activeCall?.type || "voice" });
+
+  useEffect(() => {
+    if (videoPreviewRef.current && rtc.localStream) videoPreviewRef.current.srcObject = rtc.localStream;
+    if (remoteVideoRef.current && rtc.remoteStream) remoteVideoRef.current.srcObject = rtc.remoteStream;
+  }, [rtc.localStream, rtc.remoteStream, activeCall?.type]);
+
+  useEffect(() => {
+    if (activeCall?.status === "connected" && activeCall?.direction !== "incoming") rtc.startOffer();
+  }, [activeCall?.status, activeCall?.direction, activeCall?.id]);
 
   useCallSocket({
     onRinging: (call) => {
+      const currentUserId = getCurrentUserId();
       const callerId = getFirstValue(call?.caller_id, call?.callerId, call?.sender_id, call?.user_id);
+      const receiverId = getFirstValue(call?.receiver_id, call?.receiverId, call?.callee_id, call?.calleeId);
+      if (receiverId && String(receiverId) !== String(currentUserId)) return;
+      if (!receiverId && callerId && String(callerId) === String(currentUserId)) return;
       if (callerId) setSelectedPatientId(callerId);
       setCallSeconds(0);
       setActiveCall({ ...call, id: getFirstValue(call?.id, call?._id, call?.call_id, call?.callId), type: getFirstValue(call?.call_type, call?.callType, call?.type, "voice"), status: "ringing", direction: "incoming", isMuted: false, isVideoOff: false });
@@ -820,7 +836,7 @@ function PatientList() {
   const acceptIncomingCall = async () => {
     if (!activeCall?.id) return;
     try {
-      await startLocalMedia(activeCall.type);
+      await rtc.getLocalMedia(activeCall.type);
       await acceptChatCall(activeCall.id);
       setActiveCall((call) => call ? { ...call, status: "connected" } : call);
     } catch (err) {
@@ -1062,6 +1078,7 @@ function PatientList() {
 
       {activeCall && (
         <div className="sms-call-overlay" role="dialog" aria-modal="true">
+          {activeCall.type === "voice" && <audio autoPlay ref={(node) => { if (node && rtc.remoteStream) node.srcObject = rtc.remoteStream; }} />}
           <div className={`sms-call-card ${activeCall.type}`}>
             <div className="sms-call-top">
               <span>{activeCall.type === "video" ? "Video call" : "Voice call"}</span>
@@ -1079,6 +1096,7 @@ function PatientList() {
 
             {activeCall.type === "video" && (
               <div className="sms-video-preview">
+                <video ref={remoteVideoRef} autoPlay playsInline style={{ display: rtc.remoteStream ? "block" : "none" }} />
                 {activeCall.isVideoOff ? (
                   <span>Camera off</span>
                 ) : (

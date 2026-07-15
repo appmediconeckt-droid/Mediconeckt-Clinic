@@ -106,6 +106,7 @@ import ManagerBudget from "./components/DepartmentManager/ManagerBudget/ManagerB
 import StaffPerformance from "./components/DepartmentManager/StaffPerformance/StaffPerformance";
 import ManagerPolicies from "./components/DepartmentManager/ManagerPolicies/ManagerPolicies";
 import ManagerMeetings from "./components/DepartmentManager/ManagerMeetings/ManagerMeetings";
+import GlobalIncomingCall from "./components/GlobalIncomingCall";
 // import PatientDashboard from "./components/PatientDashboard/PatientDashboard";
 
 function App() {
@@ -167,6 +168,7 @@ function App() {
 
   return (
     <>
+      {!hideLayout && <GlobalIncomingCall />}
       {/* Show navbar only if layout is visible */}
       {!hideLayout && <Navbar toggleSidebar={toggleSidebar} />}
 
