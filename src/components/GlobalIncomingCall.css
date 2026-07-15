@@ -1,0 +1,228 @@
+/* ===== Incoming call popup (ringing) ===== */
+.gic-overlay {
+  position: fixed;
+  inset: 0;
+  z-index: 100000;
+  background: rgba(15, 23, 42, 0.6);
+  display: grid;
+  place-items: center;
+  padding: 20px;
+}
+
+.gic-popup {
+  width: 360px;
+  max-width: 92vw;
+  padding: 30px 28px;
+  border-radius: 22px;
+  background: #ffffff;
+  text-align: center;
+  box-shadow: 0 24px 70px rgba(0, 0, 0, 0.3);
+  animation: gic-pop 0.18s ease-out;
+}
+
+@keyframes gic-pop {
+  from { transform: scale(0.94); opacity: 0; }
+  to   { transform: scale(1); opacity: 1; }
+}
+
+.gic-avatar {
+  width: 76px;
+  height: 76px;
+  margin: 0 auto 16px;
+  border-radius: 50%;
+  display: grid;
+  place-items: center;
+  background: #dcfce7;
+  color: #006B2C;
+  font-size: 30px;
+  animation: gic-pulse 1.4s ease-in-out infinite;
+}
+
+@keyframes gic-pulse {
+  0%, 100% { box-shadow: 0 0 0 0 rgba(0, 107, 44, 0.35); }
+  50%      { box-shadow: 0 0 0 14px rgba(0, 107, 44, 0); }
+}
+
+.gic-name {
+  margin: 0 0 4px;
+  font-size: 20px;
+  font-weight: 700;
+  color: #111827;
+}
+
+.gic-sub {
+  margin: 0 0 26px;
+  color: #64748b;
+  font-size: 14px;
+}
+
+.gic-actions {
+  display: flex;
+  justify-content: center;
+  gap: 18px;
+}
+
+.gic-btn {
+  border: 0;
+  border-radius: 999px;
+  padding: 13px 26px;
+  font-size: 14px;
+  font-weight: 600;
+  color: #fff;
+  cursor: pointer;
+  display: inline-flex;
+  align-items: center;
+  gap: 8px;
+  transition: filter 0.15s ease;
+}
+
+.gic-btn:hover { filter: brightness(0.93); }
+.gic-btn-accept { background: #16a34a; }
+.gic-btn-reject { background: #dc2626; }
+
+/* ===== Connected full-screen call ===== */
+.gic-call {
+  position: fixed;
+  inset: 0;
+  z-index: 100000;
+  background: #0f172a;
+  display: flex;
+  flex-direction: column;
+}
+
+.gic-call-top {
+  position: absolute;
+  top: 0;
+  left: 0;
+  right: 0;
+  padding: 18px 22px;
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  color: #fff;
+  background: linear-gradient(180deg, rgba(0, 0, 0, 0.55), transparent);
+  z-index: 2;
+}
+
+.gic-call-who { font-size: 16px; font-weight: 700; }
+.gic-call-timer { font-size: 13px; opacity: 0.85; }
+
+.gic-enc {
+  font-size: 12px;
+  opacity: 0.8;
+  display: inline-flex;
+  align-items: center;
+  gap: 6px;
+}
+
+/* Video stage */
+.gic-stage {
+  flex: 1;
+  position: relative;
+  overflow: hidden;
+}
+
+.gic-remote {
+  width: 100%;
+  height: 100%;
+  object-fit: cover;
+  background: #0f172a;
+}
+
+.gic-pip {
+  position: absolute;
+  right: 18px;
+  bottom: 110px;
+  width: 140px;
+  height: 104px;
+  border-radius: 12px;
+  overflow: hidden;
+  background: #1e293b;
+  box-shadow: 0 8px 24px rgba(0, 0, 0, 0.4);
+  border: 2px solid rgba(255, 255, 255, 0.15);
+}
+
+.gic-pip video {
+  width: 100%;
+  height: 100%;
+  object-fit: cover;
+  transform: scaleX(-1);
+}
+
+/* Voice call stage */
+.gic-voice {
+  flex: 1;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+  gap: 14px;
+  color: #fff;
+}
+
+.gic-voice-avatar {
+  width: 128px;
+  height: 128px;
+  border-radius: 50%;
+  display: grid;
+  place-items: center;
+  background: #1e293b;
+  font-size: 44px;
+  font-weight: 700;
+  color: #fff;
+  animation: gic-pulse 1.6s ease-in-out infinite;
+}
+
+.gic-voice-name { font-size: 22px; font-weight: 700; margin: 6px 0 0; }
+.gic-voice-timer { font-size: 14px; opacity: 0.8; }
+
+/* Waiting for the other side's media */
+.gic-waiting {
+  position: absolute;
+  inset: 0;
+  display: grid;
+  place-items: center;
+  color: #94a3b8;
+  font-size: 14px;
+  gap: 10px;
+}
+
+/* Controls */
+.gic-controls {
+  position: absolute;
+  left: 0;
+  right: 0;
+  bottom: 0;
+  padding: 24px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  gap: 18px;
+  background: linear-gradient(0deg, rgba(0, 0, 0, 0.6), transparent);
+  z-index: 2;
+}
+
+.gic-ctrl {
+  width: 56px;
+  height: 56px;
+  border-radius: 50%;
+  border: 0;
+  background: rgba(255, 255, 255, 0.16);
+  color: #fff;
+  font-size: 19px;
+  cursor: pointer;
+  display: grid;
+  place-items: center;
+  transition: background 0.15s ease;
+}
+
+.gic-ctrl:hover { background: rgba(255, 255, 255, 0.26); }
+.gic-ctrl.off { background: #ffffff; color: #0f172a; }
+.gic-ctrl.end { background: #dc2626; width: 64px; height: 64px; font-size: 22px; }
+.gic-ctrl.end:hover { background: #b91c1c; }
+
+@media (max-width: 640px) {
+  .gic-pip { width: 104px; height: 78px; bottom: 100px; right: 12px; }
+  .gic-ctrl { width: 50px; height: 50px; }
+  .gic-ctrl.end { width: 58px; height: 58px; }
+}
