@@ -18,14 +18,39 @@ export const getCurrentUserId = (authUser) => {
 };
 
 export const unwrapApiArray = (payload) => {
-  if (Array.isArray(payload)) return payload;
-  if (Array.isArray(payload?.data)) return payload.data;
-  if (Array.isArray(payload?.data?.data)) return payload.data.data;
-  if (Array.isArray(payload?.messages)) return payload.messages;
-  if (Array.isArray(payload?.doctors)) return payload.doctors;
-  if (Array.isArray(payload?.chats)) return payload.chats;
-  if (Array.isArray(payload?.conversations)) return payload.conversations;
-  return [];
+  const collectionKeys = [
+    'messages',
+    'doctors',
+    'patients',
+    'users',
+    'chats',
+    'chatList',
+    'chat_list',
+    'conversation',
+    'conversations',
+    'results',
+    'items',
+  ];
+
+  const findArray = (value, depth = 0) => {
+    if (Array.isArray(value)) return value;
+    if (!value || typeof value !== 'object' || depth > 3) return null;
+
+    if (value.data !== undefined) {
+      const dataArray = findArray(value.data, depth + 1);
+      if (dataArray) return dataArray;
+    }
+
+    for (const key of collectionKeys) {
+      if (value[key] === undefined) continue;
+      const collection = findArray(value[key], depth + 1);
+      if (collection) return collection;
+    }
+
+    return null;
+  };
+
+  return findArray(payload) || [];
 };
 
 export const unwrapApiObject = (payload) => {
@@ -41,11 +66,35 @@ export const getAssetUrl = (path) => {
   if (!path) return '';
   let normalizedPath = String(path).replace(/\\/g, '/');
   if (/^https?:\/\//i.test(normalizedPath) || normalizedPath.startsWith('blob:')) return normalizedPath;
+  // A filename is metadata, not a fetchable asset URL. Turning it into
+  // https://api-host/file.png causes a guaranteed 404 at the server root.
+  if (!normalizedPath.includes('/')) return '';
   // APIs sometimes return an absolute server filesystem path. Only the public
   // uploads/files portion belongs in a browser URL.
   const publicPathMatch = normalizedPath.match(/\/(uploads?|attachments?|files?|media)\/.*$/i);
   if (publicPathMatch) normalizedPath = publicPathMatch[0];
   return `${API_ORIGIN_URL}${normalizedPath.startsWith('/') ? normalizedPath : `/${normalizedPath}`}`;
+};
+
+export const getAttachmentUrl = (message) => {
+  const attachment = message?.attachment || message?.file || message?.media || {};
+  const candidate =
+    message?.attachment_url ||
+    message?.attachmentUrl ||
+    message?.secure_url ||
+    message?.secureUrl ||
+    message?.cloudinary_url ||
+    message?.cloudinaryUrl ||
+    attachment?.attachment_url ||
+    attachment?.attachmentUrl ||
+    attachment?.secure_url ||
+    attachment?.secureUrl ||
+    attachment?.cloudinary_url ||
+    attachment?.cloudinaryUrl ||
+    attachment?.url ||
+    attachment?.path ||
+    '';
+  return getAssetUrl(candidate);
 };
 
 export const getChatDoctors = async () => {
@@ -83,10 +132,11 @@ export const sendMessage = async ({ receiverId, message }) => {
   return response.data;
 };
 
-export const sendAttachment = async ({ receiverId, message, file }) => {
+export const sendAttachment = async ({ receiverId, message, file, messageType }) => {
   const formData = new FormData();
   formData.append('receiver_id', receiverId);
   if (message) formData.append('message', message);
+  formData.append('message_type', messageType || (file?.type?.startsWith('image/') ? 'image' : 'file'));
   formData.append('attachment', file);
   const headers = { ...getAuthHeaders() };
   delete headers['Content-Type'];

@@ -37,6 +37,36 @@ li {
   list-style-type: none;
 }
 
+/* Shared top-level heading style for every doctor portal menu page. */
+.doctor-layout-content {
+  --doctor-page-heading-size: 28px;
+  --doctor-page-heading-color: #004ac6;
+}
+
+.doctor-layout-content .dd-hero-row h1,
+.doctor-layout-content .calendar-portal-header h1,
+.doctor-layout-content .appointment-header h1,
+.doctor-layout-content .pd-title,
+.doctor-layout-content .walkin-page-header h1,
+.doctor-layout-content .fup-page-header h1,
+.doctor-layout-content .sms-page-header h1,
+.doctor-layout-content .dc-comms-page-header h1,
+.doctor-layout-content .doctor-qr-header h1,
+.doctor-layout-content .docstaff-screen-title,
+.doctor-layout-content .doctor-notifications-topbar h1,
+.doctor-layout-content .settings-wrapper > .set-side .header h2 {
+  color: var(--doctor-page-heading-color) !important;
+  font-size: var(--doctor-page-heading-size) !important;
+  font-weight: 800 !important;
+  line-height: 1.2 !important;
+}
+
+@media (max-width: 576px) {
+  .doctor-layout-content {
+    --doctor-page-heading-size: 24px;
+  }
+}
+
 /* login */
 main {
   position: fixed;

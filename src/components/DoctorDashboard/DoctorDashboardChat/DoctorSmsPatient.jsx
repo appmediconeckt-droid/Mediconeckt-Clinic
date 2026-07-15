@@ -1,4 +1,5 @@
 import React, { useEffect, useMemo, useRef, useState } from "react";
+import axios from "axios";
 import {
   FaMicrophone,
   FaMicrophoneSlash,
@@ -19,9 +20,10 @@ import {
   sendAttachment,
   sendMessage,
   startCall as startChatCall,
+  unwrapApiArray,
   unwrapApiObject,
 } from "../../../redux/chatApi";
-import { getAuthHeaders } from "../../../redux/apiConfig";
+import { API_BASE_URL, getAuthHeaders } from "../../../redux/apiConfig";
 import "./DoctorSmsPatient.css";
 
 const getInitials = (name) =>
@@ -48,6 +50,128 @@ const formatFileSize = (value) => {
 
 const getFirstValue = (...values) => values.find((value) => value !== undefined && value !== null && value !== "");
 
+const getUserId = (user) => getFirstValue(
+  user?.user_id,
+  user?.userId,
+  user?.id,
+  user?._id,
+  user?.patient_id,
+  user?.patientId,
+  user?.doctor_id,
+  user?.doctorId
+);
+
+const getUserRole = (user) => String(
+  getFirstValue(user?.role, user?.user_role, user?.userRole, user?.type, user?.user_type) || ""
+).toLowerCase();
+
+const isPatientRole = (role) => role === "patient" || role.includes("patient");
+const isDoctorRole = (role) => role === "doctor" || role.includes("doctor");
+
+const getAppointmentPatient = (appointment) => {
+  const patient = appointment.patient || appointment.patient_data || appointment.patient_details || appointment.user || {};
+  const id = getFirstValue(
+    patient.user_id,
+    patient.userId,
+    appointment.patient_user_id,
+    appointment.patientUserId,
+    appointment.patient_id,
+    appointment.patientId,
+    patient.id,
+    patient._id
+  );
+  if (!id) return null;
+  return {
+    ...patient,
+    id,
+    user_id: getFirstValue(patient.user_id, patient.userId, appointment.patient_user_id, appointment.patientUserId, id),
+    full_name: getFirstValue(
+      patient.full_name,
+      patient.fullname,
+      patient.name,
+      patient.patient_name,
+      appointment.patient_name,
+      appointment.name,
+      "Unknown Patient"
+    ),
+    phone: getFirstValue(patient.phone, patient.phone_number, patient.contact_number, appointment.patient_phone, appointment.phone),
+    role: "patient",
+  };
+};
+
+// /chat/list can return either a nested patient, sender/receiver objects, or
+// only flat sender/receiver fields. Always resolve the other participant and
+// never turn the logged-in doctor into a patient row.
+const resolvePatientFromChat = (item, currentUserId) => {
+  const lastMessage = typeof (item.lastMessage || item.last_message || item.latest_message) === "object"
+    ? (item.lastMessage || item.last_message || item.latest_message)
+    : {};
+  const flatParticipants = [
+    {
+      id: getFirstValue(item.sender_id, item.senderId, item.from_user_id),
+      full_name: getFirstValue(item.sender_name, item.senderName, item.from_user_name),
+      phone: getFirstValue(item.sender_phone, item.senderPhone),
+      role: getFirstValue(item.sender_role, item.senderRole),
+    },
+    {
+      id: getFirstValue(item.receiver_id, item.receiverId, item.to_user_id),
+      full_name: getFirstValue(item.receiver_name, item.receiverName, item.to_user_name),
+      phone: getFirstValue(item.receiver_phone, item.receiverPhone),
+      role: getFirstValue(item.receiver_role, item.receiverRole),
+    },
+  ];
+  const candidates = [
+    item.patient,
+    item.patient_id || item.patientId ? {
+      id: getFirstValue(item.patient_id, item.patientId),
+      full_name: getFirstValue(item.patient_name, item.patientName),
+      phone: getFirstValue(item.patient_phone, item.patientPhone),
+      role: "patient",
+    } : null,
+    item.other_user,
+    item.otherUser,
+    item.participant,
+    item.sender_user,
+    item.senderUser,
+    typeof item.sender === "object" ? item.sender : null,
+    item.receiver_user,
+    item.receiverUser,
+    typeof item.receiver === "object" ? item.receiver : null,
+    item.user,
+    lastMessage.patient,
+    lastMessage.sender_user,
+    lastMessage.senderUser,
+    typeof lastMessage.sender === "object" ? lastMessage.sender : null,
+    lastMessage.receiver_user,
+    lastMessage.receiverUser,
+    typeof lastMessage.receiver === "object" ? lastMessage.receiver : null,
+    ...flatParticipants,
+    {
+      id: getFirstValue(lastMessage.sender_id, lastMessage.senderId, lastMessage.from_user_id),
+      full_name: getFirstValue(lastMessage.sender_name, lastMessage.senderName),
+      phone: getFirstValue(lastMessage.sender_phone, lastMessage.senderPhone),
+      role: getFirstValue(lastMessage.sender_role, lastMessage.senderRole),
+    },
+    {
+      id: getFirstValue(lastMessage.receiver_id, lastMessage.receiverId, lastMessage.to_user_id),
+      full_name: getFirstValue(lastMessage.receiver_name, lastMessage.receiverName),
+      phone: getFirstValue(lastMessage.receiver_phone, lastMessage.receiverPhone),
+      role: getFirstValue(lastMessage.receiver_role, lastMessage.receiverRole),
+    },
+    // Some backends return the participant itself as each /chat/list row.
+    item,
+  ].filter(Boolean);
+
+  const isOtherUser = (candidate) => {
+    const id = getUserId(candidate);
+    return id !== undefined && String(id) !== String(currentUserId);
+  };
+  const explicitPatient = candidates.find((candidate) => isOtherUser(candidate) && isPatientRole(getUserRole(candidate)));
+  if (explicitPatient) return explicitPatient;
+
+  return candidates.find((candidate) => isOtherUser(candidate) && !isDoctorRole(getUserRole(candidate))) || null;
+};
+
 const normalizeAttachment = (source, fallbackFile) => {
   const data = unwrapApiObject(source);
   const rawAttachment = data.attachment || data.file || data.media || data.document;
@@ -68,6 +192,10 @@ const normalizeAttachment = (source, fallbackFile) => {
     attachment.filePath,
     attachment.media_url,
     attachment.mediaUrl,
+    attachment.secure_url,
+    attachment.secureUrl,
+    attachment.cloudinary_url,
+    attachment.cloudinaryUrl,
     attachment.url,
     fallbackFile?.url
   );
@@ -168,8 +296,17 @@ const AttachmentPreviewImage = ({ file }) => {
 };
 
 const normalizeChatMessage = (msg, index, currentUserId) => {
-  const senderId = msg.sender_id || msg.senderId || msg.from_user_id || msg.user_id;
-  const senderRole = msg.sender || msg.sender_role || msg.role;
+  const senderObject = typeof msg.sender === "object" ? msg.sender : null;
+  const senderId = getFirstValue(msg.sender_id, msg.senderId, msg.from_user_id, getUserId(senderObject), msg.user_id);
+  const rawSenderRole = getFirstValue(
+    typeof msg.sender === "string" ? msg.sender : undefined,
+    msg.sender_role,
+    msg.senderRole,
+    getUserRole(senderObject),
+    msg.role
+  );
+  const normalizedRole = String(rawSenderRole || "").toLowerCase();
+  const senderRole = isDoctorRole(normalizedRole) ? "doctor" : isPatientRole(normalizedRole) ? "patient" : "";
   const createdAt = msg.time || msg.created_at || msg.createdAt || new Date().toISOString();
   const file = normalizeAttachment(msg);
   const rawText = msg.message || msg.text || msg.content || "";
@@ -210,27 +347,29 @@ function PatientList() {
   }, [selectedPatientId]);
 
   useEffect(() => {
+    let active = true;
     const loadPatients = async () => {
       try {
-        setStatus("loading");
+        if (active) setStatus((current) => current === "succeeded" ? current : "loading");
         setError("");
-        const chatList = await getChatList();
-        const apiPatients = chatList.map((item, index) => {
-          const patient = item.patient || item.user || item;
+        const doctorId = getCurrentUserId();
+        const [chatList, appointmentResponse] = await Promise.all([
+          getChatList(),
+          axios.get(`${API_BASE_URL}/appointments`, {
+            headers: getAuthHeaders(),
+            params: { doctor_id: doctorId },
+          }).catch(() => null),
+        ]);
+        const currentUserId = getCurrentUserId();
+        const resolvedPatients = chatList.map((item) => {
+          const patient = resolvePatientFromChat(item, currentUserId);
+          if (!patient) return null;
           const lastMessage = item.lastMessage || item.last_message || item.latest_message;
           const receiverId =
-            patient.id ||
-            patient._id ||
-            patient.patient_id ||
-            item.patient_id ||
-            patient.user_id ||
-            item.receiver_id ||
-            item.receiverId ||
-            item.user_id ||
-            item.userId ||
-            item.id ||
-            item._id ||
-            index + 1;
+            getUserId(patient) ||
+            item.patient_id;
+
+          if (!receiverId || String(receiverId) === String(currentUserId)) return null;
 
           return {
             id: receiverId,
@@ -247,11 +386,54 @@ function PatientList() {
             messageTime: formatChatTime(lastMessage?.created_at || lastMessage?.createdAt || item.updated_at || item.created_at),
             unread: item.unread || item.unread_count || patient.unread || patient.unread_count || 0,
           };
+        }).filter(Boolean);
+        const appointments = appointmentResponse ? unwrapApiArray(appointmentResponse.data) : [];
+        const appointmentPatients = Array.from(new Map(
+          appointments
+            .map(getAppointmentPatient)
+            .filter(Boolean)
+            .filter((patient) => String(getUserId(patient)) !== String(currentUserId))
+            .map((patient) => [String(getUserId(patient)), patient])
+        ).values());
+        const listedIds = new Set(resolvedPatients.map((patient) => String(patient.id)));
+        const missingAppointmentPatients = appointmentPatients.filter((patient) => !listedIds.has(String(getUserId(patient))));
+        const conversationResults = await Promise.allSettled(
+          missingAppointmentPatients.map(async (patient) => ({
+            patient,
+            conversation: await getConversation(getUserId(patient)),
+          }))
+        );
+        conversationResults.forEach((result) => {
+          if (result.status !== "fulfilled" || !result.value.conversation.length) return;
+          const { patient, conversation } = result.value;
+          const latestMessage = conversation[conversation.length - 1];
+          resolvedPatients.push({
+            id: getUserId(patient),
+            receiverId: getUserId(patient),
+            name: patient.full_name,
+            age: patient.age || "NA",
+            gender: patient.gender || patient.patient_gender || "NA",
+            condition: patient.condition || patient.diagnosis || "No condition",
+            status: patient.status || "Stable",
+            phone: patient.phone || "",
+            bloodGroup: patient.blood_group || patient.bloodGroup || "",
+            previewTitle: patient.condition || patient.diagnosis || "No condition",
+            lastMessage: getLastMessageText(latestMessage),
+            messageTime: formatChatTime(latestMessage.created_at || latestMessage.createdAt || latestMessage.time),
+            unread: 0,
+          });
         });
+        const apiPatients = Array.from(
+          new Map(resolvedPatients.map((patient) => [String(patient.id), patient])).values()
+        );
+        if (!active) return;
         setPatients(apiPatients);
-        if (apiPatients[0]?.id) setSelectedPatientId(apiPatients[0].id);
+        setSelectedPatientId((current) =>
+          apiPatients.some((patient) => String(patient.id) === String(current)) ? current : (apiPatients[0]?.id || "")
+        );
         setStatus("succeeded");
       } catch (err) {
+        if (!active) return;
         setError(err.response?.data?.message || err.message || "Failed to load chat list");
         setPatients([]);
         setStatus("failed");
@@ -259,14 +441,21 @@ function PatientList() {
     };
 
     loadPatients();
+    const refreshTimer = window.setInterval(loadPatients, 10000);
+    return () => {
+      active = false;
+      window.clearInterval(refreshTimer);
+    };
   }, []);
 
   useEffect(() => {
+    let active = true;
     const loadConversation = async () => {
       if (!selectedPatientId) return;
 
       try {
         const conversation = await getConversation(selectedPatientId);
+        if (!active) return;
         const currentUserId = getCurrentUserId();
         const serverMessages = conversation.map((item, index) => normalizeChatMessage(item, index, currentUserId));
         setMessagesByPatient((prev) => ({
@@ -297,6 +486,7 @@ function PatientList() {
           })(),
         }));
       } catch (err) {
+        if (!active) return;
         setError(err.response?.data?.message || err.message || "Failed to load conversation");
         setMessagesByPatient((prev) => ({
           ...prev,
@@ -306,6 +496,11 @@ function PatientList() {
     };
 
     loadConversation();
+    const refreshTimer = window.setInterval(loadConversation, 5000);
+    return () => {
+      active = false;
+      window.clearInterval(refreshTimer);
+    };
   }, [selectedPatientId]);
 
   const sourcePatients = patients;

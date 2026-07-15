@@ -237,6 +237,7 @@ const mergeAvailabilityRanges = (...rangeGroups) => {
 const DoctorCalendar = () => {
   const authUser = useSelector((state) => state.auth?.user);
   const [currentDate, setCurrentDate] = useState(new Date());
+  const [activeCalendarTab, setActiveCalendarTab] = useState("specific");
   const [selectedDays, setSelectedDays] = useState([]);
   const [recurringWeekdays, setRecurringWeekdays] = useState([]);
   const [availabilityDateMap, setAvailabilityDateMap] = useState({});
@@ -1511,11 +1512,41 @@ const DoctorCalendar = () => {
         </div>
       </header>
 
-      <nav className="calendar-tabs">
-        <button type="button">Recurring Schedule</button>
-        <button type="button" className="active">Specific Dates</button>
-        <button type="button">Exceptions / Unavailable</button>
+      <nav className="calendar-tabs" role="tablist" aria-label="Availability type">
+        <button
+          type="button"
+          role="tab"
+          aria-selected={activeCalendarTab === "recurring"}
+          className={activeCalendarTab === "recurring" ? "active" : ""}
+          onClick={() => setActiveCalendarTab("recurring")}
+        >
+          Recurring Schedule
+        </button>
+        <button
+          type="button"
+          role="tab"
+          aria-selected={activeCalendarTab === "specific"}
+          className={activeCalendarTab === "specific" ? "active" : ""}
+          onClick={() => setActiveCalendarTab("specific")}
+        >
+          Specific Dates
+        </button>
+        <button
+          type="button"
+          role="tab"
+          aria-selected={activeCalendarTab === "unavailable"}
+          className={activeCalendarTab === "unavailable" ? "active" : ""}
+          onClick={() => setActiveCalendarTab("unavailable")}
+        >
+          Exceptions / Unavailable
+        </button>
       </nav>
+
+      <p className="calendar-tab-help" role="status">
+        {activeCalendarTab === "recurring" && "Select weekdays to create a schedule that repeats every week."}
+        {activeCalendarTab === "specific" && "Select a calendar date to add or update slots for that date."}
+        {activeCalendarTab === "unavailable" && "Select a calendar date to mark it unavailable or make it available again."}
+      </p>
 
       {apiError && <div className="calendar-api-note">{apiError}</div>}
 
@@ -1569,7 +1600,12 @@ const DoctorCalendar = () => {
                       isPast ? "past" : "",
                     ].join(" ")}
                     onClick={() => {
-                      if (!cell.muted && !isPast) openEditorForDate(year, month, cell.day);
+                      if (cell.muted || isPast) return;
+                      if (activeCalendarTab === "recurring") {
+                        toggleRecurringWeekday(weekday);
+                        return;
+                      }
+                      openEditorForDate(year, month, cell.day);
                     }}
                     disabled={cell.muted || isPast}
                   >
@@ -1621,15 +1657,26 @@ const DoctorCalendar = () => {
         </div>
 
         <aside className="calendar-side-panel">
+          {activeCalendarTab !== "recurring" && (
           <section className="calendar-date-card">
             <div className="side-card-title">
               <div>
-                <h3>{selectedDateLabel}</h3>
-                <p>{selectedDays.length || 0} days selected</p>
+                <h3>{activeCalendarTab === "unavailable" ? "Unavailable Dates" : selectedDateLabel}</h3>
+                <p>
+                  {activeCalendarTab === "unavailable"
+                    ? `${Object.values(availabilityDateMap).filter((item) => item?.blocked).length} dates blocked`
+                    : `${selectedDays.length || 0} days selected`}
+                </p>
               </div>
               <i className="fa-solid fa-ban"></i>
             </div>
             <hr />
+            {activeCalendarTab === "unavailable" ? (
+              <p className="calendar-empty-note">
+                Calendar me kisi date par click karke unavailable reason add karein aur date ko block/unblock karein.
+              </p>
+            ) : (
+              <>
             <h4>Time Ranges</h4>
             {selectedDays.length ? (
               getRangesForDateOrWeek(year, month, selectedDays[0]).length ? (
@@ -1654,11 +1701,17 @@ const DoctorCalendar = () => {
             <button type="button" className="apply-selected-btn" onClick={() => setShowAddTimeModal(true)}>
               Apply to Selected Dates
             </button>
+              </>
+            )}
           </section>
+          )}
 
           <section className="recurring-rules-card">
             <div className="recurring-title">
-              <h3>Recurring Rules</h3>
+              <div>
+                <h3>Recurring Rules</h3>
+                <p className="weekday-select-label">Select days</p>
+              </div>
               <label className="calendar-switch">
                 <input type="checkbox" checked readOnly />
                 <span></span>

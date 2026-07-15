@@ -4,7 +4,7 @@ import { useParams, useNavigate } from 'react-router-dom';
 import { useSelector } from 'react-redux';
 import { FaArrowLeft, FaPaperPlane, FaPhone, FaVideo, FaUserMd, FaStethoscope, FaFile, FaPaperclip, FaImage, FaFilePdf, FaFileMedical } from 'react-icons/fa';
 import './DoctorChat.css';
-import { getAssetUrl, getChatList, getConversation, getCurrentUserId, sendAttachment, sendMessage, startCall, unwrapApiObject } from '../../../redux/chatApi';
+import { getAttachmentUrl, getChatList, getConversation, getCurrentUserId, sendAttachment, sendMessage, startCall, unwrapApiObject } from '../../../redux/chatApi';
 
 // Mock patient data
 const mockPatients = [
@@ -155,15 +155,16 @@ const PatientChat = () => {
   };
 
   const getAttachmentFromMessage = (msg) => {
-    if (msg.file) return msg.file;
-    if (!msg.attachment_url) return null;
+    const attachmentUrl = getAttachmentUrl(msg);
+    if (msg.file?.url) return msg.file;
+    if (!attachmentUrl) return null;
 
-    const rawType = msg.attachment_type || '';
+    const rawType = msg.attachment_type || msg.attachment?.type || msg.file?.type || '';
     return {
-      name: msg.attachment_name || msg.message || 'Attachment',
+      name: msg.attachment_name || msg.attachment?.name || msg.file?.name || 'Attachment',
       type: rawType.startsWith('image/') ? 'image' : rawType.includes('pdf') ? 'pdf' : 'document',
       size: msg.attachment_size ? `${(Number(msg.attachment_size) / (1024 * 1024)).toFixed(1)} MB` : '',
-      url: getAssetUrl(msg.attachment_url),
+      url: attachmentUrl,
       mimeType: rawType,
     };
   };

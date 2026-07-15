@@ -2,7 +2,7 @@ import React, { useState, useEffect, useRef } from 'react';
 import { useParams, useNavigate } from 'react-router-dom';
 import { useSelector } from 'react-redux';
 import './DoctorChat.css';
-import { getChatDoctors, getConversation, getCurrentUserId, sendMessage, startCall } from '../../../redux/chatApi';
+import { getAttachmentUrl, getChatDoctors, getConversation, getCurrentUserId, sendAttachment, sendMessage, startCall, unwrapApiObject } from '../../../redux/chatApi';
 
 const DoctorChat = () => {
     const { doctorId } = useParams();
@@ -276,15 +276,16 @@ const DoctorChat = () => {
     const cameraInputRef = useRef(null); // live device camera
 
     const getAttachmentFromMessage = (msg) => {
-        if (msg.file) return msg.file;
-        if (!msg.attachment_url) return null;
+        const attachmentUrl = getAttachmentUrl(msg);
+        if (msg.file?.url) return msg.file;
+        if (!attachmentUrl) return null;
 
-        const rawType = msg.attachment_type || '';
+        const rawType = msg.attachment_type || msg.attachment?.type || msg.file?.type || '';
         return {
-            name: msg.attachment_name || msg.message || 'Attachment',
+            name: msg.attachment_name || msg.attachment?.name || msg.file?.name || 'Attachment',
             type: rawType.startsWith('image/') ? 'image' : rawType.includes('pdf') ? 'pdf' : 'document',
             size: msg.attachment_size ? `${(Number(msg.attachment_size) / (1024 * 1024)).toFixed(1)} MB` : '',
-            url: msg.attachment_url,
+            url: attachmentUrl,
             mimeType: rawType,
         };
     };
@@ -453,6 +454,7 @@ const DoctorChat = () => {
         if (!file || !file.type.startsWith('image/')) return;
         const url = URL.createObjectURL(file);
         setImagePreview({
+            file,
             url,
             name: file.name,
             size: `${(file.size / (1024 * 1024)).toFixed(1)} MB`,
@@ -485,7 +487,23 @@ const DoctorChat = () => {
         setChatError('');
 
         try {
-            await sendMessage({ receiverId: doctorId, message: caption });
+            const response = await sendAttachment({
+                receiverId: doctorId,
+                message: caption,
+                messageType: 'image',
+                file: imagePreview.file,
+            });
+            const savedMessage = unwrapApiObject(response);
+            const savedAttachment = getAttachmentFromMessage(savedMessage);
+            setMessages((prev) => prev.map((message) => message.id === newMsg.id ? {
+                ...newMsg,
+                id: savedMessage.id || savedMessage._id || newMsg.id,
+                text: savedMessage.message || savedMessage.text || caption,
+                file: savedAttachment || newMsg.file,
+            } : message));
+            if (savedAttachment?.url && imagePreview.url.startsWith('blob:')) {
+                URL.revokeObjectURL(imagePreview.url);
+            }
         } catch (err) {
             setChatError(err.response?.data?.message || err.message || 'Failed to send image');
         } finally {

@@ -1,10 +1,11 @@
 import React, { useState, useEffect, useRef } from 'react';
 import './PatientSms.css';
+import { getAttachmentUrl, getChatDoctors, getConversation, getCurrentUserId, sendAttachment, sendMessage, unwrapApiObject } from '../../../redux/chatApi';
 
 const PatientSms = () => {
   const [activeTab, setActiveTab] = useState('All');
   const [searchTerm, setSearchTerm] = useState('');
-  const [selectedId, setSelectedId] = useState(1);
+  const [selectedId, setSelectedId] = useState('');
   const [messageText, setMessageText] = useState('');
 
   // Call state
@@ -30,62 +31,94 @@ const PatientSms = () => {
   const emojis = ["😊", "😀", "😅", "😍", "👍", "🙏", "❤️", "😷", "🤒", "🤕", "💊", "🩺", "✅", "🎉", "👏", "🙌", "😢", "😪", "🤢", "🔥", "⭐", "📎", "📄", "🕒"];
 
   // --- Mock conversations (static, matches screenshot) ---
-  const conversations = [
-    {
-      id: 1,
-      name: 'Dr. Sarah Mitchell',
-      initials: 'SM',
-      color: '#0d9488',
-      role: 'Cardiology',
-      preview: "Hello! I've reviewed your latest bloo...",
-      time: '10:42 AM',
-      unread: 1,
-      online: true,
-      type: 'Appointments',
-    },
-    {
-      id: 2,
-      name: 'Dr. James Cl',
-      initials: 'JC',
-      color: '#2563eb',
-      role: 'General Practice',
-      preview: 'Your prescription has been sent to the...',
-      time: 'Yesterday',
-      unread: 0,
-      online: false,
-      type: 'Appointments',
-    },
-    {
-      id: 3,
-      name: 'Lab Results',
-      initials: '',
-      color: '#e5e7eb',
-      isLab: true,
-      role: "St. Mary's Diagnostics",
-      preview: 'Automated: Your recent lipid panel re...',
-      time: 'Mon',
-      unread: 0,
-      online: false,
-      type: 'Reports',
-    },
-  ];
+  const [conversations, setConversations] = useState([]);
 
   // --- Mock messages for the selected conversation ---
-  const [messages, setMessages] = useState([
-    {
-      id: 1,
-      from: 'doctor',
-      name: 'Dr. Sarah Mitchell',
-      time: '10:42 AM',
-      text: "Hello! I've reviewed your latest blood reports. Everything looks normal. The cholesterol levels have significantly improved since our last visit.",
-    },
-    {
-      id: 2,
-      from: 'me',
-      time: '10:45 AM',
-      text: "That's great news, thank you doctor. Do I need to continue the current medication at the same dosage?",
-    },
-  ]);
+  const [messages, setMessages] = useState([]);
+
+  useEffect(() => {
+    let active = true;
+    const loadDoctors = async () => {
+      try {
+        const doctorList = await getChatDoctors();
+        if (!active) return;
+        const normalizedDoctors = doctorList.map((item, index) => {
+          const doctor = item.doctor || item.user || item;
+          const id = doctor.id || doctor._id || doctor.doctor_id || item.doctor_id || doctor.user_id;
+          const name = doctor.full_name || doctor.fullname || doctor.name || doctor.doctor_name || item.doctor_name || 'Doctor';
+          return {
+            id,
+            name,
+            initials: name.split(' ').map((part) => part[0]).join('').slice(0, 2).toUpperCase(),
+            color: ['#0d9488', '#2563eb', '#7c3aed', '#dc2626'][index % 4],
+            role: doctor.speciality || doctor.specialization || doctor.specialty || item.specialty || 'Doctor',
+            preview: item.lastMessage?.message || item.last_message?.message || item.lastMessage || item.last_message || 'Start a conversation',
+            time: item.last_message_time || item.updated_at || '',
+            unread: item.unread || item.unread_count || 0,
+            online: Boolean(doctor.online || doctor.is_online),
+            type: 'Appointments',
+          };
+        }).filter((doctor) => doctor.id);
+        setConversations(normalizedDoctors);
+        setSelectedId((current) => normalizedDoctors.some((doctor) => String(doctor.id) === String(current))
+          ? current
+          : (normalizedDoctors[0]?.id || ''));
+      } catch {
+        if (active) setConversations([]);
+      }
+    };
+    loadDoctors();
+    const timer = window.setInterval(loadDoctors, 10000);
+    return () => {
+      active = false;
+      window.clearInterval(timer);
+    };
+  }, []);
+
+  useEffect(() => {
+    let active = true;
+    const loadMessages = async () => {
+      if (!selectedId) {
+        setMessages([]);
+        return;
+      }
+      try {
+        const conversation = await getConversation(selectedId);
+        if (!active) return;
+        const currentUserId = getCurrentUserId();
+        setMessages(conversation.map((msg, index) => {
+          const senderId = msg.sender_id || msg.senderId || msg.from_user_id || msg.user_id;
+          const senderRole = String(msg.sender_role || msg.role || (typeof msg.sender === 'string' ? msg.sender : '')).toLowerCase();
+          const isPatient = senderRole.includes('patient') || (!senderRole && String(senderId) === String(currentUserId));
+          const createdAt = msg.created_at || msg.createdAt || msg.time;
+          const attachmentUrl = getAttachmentUrl(msg);
+          const attachmentType = msg.attachment_type || msg.attachmentType || '';
+          const rawText = msg.message || msg.text || msg.content || '';
+          return {
+            id: msg.id || msg._id || `message-${index}`,
+            from: isPatient ? 'me' : 'doctor',
+            name: msg.sender_name || msg.senderName,
+            time: createdAt ? new Date(createdAt).toLocaleTimeString([], { hour: '2-digit', minute: '2-digit' }) : '',
+            text: attachmentUrl && rawText === attachmentUrl ? '' : rawText,
+            attachment: attachmentUrl ? {
+              type: String(msg.message_type || attachmentType).toLowerCase().includes('image') ? 'image' : 'file',
+              name: msg.attachment_name || msg.attachmentName || 'Attachment',
+              url: attachmentUrl,
+              size: msg.attachment_size || '',
+            } : undefined,
+          };
+        }));
+      } catch {
+        if (active) setMessages([]);
+      }
+    };
+    loadMessages();
+    const timer = window.setInterval(loadMessages, 5000);
+    return () => {
+      active = false;
+      window.clearInterval(timer);
+    };
+  }, [selectedId]);
 
   const tabs = ['All', 'Unread', 'Appointments', 'Reports'];
 
@@ -100,20 +133,34 @@ const PatientSms = () => {
     return matchesSearch && matchesTab;
   });
 
-  const activeConv = conversations.find((c) => c.id === selectedId) || conversations[0];
+  const activeConv = conversations.find((c) => String(c.id) === String(selectedId)) || conversations[0] || {
+    id: '',
+    name: 'Select a doctor',
+    initials: 'DR',
+    color: '#64748b',
+    role: 'Doctor',
+    online: false,
+  };
 
-  const handleSend = () => {
-    if (!messageText.trim()) return;
+  const handleSend = async () => {
+    if (!messageText.trim() || !activeConv?.id) return;
+    const text = messageText.trim();
     setMessages((prev) => [
       ...prev,
       {
-        id: prev.length + 1,
+        id: `local-${Date.now()}`,
         from: 'me',
         time: new Date().toLocaleTimeString([], { hour: '2-digit', minute: '2-digit' }),
-        text: messageText.trim(),
+        text,
       },
     ]);
     setMessageText('');
+    try {
+      await sendMessage({ receiverId: activeConv.id, message: text });
+    } catch (error) {
+      setMessages((prev) => prev.filter((item) => !String(item.id).startsWith('local-')));
+      window.alert(error.response?.data?.message || error.message || 'Message send nahi ho paya. Please try again.');
+    }
   };
 
   // Auto-scroll chat to the latest message (like WhatsApp)
@@ -129,21 +176,46 @@ const PatientSms = () => {
     setMessageText((prev) => prev + e);
   };
 
-  const handleFileSelect = (e, kind) => {
+  const handleFileSelect = async (e, kind) => {
     const file = e.target.files?.[0];
-    if (!file) return;
+    if (!file || !activeConv.id) return;
     const url = URL.createObjectURL(file);
     const isImage = kind === "image" || file.type.startsWith("image/");
+    const localId = `attachment-${Date.now()}`;
     setMessages((prev) => [
       ...prev,
       {
-        id: prev.length + 1,
+        id: localId,
         from: "me",
         time: nowTime(),
         attachment: { type: isImage ? "image" : "file", name: file.name, url, size: (file.size / 1024).toFixed(0) + " KB" },
       },
     ]);
     e.target.value = "";
+    try {
+      const response = await sendAttachment({
+        receiverId: activeConv.id,
+        file,
+        messageType: isImage ? 'image' : 'file',
+      });
+      const saved = unwrapApiObject(response);
+      setMessages((prev) => prev.map((item) => item.id === localId ? {
+        ...item,
+        id: saved.id || saved._id || localId,
+        text: saved.message && saved.message !== saved.attachment_url ? saved.message : '',
+        attachment: {
+          type: String(saved.message_type || saved.attachment_type || '').includes('image') ? 'image' : (isImage ? 'image' : 'file'),
+          name: saved.attachment_name || file.name,
+          url: getAttachmentUrl(saved) || url,
+          size: (file.size / 1024).toFixed(0) + ' KB',
+        },
+      } : item));
+      if (getAttachmentUrl(saved)) URL.revokeObjectURL(url);
+    } catch (error) {
+      setMessages((prev) => prev.filter((item) => item.id !== localId));
+      URL.revokeObjectURL(url);
+      window.alert(error.response?.data?.message || error.message || 'Image send nahi ho payi.');
+    }
   };
 
   const startNewChat = (id) => {
@@ -184,14 +256,28 @@ const PatientSms = () => {
   const retakePhoto = () => setCapturedPhoto(null);
 
   // Confirm the preview — send it as an image message
-  const sendCapturedPhoto = () => {
-    if (!capturedPhoto) return;
-    setMessages((prev) => [
-      ...prev,
-      { id: prev.length + 1, from: "me", time: nowTime(), attachment: { type: "image", name: "photo.png", url: capturedPhoto } },
-    ]);
-    setCapturedPhoto(null);
-    setShowCamera(false);
+  const sendCapturedPhoto = async () => {
+    if (!capturedPhoto || !activeConv.id) return;
+    try {
+      const blob = await fetch(capturedPhoto).then((response) => response.blob());
+      const file = new File([blob], 'photo.png', { type: 'image/png' });
+      const response = await sendAttachment({ receiverId: activeConv.id, file, messageType: 'image' });
+      const saved = unwrapApiObject(response);
+      setMessages((prev) => [...prev, {
+        id: saved.id || saved._id || `camera-${Date.now()}`,
+        from: 'me',
+        time: nowTime(),
+        attachment: {
+          type: 'image',
+          name: saved.attachment_name || 'photo.png',
+          url: getAttachmentUrl(saved) || capturedPhoto,
+        },
+      }]);
+      setCapturedPhoto(null);
+      setShowCamera(false);
+    } catch (error) {
+      window.alert(error.response?.data?.message || error.message || 'Photo send nahi ho payi.');
+    }
   };
 
   // Close the camera entirely (also clears any preview)
