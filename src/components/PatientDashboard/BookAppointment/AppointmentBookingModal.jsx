@@ -1,21 +1,25 @@
 import React, { useState, useEffect } from 'react';
 import { useLocation } from 'react-router-dom';
+import axios from 'axios';
+import { useDispatch, useSelector } from 'react-redux';
+import { API_BASE_URL, getAuthHeaders } from '../../../redux/apiConfig';
+import { getCurrentUserId } from '../../../redux/chatApi';
+import { fetchClinicsByDoctor } from '../../../redux/clinicsSlice';
 import './AppointmentBookingModal.css';
 
 const AppointmentBookingModal = ({ doctorData, onClose }) => {
   const location = useLocation();
   // Doctor passed in via prop (modal) or router state (reschedule redirect)
   const incoming = doctorData || location.state?.doctor || null;
-  // Default selections match the Figma screenshot (Wed 18, 01:30 PM)
-  const [selectedDate, setSelectedDate] = useState({ date: 18, day: 'Wed' });
-  const [selectedTime, setSelectedTime] = useState('01:30 PM');
+  const [selectedDate, setSelectedDate] = useState(null);
+  const [selectedTime, setSelectedTime] = useState(null);
   const [clinicOpen, setClinicOpen] = useState(false);
   const [modeOpen, setModeOpen] = useState(false);
   const [selectedClinicId, setSelectedClinicId] = useState(1);
   const [selectedModeId, setSelectedModeId] = useState('in-clinic');
   const [step, setStep] = useState('select');          // 'select' | 'payment' | 'success'
   const [paymentMethod, setPaymentMethod] = useState('Cash');
-  const [token] = useState(() => Math.floor(Math.random() * 20) + 1);
+  const [token, setToken] = useState(() => Math.floor(Math.random() * 20) + 1);
 
   const doctor = {
     name: incoming?.name || 'Dr. Sarah Jenkins',
@@ -28,17 +32,51 @@ const AppointmentBookingModal = ({ doctorData, onClose }) => {
     consultationFee: incoming?.consultationFee || 150,
   };
 
+  // Real patient info from /users/:id
+  const [patientInfo, setPatientInfo] = useState(null);
+  useEffect(() => {
+    const id = getCurrentUserId();
+    if (!id) return;
+    axios.get(`${API_BASE_URL}/users/${id}`, { headers: getAuthHeaders() })
+      .then((res) => setPatientInfo(res.data?.data || res.data))
+      .catch(() => { /* keep fallback */ });
+  }, []);
+
+  const pt = patientInfo || {};
   const patient = {
-    name: 'Alex Mercer (You)',
-    email: 'alex.m@example.com',
-    phone: '+1 (555) 123-4567',
+    name: `${pt.full_name || pt.name || 'You'} (You)`,
+    email: pt.email || '—',
+    phone: pt.contact_number || pt.phone || pt.phone_number || pt.mobile || '—',
   };
 
-  // Clinics (selectable)
-  const clinics = [
-    { id: 1, name: 'City Medical Clinic', address: '456 North Ave, Healthcare Complex', days: 'Mon, Tue, Wed, Thu, Fri', timings: '9:00 AM - 5:00 PM', fee: 150 },
-    { id: 2, name: 'Northside Hospital', address: '456 North Ave, Healthcare Complex', days: 'Mon, Wed, Fri, Sat', timings: '10:00 AM - 6:00 PM', fee: 180 },
-  ];
+  // Clinics for this doctor from /clinics?doctor_id=
+  const dispatch = useDispatch();
+  const doctorId = incoming?.id || incoming?._id || doctorData?.id;
+  const { list: apiClinics = [] } = useSelector((state) => state.clinics || { list: [] });
+
+  useEffect(() => {
+    if (doctorId) dispatch(fetchClinicsByDoctor(doctorId));
+  }, [doctorId, dispatch]);
+
+  const mapClinic = (c, i) => ({
+    id: c._id || c.id || i + 1,
+    name: c.name || c.clinic_name || 'Clinic',
+    address: c.address || c.location || c.city || '',
+    days: c.days || c.available_days || c.working_days || 'Mon - Fri',
+    timings: c.timings || c.hours || c.working_hours || '9:00 AM - 5:00 PM',
+    fee: c.fee ?? c.consultation_fee ?? c.consultationFee ?? doctor.consultationFee ?? 100,
+  });
+
+  const clinics = apiClinics.length
+    ? apiClinics.map(mapClinic)
+    : [{ id: null, name: 'No clinic available', address: '', days: '—', timings: '—', fee: doctor.consultationFee || 0 }];
+
+  const hasClinics = apiClinics.length > 0;
+
+  // Default the selected clinic to the first real one once loaded
+  useEffect(() => {
+    if (apiClinics.length) setSelectedClinicId(apiClinics[0]._id || apiClinics[0].id || 1);
+  }, [apiClinics]);
 
   // Consultation modes (selectable)
   const modes = [
@@ -51,15 +89,31 @@ const AppointmentBookingModal = ({ doctorData, onClose }) => {
   const selectedMode = modes.find((m) => m.id === selectedModeId) || modes[0];
   const totalFee = selectedClinic.fee + selectedMode.fee;
 
-  // Calendar dates — Oct 2023
-  const calendarDates = [
-    { date: 16, day: 'Mon', status: 'available' },
-    { date: 17, day: 'Tue', status: 'available' },
-    { date: 18, day: 'Wed', status: 'available' },
-    { date: 19, day: 'Thu', status: 'limited', note: '2 Slots' },
-    { date: 20, day: 'Fri', status: 'available' },
-    { date: 21, day: 'Sat', status: 'unavailable' },
-  ];
+  // Calendar dates — next 7 days starting today
+  const dayNames = ['Sun', 'Mon', 'Tue', 'Wed', 'Thu', 'Fri', 'Sat'];
+  const monthNames = ['Jan', 'Feb', 'Mar', 'Apr', 'May', 'Jun', 'Jul', 'Aug', 'Sep', 'Oct', 'Nov', 'Dec'];
+  const calendarDates = Array.from({ length: 7 }, (_, i) => {
+    const d = new Date();
+    d.setDate(d.getDate() + i);
+    const iso = `${d.getFullYear()}-${String(d.getMonth() + 1).padStart(2, '0')}-${String(d.getDate()).padStart(2, '0')}`;
+    return {
+      date: d.getDate(),
+      day: dayNames[d.getDay()],
+      label: `${monthNames[d.getMonth()]} ${d.getDate()}`,
+      iso,
+      status: d.getDay() === 0 ? 'unavailable' : 'available', // Sundays closed
+    };
+  });
+  const calendarMonthLabel = new Date().toLocaleDateString('en-US', { month: 'long', year: 'numeric' });
+
+  // Default the selected date to the first available day
+  useEffect(() => {
+    if (!selectedDate) {
+      const first = calendarDates.find((d) => d.status !== 'unavailable');
+      if (first) setSelectedDate(first);
+    }
+    // eslint-disable-next-line react-hooks/exhaustive-deps
+  }, []);
 
   const legend = [
     { label: 'Available', className: 'available' },
@@ -82,7 +136,7 @@ const AppointmentBookingModal = ({ doctorData, onClose }) => {
 
   const handleDateSelect = (d) => {
     if (d.status !== 'unavailable') {
-      setSelectedDate({ date: d.date, day: d.day });
+      setSelectedDate(d);
       setSelectedTime(null);
     }
   };
@@ -98,14 +152,60 @@ const AppointmentBookingModal = ({ doctorData, onClose }) => {
     { id: 'Insurance', label: 'Insurance', icon: 'fa-shield-heart' },
   ];
 
-  const dateStr = selectedDate ? `${selectedDate.day}, Oct ${selectedDate.date}` : '';
+  const dateStr = selectedDate ? `${selectedDate.day}, ${selectedDate.label}` : '';
   const patientName = patient.name.replace(' (You)', '') || 'Not Provided';
 
   const goToPayment = () => {
-    if (selectedDate && selectedTime) setStep('payment');
+    if (selectedDate && selectedTime && hasClinics) setStep('payment');
   };
 
-  const confirmBooking = () => setStep('success');
+  const [booking, setBooking] = useState(false);
+  const [bookError, setBookError] = useState('');
+
+  // Convert "09:30 AM" / "01:30 PM" -> "09:30:00" / "13:30:00" for MySQL TIME
+  const to24Hour = (t) => {
+    if (!t) return null;
+    const m = t.trim().match(/^(\d{1,2}):(\d{2})\s*(AM|PM)$/i);
+    if (!m) return t;
+    let hour = parseInt(m[1], 10);
+    const min = m[2];
+    const ampm = m[3].toUpperCase();
+    if (ampm === 'PM' && hour !== 12) hour += 12;
+    if (ampm === 'AM' && hour === 12) hour = 0;
+    return `${String(hour).padStart(2, '0')}:${min}:00`;
+  };
+
+  const confirmBooking = async () => {
+    if (!hasClinics) {
+      setBookError('This doctor has no clinic available, so the appointment cannot be booked.');
+      return;
+    }
+    setBooking(true);
+    setBookError('');
+    const payload = {
+      doctor_id: incoming?.id ?? incoming?._id ?? doctorData?.id,
+      patient_id: getCurrentUserId(),
+      appointment_date: selectedDate?.iso || null,
+      appointment_time: to24Hour(selectedTime),
+      clinic_id: selectedClinic.id,
+      clinic: selectedClinic.name,
+      consultation_mode: selectedMode.id,
+      fee: totalFee,
+      payment_method: paymentMethod,
+      token,
+    };
+    try {
+      const res = await axios.post(`${API_BASE_URL}/appointments`, payload, { headers: getAuthHeaders() });
+      const data = res.data?.data || res.data || {};
+      const respToken = data.token ?? data.token_number ?? data.queue_token;
+      if (respToken != null) setToken(respToken);
+      setStep('success');
+    } catch (err) {
+      setBookError(err.response?.data?.message || err.message || 'Failed to book appointment. Please try again.');
+    } finally {
+      setBooking(false);
+    }
+  };
 
   const bookAnother = () => onClose?.();
 
@@ -120,7 +220,7 @@ const AppointmentBookingModal = ({ doctorData, onClose }) => {
   const summarySteps = [
     {
       key: 'datetime', icon: 'fa-calendar', label: 'Date & Time',
-      value: selectedDate && selectedTime ? `Wed, Oct ${selectedDate.date} • ${selectedTime}` : null,
+      value: selectedDate && selectedTime ? `${selectedDate.day}, ${selectedDate.label} • ${selectedTime}` : null,
       active: false,
     },
     {
@@ -249,10 +349,15 @@ const AppointmentBookingModal = ({ doctorData, onClose }) => {
                 <div className="abm-pay-row abm-pay-total"><span>Total</span><strong>${totalFee}</strong></div>
               </div>
 
-              <button className="abm-btn-confirm2 abm-pay-confirm-full" onClick={confirmBooking}>
-                <i className="fa-solid fa-lock"></i> Confirm &amp; Book · ${totalFee}
+              <button className="abm-btn-confirm2 abm-pay-confirm-full" onClick={confirmBooking} disabled={booking}>
+                {booking ? (
+                  <><i className="fa-solid fa-spinner fa-spin"></i> Booking…</>
+                ) : (
+                  <><i className="fa-solid fa-lock"></i> Confirm &amp; Book · ${totalFee}</>
+                )}
               </button>
-              <button className="abm-btn-back2 abm-pay-back-full" onClick={() => setStep('select')}>
+              {bookError && <p className="abm-pay-error">{bookError}</p>}
+              <button className="abm-btn-back2 abm-pay-back-full" onClick={() => setStep('select')} disabled={booking}>
                 <i className="fa-solid fa-arrow-left"></i> Back
               </button>
             </aside>
@@ -381,7 +486,7 @@ const AppointmentBookingModal = ({ doctorData, onClose }) => {
             <h3 className="abm-section-title">Choose Appointment Date</h3>
             <div className="abm-month-nav">
               <button><i className="fa-solid fa-chevron-left"></i></button>
-              <span>October 2023</span>
+              <span>{calendarMonthLabel}</span>
               <button><i className="fa-solid fa-chevron-right"></i></button>
             </div>
           </div>
@@ -398,10 +503,10 @@ const AppointmentBookingModal = ({ doctorData, onClose }) => {
           {/* Date cards */}
           <div className="abm-dates">
             {calendarDates.map((d) => {
-              const isSelected = selectedDate?.date === d.date;
+              const isSelected = selectedDate?.iso === d.iso;
               return (
                 <button
-                  key={d.date}
+                  key={d.iso}
                   className={`abm-date ${d.status} ${isSelected ? 'selected' : ''}`}
                   onClick={() => handleDateSelect(d)}
                   disabled={d.status === 'unavailable'}
@@ -419,7 +524,7 @@ const AppointmentBookingModal = ({ doctorData, onClose }) => {
           {/* Time slots */}
           {selectedDate && (
             <div className="abm-times">
-              <h4 className="abm-times-title">Available Times for {selectedDate.day}, Oct {selectedDate.date}</h4>
+              <h4 className="abm-times-title">Available Times for {selectedDate.day}, {selectedDate.label}</h4>
 
               <div className="abm-times-group">
                 <span className="abm-times-label"><i className="fa-regular fa-clock"></i> Morning</span>
@@ -478,10 +583,16 @@ const AppointmentBookingModal = ({ doctorData, onClose }) => {
             <span className="abm-total-amount">${totalFee}.00</span>
           </div>
 
+          {!hasClinics && (
+            <p className="abm-no-clinic">
+              <i className="fa-solid fa-circle-exclamation"></i> This doctor has no clinic available yet, so booking isn't possible.
+            </p>
+          )}
+
           <button
             className="abm-confirm"
             onClick={goToPayment}
-            disabled={!selectedDate || !selectedTime}
+            disabled={!selectedDate || !selectedTime || !hasClinics}
           >
             Confirm Selection <i className="fa-solid fa-arrow-right"></i>
           </button>

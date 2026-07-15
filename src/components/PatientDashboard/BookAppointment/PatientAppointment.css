@@ -314,6 +314,51 @@
 
 .appt-qr-btn:hover { filter: brightness(0.96); }
 
+/* ---- Segmented nav: Book Appointment | My Appointments ---- */
+.appt-seg {
+  display: inline-flex;
+  align-items: center;
+  gap: 4px;
+  background: #ffffff;
+  border: 1px solid #e2e5ea;
+  border-radius: 12px;
+  padding: 4px;
+  box-shadow: 0 2px 10px rgba(0, 0, 0, 0.04);
+}
+
+.appt-seg-btn {
+  display: inline-flex;
+  align-items: center;
+  gap: 8px;
+  border: none;
+  background: transparent;
+  color: #374151;
+  font-family: inherit;
+  font-size: 13px;
+  font-weight: 600;
+  white-space: nowrap;
+  padding: 10px 18px;
+  border-radius: 9px;
+  cursor: pointer;
+  transition: background 0.15s ease, color 0.15s ease;
+}
+
+.appt-seg-btn:hover:not(.active) {
+  background: #F5FBF9;
+  color: #006B2C;
+}
+
+.appt-seg-btn.active {
+  background: linear-gradient(90deg, #006B2C 0%, #00D156 100%);
+  color: #ffffff;
+  box-shadow: 0 2px 8px rgba(0, 107, 44, 0.25);
+}
+
+@media (max-width: 640px) {
+  .appt-seg { width: 100%; }
+  .appt-seg-btn { flex: 1; justify-content: center; padding: 10px 12px; }
+}
+
 /* QR scanner modal */
 .qr-overlay {
   position: fixed;
@@ -930,6 +975,38 @@
   font-size: 14px;
   margin: 0;
 }
+
+/* ---- Loading skeleton (shimmer) ---- */
+.appt-skel {
+  position: relative;
+  overflow: hidden;
+  display: block;
+  background: #e9edf1;
+  border-radius: 8px;
+}
+
+.appt-skel::after {
+  content: "";
+  position: absolute;
+  inset: 0;
+  transform: translateX(-100%);
+  background: linear-gradient(
+    90deg,
+    rgba(255, 255, 255, 0) 0%,
+    rgba(255, 255, 255, 0.65) 50%,
+    rgba(255, 255, 255, 0) 100%
+  );
+  animation: appt-shimmer 1.4s infinite;
+}
+
+@keyframes appt-shimmer {
+  100% { transform: translateX(100%); }
+}
+
+.appt-skel-avatar { width: 64px; height: 64px; border-radius: 50%; flex-shrink: 0; }
+.appt-skel-line   { height: 13px; margin-bottom: 9px; }
+.appt-skel-slot   { width: 74px; height: 32px; border-radius: 8px; }
+.appt-skel-btn    { flex: 1; height: 40px; border-radius: 10px; }
 
 /* ---- Responsive ---- */
 @media (max-width: 992px) {

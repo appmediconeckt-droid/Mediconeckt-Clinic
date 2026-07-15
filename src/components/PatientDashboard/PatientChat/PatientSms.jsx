@@ -1,15 +1,31 @@
 import React, { useState, useEffect, useRef } from 'react';
+import {
+  acceptCall as apiAcceptCall,
+  getChatList,
+  getChatDoctors,
+  getConversation,
+  sendMessage,
+  sendAttachment,
+  getCurrentUserId,
+  getAssetUrl,
+  unwrapApiObject,
+  startCall as apiStartCall,
+  endCall as apiEndCall,
+} from '../../../redux/chatApi';
+import useCallSocket from '../../../hooks/useCallSocket';
 import './PatientSms.css';
-import { getAttachmentUrl, getChatDoctors, getConversation, getCurrentUserId, sendAttachment, sendMessage, unwrapApiObject } from '../../../redux/chatApi';
 
 const PatientSms = () => {
   const [activeTab, setActiveTab] = useState('All');
   const [searchTerm, setSearchTerm] = useState('');
-  const [selectedId, setSelectedId] = useState('');
+  const [selectedId, setSelectedId] = useState(null);
   const [messageText, setMessageText] = useState('');
 
   // Call state
   const [callType, setCallType] = useState(null);   // null | 'video' | 'voice'
+  const [callId, setCallId] = useState(null);       // server call id from /calls/start
+  const [callStatus, setCallStatus] = useState(null); // ringing | accepted | ended
+  const [callDirection, setCallDirection] = useState(null); // incoming | outgoing
   const [callSeconds, setCallSeconds] = useState(0);
   const [muted, setMuted] = useState(false);
   const [videoOff, setVideoOff] = useState(false);
@@ -20,6 +36,22 @@ const PatientSms = () => {
   const camVideoRef = useRef(null);
   const camStreamRef = useRef(null);
   const chatBodyRef = useRef(null);
+
+  useCallSocket({
+    onRinging: (call) => {
+      const callerId = call?.caller_id ?? call?.callerId ?? call?.sender_id ?? call?.user_id;
+      if (callerId) setSelectedId(callerId);
+      setCallId(call?.id ?? call?._id ?? call?.call_id ?? call?.callId ?? null);
+      setCallType(call?.call_type ?? call?.callType ?? call?.type ?? 'voice');
+      setCallStatus('ringing');
+      setCallDirection('incoming');
+    },
+    onAccepted: () => setCallStatus('accepted'),
+    onRejected: () => { setCallType(null); setCallStatus(null); setCallDirection(null); },
+    onCancelled: () => { setCallType(null); setCallStatus(null); setCallDirection(null); },
+    onEnded: () => { setCallType(null); setCallStatus(null); setCallDirection(null); },
+    onMissed: () => { setCallType(null); setCallStatus(null); setCallDirection(null); },
+  });
   const [showCamera, setShowCamera] = useState(false);
   const [capturedPhoto, setCapturedPhoto] = useState(null); // data URL — preview before sending
 
@@ -30,94 +62,161 @@ const PatientSms = () => {
 
   const emojis = ["😊", "😀", "😅", "😍", "👍", "🙏", "❤️", "😷", "🤒", "🤕", "💊", "🩺", "✅", "🎉", "👏", "🙌", "😢", "😪", "🤢", "🔥", "⭐", "📎", "📄", "🕒"];
 
-  // --- Mock conversations (static, matches screenshot) ---
+  // --- Real chat data ---
+  const currentUserId = getCurrentUserId();
   const [conversations, setConversations] = useState([]);
-
-  // --- Mock messages for the selected conversation ---
+  const [convStatus, setConvStatus] = useState('loading'); // loading | succeeded | failed
+  const [convError, setConvError] = useState('');
   const [messages, setMessages] = useState([]);
+  const [msgLoading, setMsgLoading] = useState(false);
+  const [msgError, setMsgError] = useState('');
+  const [sending, setSending] = useState(false);
 
-  useEffect(() => {
-    let active = true;
-    const loadDoctors = async () => {
-      try {
-        const doctorList = await getChatDoctors();
-        if (!active) return;
-        const normalizedDoctors = doctorList.map((item, index) => {
-          const doctor = item.doctor || item.user || item;
-          const id = doctor.id || doctor._id || doctor.doctor_id || item.doctor_id || doctor.user_id;
-          const name = doctor.full_name || doctor.fullname || doctor.name || doctor.doctor_name || item.doctor_name || 'Doctor';
-          return {
-            id,
+  const avatarColors = ['#0d9488', '#2563eb', '#7c3aed', '#ea580c', '#db2777', '#0891b2'];
+
+  const titleCase = (s) =>
+    String(s || '').split(' ').filter(Boolean)
+      .map((w) => w.charAt(0).toUpperCase() + w.slice(1)).join(' ');
+
+  const initialsOf = (name = '') =>
+    name.replace(/^Dr\.?\s*/i, '').split(' ').filter(Boolean)
+      .map((w) => w[0]).join('').toUpperCase().slice(0, 2) || 'DR';
+
+  // "2026-07-15T10:42:00Z" -> "10:42 AM" (today) or "Jul 15"
+  const stamp = (value) => {
+    if (!value) return '';
+    const d = new Date(value);
+    if (Number.isNaN(d.getTime())) return String(value);
+    const isToday = d.toDateString() === new Date().toDateString();
+    return isToday
+      ? d.toLocaleTimeString([], { hour: '2-digit', minute: '2-digit' })
+      : d.toLocaleDateString([], { month: 'short', day: 'numeric' });
+  };
+
+  const mapConversation = (c, i) => {
+    // /chat/send and /chat/conversation/:user_id both need the OTHER USER's id —
+    // prefer explicit user ids over a generic `id` (which may be a chat/conversation id).
+    const id =
+      c.user_id ?? c.doctor_id ?? c.other_user_id ?? c.receiver_id ??
+      c.participant_id ?? c.id ?? c._id;
+    const rawName = c.full_name || c.name || c.doctor_name || 'Doctor';
+    const name = titleCase(rawName);
+    return {
+      id,
+      name: /^dr\.?\s/i.test(name) ? name : `Dr. ${name}`,
+      initials: initialsOf(name),
+      color: avatarColors[i % avatarColors.length],
+      role: titleCase(c.specialization || c.specialty || c.department || 'Doctor'),
+      preview: c.last_message || c.message || c.preview || 'Start a conversation',
+      time: stamp(c.last_message_time || c.updated_at || c.created_at),
+      unread: Number(c.unread_count ?? c.unread ?? 0),
+      online: Boolean(c.is_online ?? c.online),
+      type: 'Appointments',
+    };
+  };
+
+  // Treat it as an image if the mime says so OR the url/name looks like one (Cloudinary etc.)
+  const looksLikeImage = (type, url, name) => {
+    const t = String(type || '').toLowerCase();
+    if (t.startsWith('image/') || t === 'image' || t === 'photo') return true;
+    const target = `${url || ''} ${name || ''}`;
+    return /\.(png|jpe?g|gif|webp|bmp|svg|heic|avif)(\?|#|$)/i.test(target) ||
+           /\/image\/upload\//i.test(String(url || '')); // cloudinary image delivery url
+  };
+
+  // Pull the attachment url out of whatever shape the API uses (string, object, cloudinary…)
+  const extractAttachmentUrl = (m) => {
+    const cand =
+      m.attachment_url ?? m.file_url ?? m.media_url ?? m.image_url ??
+      m.attachment_path ?? m.file_path ?? m.attachment ?? m.file ?? m.media ?? m.url ?? m.path;
+    if (!cand) return null;
+    if (typeof cand === 'string') return cand;
+    if (typeof cand === 'object') {
+      return cand.secure_url || cand.url || cand.path || cand.location || cand.src || null;
+    }
+    return null;
+  };
+
+  const mapMessage = (m, i) => {
+    const senderId = m.sender_id ?? m.senderId ?? m.from_user_id ?? m.user_id;
+    const mine = String(senderId) === String(currentUserId);
+    const url = extractAttachmentUrl(m);
+    const rawType = m.attachment_type || m.file_type || m.mime_type || m.type;
+    const text = m.message || m.text || m.content || '';
+    const name = m.attachment_name || m.file_name || (url ? text || 'Attachment' : 'Attachment');
+
+    if (i === 0) console.log('[PatientSms] sample raw message keys:', Object.keys(m), m);
+
+    const isImg = looksLikeImage(rawType, url, name);
+    // If the text is just the file name, don't repeat it under the image
+    const textIsFileName = url && text && text.trim() === String(name).trim();
+
+    return {
+      id: m.id ?? m._id ?? `srv-${i}`,
+      from: mine ? 'me' : 'doctor',
+      name: m.sender_name,
+      time: stamp(m.created_at || m.createdAt || m.time),
+      text: textIsFileName ? '' : text,
+      attachment: url
+        ? {
+            type: isImg ? 'image' : 'file',
             name,
-            initials: name.split(' ').map((part) => part[0]).join('').slice(0, 2).toUpperCase(),
-            color: ['#0d9488', '#2563eb', '#7c3aed', '#dc2626'][index % 4],
-            role: doctor.speciality || doctor.specialization || doctor.specialty || item.specialty || 'Doctor',
-            preview: item.lastMessage?.message || item.last_message?.message || item.lastMessage || item.last_message || 'Start a conversation',
-            time: item.last_message_time || item.updated_at || '',
-            unread: item.unread || item.unread_count || 0,
-            online: Boolean(doctor.online || doctor.is_online),
-            type: 'Appointments',
-          };
-        }).filter((doctor) => doctor.id);
-        setConversations(normalizedDoctors);
-        setSelectedId((current) => normalizedDoctors.some((doctor) => String(doctor.id) === String(current))
-          ? current
-          : (normalizedDoctors[0]?.id || ''));
-      } catch {
-        if (active) setConversations([]);
+            url: getAssetUrl(url),
+            size: m.attachment_size ? `${Math.round(Number(m.attachment_size) / 1024)} KB` : '',
+          }
+        : null,
+    };
+  };
+
+  // Load the conversation list
+  useEffect(() => {
+    let cancelled = false;
+    (async () => {
+      setConvStatus('loading');
+      setConvError('');
+      try {
+        let list = await getChatList();
+        if (!list.length) list = await getChatDoctors(); // fall back to all doctors
+        console.log('[PatientSms] chat list ->', list);
+        const mapped = list.map(mapConversation);
+        if (cancelled) return;
+        setConversations(mapped);
+        setSelectedId((prev) => prev ?? mapped[0]?.id ?? null);
+        setConvStatus('succeeded');
+      } catch (err) {
+        console.error('[PatientSms] chat list failed:', err.response?.status, err.response?.data || err);
+        if (!cancelled) {
+          setConvError(err.response?.data?.message || err.message || 'Failed to load chats');
+          setConvStatus('failed');
+        }
       }
-    };
-    loadDoctors();
-    const timer = window.setInterval(loadDoctors, 10000);
-    return () => {
-      active = false;
-      window.clearInterval(timer);
-    };
+    })();
+    return () => { cancelled = true; };
   }, []);
 
+  const loadMessages = async (id) => {
+    if (!id) return;
+    setMsgLoading(true);
+    setMsgError('');
+    try {
+      const raw = await getConversation(id);
+      console.log('[PatientSms] GET /chat/conversation/' + id, '-> raw:', raw, '| myUserId:', currentUserId);
+      setMessages(raw.map(mapMessage));
+    } catch (err) {
+      const status = err.response?.status;
+      const body = err.response?.data;
+      console.error('[PatientSms] GET /chat/conversation/' + id, 'failed:', status, body || err);
+      setMsgError(`Couldn't load messages (${status || 'network error'}): ${body?.message || err.message}`);
+      setMessages([]);
+    } finally {
+      setMsgLoading(false);
+    }
+  };
+
+  // Load messages whenever the selected chat changes
   useEffect(() => {
-    let active = true;
-    const loadMessages = async () => {
-      if (!selectedId) {
-        setMessages([]);
-        return;
-      }
-      try {
-        const conversation = await getConversation(selectedId);
-        if (!active) return;
-        const currentUserId = getCurrentUserId();
-        setMessages(conversation.map((msg, index) => {
-          const senderId = msg.sender_id || msg.senderId || msg.from_user_id || msg.user_id;
-          const senderRole = String(msg.sender_role || msg.role || (typeof msg.sender === 'string' ? msg.sender : '')).toLowerCase();
-          const isPatient = senderRole.includes('patient') || (!senderRole && String(senderId) === String(currentUserId));
-          const createdAt = msg.created_at || msg.createdAt || msg.time;
-          const attachmentUrl = getAttachmentUrl(msg);
-          const attachmentType = msg.attachment_type || msg.attachmentType || '';
-          const rawText = msg.message || msg.text || msg.content || '';
-          return {
-            id: msg.id || msg._id || `message-${index}`,
-            from: isPatient ? 'me' : 'doctor',
-            name: msg.sender_name || msg.senderName,
-            time: createdAt ? new Date(createdAt).toLocaleTimeString([], { hour: '2-digit', minute: '2-digit' }) : '',
-            text: attachmentUrl && rawText === attachmentUrl ? '' : rawText,
-            attachment: attachmentUrl ? {
-              type: String(msg.message_type || attachmentType).toLowerCase().includes('image') ? 'image' : 'file',
-              name: msg.attachment_name || msg.attachmentName || 'Attachment',
-              url: attachmentUrl,
-              size: msg.attachment_size || '',
-            } : undefined,
-          };
-        }));
-      } catch {
-        if (active) setMessages([]);
-      }
-    };
-    loadMessages();
-    const timer = window.setInterval(loadMessages, 5000);
-    return () => {
-      active = false;
-      window.clearInterval(timer);
-    };
+    if (selectedId) loadMessages(selectedId);
+    // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [selectedId]);
 
   const tabs = ['All', 'Unread', 'Appointments', 'Reports'];
@@ -133,18 +232,23 @@ const PatientSms = () => {
     return matchesSearch && matchesTab;
   });
 
-  const activeConv = conversations.find((c) => String(c.id) === String(selectedId)) || conversations[0] || {
-    id: '',
-    name: 'Select a doctor',
-    initials: 'DR',
-    color: '#64748b',
-    role: 'Doctor',
-    online: false,
-  };
+  // Safe placeholder so the panel never crashes before chats load / when there are none
+  const activeConv =
+    conversations.find((c) => c.id === selectedId) ||
+    conversations[0] || {
+      id: null,
+      name: convStatus === 'loading' ? 'Loading…' : 'No conversations',
+      initials: '—',
+      color: '#9ca3af',
+      role: '',
+      online: false,
+    };
 
   const handleSend = async () => {
-    if (!messageText.trim() || !activeConv?.id) return;
+    if (!messageText.trim() || !selectedId || sending) return;
     const text = messageText.trim();
+
+    // optimistic bubble
     setMessages((prev) => [
       ...prev,
       {
@@ -155,11 +259,22 @@ const PatientSms = () => {
       },
     ]);
     setMessageText('');
+    setSending(true);
     try {
-      await sendMessage({ receiverId: activeConv.id, message: text });
-    } catch (error) {
-      setMessages((prev) => prev.filter((item) => !String(item.id).startsWith('local-')));
-      window.alert(error.response?.data?.message || error.message || 'Message send nahi ho paya. Please try again.');
+      console.log('[PatientSms] POST /chat/send', { receiver_id: selectedId, message: text });
+      const res = await sendMessage({ receiverId: selectedId, message: text });
+      console.log('[PatientSms] send ->', res);
+      await loadMessages(selectedId); // re-sync with the server
+    } catch (err) {
+      const status = err.response?.status;
+      const body = err.response?.data;
+      console.error('[PatientSms] POST /chat/send failed:', status, body || err);
+      alert(
+        `Send failed (${status || 'network error'}): ` +
+        (body?.message || body?.error || JSON.stringify(body || {}) || err.message)
+      );
+    } finally {
+      setSending(false);
     }
   };
 
@@ -176,46 +291,41 @@ const PatientSms = () => {
     setMessageText((prev) => prev + e);
   };
 
-  const handleFileSelect = async (e, kind) => {
-    const file = e.target.files?.[0];
-    if (!file || !activeConv.id) return;
+  // Upload a file/photo through /chat/send-attachment
+  const uploadAttachment = async (file) => {
+    if (!file || !selectedId) return;
     const url = URL.createObjectURL(file);
-    const isImage = kind === "image" || file.type.startsWith("image/");
-    const localId = `attachment-${Date.now()}`;
+    const isImage = file.type.startsWith("image/");
+
+    // optimistic bubble
     setMessages((prev) => [
       ...prev,
       {
-        id: localId,
+        id: `local-${Date.now()}`,
         from: "me",
         time: nowTime(),
-        attachment: { type: isImage ? "image" : "file", name: file.name, url, size: (file.size / 1024).toFixed(0) + " KB" },
+        attachment: {
+          type: isImage ? "image" : "file",
+          name: file.name,
+          url,
+          size: `${(file.size / 1024).toFixed(0)} KB`,
+        },
       },
     ]);
-    e.target.value = "";
+
     try {
-      const response = await sendAttachment({
-        receiverId: activeConv.id,
-        file,
-        messageType: isImage ? 'image' : 'file',
-      });
-      const saved = unwrapApiObject(response);
-      setMessages((prev) => prev.map((item) => item.id === localId ? {
-        ...item,
-        id: saved.id || saved._id || localId,
-        text: saved.message && saved.message !== saved.attachment_url ? saved.message : '',
-        attachment: {
-          type: String(saved.message_type || saved.attachment_type || '').includes('image') ? 'image' : (isImage ? 'image' : 'file'),
-          name: saved.attachment_name || file.name,
-          url: getAttachmentUrl(saved) || url,
-          size: (file.size / 1024).toFixed(0) + ' KB',
-        },
-      } : item));
-      if (getAttachmentUrl(saved)) URL.revokeObjectURL(url);
-    } catch (error) {
-      setMessages((prev) => prev.filter((item) => item.id !== localId));
-      URL.revokeObjectURL(url);
-      window.alert(error.response?.data?.message || error.message || 'Image send nahi ho payi.');
+      await sendAttachment({ receiverId: selectedId, message: '', file });
+      await loadMessages(selectedId);
+    } catch (err) {
+      console.error('[PatientSms] attachment failed:', err.response?.status, err.response?.data || err);
+      alert(err.response?.data?.message || 'Failed to send attachment');
     }
+  };
+
+  const handleFileSelect = (e) => {
+    const file = e.target.files?.[0];
+    e.target.value = "";
+    if (file) uploadAttachment(file);
   };
 
   const startNewChat = (id) => {
@@ -255,28 +365,19 @@ const PatientSms = () => {
   // Discard the captured still and go back to the live camera
   const retakePhoto = () => setCapturedPhoto(null);
 
-  // Confirm the preview — send it as an image message
+  // Confirm the preview — upload it as an image message
   const sendCapturedPhoto = async () => {
-    if (!capturedPhoto || !activeConv.id) return;
+    if (!capturedPhoto) return;
+    const dataUrl = capturedPhoto;
+    setCapturedPhoto(null);
+    setShowCamera(false);
     try {
-      const blob = await fetch(capturedPhoto).then((response) => response.blob());
-      const file = new File([blob], 'photo.png', { type: 'image/png' });
-      const response = await sendAttachment({ receiverId: activeConv.id, file, messageType: 'image' });
-      const saved = unwrapApiObject(response);
-      setMessages((prev) => [...prev, {
-        id: saved.id || saved._id || `camera-${Date.now()}`,
-        from: 'me',
-        time: nowTime(),
-        attachment: {
-          type: 'image',
-          name: saved.attachment_name || 'photo.png',
-          url: getAttachmentUrl(saved) || capturedPhoto,
-        },
-      }]);
-      setCapturedPhoto(null);
-      setShowCamera(false);
-    } catch (error) {
-      window.alert(error.response?.data?.message || error.message || 'Photo send nahi ho payi.');
+      const blob = await (await fetch(dataUrl)).blob();
+      const file = new File([blob], `photo-${Date.now()}.png`, { type: 'image/png' });
+      await uploadAttachment(file);
+    } catch (err) {
+      console.error('[PatientSms] photo upload failed:', err);
+      alert('Failed to send photo');
     }
   };
 
@@ -329,13 +430,59 @@ const PatientSms = () => {
     return `${m.toString().padStart(2, '0')}:${sec.toString().padStart(2, '0')}`;
   };
 
-  const startCall = (type) => {
+  // Show "Ringing…" until the call is accepted, then the running duration
+  const callLabel = callStatus === 'ringing' ? 'Ringing…' : formatDuration(callSeconds);
+
+  // Start a real call via /chat/calls/start
+  const startCall = async (type) => {
+    if (!selectedId) return;
     setMuted(false);
     setVideoOff(false);
     setSpeakerOn(true);
-    setCallType(type);
+    setCallType(type);      // open the call UI immediately
+    setCallStatus('ringing');
+    setCallDirection('outgoing');
+    try {
+      const res = await apiStartCall({ receiverId: selectedId, callType: type });
+      const call = unwrapApiObject(res);
+      const id = call.id ?? call._id ?? call.call_id;
+      console.log('[PatientSms] call started ->', call);
+      setCallId(id ?? null);
+      setCallStatus(call.status || 'ringing');
+    } catch (err) {
+      console.error('[PatientSms] start call failed:', err.response?.status, err.response?.data || err);
+      alert(err.response?.data?.message || 'Failed to start call');
+      setCallType(null);
+      setCallStatus(null);
+    }
   };
-  const endCall = () => setCallType(null);
+
+  // End the call via /chat/calls/:call_id/end
+  const endCall = async () => {
+    const id = callId;
+    setCallType(null);
+    setCallStatus(null);
+    setCallId(null);
+    const status = callDirection === 'incoming' && callStatus === 'ringing' ? 'rejected' : 'ended';
+    setCallDirection(null);
+    if (!id) return;
+    try {
+      await apiEndCall({ callId: id, status });
+      console.log('[PatientSms] call ended', id);
+    } catch (err) {
+      console.error('[PatientSms] end call failed:', err.response?.status, err.response?.data || err);
+    }
+  };
+
+  const acceptIncomingCall = async () => {
+    if (!callId) return;
+    try {
+      await apiAcceptCall(callId);
+      setCallStatus('accepted');
+    } catch (err) {
+      alert(err.response?.data?.message || 'Failed to accept call');
+    }
+  };
 
   const renderAvatar = (c, size) => (
     c.isLab ? (
@@ -399,6 +546,15 @@ const PatientSms = () => {
           </div>
 
           <div className="msg-conversations">
+            {convStatus === 'loading' && (
+              <div className="msg-conv-state">Loading chats…</div>
+            )}
+            {convStatus === 'failed' && (
+              <div className="msg-conv-state msg-conv-state-err">{convError}</div>
+            )}
+            {convStatus === 'succeeded' && filteredConversations.length === 0 && (
+              <div className="msg-conv-state">No conversations found</div>
+            )}
             {filteredConversations.map((c) => (
               <div
                 key={c.id}
@@ -447,28 +603,44 @@ const PatientSms = () => {
           </div>
 
           <div className="msg-chat-body" ref={chatBodyRef}>
-            <div className="msg-day"><span>Today</span></div>
+            {msgLoading && <div className="msg-conv-state">Loading messages…</div>}
+            {msgError && <div className="msg-conv-state msg-conv-state-err">{msgError}</div>}
+            {!msgLoading && !msgError && messages.length === 0 && (
+              <div className="msg-conv-state">No messages yet — say hello 👋</div>
+            )}
 
-            {messages.map((m) => (
-              m.from === 'doctor' ? (
-                <div className="msg-row msg-row-in" key={m.id}>
-                  {renderAvatar(activeConv, 'sm')}
+            {messages.length > 0 && <div className="msg-day"><span>Today</span></div>}
+
+            {messages.map((m) => {
+              const dir = m.from === 'doctor' ? 'in' : 'out';
+              return (
+                <div className={`msg-row msg-row-${dir}`} key={m.id}>
+                  {dir === 'in' && renderAvatar(activeConv, 'sm')}
                   <div className="msg-bubble-wrap">
-                    <div className="msg-bubble-meta">{m.name} • {m.time}</div>
-                    <div className="msg-bubble msg-bubble-in">{m.text}</div>
-                  </div>
-                </div>
-              ) : (
-                <div className="msg-row msg-row-out" key={m.id}>
-                  <div className="msg-bubble-wrap">
-                    <div className="msg-bubble-meta">You • {m.time}</div>
-                    {m.attachment ? (
-                      m.attachment.type === "image" ? (
-                        <div className="msg-bubble msg-bubble-out msg-bubble-img">
+                    <div className="msg-bubble-meta">
+                      {dir === 'in' ? (m.name || activeConv.name) : 'You'} • {m.time}
+                    </div>
+
+                    {/* Attachment (image or file) — shown for both sides */}
+                    {m.attachment && (
+                      m.attachment.type === 'image' ? (
+                        <a
+                          className={`msg-bubble msg-bubble-${dir} msg-bubble-img`}
+                          href={m.attachment.url}
+                          target="_blank"
+                          rel="noreferrer"
+                          title="Click to open full size"
+                        >
                           <img src={m.attachment.url} alt={m.attachment.name} />
-                        </div>
+                        </a>
                       ) : (
-                        <a className="msg-bubble msg-bubble-out msg-bubble-file" href={m.attachment.url} download={m.attachment.name}>
+                        <a
+                          className={`msg-bubble msg-bubble-${dir} msg-bubble-file`}
+                          href={m.attachment.url}
+                          target="_blank"
+                          rel="noreferrer"
+                          download={m.attachment.name}
+                        >
                           <i className="fa-solid fa-file-lines"></i>
                           <span className="msg-file-info">
                             <span className="msg-file-name">{m.attachment.name}</span>
@@ -477,20 +649,15 @@ const PatientSms = () => {
                           <i className="fa-solid fa-download"></i>
                         </a>
                       )
-                    ) : (
-                      <div className="msg-bubble msg-bubble-out">{m.text}</div>
                     )}
+
+                    {/* Text (only when there is any) */}
+                    {m.text && <div className={`msg-bubble msg-bubble-${dir}`}>{m.text}</div>}
                   </div>
                 </div>
-              )
-            ))}
+              );
+            })}
 
-            <div className="msg-row msg-row-in">
-              {renderAvatar(activeConv, 'sm')}
-              <div className="msg-typing">
-                {activeConv.name} is typing <span className="msg-dots"><i></i><i></i><i></i></span>
-              </div>
-            </div>
           </div>
 
           <div className="msg-input">
@@ -509,7 +676,7 @@ const PatientSms = () => {
             <button className="msg-input-icon" onClick={() => fileInputRef.current?.click()} title="Attach file"><i className="fa-solid fa-paperclip"></i></button>
             <button className="msg-input-icon" onClick={() => setShowCamera(true)} title="Open camera"><i className="fa-solid fa-camera"></i></button>
 
-            <input ref={fileInputRef} type="file" hidden onChange={(e) => handleFileSelect(e, "file")} />
+            <input ref={fileInputRef} type="file" hidden onChange={handleFileSelect} />
 
             <input
               type="text"
@@ -592,7 +759,7 @@ const PatientSms = () => {
               <div className="wa-remote">
                 <div className="wa-remote-avatar" style={{ background: activeConv.color }}>{activeConv.initials}</div>
                 <div className="wa-remote-name">{activeConv.name}</div>
-                <div className="wa-remote-sub">{formatDuration(callSeconds)}</div>
+                <div className="wa-remote-sub">{callLabel}</div>
               </div>
 
               {/* Top bar */}
@@ -615,6 +782,9 @@ const PatientSms = () => {
 
               {/* Bottom control bar */}
               <div className="wa-controls">
+                {callDirection === 'incoming' && callStatus === 'ringing' && (
+                  <button className="wa-ctrl" onClick={acceptIncomingCall} title="Accept call"><i className="fa-solid fa-phone"></i></button>
+                )}
                 <button className={`wa-ctrl ${speakerOn ? '' : 'off'}`} onClick={() => setSpeakerOn(!speakerOn)}>
                   <i className={`fa-solid ${speakerOn ? 'fa-volume-high' : 'fa-volume-xmark'}`}></i>
                 </button>
@@ -638,12 +808,15 @@ const PatientSms = () => {
                 </div>
                 <h2 className="call-voice-name">{activeConv.name}</h2>
                 <p className="call-voice-role">{activeConv.role}</p>
-                <div className="call-voice-timer">{formatDuration(callSeconds)}</div>
+                <div className="call-voice-timer">{callLabel}</div>
                 <div className={`call-wave ${muted ? 'muted' : ''}`}>
                   <span></span><span></span><span></span><span></span><span></span><span></span><span></span>
                 </div>
               </div>
               <div className="call-controls">
+                {callDirection === 'incoming' && callStatus === 'ringing' && (
+                  <button className="call-ctrl" onClick={acceptIncomingCall} title="Accept call"><i className="fa-solid fa-phone"></i></button>
+                )}
                 <button className={`call-ctrl ${muted ? 'off' : ''}`} onClick={() => setMuted(!muted)}>
                   <i className={`fa-solid ${muted ? 'fa-microphone-slash' : 'fa-microphone'}`}></i>
                 </button>

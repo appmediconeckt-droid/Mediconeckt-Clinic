@@ -12,6 +12,7 @@ import {
   FaVideoSlash,
 } from "react-icons/fa";
 import {
+  acceptCall as acceptChatCall,
   endCall as endChatCall,
   getAssetUrl,
   getChatList,
@@ -23,6 +24,7 @@ import {
   unwrapApiArray,
   unwrapApiObject,
 } from "../../../redux/chatApi";
+import useCallSocket from "../../../hooks/useCallSocket";
 import { API_BASE_URL, getAuthHeaders } from "../../../redux/apiConfig";
 import "./DoctorSmsPatient.css";
 
@@ -174,14 +176,21 @@ const resolvePatientFromChat = (item, currentUserId) => {
 
 const normalizeAttachment = (source, fallbackFile) => {
   const data = unwrapApiObject(source);
-  const rawAttachment = data.attachment || data.file || data.media || data.document;
+  let rawAttachment = data.attachment || data.file || data.media || data.document;
+  if (typeof rawAttachment === "string" && rawAttachment.trim().startsWith("{")) {
+    try {
+      rawAttachment = JSON.parse(rawAttachment);
+    } catch {
+      // Keep a non-JSON attachment string as-is.
+    }
+  }
   const messageValue = typeof data.message === "string" ? data.message.trim() : "";
   const normalizedMessagePath = messageValue.replace(/\\/g, "/");
   const looksLikeFilePath = /(^|\/)(uploads?|attachments?|files?|media)\//i.test(normalizedMessagePath) || /\.(png|jpe?g|gif|webp|bmp|svg|pdf|docx?|xlsx?|csv|txt|zip|rar)(\?.*)?$/i.test(normalizedMessagePath);
   const attachment = typeof rawAttachment === "string"
     ? { url: rawAttachment.replace(/\\/g, "/") }
     : rawAttachment || (looksLikeFilePath ? { url: normalizedMessagePath } : data);
-  const url = getFirstValue(
+  const urlCandidates = [
     attachment.attachment_url,
     attachment.attachmentUrl,
     attachment.attachment_path,
@@ -192,13 +201,34 @@ const normalizeAttachment = (source, fallbackFile) => {
     attachment.filePath,
     attachment.media_url,
     attachment.mediaUrl,
+    attachment.image_url,
+    attachment.imageUrl,
     attachment.secure_url,
     attachment.secureUrl,
     attachment.cloudinary_url,
     attachment.cloudinaryUrl,
     attachment.url,
+    data.attachment_url,
+    data.attachmentUrl,
+    data.file_url,
+    data.fileUrl,
+    data.media_url,
+    data.mediaUrl,
+    data.image_url,
+    data.imageUrl,
+    data.secure_url,
+    data.secureUrl,
+    data.cloudinary_url,
+    data.cloudinaryUrl,
+    data.url,
+    /^https?:\/\//i.test(messageValue) ? messageValue : undefined,
     fallbackFile?.url
-  );
+  ].filter(Boolean);
+  // APIs may return both `attachment_url: "photo.jpeg"` and a real
+  // Cloudinary URL in another field. Always prefer the fetchable absolute URL.
+  const url = urlCandidates.find((candidate) => /^https?:\/\//i.test(String(candidate)) || String(candidate).startsWith("blob:"))
+    || urlCandidates.find((candidate) => String(candidate).replace(/\\/g, "/").includes("/"))
+    || "";
   const normalizedUrl = String(url || "").replace(/\\/g, "/");
   const derivedName = normalizedUrl ? decodeURIComponent(normalizedUrl.split("/").pop()?.split("?")[0] || "") : "";
   const name = getFirstValue(
@@ -210,14 +240,32 @@ const normalizeAttachment = (source, fallbackFile) => {
     fallbackFile?.name,
     derivedName
   );
-  const type = getFirstValue(attachment.attachment_type, attachment.attachmentType, attachment.file_type, attachment.type, fallbackFile?.type);
+  const type = getFirstValue(
+    attachment.message_type,
+    attachment.messageType,
+    data.message_type,
+    data.messageType,
+    attachment.attachment_type,
+    attachment.attachmentType,
+    attachment.file_type,
+    attachment.mime_type,
+    attachment.type,
+    fallbackFile?.type
+  );
   const size = getFirstValue(attachment.attachment_size, attachment.attachmentSize, attachment.file_size, attachment.size, fallbackFile?.size);
 
   if (!url && !name) return null;
 
+  const imageHint = `${type || ""} ${name || ""} ${normalizedUrl}`.toLowerCase();
+  const isImage =
+    String(type || "").toLowerCase() === "image" ||
+    String(type || "").toLowerCase().startsWith("image/") ||
+    /\.(png|jpe?g|gif|webp|bmp|svg|heic|avif)(\?|#|$)/i.test(imageHint) ||
+    /\/image\/upload\//i.test(normalizedUrl);
+
   return {
     name: name || "Attachment",
-    type: String(type || "").startsWith("image/") ? "image" : type || "document",
+    type: isImage ? "image" : type || "document",
     size: typeof size === "number" ? formatFileSize(size) : size || "",
     url: getAssetUrl(normalizedUrl),
   };
@@ -337,6 +385,20 @@ function PatientList() {
   const fileInputRef = useRef(null);
   const videoPreviewRef = useRef(null);
   const mediaStreamRef = useRef(null);
+
+  useCallSocket({
+    onRinging: (call) => {
+      const callerId = getFirstValue(call?.caller_id, call?.callerId, call?.sender_id, call?.user_id);
+      if (callerId) setSelectedPatientId(callerId);
+      setCallSeconds(0);
+      setActiveCall({ ...call, id: getFirstValue(call?.id, call?._id, call?.call_id, call?.callId), type: getFirstValue(call?.call_type, call?.callType, call?.type, "voice"), status: "ringing", direction: "incoming", isMuted: false, isVideoOff: false });
+    },
+    onAccepted: (call) => setActiveCall((current) => current ? { ...current, ...call, status: "connected" } : current),
+    onRejected: () => { stopLocalMedia(); setActiveCall(null); },
+    onCancelled: () => { stopLocalMedia(); setActiveCall(null); },
+    onEnded: () => { stopLocalMedia(); setActiveCall(null); },
+    onMissed: () => { stopLocalMedia(); setActiveCall(null); },
+  });
 
   useEffect(() => {
     setPendingAttachment((current) => {
@@ -614,25 +676,41 @@ function PatientList() {
         setError("");
         const { file, previewUrl } = pendingAttachment;
         const fallbackFile = { name: file.name, type: file.type, size: file.size, url: previewUrl };
-        const response = await sendAttachment({ receiverId, message: messageText, file });
-        const uploadedFile = normalizeAttachment(response, fallbackFile) || {
-          name: file.name,
-          type: file.type.startsWith("image/") ? "image" : "document",
-          size: formatFileSize(file.size),
-          url: previewUrl,
-        };
-        const uploadedData = unwrapApiObject(response);
-        const uploadedMessage = {
-          id: getFirstValue(uploadedData.id, uploadedData.message_id, uploadedData._id, `file-${Date.now()}`),
+        const optimisticMessage = {
+          id: `file-${Date.now()}`,
           sender: "doctor",
-          text: cleanAttachmentMessageText(getFirstValue(uploadedData.message, uploadedData.text, messageText, ""), uploadedFile),
-          file: uploadedFile,
+          text: messageText,
+          file: {
+            name: file.name,
+            type: file.type.startsWith("image/") ? "image" : "document",
+            size: formatFileSize(file.size),
+            url: previewUrl,
+          },
           time: "Just now",
         };
-        setMessagesByPatient((prev) => ({ ...prev, [selectedPatient.id]: [...(prev[selectedPatient.id] || []), uploadedMessage] }));
-        setPatients((prev) => prev.map((patient) => String(patient.id) === String(selectedPatient.id) ? { ...patient, lastMessage: uploadedFile.name, messageTime: "Just now" } : patient));
+        setMessagesByPatient((prev) => ({
+          ...prev,
+          [selectedPatient.id]: [...(prev[selectedPatient.id] || []), optimisticMessage],
+        }));
+
+        await sendAttachment({
+          receiverId,
+          message: messageText,
+          file,
+          messageType: file.type.startsWith("image/") ? "image" : "file",
+        });
+        // Match the working patient portal: reload the stored conversation
+        // instead of rendering the upload response (which may contain only a filename/path).
+        const conversation = await getConversation(receiverId);
+        const currentUserId = getCurrentUserId();
+        const serverMessages = conversation.map((item, index) => normalizeChatMessage(item, index, currentUserId));
+        setMessagesByPatient((prev) => ({ ...prev, [selectedPatient.id]: serverMessages }));
+        setPatients((prev) => prev.map((patient) => String(patient.id) === String(selectedPatient.id)
+          ? { ...patient, lastMessage: file.name, messageTime: "Just now" }
+          : patient));
         setPendingAttachment(null);
         setMessage("");
+        if (fallbackFile.url?.startsWith("blob:")) URL.revokeObjectURL(fallbackFile.url);
         if (fileInputRef.current) fileInputRef.current.value = "";
       } catch (err) {
         setError(err.response?.data?.message || err.message || "Failed to upload attachment");
@@ -736,6 +814,17 @@ function PatientList() {
       await endChatCall({ callId, status: statusValue });
     } catch (err) {
       setError(err.response?.data?.message || err.message || "Failed to update call status");
+    }
+  };
+
+  const acceptIncomingCall = async () => {
+    if (!activeCall?.id) return;
+    try {
+      await startLocalMedia(activeCall.type);
+      await acceptChatCall(activeCall.id);
+      setActiveCall((call) => call ? { ...call, status: "connected" } : call);
+    } catch (err) {
+      setError(err.response?.data?.message || err.message || "Failed to accept call");
     }
   };
 
@@ -998,16 +1087,10 @@ function PatientList() {
               </div>
             )}
 
-            <div className="sms-call-controRequest URL
-https://s5jl7g4z-5000.inc1.devtunnels.ms/api/users/doctor-profile/3
-Request Method
-PUT
-Status Code
-200 OK
-Remote Address
-20.207.70.99:443
-Referrer Policy
-strict-origin-when-cross-originls">
+            <div className="sms-call-controls">
+              {activeCall.direction === "incoming" && activeCall.status === "ringing" && (
+                <button type="button" className="accept" onClick={acceptIncomingCall} title="Accept call"><FaPhone /></button>
+              )}
               <button
                 type="button"
                 className={activeCall.isMuted ? "active" : ""}
@@ -1026,7 +1109,7 @@ strict-origin-when-cross-originls">
                   {activeCall.isVideoOff ? <FaVideoSlash /> : <FaVideo />}
                 </button>
               )}
-              <button type="button" className="end" onClick={() => endCall("cancelled")} title="End call">
+              <button type="button" className="end" onClick={() => endCall(activeCall.direction === "incoming" ? "rejected" : "cancelled")} title={activeCall.direction === "incoming" ? "Reject call" : "End call"}>
                 <FaPhoneSlash />
               </button>
             </div>

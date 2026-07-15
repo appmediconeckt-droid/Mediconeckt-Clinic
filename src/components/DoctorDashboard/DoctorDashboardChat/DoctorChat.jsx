@@ -385,6 +385,7 @@ const PatientChat = () => {
         const response = await sendAttachment({
           receiverId: activePatientId,
           file,
+          messageType: file.type.startsWith('image/') ? 'image' : 'file',
         });
         const savedMessage = unwrapApiObject(response);
         setMessages((prev) =>
