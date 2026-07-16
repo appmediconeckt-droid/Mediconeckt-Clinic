@@ -2,12 +2,14 @@ import React, { useEffect, useMemo, useRef, useState } from "react";
 import axios from "axios";
 import {
   FaMicrophone,
+  FaMicrophoneSlash,
   FaPaperPlane,
   FaPaperclip,
   FaPhone,
   FaPhoneSlash,
   FaSearch,
   FaVideo,
+  FaVideoSlash,
 } from "react-icons/fa";
 import {
   acceptCall as acceptChatCall,
