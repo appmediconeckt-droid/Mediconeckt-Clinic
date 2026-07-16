@@ -811,11 +811,11 @@ const PatientSms = () => {
                 <button className={`wa-ctrl ${speakerOn ? '' : 'off'}`} onClick={() => setSpeakerOn(!speakerOn)}>
                   <i className={`fa-solid ${speakerOn ? 'fa-volume-high' : 'fa-volume-xmark'}`}></i>
                 </button>
-                <button className={`wa-ctrl ${videoOff ? 'off' : ''}`} onClick={() => setVideoOff(!videoOff)}>
-                  <i className={`fa-solid ${videoOff ? 'fa-video-slash' : 'fa-video'}`}></i>
+                <button className={`wa-ctrl ${videoOff ? 'off toggle-off' : ''}`} onClick={() => setVideoOff(!videoOff)} title={videoOff ? 'Turn camera on' : 'Turn camera off'}>
+                  <i className="fa-solid fa-video"></i>
                 </button>
-                <button className={`wa-ctrl ${muted ? 'off' : ''}`} onClick={() => setMuted(!muted)}>
-                  {muted ? <FaMicrophoneSlash /> : <FaMicrophone />}
+                <button className={`wa-ctrl ${muted ? 'off toggle-off' : ''}`} onClick={() => setMuted(!muted)} title={muted ? 'Unmute' : 'Mute'}>
+                  <FaMicrophone />
                 </button>
                 <button className={`wa-ctrl end ${callDirection === 'incoming' && callStatus === 'ringing' ? 'incoming-reject' : ''}`} onClick={endCall}><i className="fa-solid fa-phone-slash"></i>{callDirection === 'incoming' && callStatus === 'ringing' && <span>Reject Call</span>}</button>
               </div>

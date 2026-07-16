@@ -14,8 +14,10 @@ export default function GlobalIncomingCall() {
   const remoteVideoRef = useRef(null);
   const localVideoRef = useRef(null);
 
-  // Use this same incoming-call popup on every doctor and patient route.
-  const isChatScreen = false;
+  // Chat pages own their call UI/WebRTC connection. Keeping this global handler
+  // active there creates a second microphone stream that cannot be muted by the
+  // visible call controls.
+  const isChatScreen = ['/patient-sms', '/doctor-sms'].includes(location.pathname);
 
   const activeCallId = call?.id ?? call?._id ?? call?.call_id ?? call?.callId;
   const callerUserId = call?.caller_id ?? call?.callerId ?? call?.sender_id ?? call?.from_user_id;
@@ -39,12 +41,12 @@ export default function GlobalIncomingCall() {
 
   // Reflect mute / camera toggles onto the real tracks
   useEffect(() => {
-    rtc.localStream?.getAudioTracks().forEach((t) => { t.enabled = !muted; });
-  }, [muted, rtc.localStream]);
+    rtc.setAudioMuted(muted);
+  }, [muted, rtc.localStream, rtc.setAudioMuted]);
 
   useEffect(() => {
-    rtc.localStream?.getVideoTracks().forEach((t) => { t.enabled = !videoOff; });
-  }, [videoOff, rtc.localStream]);
+    rtc.setVideoOff(videoOff);
+  }, [videoOff, rtc.localStream, rtc.setVideoOff]);
 
   const closeCall = () => {
     rtc.stop();

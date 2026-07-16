@@ -34,11 +34,17 @@ export default function useWebRTCCall({ callId, peerUserId, callType = 'voice', 
     localStreamRef.current?.getAudioTracks().forEach((track) => {
       track.enabled = !muted;
     });
+    peerRef.current?.getSenders().forEach((sender) => {
+      if (sender.track?.kind === 'audio') sender.track.enabled = !muted;
+    });
   }, []);
 
   const setVideoOff = useCallback((off) => {
     localStreamRef.current?.getVideoTracks().forEach((track) => {
       track.enabled = !off;
+    });
+    peerRef.current?.getSenders().forEach((sender) => {
+      if (sender.track?.kind === 'video') sender.track.enabled = !off;
     });
   }, []);
 

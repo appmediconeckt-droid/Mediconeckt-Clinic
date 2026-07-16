@@ -2,14 +2,12 @@ import React, { useEffect, useMemo, useRef, useState } from "react";
 import axios from "axios";
 import {
   FaMicrophone,
-  FaMicrophoneSlash,
   FaPaperPlane,
   FaPaperclip,
   FaPhone,
   FaPhoneSlash,
   FaSearch,
   FaVideo,
-  FaVideoSlash,
 } from "react-icons/fa";
 import {
   acceptCall as acceptChatCall,
@@ -1128,7 +1126,7 @@ function PatientList() {
                 onClick={toggleMute}
                 title={activeCall.isMuted ? "Unmute" : "Mute"}
               >
-                {activeCall.isMuted ? <FaMicrophoneSlash /> : <FaMicrophone />}
+                <FaMicrophone />
               </button>
               {activeCall.type === "video" && (
                 <button
@@ -1137,7 +1135,7 @@ function PatientList() {
                   onClick={toggleVideo}
                   title={activeCall.isVideoOff ? "Turn camera on" : "Turn camera off"}
                 >
-                  {activeCall.isVideoOff ? <FaVideoSlash /> : <FaVideo />}
+                  <FaVideo />
                 </button>
               )}
               <button type="button" className={activeCall.direction === "incoming" && activeCall.status === "ringing" ? "reject incoming-action" : "end"} onClick={() => endCall(activeCall.direction === "incoming" ? "rejected" : "cancelled")} title={activeCall.direction === "incoming" ? "Reject incoming call" : "End call"}>
