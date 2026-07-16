@@ -1078,7 +1078,7 @@ function PatientList() {
 
       {activeCall && (
         <div className="sms-call-overlay" role="dialog" aria-modal="true">
-          <div className={`sms-call-card ${activeCall.type}`}>
+          <div className={`sms-call-card ${activeCall.type} ${activeCall.status}`}>
             <div className="sms-call-top">
               <span>{activeCall.type === "video" ? "Video call" : "Voice call"}</span>
               <strong>{activeCall.status === "connected" ? formatCallDuration(callSeconds) : getCallStatusText()}</strong>
@@ -1106,7 +1106,7 @@ function PatientList() {
 
             <div className="sms-call-controls">
               {activeCall.direction === "incoming" && activeCall.status === "ringing" && (
-                <button type="button" className="accept" onClick={acceptIncomingCall} title="Accept call"><FaPhone /></button>
+                <button type="button" className="accept incoming-action" onClick={acceptIncomingCall} title="Accept incoming call"><FaPhone /><span>Accept Call</span></button>
               )}
               <button
                 type="button"
@@ -1126,8 +1126,9 @@ function PatientList() {
                   {activeCall.isVideoOff ? <FaVideoSlash /> : <FaVideo />}
                 </button>
               )}
-              <button type="button" className="end" onClick={() => endCall(activeCall.direction === "incoming" ? "rejected" : "cancelled")} title={activeCall.direction === "incoming" ? "Reject call" : "End call"}>
+              <button type="button" className={activeCall.direction === "incoming" && activeCall.status === "ringing" ? "reject incoming-action" : "end"} onClick={() => endCall(activeCall.direction === "incoming" ? "rejected" : "cancelled")} title={activeCall.direction === "incoming" ? "Reject incoming call" : "End call"}>
                 <FaPhoneSlash />
+                {activeCall.direction === "incoming" && activeCall.status === "ringing" && <span>Reject Call</span>}
               </button>
             </div>
           </div>

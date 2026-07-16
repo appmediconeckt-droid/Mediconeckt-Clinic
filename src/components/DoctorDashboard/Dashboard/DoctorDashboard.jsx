@@ -2164,6 +2164,7 @@ import { motion } from "framer-motion";
 import logo from '../../../image/Mediconect-Logo-4.png';
 import { API_BASE_URL, getAuthHeaders } from "../../../redux/apiConfig";
 import axios from "axios";
+import { useNavigate } from "react-router-dom";
 
 const DEFAULT_BREAK_MIN = 30;
 const BREAK_OPTIONS_MIN = [5, 10, 15, 30, 45, 60];
@@ -2304,6 +2305,10 @@ const getDoctorIdFromUser = (user) => {
 
 const getAppointmentDateValue = (appointment) =>
   pickFirst(
+    appointment?.estimated_start_at,
+    appointment?.estimatedStartAt,
+    appointment?.original_appointment_at,
+    appointment?.originalAppointmentAt,
     appointment?.appointment_date,
     appointment?.appointmentDate,
     appointment?.date,
@@ -2383,6 +2388,11 @@ const isExpiredPendingAppointment = (appointment, nowMs = Date.now()) => {
 };
 
 const formatAppointmentTime = (appointment) => {
+  const effectiveDateTime = pickFirst(appointment?.estimated_start_at, appointment?.estimatedStartAt, appointment?.original_appointment_at, appointment?.originalAppointmentAt);
+  if (effectiveDateTime) {
+    const effectiveDate = new Date(effectiveDateTime);
+    if (!Number.isNaN(effectiveDate.getTime())) return effectiveDate.toLocaleTimeString([], { hour: "2-digit", minute: "2-digit" });
+  }
   const explicitTime = pickFirst(
     appointment?.time,
     appointment?.scheduled_time,
@@ -2445,6 +2455,12 @@ const formatAppointment = (appointment, forcedStatus) => {
     apiId,
     appointmentSource,
     appointmentType: appointmentSource === "walkin" ? "Walk-in" : "Online",
+    consultationMode: String(pickFirst(appointment?.consultation_mode, appointment?.consultationMode, appointment?.mode, "in-clinic")).toLowerCase(),
+    appointmentDate: getAppointmentDateValue(appointment),
+    originalAppointmentAt: pickFirst(appointment?.original_appointment_at, appointment?.originalAppointmentAt),
+    estimatedStartAt: pickFirst(appointment?.estimated_start_at, appointment?.estimatedStartAt),
+    delayMinutes: Number(pickFirst(appointment?.delay_minutes, appointment?.delayMinutes, 0)),
+    delayReason: pickFirst(appointment?.delay_reason, appointment?.delayReason),
     name: pickFirst(
       appointment?.patient_name,
       appointment?.patientName,
@@ -2493,7 +2509,7 @@ const formatAppointment = (appointment, forcedStatus) => {
     bp: pickFirst(appointment?.blood_pressure, appointment?.bp, appointment?.bloodPressure, "Not recorded"),
     temperature: pickFirst(appointment?.temperature, appointment?.temp),
     bloodGroup: pickFirst(appointment?.blood_group, appointment?.bloodGroup, patient?.blood_group, patient?.bloodGroup, "Not recorded"),
-    patientId: pickFirst(appointment?.patient_id, appointment?.patientId, patient?.id, patient?._id),
+    patientId: pickFirst(patient?.user_id, patient?.userId, appointment?.patient_user_id, appointment?.patientUserId, appointment?.patient_id, appointment?.patientId, patient?.id, patient?._id),
     startTime: pickFirst(appointment?.start_time, appointment?.startTime),
     endTime: pickFirst(appointment?.end_time, appointment?.endTime),
     durationMs: pickFirst(appointment?.duration_ms, appointment?.durationMs),
@@ -2504,6 +2520,27 @@ const formatAppointment = (appointment, forcedStatus) => {
     followUpRequired: pickFirst(appointment?.follow_up_required, appointment?.followUpRequired, false),
     followUpDate: pickFirst(appointment?.follow_up_date, appointment?.followUpDate),
   };
+};
+
+const getRemoteConsultationMode = (appointment) => {
+  const mode = String(appointment?.consultationMode || "").toLowerCase();
+  if (mode.includes("video")) return "video";
+  if (mode.includes("voice") || mode.includes("phone")) return "voice";
+  return "";
+};
+
+const isAppointmentCallWindowOpen = (appointment) => {
+  const dateKey = formatLocalDateKey(appointment?.appointmentDate);
+  if (!dateKey) return true;
+  const rawTime = String(appointment?.scheduledTime || "00:00:00");
+  const match = rawTime.match(/(\d{1,2}):(\d{2})(?::(\d{2}))?\s*(AM|PM)?/i);
+  if (!match) return true;
+  let hours = Number(match[1]);
+  if (match[4]?.toUpperCase() === "PM" && hours !== 12) hours += 12;
+  if (match[4]?.toUpperCase() === "AM" && hours === 12) hours = 0;
+  const scheduled = new Date(`${dateKey}T${String(hours).padStart(2, "0")}:${match[2]}:${match[3] || "00"}`);
+  const diffMinutes = (Date.now() - scheduled.getTime()) / 60000;
+  return diffMinutes >= -15 && diffMinutes <= 90;
 };
 
 // Color Themes (same as before - keeping it compact)
@@ -3437,6 +3474,7 @@ const SummaryModal = ({ show, onHide, appointmentData, onPrint, onCompleteWithou
 
 // Main DoctorDashboard Component
 const DoctorDashboard = () => {
+  const navigate = useNavigate();
   const [appointments, setAppointments] = useState([]);
   const [completed, setCompleted] = useState([]);
   const [activeSession, setActiveSession] = useState(null);
@@ -3531,6 +3569,31 @@ const DoctorDashboard = () => {
     fetchAppointments();
   }, [doctorId]);
 
+  // Restore an active server break after refresh/login.
+  useEffect(() => {
+    if (!doctorId) return;
+    axios.get(`${API_BASE_URL}/doctor-breaks/active`, { headers: getAuthHeaders() })
+      .then((response) => {
+        if (!response.data?.active || !response.data?.break) return;
+        const serverBreak = response.data.break;
+        const breakEndMs = new Date(serverBreak.expected_end_at).getTime();
+        const breakStartMs = new Date(serverBreak.started_at).getTime();
+        if (!breakEndMs || breakEndMs <= Date.now()) return;
+        setActiveSession((current) => ({
+          appt: current?.appt || null,
+          startTime: current?.startTime || breakStartMs,
+          accumulatedPauseMs: current?.accumulatedPauseMs || 0,
+          pauseStartMs: null,
+          breakId: serverBreak.id,
+          breakStartMs,
+          breakEndMs,
+          breakDurationMs: Math.max(0, breakEndMs - breakStartMs),
+          status: "break",
+        }));
+      })
+      .catch((err) => console.error("Failed to restore active break:", err));
+  }, [doctorId]);
+
   // Timer tick
   useEffect(() => {
     tickRef.current = setInterval(() => {
@@ -3607,18 +3670,24 @@ const DoctorDashboard = () => {
   };
 
   // Break start
-  const handleBreak = () => {
+  const handleBreak = async () => {
     const minutes =
       Number(customBreakMin) > 0
         ? Number(customBreakMin)
         : Number(selectedBreakMin);
 
-    const breakStart = Date.now();
-    const breakDurationMs = minutes * 60 * 1000;
-    const breakEnd = breakStart + breakDurationMs;
+    try {
+      const response = await axios.post(`${API_BASE_URL}/doctor-breaks/start`, {
+        duration_minutes: minutes,
+        reason: "Personal break",
+      }, { headers: getAuthHeaders() });
+      const serverBreak = response.data?.break || response.data?.data?.break || response.data?.data || response.data;
+      const breakStart = new Date(serverBreak.started_at || Date.now()).getTime();
+      const breakEnd = new Date(serverBreak.expected_end_at || (Date.now() + minutes * 60000)).getTime();
+      const breakDurationMs = Math.max(0, breakEnd - breakStart);
 
-    if (!activeSession) {
-      setActiveSession({
+      if (!activeSession) {
+        setActiveSession({
         appt: null,
         startTime: Date.now(),
         accumulatedPauseMs: 0,
@@ -3626,10 +3695,11 @@ const DoctorDashboard = () => {
         breakStartMs: breakStart,
         breakEndMs: breakEnd,
         breakDurationMs,
+        breakId: serverBreak.id,
         status: "break",
-      });
-    } else {
-      setActiveSession((s) => ({
+        });
+      } else {
+        setActiveSession((s) => ({
         ...s,
         accumulatedPauseMs: s.pauseStartMs
           ? s.accumulatedPauseMs + (Date.now() - s.pauseStartMs)
@@ -3638,8 +3708,13 @@ const DoctorDashboard = () => {
         breakStartMs: breakStart,
         breakEndMs: breakEnd,
         breakDurationMs,
+        breakId: serverBreak.id,
         status: "break",
-      }));
+        }));
+      }
+      await fetchAppointments();
+    } catch (err) {
+      setError(err.response?.data?.message || err.message || "Failed to start break");
     }
   };
 
@@ -3648,6 +3723,11 @@ const DoctorDashboard = () => {
     if (!activeSession) return;
     if (activeSession.status === "break" && activeSession.breakEndMs) {
       if (activeSession.breakEndMs - Date.now() <= 0) {
+        if (activeSession.breakId) {
+          axios.patch(`${API_BASE_URL}/doctor-breaks/${activeSession.breakId}/end`, {}, { headers: getAuthHeaders() })
+            .then(fetchAppointments)
+            .catch((err) => console.error("Failed to auto-end break:", err));
+        }
         if (!activeSession.appt) {
           setActiveSession(null);
         } else {
@@ -3664,9 +3744,18 @@ const DoctorDashboard = () => {
     }
   }, [now, activeSession]);
 
-  const handleEndBreakAndResume = () => {
+  const handleEndBreakAndResume = async () => {
     if (!activeSession || activeSession.status !== "break") return;
     const used = Date.now() - activeSession.breakStartMs;
+
+    try {
+      if (activeSession.breakId) {
+        await axios.patch(`${API_BASE_URL}/doctor-breaks/${activeSession.breakId}/end`, {}, { headers: getAuthHeaders() });
+      }
+    } catch (err) {
+      setError(err.response?.data?.message || err.message || "Failed to end break");
+      return;
+    }
 
     if (!activeSession.appt) {
       setActiveSession(null);
@@ -3680,6 +3769,7 @@ const DoctorDashboard = () => {
         status: "started",
       }));
     }
+    await fetchAppointments();
   };
 
   // Open complete modal
@@ -4110,9 +4200,11 @@ const DoctorDashboard = () => {
                         </div>
                         <div className="dd-queue-meta">
                           <span>{appt.appointmentType}</span>
+                          {getRemoteConsultationMode(appt) && <span><i className={`bi ${getRemoteConsultationMode(appt) === "video" ? "bi-camera-video" : "bi-telephone"}`}></i>{getRemoteConsultationMode(appt) === "video" ? "Video" : "Voice"}</span>}
                           <span>{appt.gender}</span>
                           <span className="issue">{appt.issue}</span>
                           <span><i className="bi bi-clock"></i>{appt.scheduledTime || (appt.endTime ? formatTimeOfDay(appt.endTime) : "Today")}</span>
+                          {appt.delayMinutes > 0 && <span className="issue"><i className="bi bi-hourglass-split"></i>Delayed {appt.delayMinutes} min{appt.delayReason ? ` - ${appt.delayReason}` : ""}</span>}
                         </div>
                         <div className="dd-vital-tags">
                           <span>BP: {appt.bp || "N/A"}</span>
@@ -4120,6 +4212,18 @@ const DoctorDashboard = () => {
                         </div>
                       </div>
                       <div className="dd-row-actions">
+                        {getRemoteConsultationMode(appt) && appt.status !== "completed" && (
+                          <button
+                            type="button"
+                            className="dd-call-action"
+                            disabled={!isAppointmentCallWindowOpen(appt) || !appt.patientId}
+                            title={isAppointmentCallWindowOpen(appt) ? `Start ${getRemoteConsultationMode(appt)} call` : "Call opens 15 minutes before appointment"}
+                            onClick={() => navigate(`/patient-chat/${appt.patientId}`, { state: { appointment: { ...appt, callType: getRemoteConsultationMode(appt) } } })}
+                          >
+                            <i className={`bi ${getRemoteConsultationMode(appt) === "video" ? "bi-camera-video-fill" : "bi-telephone-fill"}`}></i>
+                            {getRemoteConsultationMode(appt) === "video" ? "Video Call" : "Voice Call"}
+                          </button>
+                        )}
                         {appt.status === "completed" ? (
                           <button type="button" className="ghost" onClick={() => handleEditCompleted(appt)}>
                             View

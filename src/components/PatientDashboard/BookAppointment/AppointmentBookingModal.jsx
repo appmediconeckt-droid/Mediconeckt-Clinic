@@ -17,6 +17,7 @@ const AppointmentBookingModal = ({ doctorData, onClose }) => {
   const [modeOpen, setModeOpen] = useState(false);
   const [selectedClinicId, setSelectedClinicId] = useState(1);
   const [selectedModeId, setSelectedModeId] = useState('in-clinic');
+  const [appointmentLocation, setAppointmentLocation] = useState('');
   const [step, setStep] = useState('select');          // 'select' | 'payment' | 'success'
   const [paymentMethod, setPaymentMethod] = useState('Cash');
   const [token, setToken] = useState(() => Math.floor(Math.random() * 20) + 1);
@@ -156,7 +157,7 @@ const AppointmentBookingModal = ({ doctorData, onClose }) => {
   const patientName = patient.name.replace(' (You)', '') || 'Not Provided';
 
   const goToPayment = () => {
-    if (selectedDate && selectedTime && hasClinics) setStep('payment');
+    if (selectedDate && selectedTime && hasClinics && appointmentLocation.trim()) setStep('payment');
   };
 
   const [booking, setBooking] = useState(false);
@@ -189,6 +190,8 @@ const AppointmentBookingModal = ({ doctorData, onClose }) => {
       appointment_time: to24Hour(selectedTime),
       clinic_id: selectedClinic.id,
       clinic: selectedClinic.name,
+      location: appointmentLocation.trim(),
+      appointment_location: appointmentLocation.trim(),
       consultation_mode: selectedMode.id,
       fee: totalFee,
       payment_method: paymentMethod,
@@ -227,6 +230,7 @@ const AppointmentBookingModal = ({ doctorData, onClose }) => {
       key: 'clinic', icon: 'fa-hospital', label: 'Selected Clinic',
       value: selectedClinic.name, active: false,
     },
+    { key: 'location', icon: 'fa-location-dot', label: 'Location', value: appointmentLocation.trim() || null, active: false },
     {
       key: 'mode', icon: selectedMode.icon, label: 'Consultation Mode',
       value: `${selectedMode.name}${selectedMode.fee > 0 ? ` +$${selectedMode.fee}` : ''}`, active: false,
@@ -260,6 +264,7 @@ const AppointmentBookingModal = ({ doctorData, onClose }) => {
               <div className="abm-pay-row"><span><i className="fa-solid fa-user"></i> Patient</span><strong>{patientName}</strong></div>
               <div className="abm-pay-row"><span><i className="fa-solid fa-user-doctor"></i> Doctor</span><strong>{doctor.name}</strong></div>
               <div className="abm-pay-row"><span><i className="fa-solid fa-hospital"></i> Clinic</span><strong>{selectedClinic.name}</strong></div>
+              <div className="abm-pay-row"><span><i className="fa-solid fa-location-dot"></i> Location</span><strong>{appointmentLocation}</strong></div>
               <div className="abm-pay-row"><span><i className={`fa-solid ${selectedMode.icon}`}></i> Consultation Mode</span><strong>{selectedMode.name}</strong></div>
               <div className="abm-pay-row"><span><i className="fa-regular fa-calendar"></i> Date</span><strong>{dateStr}</strong></div>
               <div className="abm-pay-row"><span><i className="fa-regular fa-clock"></i> Time</span><strong>{selectedTime}</strong></div>
@@ -299,6 +304,7 @@ const AppointmentBookingModal = ({ doctorData, onClose }) => {
                   <div className="abm-pay-row"><span><i className="fa-solid fa-user"></i> Patient</span><strong>{patientName}</strong></div>
                   <div className="abm-pay-row"><span><i className="fa-solid fa-user-doctor"></i> Doctor</span><strong>{doctor.name}</strong></div>
                   <div className="abm-pay-row"><span><i className="fa-solid fa-hospital"></i> Clinic</span><strong>{selectedClinic.name}</strong></div>
+                  <div className="abm-pay-row"><span><i className="fa-solid fa-location-dot"></i> Location</span><strong>{appointmentLocation}</strong></div>
                   <div className="abm-pay-row"><span><i className={`fa-solid ${selectedMode.icon}`}></i> Mode</span><strong>{selectedMode.name}</strong></div>
                   <div className="abm-pay-row"><span><i className="fa-regular fa-calendar"></i> Date</span><strong>{dateStr}</strong></div>
                   <div className="abm-pay-row"><span><i className="fa-regular fa-clock"></i> Time</span><strong>{selectedTime}</strong></div>
@@ -481,6 +487,18 @@ const AppointmentBookingModal = ({ doctorData, onClose }) => {
             </div>
           </div>
 
+          <div className="abm-location-field">
+            <label htmlFor="appointment-location"><i className="fa-solid fa-location-dot"></i> Appointment Location</label>
+            <input
+              id="appointment-location"
+              type="text"
+              value={appointmentLocation}
+              onChange={(event) => setAppointmentLocation(event.target.value)}
+              placeholder="Enter area, address or location"
+              required
+            />
+          </div>
+
           <div className="abm-main">
           <div className="abm-section-head">
             <h3 className="abm-section-title">Choose Appointment Date</h3>
@@ -592,7 +610,7 @@ const AppointmentBookingModal = ({ doctorData, onClose }) => {
           <button
             className="abm-confirm"
             onClick={goToPayment}
-            disabled={!selectedDate || !selectedTime || !hasClinics}
+            disabled={!selectedDate || !selectedTime || !hasClinics || !appointmentLocation.trim()}
           >
             Confirm Selection <i className="fa-solid fa-arrow-right"></i>
           </button>

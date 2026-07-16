@@ -1,5 +1,5 @@
 import React, { useState, useEffect, useRef } from 'react';
-import { useParams, useNavigate } from 'react-router-dom';
+import { useParams, useNavigate, useLocation } from 'react-router-dom';
 import { useSelector } from 'react-redux';
 import './DoctorChat.css';
 import { getAttachmentUrl, getChatDoctors, getConversation, getCurrentUserId, sendAttachment, sendMessage, startCall, unwrapApiObject } from '../../../redux/chatApi';
@@ -7,6 +7,7 @@ import { getAttachmentUrl, getChatDoctors, getConversation, getCurrentUserId, se
 const DoctorChat = () => {
     const { doctorId } = useParams();
     const navigate = useNavigate();
+    const location = useLocation();
     const messagesEndRef = useRef(null);
     const authUser = useSelector((state) => state.auth?.user);
     const [appointmentType, setAppointmentType] = useState('in_clinic'); // 'video', 'voice', 'in_clinic'
@@ -19,18 +20,15 @@ const DoctorChat = () => {
     // Fetch appointment details
     useEffect(() => {
         const fetchAppointmentDetails = () => {
-            // In a real app, this would come from an API based on doctorId
-            // For demo, we'll simulate different appointment types based on doctorId
-            
-            const appointmentData = {
-                1: { type: 'video', date: '2024-01-15', time: '10:30 AM', status: 'scheduled' },
-                2: { type: 'voice', date: '2024-01-16', time: '2:00 PM', status: 'scheduled' },
-                3: { type: 'in_clinic', date: '2024-01-17', time: '11:00 AM', status: 'scheduled' },
-                4: { type: 'video', date: '2024-01-18', time: '3:30 PM', status: 'scheduled' },
-                5: { type: 'voice', date: '2024-01-19', time: '9:00 AM', status: 'scheduled' }
+            const booked = location.state?.appointment || {};
+            const rawType = booked.callType || booked.consultation_mode || booked.consultationMode || booked.mode || 'in_clinic';
+            const details = {
+                ...booked,
+                type: String(rawType).toLowerCase().replace('-', '_'),
+                date: booked.appointment_date || booked.date,
+                time: booked.appointment_time || booked.time,
+                status: booked.appointment_status || booked.status || 'scheduled',
             };
-            
-            const details = appointmentData[parseInt(doctorId)] || { type: 'in_clinic', date: '2024-01-20', time: '1:00 PM', status: 'scheduled' };
             
             setAppointmentDetails(details);
             setAppointmentType(details.type);
@@ -49,7 +47,7 @@ const DoctorChat = () => {
         };
         
         fetchAppointmentDetails();
-    }, [doctorId]);
+    }, [doctorId, location.state]);
     
     const startTimedCall = async (callType) => {
         if (!activeDoctor?.id) {

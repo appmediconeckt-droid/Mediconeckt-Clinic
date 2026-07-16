@@ -586,7 +586,51 @@
 }
 
 .call-overlay.voice {
-  background: linear-gradient(160deg, #006B2C 0%, #043d1b 55%, #062514 100%);
+  background: radial-gradient(circle at 50% 42%, #101a2d 0%, #0b111b 48%, #080d14 100%);
+}
+
+.call-screen-title {
+  height: 86px;
+  flex: 0 0 86px;
+  display: flex;
+  align-items: center;
+  padding: 0 26px;
+  border-bottom: 1px solid rgba(148, 163, 184, 0.18);
+  background: #121923;
+  color: #fff;
+  font-size: 30px;
+  font-weight: 800;
+  letter-spacing: -0.5px;
+}
+
+.call-overlay.voice .call-secure.top { display: none; }
+.call-overlay.voice .call-voice { padding-top: 0; }
+.call-overlay.voice .call-voice-avatar {
+  width: 174px;
+  height: 174px;
+  background: #5789ef !important;
+  font-size: 64px;
+  box-shadow: 0 0 0 12px rgba(60, 107, 194, .18), 0 0 0 24px rgba(60, 107, 194, .10);
+}
+.call-overlay.voice .call-pulse { inset: -34px; border-color: rgba(82, 135, 231, .42); }
+.call-overlay.voice .call-pulse2 { inset: -72px; border-color: rgba(49, 91, 158, .24); }
+.call-overlay.voice .call-voice-name { margin-top: 58px; font-size: 38px; }
+.call-overlay.voice .call-voice-role { display: none; }
+.call-overlay.voice .call-voice-timer { margin-top: 20px; color: #5790ff; font-size: 22px; }
+.call-overlay.voice .call-wave { display: none; }
+.call-overlay.voice .call-controls {
+  width: auto;
+  margin-bottom: 28px;
+  padding: 12px 18px;
+  border: 1px solid rgba(148, 163, 184, .25);
+  border-radius: 999px;
+  background: rgba(18, 25, 35, .85);
+}
+
+@media (max-width: 600px) {
+  .call-screen-title { height: 68px; flex-basis: 68px; padding: 0 18px; font-size: 23px; }
+  .call-overlay.voice .call-voice-avatar { width: 128px; height: 128px; font-size: 46px; }
+  .call-overlay.voice .call-voice-name { margin-top: 42px; font-size: 28px; }
 }
 
 /* Top bar */
@@ -842,6 +886,26 @@
 
 .call-ctrl.end:hover { background: #dc2626; }
 
+.call-ctrl.incoming-accept,
+.call-ctrl.incoming-reject,
+.wa-ctrl.incoming-accept,
+.wa-ctrl.incoming-reject {
+  width: auto;
+  min-width: 132px;
+  padding: 0 20px;
+  border-radius: 999px;
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  gap: 9px;
+  font-size: 14px;
+  font-weight: 800;
+}
+.call-ctrl.incoming-accept,
+.wa-ctrl.incoming-accept { background: #16a34a; color: #fff; }
+.call-ctrl.incoming-reject,
+.wa-ctrl.incoming-reject { background: #dc2626; color: #fff; }
+
 @keyframes callPulse {
   0% { box-shadow: 0 0 0 0 rgba(34, 197, 94, 0.5); }
   70% { box-shadow: 0 0 0 8px rgba(34, 197, 94, 0); }
@@ -1092,6 +1156,8 @@
   .wa-pip { width: 96px; height: 130px; top: 58px; }
   .wa-ctrl { width: 48px; height: 48px; }
   .wa-ctrl.end { width: 56px; height: 56px; }
+  .wa-ctrl.incoming-accept, .wa-ctrl.incoming-reject,
+  .call-ctrl.incoming-accept, .call-ctrl.incoming-reject { min-width: 112px; padding: 0 13px; font-size: 12px; }
 }
 
 /* ============================================================

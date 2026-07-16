@@ -15,6 +15,7 @@ const CALL_EVENTS = [
   'webrtc:offer',
   'webrtc:answer',
   'webrtc:ice-candidate',
+  'appointment:delayed',
 ];
 
 export default function useCallSocket(handlers = {}, enabled = true) {
@@ -58,6 +59,7 @@ export default function useCallSocket(handlers = {}, enabled = true) {
           'webrtc:offer': 'onWebRTCOffer',
           'webrtc:answer': 'onWebRTCAnswer',
           'webrtc:ice-candidate': 'onWebRTCIceCandidate',
+          'appointment:delayed': 'onAppointmentDelayed',
         }[eventName];
         handlersRef.current[callbackName]?.(data);
       });

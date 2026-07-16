@@ -1,0 +1,346 @@
+/* ===== Incoming call popup (ringing) ===== */
+.gic-overlay {
+  position: fixed;
+  inset: 0;
+  z-index: 100000;
+  background: rgba(17, 20, 27, 0.88);
+  backdrop-filter: blur(5px);
+  display: grid;
+  place-items: center;
+  padding: 20px;
+}
+
+.gic-popup {
+  width: 575px;
+  max-width: 92vw;
+  padding: 28px 36px 18px;
+  border-radius: 38px;
+  background: linear-gradient(145deg, #191733, #242044);
+  border: 2px solid rgba(126, 121, 225, .28);
+  text-align: center;
+  box-shadow: 0 28px 65px rgba(0, 0, 0, .55);
+  animation: gic-pop 0.18s ease-out;
+}
+
+@keyframes gic-pop {
+  from { transform: scale(0.94); opacity: 0; }
+  to   { transform: scale(1); opacity: 1; }
+}
+
+.gic-avatar {
+  width: 76px;
+  height: 76px;
+  margin: 0 auto 16px;
+  border-radius: 50%;
+  display: grid;
+  place-items: center;
+  background: #dcfce7;
+  color: #006B2C;
+  font-size: 30px;
+  animation: gic-pulse 1.4s ease-in-out infinite;
+}
+
+@keyframes gic-pulse {
+  0%, 100% { box-shadow: 0 0 0 0 rgba(0, 107, 44, 0.35); }
+  50%      { box-shadow: 0 0 0 14px rgba(0, 107, 44, 0); }
+}
+
+.gic-name {
+  margin: 0 0 4px;
+  font-size: 20px;
+  font-weight: 700;
+  color: #111827;
+}
+
+.gic-sub {
+  margin: 0 0 26px;
+  color: #64748b;
+  font-size: 14px;
+}
+
+.gic-actions {
+  display: flex;
+  justify-content: center;
+  gap: 18px;
+}
+
+.gic-btn {
+  border: 0;
+  border-radius: 999px;
+  padding: 13px 26px;
+  font-size: 14px;
+  font-weight: 800;
+  color: #fff;
+  cursor: pointer;
+  display: inline-flex;
+  align-items: center;
+  gap: 8px;
+  transition: filter 0.15s ease;
+}
+
+.gic-btn:hover { filter: brightness(0.93); }
+.gic-btn-accept { background: #16a34a; box-shadow: 0 8px 18px rgba(22, 163, 74, .28); }
+.gic-btn-reject { background: #dc2626; box-shadow: 0 8px 18px rgba(220, 38, 38, .25); }
+
+@media (max-width: 430px) {
+  .gic-actions { flex-direction: column-reverse; gap: 12px; }
+  .gic-btn { width: 100%; justify-content: center; }
+}
+
+/* ===== Connected full-screen call ===== */
+.gic-call {
+  position: fixed;
+  inset: 0;
+  z-index: 100000;
+  background: #0f172a;
+  display: flex;
+  flex-direction: column;
+}
+
+.gic-call-top {
+  position: absolute;
+  top: 0;
+  left: 0;
+  right: 0;
+  padding: 18px 22px;
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  color: #fff;
+  background: linear-gradient(180deg, rgba(0, 0, 0, 0.55), transparent);
+  z-index: 2;
+}
+
+.gic-call-who { font-size: 16px; font-weight: 700; }
+.gic-call-timer { font-size: 13px; opacity: 0.85; }
+
+.gic-enc {
+  font-size: 12px;
+  opacity: 0.8;
+  display: inline-flex;
+  align-items: center;
+  gap: 6px;
+}
+
+/* Video stage */
+.gic-stage {
+  flex: 1;
+  position: relative;
+  overflow: hidden;
+}
+
+.gic-remote {
+  width: 100%;
+  height: 100%;
+  object-fit: cover;
+  background: #0f172a;
+}
+
+.gic-pip {
+  position: absolute;
+  right: 18px;
+  bottom: 110px;
+  width: 140px;
+  height: 104px;
+  border-radius: 12px;
+  overflow: hidden;
+  background: #1e293b;
+  box-shadow: 0 8px 24px rgba(0, 0, 0, 0.4);
+  border: 2px solid rgba(255, 255, 255, 0.15);
+}
+
+.gic-pip video {
+  width: 100%;
+  height: 100%;
+  object-fit: cover;
+  transform: scaleX(-1);
+}
+
+/* Voice call stage */
+.gic-voice {
+  flex: 1;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+  gap: 14px;
+  color: #fff;
+}
+
+.gic-voice-avatar {
+  width: 128px;
+  height: 128px;
+  border-radius: 50%;
+  display: grid;
+  place-items: center;
+  background: #1e293b;
+  font-size: 44px;
+  font-weight: 700;
+  color: #fff;
+  animation: gic-pulse 1.6s ease-in-out infinite;
+}
+
+.gic-voice-name { font-size: 22px; font-weight: 700; margin: 6px 0 0; }
+.gic-voice-timer { font-size: 14px; opacity: 0.8; }
+
+/* Waiting for the other side's media */
+.gic-waiting {
+  position: absolute;
+  inset: 0;
+  display: grid;
+  place-items: center;
+  color: #94a3b8;
+  font-size: 14px;
+  gap: 10px;
+}
+
+/* Controls */
+.gic-controls {
+  position: absolute;
+  left: 0;
+  right: 0;
+  bottom: 0;
+  padding: 24px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  gap: 18px;
+  background: linear-gradient(0deg, rgba(0, 0, 0, 0.6), transparent);
+  z-index: 2;
+}
+
+.gic-ctrl {
+  width: 56px;
+  height: 56px;
+  border-radius: 50%;
+  border: 0;
+  background: rgba(255, 255, 255, 0.16);
+  color: #fff;
+  font-size: 19px;
+  cursor: pointer;
+  display: grid;
+  place-items: center;
+  transition: background 0.15s ease;
+}
+
+.gic-ctrl:hover { background: rgba(255, 255, 255, 0.26); }
+.gic-ctrl.off { background: #ffffff; color: #0f172a; }
+.gic-ctrl.end { background: #dc2626; width: 64px; height: 64px; font-size: 22px; }
+.gic-ctrl.end:hover { background: #b91c1c; }
+
+@media (max-width: 640px) {
+  .gic-pip { width: 104px; height: 78px; bottom: 100px; right: 12px; }
+  .gic-ctrl { width: 50px; height: 50px; }
+  .gic-ctrl.end { width: 58px; height: 58px; }
+}
+
+/* Shared doctor/patient incoming-call popup */
+.gic-popup .gic-avatar {
+  width: 90px;
+  height: 90px;
+  margin-bottom: 14px;
+  overflow: hidden;
+  border: 4px solid #8b8cff;
+  background: #d8d9e8;
+  color: #272445;
+  font-size: 36px;
+  animation: none;
+}
+
+.gic-popup .gic-avatar img {
+  width: 100%;
+  height: 100%;
+  object-fit: cover;
+}
+
+.gic-popup .gic-name {
+  margin-bottom: 8px;
+  color: #fff;
+  font-size: 30px;
+  line-height: 1.2;
+  font-weight: 800;
+}
+
+.gic-popup .gic-type {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  gap: 8px;
+  margin-bottom: 10px;
+  color: #f5f3ff;
+  font-size: 20px;
+  font-weight: 700;
+}
+
+.gic-popup .gic-sub {
+  margin-bottom: 22px;
+  color: #b9b7d2;
+  font-size: 16px;
+}
+
+.gic-popup .gic-actions {
+  gap: 17px;
+}
+
+.gic-popup .gic-btn {
+  min-width: 158px;
+  justify-content: center;
+  padding: 15px 25px;
+  font-size: 17px;
+}
+
+.gic-popup .gic-btn-reject {
+  background: #fa3341;
+  box-shadow: 0 10px 23px rgba(250, 51, 65, 0.28);
+}
+
+.gic-popup .gic-btn-accept {
+  background: #0db981;
+  box-shadow: 0 10px 23px rgba(13, 185, 129, 0.28);
+}
+
+@media (max-width: 520px) {
+  .gic-popup {
+    width: calc(100vw - 28px);
+    padding: 25px 20px 20px;
+    border-radius: 28px;
+  }
+
+  .gic-popup .gic-name { font-size: 24px; }
+  .gic-popup .gic-type { font-size: 17px; }
+  .gic-popup .gic-actions { flex-direction: column-reverse; }
+  .gic-popup .gic-btn { width: 100%; }
+}
+
+/* Active call screen shared by doctor and patient */
+.gic-call { background: radial-gradient(circle at 50% 42%, #101a2d 0%, #0b111b 48%, #080d14 100%); }
+.gic-call .gic-call-top {
+  min-height: 86px;
+  padding: 18px 26px;
+  background: #121923;
+  border-bottom: 1px solid rgba(148, 163, 184, .18);
+}
+.gic-call .gic-call-who { font-size: 30px; font-weight: 800; }
+.gic-call .gic-voice-avatar {
+  width: 174px;
+  height: 174px;
+  background: #5789ef;
+  font-size: 64px;
+  animation: gic-active-ring 1.7s ease-in-out infinite;
+}
+@keyframes gic-active-ring {
+  0%, 100% { box-shadow: 0 0 0 12px rgba(60, 107, 194, .18), 0 0 0 62px rgba(60, 107, 194, .06); }
+  50% { box-shadow: 0 0 0 22px rgba(60, 107, 194, .10), 0 0 0 88px rgba(60, 107, 194, 0); }
+}
+.gic-call .gic-voice-name { margin-top: 44px; font-size: 38px; font-weight: 800; }
+.gic-call .gic-voice-timer { color: #5790ff; font-size: 20px; opacity: 1; }
+.gic-call .gic-controls { background: transparent; }
+.gic-call .gic-ctrl { background: #141b25; border: 1px solid rgba(148, 163, 184, .28); }
+.gic-call .gic-ctrl.end { background: #ff4d4f; border: 0; }
+
+@media (max-width: 600px) {
+  .gic-call .gic-call-top { min-height: 68px; padding: 12px 18px; }
+  .gic-call .gic-call-who { font-size: 23px; }
+  .gic-call .gic-voice-avatar { width: 128px; height: 128px; font-size: 46px; }
+  .gic-call .gic-voice-name { font-size: 28px; }
+}

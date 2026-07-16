@@ -3,6 +3,7 @@ import { useNavigate } from 'react-router-dom';
 import axios from 'axios';
 import { API_BASE_URL, getAuthHeaders } from '../../../redux/apiConfig';
 import { getCurrentUserId } from '../../../redux/chatApi';
+import useCallSocket from '../../../hooks/useCallSocket';
 import './MyAppointments.css';
 
 const TABS = ['Upcoming', 'Past', 'Cancelled'];
@@ -13,6 +14,14 @@ const MyAppointments = () => {
   const [status, setStatus] = useState('loading'); // loading | succeeded | failed
   const [error, setError] = useState('');
   const [tab, setTab] = useState('Upcoming');
+
+  useCallSocket({
+    onAppointmentDelayed: (data) => setAppointments((current) => current.map((appointment) =>
+      String(appointment.id || appointment._id) === String(data.appointment_id)
+        ? { ...appointment, estimated_start_at: data.estimated_start_at, delay_minutes: data.delay_minutes, delay_reason: data.reason }
+        : appointment
+    )),
+  });
 
   const loadAppointments = async () => {
     const id = getCurrentUserId();
@@ -88,8 +97,10 @@ const MyAppointments = () => {
     return `${String(h).padStart(2, '0')}:${m[2]} ${ampm}`;
   };
 
+  const effectiveTime = (appointment) => appointment.estimated_start_at || appointment.original_appointment_at;
+
   const isPast = (a) => {
-    const d = a.appointment_date;
+    const d = effectiveTime(a) || a.appointment_date;
     if (!d) return false;
     return new Date(d).setHours(0, 0, 0, 0) < new Date().setHours(0, 0, 0, 0);
   };
@@ -116,6 +127,27 @@ const MyAppointments = () => {
     const raw = a.doctor_name || a.doctor?.full_name || a.doctor?.name || a.doctorName || 'Doctor';
     const name = titleCase(raw);
     return /^dr\.?\s/i.test(name) ? name : `Dr. ${name}`;
+  };
+
+  const doctorId = (a) => a.doctor_user_id || a.doctor_id || a.doctorId || a.doctor?.user_id || a.doctor?.id || a.doctor?._id;
+
+  const callAvailability = (a) => {
+    const mode = String(a.consultation_mode || a.mode || '').toLowerCase();
+    if (!mode.includes('video') && !mode.includes('voice')) return { enabled: false, mode: '' };
+    const effective = effectiveTime(a);
+    const date = String(a.appointment_date || '').slice(0, 10);
+    const time = String(a.appointment_time || '00:00:00').slice(0, 8);
+    const scheduled = effective ? new Date(effective) : new Date(`${date}T${time}`);
+    if (Number.isNaN(scheduled.getTime())) return { enabled: true, mode: mode.includes('video') ? 'video' : 'voice' };
+    const diffMinutes = (Date.now() - scheduled.getTime()) / 60000;
+    return { enabled: diffMinutes >= -15 && diffMinutes <= 90, mode: mode.includes('video') ? 'video' : 'voice' };
+  };
+
+  const joinAppointmentCall = (appointment) => {
+    const availability = callAvailability(appointment);
+    const id = doctorId(appointment);
+    if (!availability.enabled || !id) return;
+    navigate(`/doctor-chat/${id}`, { state: { appointment: { ...appointment, callType: availability.mode } } });
   };
 
   const initialsOf = (name = '') =>
@@ -231,11 +263,12 @@ const MyAppointments = () => {
 
                   <div className="mya-meta">
                     <span className="mya-chip mya-chip-date">
-                      <i className="fa-regular fa-calendar"></i> {prettyDate(a.appointment_date)}
+                      <i className="fa-regular fa-calendar"></i> {prettyDate(effectiveTime(a) || a.appointment_date)}
                     </span>
                     <span className="mya-chip mya-chip-time">
-                      <i className="fa-regular fa-clock"></i> {prettyTime(a.appointment_time)}
+                      <i className="fa-regular fa-clock"></i> {effectiveTime(a) ? new Date(effectiveTime(a)).toLocaleTimeString([], { hour: '2-digit', minute: '2-digit' }) : prettyTime(a.appointment_time)}
                     </span>
+                    {Number(a.delay_minutes || 0) > 0 && <span className="mya-chip"><i className="fa-solid fa-clock-rotate-left"></i> Delayed {a.delay_minutes} min{a.delay_reason ? ` · ${a.delay_reason}` : ''}</span>}
                     {(a.clinic_name || a.clinic) && (
                       <span className="mya-chip">
                         <i className="fa-solid fa-location-dot"></i> {titleCase(a.clinic_name || a.clinic)}
@@ -266,6 +299,18 @@ const MyAppointments = () => {
                     <span className="mya-pay">
                       <i className="fa-solid fa-wallet"></i> {titleCase(a.payment_method)}
                     </span>
+                  )}
+                  {callAvailability(a).mode && (
+                    <button
+                      type="button"
+                      className="mya-call-btn"
+                      disabled={!callAvailability(a).enabled || !doctorId(a)}
+                      onClick={() => joinAppointmentCall(a)}
+                      title={callAvailability(a).enabled ? `Start ${callAvailability(a).mode} call` : 'Call opens 15 minutes before appointment time'}
+                    >
+                      <i className={`fa-solid ${callAvailability(a).mode === 'video' ? 'fa-video' : 'fa-phone'}`}></i>
+                      {callAvailability(a).mode === 'video' ? 'Join Video Call' : 'Start Voice Call'}
+                    </button>
                   )}
                 </div>
               </div>

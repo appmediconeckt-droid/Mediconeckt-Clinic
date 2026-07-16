@@ -763,26 +763,64 @@
   display: flex;
   inset: 0;
   justify-content: center;
-  padding: 18px;
+  padding: 0;
   position: fixed;
   z-index: 9999;
 }
 
 .sms-call-card {
   align-items: center;
-  background: linear-gradient(160deg, #0f172a 0%, #075e54 100%);
-  border-radius: 22px;
+  background: radial-gradient(circle at 50% 42%, #101a2d 0%, #0b111b 48%, #080d14 100%);
+  border-radius: 0;
   box-shadow: 0 24px 80px rgba(15, 23, 42, 0.38);
   color: #ffffff;
   display: flex;
   flex-direction: column;
-  height: calc(100vh - 36px);
-  max-height: 900px;
-  max-width: 1280px;
+  height: 100vh;
+  max-height: none;
+  max-width: none;
   min-height: 560px;
-  padding: 28px;
+  padding: 0 28px 28px;
   text-align: center;
-  width: calc(100vw - 36px);
+  width: 100vw;
+}
+
+.sms-call-card.voice .sms-call-top {
+  height: 86px;
+  flex: 0 0 86px;
+  margin: 0 -28px auto;
+  padding: 0 26px;
+  width: calc(100% + 56px);
+  border-bottom: 1px solid rgba(148, 163, 184, .18);
+  background: #121923;
+}
+.sms-call-card.voice .sms-call-top span { color: #fff; font-size: 30px; text-transform: capitalize; }
+.sms-call-card.voice .sms-call-avatar {
+  width: 174px;
+  height: 174px;
+  margin-top: auto;
+  background: #5789ef;
+  color: #fff;
+  border: 0;
+  font-size: 64px;
+  box-shadow: 0 0 0 12px rgba(60, 107, 194, .18), 0 0 0 72px rgba(60, 107, 194, .10);
+}
+.sms-call-card.voice h2 { margin-top: 38px; font-size: 38px; }
+.sms-call-card.voice p { color: #5790ff; font-size: 20px; }
+.sms-call-card.voice .sms-call-controls {
+  margin-top: auto;
+  padding: 12px 18px;
+  border: 1px solid rgba(148, 163, 184, .25);
+  border-radius: 999px;
+  background: rgba(18, 25, 35, .85);
+}
+.sms-call-card.voice .sms-call-controls button.end { background: #ff4d4f; }
+
+@media (max-width: 600px) {
+  .sms-call-card.voice .sms-call-top { height: 68px; flex-basis: 68px; }
+  .sms-call-card.voice .sms-call-top span { font-size: 23px; }
+  .sms-call-card.voice .sms-call-avatar { width: 128px; height: 128px; font-size: 46px; }
+  .sms-call-card.voice h2 { font-size: 28px; }
 }
 
 .sms-call-card.video {
@@ -977,6 +1015,24 @@
 
 .sms-call-controls button.end {
   background: #ef4444;
+}
+
+.sms-call-controls button.incoming-action {
+  width: auto;
+  min-width: 132px;
+  padding: 0 22px;
+  gap: 9px;
+  font-size: 15px;
+  font-weight: 800;
+  box-shadow: 0 8px 22px rgba(0, 0, 0, .25);
+}
+.sms-call-controls button.accept { background: #16a34a; }
+.sms-call-controls button.accept:hover { background: #15803d; }
+.sms-call-controls button.reject { background: #dc2626; }
+.sms-call-controls button.reject:hover { background: #b91c1c; }
+
+@media (max-width: 520px) {
+  .sms-call-controls button.incoming-action { min-width: 118px; padding: 0 15px; font-size: 13px; }
 }
 
 .sms-send-error {

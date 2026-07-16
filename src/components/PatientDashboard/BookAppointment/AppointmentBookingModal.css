@@ -1273,3 +1273,36 @@
   .abm-main { padding: 16px; }
   .abm-dates { grid-template-columns: repeat(3, 1fr); }
 }
+/* Patient-entered appointment location */
+.abm-location-field {
+  margin: 16px 0;
+  padding: 16px 18px;
+  border: 1px solid #dbe4f0;
+  border-radius: 14px;
+  background: #fff;
+}
+
+.abm-location-field label {
+  display: block;
+  margin-bottom: 9px;
+  color: #243b5a;
+  font-size: 13px;
+  font-weight: 700;
+}
+
+.abm-location-field label i { margin-right: 7px; color: #2563eb; }
+
+.abm-location-field input {
+  width: 100%;
+  padding: 12px 14px;
+  border: 1px solid #cbd5e1;
+  border-radius: 10px;
+  outline: none;
+  color: #172033;
+  background: #f8fafc;
+}
+
+.abm-location-field input:focus {
+  border-color: #2563eb;
+  box-shadow: 0 0 0 3px rgba(37, 99, 235, .12);
+}

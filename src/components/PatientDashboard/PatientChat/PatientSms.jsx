@@ -770,6 +770,7 @@ const PatientSms = () => {
       {/* ===== Call overlay ===== */}
       {callType && (
         <div className={`call-overlay ${callType}`}>
+          <div className="call-screen-title">{callType === 'video' ? 'Video Call' : 'Voice Call'}</div>
           {callType === 'voice' && <audio autoPlay ref={(node) => { if (node && rtc.remoteStream) node.srcObject = rtc.remoteStream; }} />}
           {callType === 'video' ? (
             <div className="wa-video">
@@ -802,7 +803,7 @@ const PatientSms = () => {
               {/* Bottom control bar */}
               <div className="wa-controls">
                 {callDirection === 'incoming' && callStatus === 'ringing' && (
-                  <button className="wa-ctrl" onClick={acceptIncomingCall} title="Accept call"><i className="fa-solid fa-phone"></i></button>
+                  <button className="wa-ctrl incoming-accept" onClick={acceptIncomingCall} title="Accept incoming call"><i className="fa-solid fa-phone"></i><span>Accept Call</span></button>
                 )}
                 <button className={`wa-ctrl ${speakerOn ? '' : 'off'}`} onClick={() => setSpeakerOn(!speakerOn)}>
                   <i className={`fa-solid ${speakerOn ? 'fa-volume-high' : 'fa-volume-xmark'}`}></i>
@@ -813,7 +814,7 @@ const PatientSms = () => {
                 <button className={`wa-ctrl ${muted ? 'off' : ''}`} onClick={() => setMuted(!muted)}>
                   <i className={`fa-solid ${muted ? 'fa-microphone-slash' : 'fa-microphone'}`}></i>
                 </button>
-                <button className="wa-ctrl end" onClick={endCall}><i className="fa-solid fa-phone-slash"></i></button>
+                <button className={`wa-ctrl end ${callDirection === 'incoming' && callStatus === 'ringing' ? 'incoming-reject' : ''}`} onClick={endCall}><i className="fa-solid fa-phone-slash"></i>{callDirection === 'incoming' && callStatus === 'ringing' && <span>Reject Call</span>}</button>
               </div>
             </div>
           ) : (
@@ -834,7 +835,7 @@ const PatientSms = () => {
               </div>
               <div className="call-controls">
                 {callDirection === 'incoming' && callStatus === 'ringing' && (
-                  <button className="call-ctrl" onClick={acceptIncomingCall} title="Accept call"><i className="fa-solid fa-phone"></i></button>
+                  <button className="call-ctrl incoming-accept" onClick={acceptIncomingCall} title="Accept incoming call"><i className="fa-solid fa-phone"></i><span>Accept Call</span></button>
                 )}
                 <button className={`call-ctrl ${muted ? 'off' : ''}`} onClick={() => setMuted(!muted)}>
                   <i className={`fa-solid ${muted ? 'fa-microphone-slash' : 'fa-microphone'}`}></i>
@@ -842,7 +843,7 @@ const PatientSms = () => {
                 <button className={`call-ctrl ${speakerOn ? '' : 'off'}`} onClick={() => setSpeakerOn(!speakerOn)}>
                   <i className={`fa-solid ${speakerOn ? 'fa-volume-high' : 'fa-volume-xmark'}`}></i>
                 </button>
-                <button className="call-ctrl end" onClick={endCall}><i className="fa-solid fa-phone-slash"></i></button>
+                <button className={`call-ctrl end ${callDirection === 'incoming' && callStatus === 'ringing' ? 'incoming-reject' : ''}`} onClick={endCall}><i className="fa-solid fa-phone-slash"></i>{callDirection === 'incoming' && callStatus === 'ringing' && <span>Reject Call</span>}</button>
               </div>
             </div>
           )}

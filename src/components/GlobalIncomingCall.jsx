@@ -3,77 +3,191 @@ import { useLocation } from 'react-router-dom';
 import { acceptCall, endCall, getCurrentUserId } from '../redux/chatApi';
 import useCallSocket from '../hooks/useCallSocket';
 import useWebRTCCall from '../hooks/useWebRTCCall';
+import './GlobalIncomingCall.css';
 
 export default function GlobalIncomingCall() {
   const location = useLocation();
   const [call, setCall] = useState(null);
+  const [seconds, setSeconds] = useState(0);
+  const [muted, setMuted] = useState(false);
+  const [videoOff, setVideoOff] = useState(false);
   const remoteVideoRef = useRef(null);
   const localVideoRef = useRef(null);
-  const isChatScreen = location.pathname === '/patient-sms' || location.pathname === '/doctor-sms';
+
+  // Use this same incoming-call popup on every doctor and patient route.
+  const isChatScreen = false;
+
   const activeCallId = call?.id ?? call?._id ?? call?.call_id ?? call?.callId;
-  const callerUserId = call?.caller_id ?? call?.callerId ?? call?.sender_id;
+  const callerUserId = call?.caller_id ?? call?.callerId ?? call?.sender_id ?? call?.from_user_id;
   const activeCallType = call?.call_type ?? call?.callType ?? call?.type ?? 'voice';
+  const accepted = call?.status === 'accepted';
+
   const rtc = useWebRTCCall({ callId: activeCallId, peerUserId: callerUserId, callType: activeCallType });
 
+  // Attach streams to the video elements
   useEffect(() => {
     if (remoteVideoRef.current && rtc.remoteStream) remoteVideoRef.current.srcObject = rtc.remoteStream;
     if (localVideoRef.current && rtc.localStream) localVideoRef.current.srcObject = rtc.localStream;
-  }, [rtc.remoteStream, rtc.localStream]);
+  }, [rtc.remoteStream, rtc.localStream, accepted]);
+
+  // Call duration timer (starts once accepted)
+  useEffect(() => {
+    if (!accepted) { setSeconds(0); return; }
+    const t = setInterval(() => setSeconds((s) => s + 1), 1000);
+    return () => clearInterval(t);
+  }, [accepted]);
+
+  // Reflect mute / camera toggles onto the real tracks
+  useEffect(() => {
+    rtc.localStream?.getAudioTracks().forEach((t) => { t.enabled = !muted; });
+  }, [muted, rtc.localStream]);
+
+  useEffect(() => {
+    rtc.localStream?.getVideoTracks().forEach((t) => { t.enabled = !videoOff; });
+  }, [videoOff, rtc.localStream]);
+
+  const closeCall = () => {
+    rtc.stop();
+    setCall(null);
+    setMuted(false);
+    setVideoOff(false);
+  };
 
   useCallSocket({
     onRinging: (incomingCall) => {
       const currentUserId = getCurrentUserId();
       const callerId = incomingCall?.caller_id ?? incomingCall?.callerId ?? incomingCall?.sender_id;
       const receiverId = incomingCall?.receiver_id ?? incomingCall?.receiverId ?? incomingCall?.callee_id;
+      // Only ring the intended receiver — never the caller themselves
       if (receiverId && String(receiverId) !== String(currentUserId)) return;
       if (!receiverId && callerId && String(callerId) === String(currentUserId)) return;
       setCall(incomingCall);
     },
-    onRejected: () => setCall(null),
-    onCancelled: () => setCall(null),
-    onEnded: () => setCall(null),
-    onMissed: () => setCall(null),
+    onRejected: closeCall,
+    onCancelled: closeCall,
+    onEnded: closeCall,
+    onMissed: closeCall,
   }, !isChatScreen);
 
   if (!call || isChatScreen) return null;
-  const callId = call.id ?? call._id ?? call.call_id ?? call.callId;
-  const type = call.call_type ?? call.callType ?? call.type ?? 'voice';
-  const callerName = call.caller_name ?? call.callerName ?? call.sender_name ?? 'Patient';
+
+  const type = activeCallType;
+  const callerName =
+    call.caller_name ?? call.callerName ?? call.sender_name ?? call.from_name ?? 'Incoming call';
+  const callerAvatar = call.caller_avatar ?? call.callerAvatar ?? call.avatar_url ?? call.profile_image ?? '';
+
+  const initials = String(callerName)
+    .replace(/^Dr\.?\s*/i, '')
+    .split(' ').filter(Boolean).map((w) => w[0]).join('').toUpperCase().slice(0, 2) || '?';
+
+  const fmt = (s) => `${String(Math.floor(s / 60)).padStart(2, '0')}:${String(s % 60).padStart(2, '0')}`;
 
   const accept = async () => {
-    if (!callId) return;
-    await rtc.getLocalMedia(type);
-    await acceptCall(callId);
-    setCall((current) => current ? { ...current, status: 'accepted' } : current);
-  };
-  const reject = async () => {
-    if (callId) await endCall({ callId, status: 'rejected' });
-    setCall(null);
+    if (!activeCallId) return;
+    try {
+      await rtc.getLocalMedia(type);      // grab mic/cam before answering
+      await acceptCall(activeCallId);      // tell the server -> caller sends the offer
+      setCall((c) => (c ? { ...c, status: 'accepted' } : c));
+    } catch (err) {
+      console.error('[GlobalIncomingCall] accept failed:', err);
+      alert('Could not access your microphone/camera.');
+    }
   };
 
-  return (
-    <div style={{ position: 'fixed', inset: 0, zIndex: 100000, background: 'rgba(15,23,42,.6)', display: 'grid', placeItems: 'center' }}>
-      <div style={{ width: 360, maxWidth: '92vw', padding: 28, borderRadius: 22, background: '#fff', textAlign: 'center', boxShadow: '0 24px 70px rgba(0,0,0,.3)' }}>
-        <div style={{ width: 72, height: 72, margin: '0 auto 14px', borderRadius: '50%', display: 'grid', placeItems: 'center', background: '#dbeafe', color: '#1455c0', fontSize: 30 }}>
-          <i className={`fa-solid ${type === 'video' ? 'fa-video' : 'fa-phone'}`} />
+  const hangUp = async (status) => {
+    const id = activeCallId;
+    closeCall();
+    if (id) {
+      try {
+        await endCall({ callId: id, status });
+      } catch (err) {
+        console.error('[GlobalIncomingCall] end call failed:', err);
+      }
+    }
+  };
+
+  // ===== Ringing: Accept / Reject popup =====
+  if (!accepted) {
+    return (
+      <div className="gic-overlay">
+        <div className="gic-popup">
+          <div className="gic-avatar">
+            {callerAvatar ? <img src={callerAvatar} alt={callerName} /> : <i className="fa-solid fa-user-doctor" />}
+          </div>
+          <h2 className="gic-name">{callerName}</h2>
+          <div className="gic-type"><i className={`fa-solid ${type === 'video' ? 'fa-video' : 'fa-phone'}`} /> {type === 'video' ? 'Video Call' : 'Voice Call'}</div>
+          <p className="gic-sub">Incoming {type} call…</p>
+          <div className="gic-actions">
+            <button className="gic-btn gic-btn-reject" onClick={() => hangUp('rejected')}>
+              <i className="fa-solid fa-microphone-slash" /> Decline
+            </button>
+            <button className="gic-btn gic-btn-accept" onClick={accept}>
+              <i className="fa-solid fa-phone" /> Accept
+            </button>
+          </div>
         </div>
-        <h2 style={{ margin: '0 0 6px' }}>{callerName}</h2>
-        <p style={{ margin: '0 0 24px', color: '#64748b' }}>Incoming {type} call</p>
-        {call.status === 'accepted' && type === 'video' && (
-          <div style={{ position: 'relative', height: 220, marginBottom: 18, overflow: 'hidden', borderRadius: 16, background: '#0f172a' }}>
-            <video ref={remoteVideoRef} autoPlay playsInline style={{ width: '100%', height: '100%', objectFit: 'cover' }} />
-            <video ref={localVideoRef} autoPlay muted playsInline style={{ position: 'absolute', right: 10, bottom: 10, width: 90, height: 68, objectFit: 'cover', borderRadius: 10 }} />
+      </div>
+    );
+  }
+
+  // ===== Accepted: full-screen connected call =====
+  return (
+    <div className="gic-call">
+      <div className="gic-call-top">
+        <div>
+          <div className="gic-call-who">{type === 'video' ? 'Video Call' : 'Voice Call'}</div>
+        </div>
+        <span className="gic-enc"><i className="fa-solid fa-lock" /> End-to-end call</span>
+      </div>
+
+      {type === 'video' ? (
+        <div className="gic-stage">
+          <video ref={remoteVideoRef} autoPlay playsInline className="gic-remote" />
+          {!rtc.remoteStream && (
+            <div className="gic-waiting">
+              <i className="fa-solid fa-spinner fa-spin" /> Connecting video…
+            </div>
+          )}
+          <div className="gic-pip">
+            <video ref={localVideoRef} autoPlay muted playsInline />
           </div>
-        )}
-        {call.status === 'accepted' && type === 'voice' && <audio autoPlay ref={(node) => { if (node && rtc.remoteStream) node.srcObject = rtc.remoteStream; }} />}
-        {call.status === 'accepted' ? (
-          <button onClick={reject} style={{ border: 0, borderRadius: 999, padding: '12px 24px', background: '#dc2626', color: '#fff' }}>End Call</button>
-        ) : (
-          <div style={{ display: 'flex', justifyContent: 'center', gap: 18 }}>
-            <button onClick={reject} style={{ border: 0, borderRadius: 999, padding: '12px 22px', background: '#dc2626', color: '#fff' }}>Reject</button>
-            <button onClick={accept} style={{ border: 0, borderRadius: 999, padding: '12px 22px', background: '#16a34a', color: '#fff' }}>Accept</button>
+        </div>
+      ) : (
+        <div className="gic-voice">
+          <div className="gic-voice-avatar">{initials}</div>
+          <h2 className="gic-voice-name">{callerName}</h2>
+          <div className="gic-voice-timer">
+            {rtc.remoteStream ? fmt(seconds) : 'Connecting…'}
           </div>
+          <audio
+            autoPlay
+            ref={(node) => { if (node && rtc.remoteStream) node.srcObject = rtc.remoteStream; }}
+          />
+        </div>
+      )}
+
+      <div className="gic-controls">
+        <button
+          className={`gic-ctrl ${muted ? 'off' : ''}`}
+          onClick={() => setMuted((m) => !m)}
+          title={muted ? 'Unmute' : 'Mute'}
+        >
+          <i className={`fa-solid ${muted ? 'fa-microphone-slash' : 'fa-microphone'}`} />
+        </button>
+
+        {type === 'video' && (
+          <button
+            className={`gic-ctrl ${videoOff ? 'off' : ''}`}
+            onClick={() => setVideoOff((v) => !v)}
+            title={videoOff ? 'Turn camera on' : 'Turn camera off'}
+          >
+            <i className={`fa-solid ${videoOff ? 'fa-video-slash' : 'fa-video'}`} />
+          </button>
         )}
+
+        <button className="gic-ctrl end" onClick={() => hangUp('ended')} title="End call">
+          <i className="fa-solid fa-phone-slash" />
+        </button>
       </div>
     </div>
   );
