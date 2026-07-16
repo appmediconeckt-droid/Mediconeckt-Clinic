@@ -1,4 +1,5 @@
 import React, { useState, useEffect, useRef } from 'react';
+import { FaMicrophone, FaMicrophoneSlash } from 'react-icons/fa';
 import {
   acceptCall as apiAcceptCall,
   getChatList,
@@ -435,12 +436,12 @@ const PatientSms = () => {
   // Reflect mute / camera toggles on the real tracks
   useEffect(() => {
     streamRef.current?.getAudioTracks().forEach((t) => { t.enabled = !muted; });
-    rtc.localStream?.getAudioTracks().forEach((t) => { t.enabled = !muted; });
-  }, [muted, rtc.localStream]);
+    rtc.setAudioMuted(muted);
+  }, [muted, rtc.localStream, rtc.setAudioMuted]);
   useEffect(() => {
     streamRef.current?.getVideoTracks().forEach((t) => { t.enabled = !videoOff; });
-    rtc.localStream?.getVideoTracks().forEach((t) => { t.enabled = !videoOff; });
-  }, [videoOff, rtc.localStream]);
+    rtc.setVideoOff(videoOff);
+  }, [videoOff, rtc.localStream, rtc.setVideoOff]);
 
   const formatDuration = (s) => {
     const m = Math.floor(s / 60);
@@ -814,7 +815,7 @@ const PatientSms = () => {
                   <i className={`fa-solid ${videoOff ? 'fa-video-slash' : 'fa-video'}`}></i>
                 </button>
                 <button className={`wa-ctrl ${muted ? 'off' : ''}`} onClick={() => setMuted(!muted)}>
-                  <i className={`fa-solid ${muted ? 'fa-microphone-slash' : 'fa-microphone'}`}></i>
+                  {muted ? <FaMicrophoneSlash /> : <FaMicrophone />}
                 </button>
                 <button className={`wa-ctrl end ${callDirection === 'incoming' && callStatus === 'ringing' ? 'incoming-reject' : ''}`} onClick={endCall}><i className="fa-solid fa-phone-slash"></i>{callDirection === 'incoming' && callStatus === 'ringing' && <span>Reject Call</span>}</button>
               </div>
@@ -840,10 +841,7 @@ const PatientSms = () => {
                   <button className="call-ctrl incoming-accept" onClick={acceptIncomingCall} title="Accept incoming call"><i className="fa-solid fa-phone"></i><span>Accept Call</span></button>
                 )}
                 <button className={`call-ctrl ${muted ? 'off' : ''}`} onClick={() => setMuted(!muted)}>
-                  <i className={`fa-solid ${muted ? 'fa-microphone-slash' : 'fa-microphone'}`}></i>
-                </button>
-                <button className={`call-ctrl ${speakerOn ? '' : 'off'}`} onClick={() => setSpeakerOn(!speakerOn)}>
-                  <i className={`fa-solid ${speakerOn ? 'fa-volume-high' : 'fa-volume-xmark'}`}></i>
+                  {muted ? <FaMicrophoneSlash /> : <FaMicrophone />}
                 </button>
                 <button className={`call-ctrl end ${callDirection === 'incoming' && callStatus === 'ringing' ? 'incoming-reject' : ''}`} onClick={endCall}><i className="fa-solid fa-phone-slash"></i>{callDirection === 'incoming' && callStatus === 'ringing' && <span>Reject Call</span>}</button>
               </div>

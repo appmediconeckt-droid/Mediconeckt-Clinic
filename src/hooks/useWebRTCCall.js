@@ -30,6 +30,18 @@ export default function useWebRTCCall({ callId, peerUserId, callType = 'voice', 
     return stream;
   }, [callType]);
 
+  const setAudioMuted = useCallback((muted) => {
+    localStreamRef.current?.getAudioTracks().forEach((track) => {
+      track.enabled = !muted;
+    });
+  }, []);
+
+  const setVideoOff = useCallback((off) => {
+    localStreamRef.current?.getVideoTracks().forEach((track) => {
+      track.enabled = !off;
+    });
+  }, []);
+
   const signaling = useCallSocket({
     onWebRTCOffer: async (payload) => {
       if (callId && String(payload.call_id ?? payload.callId) !== String(callId)) return;
@@ -91,5 +103,5 @@ export default function useWebRTCCall({ callId, peerUserId, callType = 'voice', 
 
   useEffect(() => stop, [stop]);
 
-  return { localStream, remoteStream, getLocalMedia, startOffer, stop };
+  return { localStream, remoteStream, getLocalMedia, setAudioMuted, setVideoOff, startOffer, stop };
 }

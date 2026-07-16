@@ -397,6 +397,14 @@ function PatientList() {
   }, [rtc.localStream, rtc.remoteStream, activeCall?.type]);
 
   useEffect(() => {
+    rtc.setAudioMuted(Boolean(activeCall?.isMuted));
+  }, [activeCall?.isMuted, rtc.localStream, rtc.setAudioMuted]);
+
+  useEffect(() => {
+    rtc.setVideoOff(Boolean(activeCall?.isVideoOff));
+  }, [activeCall?.isVideoOff, rtc.localStream, rtc.setVideoOff]);
+
+  useEffect(() => {
     if (activeCall?.status === "connected" && activeCall?.direction !== "incoming") rtc.startOffer();
   }, [activeCall?.status, activeCall?.direction, activeCall?.id]);
 
@@ -890,9 +898,7 @@ function PatientList() {
       mediaStreamRef.current?.getAudioTracks().forEach((track) => {
         track.enabled = !nextMuted;
       });
-      rtc.localStream?.getAudioTracks().forEach((track) => {
-        track.enabled = !nextMuted;
-      });
+      rtc.setAudioMuted(nextMuted);
       return { ...call, isMuted: nextMuted };
     });
   };
@@ -904,9 +910,7 @@ function PatientList() {
       mediaStreamRef.current?.getVideoTracks().forEach((track) => {
         track.enabled = !nextVideoOff;
       });
-      rtc.localStream?.getVideoTracks().forEach((track) => {
-        track.enabled = !nextVideoOff;
-      });
+      rtc.setVideoOff(nextVideoOff);
       return { ...call, isVideoOff: nextVideoOff };
     });
   };
