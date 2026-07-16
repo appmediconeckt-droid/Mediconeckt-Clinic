@@ -435,10 +435,12 @@ const PatientSms = () => {
   // Reflect mute / camera toggles on the real tracks
   useEffect(() => {
     streamRef.current?.getAudioTracks().forEach((t) => { t.enabled = !muted; });
-  }, [muted]);
+    rtc.localStream?.getAudioTracks().forEach((t) => { t.enabled = !muted; });
+  }, [muted, rtc.localStream]);
   useEffect(() => {
     streamRef.current?.getVideoTracks().forEach((t) => { t.enabled = !videoOff; });
-  }, [videoOff]);
+    rtc.localStream?.getVideoTracks().forEach((t) => { t.enabled = !videoOff; });
+  }, [videoOff, rtc.localStream]);
 
   const formatDuration = (s) => {
     const m = Math.floor(s / 60);

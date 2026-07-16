@@ -386,12 +386,14 @@ function PatientList() {
   const fileInputRef = useRef(null);
   const videoPreviewRef = useRef(null);
   const remoteVideoRef = useRef(null);
+  const remoteAudioRef = useRef(null);
   const mediaStreamRef = useRef(null);
   const rtc = useWebRTCCall({ callId: activeCall?.id, peerUserId: selectedPatientId, callType: activeCall?.type || "voice" });
 
   useEffect(() => {
     if (videoPreviewRef.current && rtc.localStream) videoPreviewRef.current.srcObject = rtc.localStream;
     if (remoteVideoRef.current && rtc.remoteStream) remoteVideoRef.current.srcObject = rtc.remoteStream;
+    if (remoteAudioRef.current && rtc.remoteStream) remoteAudioRef.current.srcObject = rtc.remoteStream;
   }, [rtc.localStream, rtc.remoteStream, activeCall?.type]);
 
   useEffect(() => {
@@ -888,6 +890,9 @@ function PatientList() {
       mediaStreamRef.current?.getAudioTracks().forEach((track) => {
         track.enabled = !nextMuted;
       });
+      rtc.localStream?.getAudioTracks().forEach((track) => {
+        track.enabled = !nextMuted;
+      });
       return { ...call, isMuted: nextMuted };
     });
   };
@@ -897,6 +902,9 @@ function PatientList() {
       if (!call) return call;
       const nextVideoOff = !call.isVideoOff;
       mediaStreamRef.current?.getVideoTracks().forEach((track) => {
+        track.enabled = !nextVideoOff;
+      });
+      rtc.localStream?.getVideoTracks().forEach((track) => {
         track.enabled = !nextVideoOff;
       });
       return { ...call, isVideoOff: nextVideoOff };
@@ -1093,13 +1101,15 @@ function PatientList() {
                   : "Connected"}
             </p>
 
+            {activeCall.type === "voice" && <audio ref={remoteAudioRef} autoPlay />}
+
             {activeCall.type === "video" && (
               <div className="sms-video-preview">
-                <video ref={remoteVideoRef} autoPlay playsInline style={{ display: rtc.remoteStream ? "block" : "none" }} />
+                <video className="sms-remote-video" ref={remoteVideoRef} autoPlay playsInline style={{ display: rtc.remoteStream ? "block" : "none" }} />
                 {activeCall.isVideoOff ? (
-                  <span>Camera off</span>
+                  <span className="sms-local-video sms-local-video-off">Camera off</span>
                 ) : (
-                  <video ref={videoPreviewRef} autoPlay playsInline muted />
+                  <video className="sms-local-video" ref={videoPreviewRef} autoPlay playsInline muted />
                 )}
               </div>
             )}

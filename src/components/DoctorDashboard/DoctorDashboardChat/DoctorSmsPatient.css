@@ -825,12 +825,15 @@
 
 .sms-call-card.video {
   background: #020617;
-  max-width: 1440px;
-  min-height: 620px;
+  height: 100vh;
+  height: 100dvh;
+  max-height: none;
+  max-width: none;
+  min-height: 0;
   overflow: hidden;
   padding: 0;
   position: relative;
-  width: calc(100vw - 36px);
+  width: 100vw;
 }
 
 .sms-call-card.video::before {
@@ -922,6 +925,35 @@
   width: 100%;
 }
 
+.sms-call-card.video .sms-video-preview .sms-remote-video {
+  height: 100%;
+  inset: 0;
+  object-fit: cover;
+  position: absolute;
+  width: 100%;
+}
+
+.sms-call-card.video .sms-video-preview .sms-local-video {
+  border: 2px solid rgba(255, 255, 255, 0.85);
+  border-radius: 14px;
+  height: 158px;
+  box-shadow: 0 8px 28px rgba(2, 6, 23, 0.45);
+  object-fit: cover;
+  position: absolute;
+  right: 18px;
+  top: 64px;
+  transform: scaleX(-1);
+  width: 116px;
+  z-index: 3;
+}
+
+.sms-call-card.video .sms-video-preview .sms-local-video-off {
+  align-items: center;
+  background: #111827;
+  display: flex;
+  justify-content: center;
+}
+
 .sms-call-card.video .sms-call-top {
   left: 28px;
   margin: 0;
@@ -965,10 +997,15 @@
 
 .sms-call-card.video .sms-call-controls {
   bottom: 26px;
+  background: rgba(0, 0, 0, 0.35);
+  border-radius: 40px;
+  gap: 18px;
   left: 50%;
   margin: 0;
+  padding: 12px 18px;
   position: absolute;
   transform: translateX(-50%);
+  backdrop-filter: blur(10px);
   z-index: 2;
 }
 
@@ -1101,14 +1138,15 @@
   }
 
   .sms-call-overlay {
-    padding: 10px;
+    padding: 0;
   }
 
   .sms-call-card,
   .sms-call-card.video {
-    height: calc(100vh - 20px);
+    height: 100vh;
+    height: 100dvh;
     min-height: 0;
-    width: calc(100vw - 20px);
+    width: 100vw;
   }
 
   .sms-call-card.video {
@@ -1139,5 +1177,13 @@
   .sms-call-card.video p {
     left: 82px;
     top: 94px;
+  }
+
+  .sms-call-card.video .sms-video-preview .sms-local-video {
+    border-radius: 10px;
+    height: 130px;
+    right: 12px;
+    top: 58px;
+    width: 96px;
   }
 }
